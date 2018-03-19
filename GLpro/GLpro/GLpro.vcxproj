@@ -76,7 +76,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win32;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\Win32;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;openal32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -84,7 +90,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win32;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\Win32;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;openal32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -94,10 +106,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win32;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\Win32;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;openal32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -108,13 +124,67 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win32;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\Win32;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;openal32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="3rdParty\ObjectLoader\objectLoader.cpp" />
+    <ClCompile Include="3rdParty\ObjectLoader\vboindexer.cpp" />
+    <ClCompile Include="3rdParty\ShaderLoader\shader.cpp" />
+    <ClCompile Include="3rdParty\TextureLoader\textureLoader.cpp" />
+    <ClCompile Include="src\Control\Control.cpp" />
+    <ClCompile Include="src\Control\ControlDown.cpp" />
+    <ClCompile Include="src\Control\ControlOnce.cpp" />
+    <ClCompile Include="src\Control\InputManager.cpp" />
+    <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Player\Enemy.cpp" />
+    <ClCompile Include="src\Player\Player.cpp" />
+    <ClCompile Include="src\Resource\Model.cpp" />
+    <ClCompile Include="src\Resource\ModelManager.cpp" />
+    <ClCompile Include="src\Resource\Texture.cpp" />
+    <ClCompile Include="src\Resource\TextureManager.cpp" />
+    <ClCompile Include="src\Shader\ShaderText.cpp" />
+    <ClCompile Include="src\Skybox\SkyboxObj.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="3rdParty\ObjectLoader\objectLoader.h" />
+    <ClInclude Include="3rdParty\ObjectLoader\vboindexer.h" />
+    <ClInclude Include="3rdParty\ObjectLoader\Vertex.h" />
+    <ClInclude Include="3rdParty\ShaderLoader\shader.h" />
+    <ClInclude Include="3rdParty\TextureLoader\textureLoader.h" />
+    <ClInclude Include="src\Control\Control.h" />
+    <ClInclude Include="src\Control\ControlDown.h" />
+    <ClInclude Include="src\Control\ControlOnce.h" />
+    <ClInclude Include="src\Control\InputManager.h" />
+    <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\Player\Enemy.h" />
+    <ClInclude Include="src\Player\Player.h" />
+    <ClInclude Include="src\Render\RSkybox.h" />
+    <ClInclude Include="src\Resource\Model.h" />
+    <ClInclude Include="src\Resource\ModelManager.h" />
+    <ClInclude Include="src\Resource\Texture.h" />
+    <ClInclude Include="src\Resource\TextureManager.h" />
+    <ClInclude Include="src\Shader\ShaderMain.h" />
+    <ClInclude Include="src\Shader\ShaderManager.h" />
+    <ClInclude Include="src\Shader\ShaderObj.h" />
+    <ClInclude Include="src\Shader\ShaderParticle.h" />
+    <ClInclude Include="src\Shader\ShaderShadow.h" />
+    <ClInclude Include="src\Shader\ShaderSkybox.h" />
+    <ClInclude Include="src\Shader\ShaderText.h" />
+    <ClInclude Include="src\Skybox\SkyboxManager.h" />
+    <ClInclude Include="src\Skybox\SkyboxObj.h" />
+    <ClInclude Include="src\Transform.h" />
+    <ClInclude Include="src\window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

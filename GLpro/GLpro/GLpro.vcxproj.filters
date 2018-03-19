@@ -13,5 +13,192 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\3rd">
+      <UniqueIdentifier>{5bbe71f2-a890-4526-8b19-71bac6e542d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src">
+      <UniqueIdentifier>{cad0aff8-d7ff-4308-a3ba-f7a1c107e289}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\control">
+      <UniqueIdentifier>{fcbf0dbd-01b3-4696-a583-97ff7987e0e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\message">
+      <UniqueIdentifier>{169376f8-7f8e-491b-8a64-5cb224443995}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\particle">
+      <UniqueIdentifier>{5f9f6c13-6383-47bd-9fca-2026fdaee365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\Player">
+      <UniqueIdentifier>{c3065048-b109-4730-9562-5b8eebd963c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\shader">
+      <UniqueIdentifier>{a28b0359-aa7e-40d5-9807-70084592ebf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\skybox">
+      <UniqueIdentifier>{46101aa7-9f33-4ec9-b6f9-cc8cef461019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\sound">
+      <UniqueIdentifier>{843d4484-56f7-4870-94c6-b4def63973ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\text">
+      <UniqueIdentifier>{f05b1f27-3db8-4f0e-a242-e08bbe61f160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\texture">
+      <UniqueIdentifier>{1ffcadd5-a30a-4678-aa38-1455f36c0e98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\Resource">
+      <UniqueIdentifier>{a6378624-00c4-45e2-9099-75e713b2bcdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\renderer">
+      <UniqueIdentifier>{e35ecec4-0a5a-4f0f-961c-00cc1b22dc32}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entity.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\ShaderLoader\shader.cpp">
+      <Filter>소스 파일\3rd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Control\Control.cpp">
+      <Filter>소스 파일\src\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Control\ControlDown.cpp">
+      <Filter>소스 파일\src\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Control\ControlOnce.cpp">
+      <Filter>소스 파일\src\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Control\InputManager.cpp">
+      <Filter>소스 파일\src\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\Enemy.cpp">
+      <Filter>소스 파일\src\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\Player.cpp">
+      <Filter>소스 파일\src\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\ShaderText.cpp">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Skybox\SkyboxObj.cpp">
+      <Filter>소스 파일\src\skybox</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\ObjectLoader\objectLoader.cpp">
+      <Filter>소스 파일\3rd</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\ObjectLoader\vboindexer.cpp">
+      <Filter>소스 파일\3rd</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\TextureLoader\textureLoader.cpp">
+      <Filter>소스 파일\3rd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resource\Model.cpp">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resource\ModelManager.cpp">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resource\Texture.cpp">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resource\TextureManager.cpp">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\window.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Transform.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Control\Control.h">
+      <Filter>소스 파일\src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Control\ControlDown.h">
+      <Filter>소스 파일\src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Control\ControlOnce.h">
+      <Filter>소스 파일\src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Control\InputManager.h">
+      <Filter>소스 파일\src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ShaderManager.h">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ShaderObj.h">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\Enemy.h">
+      <Filter>소스 파일\src\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\Player.h">
+      <Filter>소스 파일\src\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ShaderMain.h">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ShaderParticle.h">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ShaderShadow.h">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ShaderSkybox.h">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ShaderText.h">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Skybox\SkyboxManager.h">
+      <Filter>소스 파일\src\skybox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Skybox\SkyboxObj.h">
+      <Filter>소스 파일\src\skybox</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\ShaderLoader\shader.h">
+      <Filter>소스 파일\3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\ObjectLoader\objectLoader.h">
+      <Filter>소스 파일\3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\ObjectLoader\vboindexer.h">
+      <Filter>소스 파일\3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\ObjectLoader\Vertex.h">
+      <Filter>소스 파일\3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\TextureLoader\textureLoader.h">
+      <Filter>소스 파일\3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\Model.h">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\ModelManager.h">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\Texture.h">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\TextureManager.h">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Render\RSkybox.h">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
