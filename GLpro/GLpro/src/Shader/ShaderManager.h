@@ -2,7 +2,7 @@
 #define __SHADER_MANAGER_H__
 
 #include "./ShaderHeader.h"
-
+#include <memory>
 namespace SHADER 
 {
 	class ShaderManager {
@@ -32,7 +32,7 @@ namespace SHADER
 			}
 		}
 
-		ShaderObj* getShaderPtrWithint(int idx) {
+		ShaderObj* getShaderPtrWithint(int idx) const {
 			return m_shaderStorage[idx];
 		}
 		virtual ~ShaderManager() {

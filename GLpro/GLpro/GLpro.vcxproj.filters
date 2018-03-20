@@ -52,6 +52,12 @@
     <Filter Include="소스 파일\src\renderer">
       <UniqueIdentifier>{e35ecec4-0a5a-4f0f-961c-00cc1b22dc32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\src\renderTarget">
+      <UniqueIdentifier>{ef1b8173-8132-45f5-8baf-9b8520d2bafe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\renderTarget\skybox">
+      <UniqueIdentifier>{87ce1b31-d454-4f86-99fe-ff974e8b5cc5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -90,9 +96,6 @@
     <ClCompile Include="src\Shader\ShaderText.cpp">
       <Filter>소스 파일\src\shader</Filter>
     </ClCompile>
-    <ClCompile Include="src\Skybox\SkyboxObj.cpp">
-      <Filter>소스 파일\src\skybox</Filter>
-    </ClCompile>
     <ClCompile Include="3rdParty\ObjectLoader\objectLoader.cpp">
       <Filter>소스 파일\3rd</Filter>
     </ClCompile>
@@ -113,6 +116,15 @@
     </ClCompile>
     <ClCompile Include="src\Resource\TextureManager.cpp">
       <Filter>소스 파일\src\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resource\ModelFromNotFile.cpp">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resource\ModelWithNoIndice.cpp">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderTarget\Skybox\SkyboxRenderTarget.cpp">
+      <Filter>소스 파일\src\renderTarget\skybox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,12 +176,6 @@
     <ClInclude Include="src\Shader\ShaderText.h">
       <Filter>소스 파일\src\shader</Filter>
     </ClInclude>
-    <ClInclude Include="src\Skybox\SkyboxManager.h">
-      <Filter>소스 파일\src\skybox</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Skybox\SkyboxObj.h">
-      <Filter>소스 파일\src\skybox</Filter>
-    </ClInclude>
     <ClInclude Include="3rdParty\ShaderLoader\shader.h">
       <Filter>소스 파일\3rd</Filter>
     </ClInclude>
@@ -199,6 +205,42 @@
     </ClInclude>
     <ClInclude Include="src\Render\RSkybox.h">
       <Filter>소스 파일\src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Render\RObjectWithTexture.h">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ShaderHeader.h">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\ModelFromNotFile.h">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\ModelWithNoIndice.h">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Render\RInterface.h">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Render\RLocator.h">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderTarget\Skybox\SkyboxRenderTarget.h">
+      <Filter>소스 파일\src\renderTarget\skybox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderTarget\Skybox\SkyboxModel.h">
+      <Filter>소스 파일\src\renderTarget\skybox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderTarget\Skybox\SkyboxTexture.h">
+      <Filter>소스 파일\src\renderTarget\skybox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderTarget\Skybox\SkyboxFObj.h">
+      <Filter>소스 파일\src\renderTarget\skybox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FObj.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TransformBuilder.h">
+      <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

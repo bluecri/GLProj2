@@ -1,5 +1,11 @@
 #include "Transform.h"
 
+Transform::Transform(const glm::mat4 &modelMatrix, const glm::mat4 &rotateMatrix, const glm::mat4 &scaleMatrix, int &type, Transform *childTransform) : Entity(type) {
+	_modelMatrix = modelMatrix;
+	_rotateMatrix = rotateMatrix;
+	_scaleMatrix = scaleMatrix;
+}
+
 const glm::mat4& Transform::getModelMatrixConstRef() const
 {
 	return _modelMatrix;

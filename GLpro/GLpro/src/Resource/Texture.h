@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace TEXTURE {
+namespace RESOURCE {
 	class Texture {
 		public:
 			Texture(std::string fileName, std::string type) {

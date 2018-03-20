@@ -147,12 +147,14 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player\Enemy.cpp" />
     <ClCompile Include="src\Player\Player.cpp" />
+    <ClCompile Include="src\RenderTarget\Skybox\SkyboxRenderTarget.cpp" />
     <ClCompile Include="src\Resource\Model.cpp" />
+    <ClCompile Include="src\Resource\ModelFromNotFile.cpp" />
     <ClCompile Include="src\Resource\ModelManager.cpp" />
+    <ClCompile Include="src\Resource\ModelWithNoIndice.cpp" />
     <ClCompile Include="src\Resource\Texture.cpp" />
     <ClCompile Include="src\Resource\TextureManager.cpp" />
     <ClCompile Include="src\Shader\ShaderText.cpp" />
-    <ClCompile Include="src\Skybox\SkyboxObj.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
@@ -167,13 +169,24 @@
     <ClInclude Include="src\Control\ControlOnce.h" />
     <ClInclude Include="src\Control\InputManager.h" />
     <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\FObj.h" />
     <ClInclude Include="src\Player\Enemy.h" />
     <ClInclude Include="src\Player\Player.h" />
+    <ClInclude Include="src\RenderTarget\Skybox\SkyboxFObj.h" />
+    <ClInclude Include="src\RenderTarget\Skybox\SkyboxRenderTarget.h" />
+    <ClInclude Include="src\RenderTarget\Skybox\SkyboxTexture.h" />
+    <ClInclude Include="src\RenderTarget\Skybox\SkyboxModel.h" />
+    <ClInclude Include="src\Render\RInterface.h" />
+    <ClInclude Include="src\Render\RLocator.h" />
+    <ClInclude Include="src\Render\RObjectWithTexture.h" />
     <ClInclude Include="src\Render\RSkybox.h" />
     <ClInclude Include="src\Resource\Model.h" />
+    <ClInclude Include="src\Resource\ModelFromNotFile.h" />
     <ClInclude Include="src\Resource\ModelManager.h" />
+    <ClInclude Include="src\Resource\ModelWithNoIndice.h" />
     <ClInclude Include="src\Resource\Texture.h" />
     <ClInclude Include="src\Resource\TextureManager.h" />
+    <ClInclude Include="src\Shader\ShaderHeader.h" />
     <ClInclude Include="src\Shader\ShaderMain.h" />
     <ClInclude Include="src\Shader\ShaderManager.h" />
     <ClInclude Include="src\Shader\ShaderObj.h" />
@@ -181,9 +194,8 @@
     <ClInclude Include="src\Shader\ShaderShadow.h" />
     <ClInclude Include="src\Shader\ShaderSkybox.h" />
     <ClInclude Include="src\Shader\ShaderText.h" />
-    <ClInclude Include="src\Skybox\SkyboxManager.h" />
-    <ClInclude Include="src\Skybox\SkyboxObj.h" />
     <ClInclude Include="src\Transform.h" />
+    <ClInclude Include="src\TransformBuilder.h" />
     <ClInclude Include="src\window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

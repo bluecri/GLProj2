@@ -5,6 +5,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include <vector>
+
 #include "./Entity.h"
 
 /******************************************************
@@ -14,12 +16,17 @@
 
 class Transform : public Entity {
 public:
+	class Builder;
 	glm::vec3 modelVec;
 	bool isDrawableObjDelete = false;	//If true, will be deleted
 	bool isDrawableObjDraw = true;	//If true, draw.
 
-	Transform() : Entity() {	};
-	Transform(int type) : Entity(type) {	};
+	Transform(const glm::mat4 &modelMatrix, const glm::mat4 &rotateMatrix, const glm::mat4 &scaleMatrix, int &type, Transform *childTransform) : Entity(type) {
+		_modelMatrix = modelMatrix;
+		_rotateMatrix = rotateMatrix;
+		_scaleMatrix = scaleMatrix;
+	}
+
 	virtual ~Transform() {};
 	
 	// model mat
@@ -56,13 +63,65 @@ public:
 	virtual void accScaleMatrix(const glm::vec3 &scaleVec);
 
 private:
+	Transform();
 	glm::mat4 _modelMatrix;
 	glm::mat4 _rotateMatrix;
 	glm::mat4 _scaleMatrix;
-	
-	Transform(const glm::vec3 &modelVec, const glm::vec3 &angleVec, const glm::vec3 &scaleVec, const int &type) : Entity(type) {
-		_modelMatrix	= glm::translate(glm::mat4(), modelVec);
-		_rotateMatrix	= glm::toMat4(glm::quat(angleVec));
-		_scaleMatrix	= glm::scale(glm::mat4(), scaleVec);
-	}
+	std::vector<Transform*> childTransformVec;
+};
+
+class Transform::Builder 
+{
+	public:
+		Builder() {
+			_modelMatrix = glm::mat4();
+			_rotateMatrix = glm::mat4();
+			_scaleMatrix = glm::mat4();
+			_type = 0;
+			_childTransform = NULL;
+		}
+
+		Transform& setModelMat(const glm::mat4 &modelMat) {
+			_modelMatrix = modelMat;
+		}
+
+		Transform& setModelMat(const glm::vec3 &modelVec) {
+			_modelMatrix = glm::translate(glm::mat4(), modelVec);
+		}
+
+		Transform& setRotMat(const glm::mat4 &rotateMatrix) {
+			_rotateMatrix = rotateMatrix;
+		}
+
+		Transform& setRotMat(const glm::vec3 &angleVec) {
+			_rotateMatrix = glm::toMat4(glm::quat(angleVec));
+		}
+
+		Transform& setScaleMat(const glm::mat4 &scaleMatrix) {
+			_scaleMatrix = scaleMatrix;
+		}
+
+		Transform& setScaleMat(const glm::vec3 &scaleVec) {
+			_scaleMatrix = glm::scale(glm::mat4(), scaleVec);
+		}
+
+		Transform& addChildTrnasform(Transform *childTransform) {
+			_childTransformVec.push_back(childTransform);
+		}
+
+		Transform& setType(int type) {
+			_type = type;
+		}
+
+		Transform* constructPtr() {
+			return new Transform(_modelMatrix, _rotateMatrix, _scaleMatrix, _type, _childTransform);
+		}
+
+	private:
+		glm::mat4 _modelMatrix;
+		glm::mat4 _rotateMatrix;
+		glm::mat4 _scaleMatrix;
+		int _type;
+		std::vector<Transform*> _childTransformVec;
+		Transform* _parentTransform;
 };

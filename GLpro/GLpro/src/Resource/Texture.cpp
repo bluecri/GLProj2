@@ -1,6 +1,6 @@
 #include "./Texture.h"
 
-namespace TEXTURE
+namespace RESOURCE
 {
 	void Texture::bind() const
 	{

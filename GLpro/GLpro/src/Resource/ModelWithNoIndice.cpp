@@ -1,50 +1,56 @@
-#include "./Model.h"
+#include "./ModelWithNoIndice.h"
 
-namespace RESOURCE 
+namespace RESOURCE
 {
-	Model::Model(const std::string &fileName)
+	ModelWithNoIndice::ModelWithNoIndice(const std::string &fileName)
 	{
 		genVao();
 		bind();
 
 		loadObjFile(fileName);
-		createStructVertexAndIndice();
-		createVboEbo();
+		createStructVertex();
+		createVbo();
 
 		unbind();
 	}
 
-	Model::~Model()
+	ModelWithNoIndice::~ModelWithNoIndice()
 	{
 		glDeleteBuffers(1, &_vbo);
-		glDeleteBuffers(1, &_ebo);
 
 		glDeleteVertexArrays(1, &_vao);
 	}
 
-	void Model::bind() const
+	void ModelWithNoIndice::bind() const
 	{
 		glBindVertexArray(_vao);
 	}
 
-	void Model::unbind() const
+	void ModelWithNoIndice::unbind() const
 	{
 		glBindVertexArray(0);
 	}
 
-	void Model::genVao()
+	void ModelWithNoIndice::genVao()
 	{
 		glGenVertexArrays(1, &_vao);
 	}
 
-	// {vertices, uvs, normals} -> {structVertices, indices}
-	void Model::createStructVertexAndIndice()
+	// {vertices, uvs, normals} -> {structVertices}
+	void ModelWithNoIndice::createStructVertex()
 	{
-		createVBOWithVertex(out_vertices, out_uvs, out_normals, out_indices, out_structVertexes);
+		Struct_Vertex tempVertexWithTexture;
+
+		for (int i = 0; i < out_vertices.size(); i++) {
+			tempVertexWithTexture.vertice = out_vertices[i];
+			tempVertexWithTexture.uv = out_uvs[i];
+			tempVertexWithTexture.normal = out_normals[i];
+			out_structVertexes.push_back(tempVertexWithTexture);
+		}
 	}
 
 	// {file} -> {vertices, uvs, normals}
-	bool Model::loadObjFile(const std::string &fileName)
+	bool ModelWithNoIndice::loadObjFile(const std::string &fileName)
 	{
 		bool res = loadOBJ(fileName.c_str(), out_vertices, out_uvs, out_normals);
 		if (!res) {
@@ -53,8 +59,8 @@ namespace RESOURCE
 		}
 	}
 
-	//{structVertices, indices} -> vbo, ebo
-	void Model::createVboEbo()
+	//{structVertices, indices} -> vbo
+	void ModelWithNoIndice::createVbo()
 	{
 		// VBO buffer bind
 		glGenBuffers(1, &_vbo);
@@ -68,10 +74,5 @@ namespace RESOURCE
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Struct_Vertex), (void*)(0));
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Struct_Vertex), (void*)(sizeof(float) * 3));
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Struct_Vertex), (void*)(sizeof(float) * 5));
-
-		// EBO buffer bind
-		glGenBuffers(1, &_ebo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, out_indices.size() * sizeof(out_indices[0]), out_indices.data(), GL_STATIC_DRAW);
 	}
 }

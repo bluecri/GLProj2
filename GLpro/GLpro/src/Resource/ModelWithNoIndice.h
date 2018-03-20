@@ -1,5 +1,5 @@
-#ifndef __MODEL_H__
-#define __MODEL_H__
+#ifndef __MODEL_WITH_NO_INDICE_H__
+#define __MODEL_WITH_NO_INDICE_H__
 
 #include <glm/glm.hpp>
 
@@ -11,38 +11,35 @@
 
 namespace RESOURCE
 {
-	class Model {
+	class ModelWithNoIndice {
 	public:
-		Model(const std::string &fileName);
-		virtual ~Model();
+		ModelWithNoIndice(const std::string &fileName);
+		virtual ~ModelWithNoIndice();
 
 		void bind() const;
 		void unbind() const;
 		void genVao();
 
 	protected:
-		Model() {};			// prevent to call empty constructor. Can called from child.
+		ModelWithNoIndice() {};			// prevent to call empty constructor. Can called from child.
 
 		std::vector<glm::vec3> out_vertices;
 		std::vector<glm::vec2> out_uvs;
 		std::vector<glm::vec3> out_normals;
 
-		virtual void createVboEbo();
-		void createStructVertexAndIndice();
+		virtual void createVbo();
 
 	private:
 
 		GLuint _vao;		//vertex array
-		GLuint _ebo;		//element buffer
 		GLuint _vbo;		//vertex buffer
 
 		std::vector<Struct_Vertex> out_structVertexes;
-		std::vector<unsigned short> out_indices;
 
+		void createStructVertex();
 		bool loadObjFile(const std::string &fileName);
 
 	};
 
 }
-
 #endif

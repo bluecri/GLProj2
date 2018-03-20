@@ -14,11 +14,11 @@ bool is_near(float v1, float v2) {
 };
 */
 bool getSimilarVertexIndex_fast(
-	Struct_VertexWithTexture & packed,
-	std::map<Struct_VertexWithTexture, unsigned short> & VertexToOutIndex,
+	Struct_Vertex & packed,
+	std::map<Struct_Vertex, unsigned short> & VertexToOutIndex,
 	unsigned short & result
 ) {
-	std::map<Struct_VertexWithTexture, unsigned short>::iterator it = VertexToOutIndex.find(packed);
+	std::map<Struct_Vertex, unsigned short>::iterator it = VertexToOutIndex.find(packed);
 	if (it == VertexToOutIndex.end()) {
 		return false;
 	}
@@ -28,7 +28,7 @@ bool getSimilarVertexIndex_fast(
 	}
 }
 
-void indexVBOWithTexture(
+void createVBOWithVertex(
 	std::vector<glm::vec3> & in_vertices,
 	std::vector<glm::vec2> & in_uvs,
 	std::vector<glm::vec3> & in_normals,
@@ -37,14 +37,14 @@ void indexVBOWithTexture(
 	//std::vector<glm::vec3> & out_vertices,
 	//std::vector<glm::vec2> & out_uvs,
 	//std::vector<glm::vec3> & out_normals
-	std::vector<Struct_VertexWithTexture> &outVertexVithTextureVec
+	std::vector<Struct_Vertex> &outVertexVithTextureVec
 ) {
-	std::map<Struct_VertexWithTexture, unsigned short> VertexToOutIndex;
+	std::map<Struct_Vertex, unsigned short> VertexToOutIndex;
 
 	// For each input vertex
 	for (unsigned int i = 0; i<in_vertices.size(); i++) {
 
-		Struct_VertexWithTexture packed = { in_vertices[i], in_uvs[i], in_normals[i] };
+		Struct_Vertex packed = { in_vertices[i], in_uvs[i], in_normals[i] };
 
 
 		// Try to find a similar vertex in out_XXXX
@@ -55,7 +55,7 @@ void indexVBOWithTexture(
 			out_indices.push_back(index);
 		}
 		else { // If not, it needs to be added in the output data.
-			Struct_VertexWithTexture tempVertexWithTexture;
+			Struct_Vertex tempVertexWithTexture;
 			tempVertexWithTexture.vertice = in_vertices[i];
 			tempVertexWithTexture.uv = in_uvs[i];
 			tempVertexWithTexture.normal = in_normals[i];
