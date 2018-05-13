@@ -17,5 +17,13 @@ namespace SHADER
 				m_textureID = glGetUniformLocation(m_shaderID, "myTextureSampler");
 			}
 		}
+
+		GLuint m_MVPMatrixID;
+		GLuint m_cameraViewMatrixID;
+		GLuint m_modelMatrixID;
+		GLuint m_depthBiasID;
+		GLuint m_shadowMapID;
+		GLuint m_lightInvDirID;
+		GLuint m_textureID;
 	};
 }

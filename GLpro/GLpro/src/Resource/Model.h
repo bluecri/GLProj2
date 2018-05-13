@@ -1,19 +1,16 @@
 #ifndef __MODEL_H__
 #define __MODEL_H__
 
-#include <glm/glm.hpp>
-
-#include "GL/glew.h"
-#include <string>
-
-#include "../../3rdParty/ObjectLoader/objectLoader.h"
-#include "../../3rdParty/ObjectLoader/vboindexer.h"
+#include "../../stdafx.h"
 
 namespace RESOURCE
 {
-	class Model {
+	class Model 
+	{
 	public:
-		Model(const std::string &fileName);
+		Model(const std::string &fileName, bool createEbo = true);
+		Model(std::vector<glm::vec3> &vertices, std::vector<glm::vec2> & uvs, std::vector<glm::vec3> &normals, bool createEbo = false);
+
 		virtual ~Model();
 
 		void bind() const;
@@ -21,20 +18,21 @@ namespace RESOURCE
 		void genVao();
 
 	protected:
-		Model() {};			// prevent to call empty constructor. Can called from child.
+		
+		std::vector<glm::vec3> _out_vertices;
+		std::vector<glm::vec2> _out_uvs;
+		std::vector<glm::vec3> _out_normals;
 
-		std::vector<glm::vec3> out_vertices;
-		std::vector<glm::vec2> out_uvs;
-		std::vector<glm::vec3> out_normals;
-
-		virtual void createVboEbo();
+		virtual void createVboOrEbo(bool createEbo);
+		void createStructVertex();
 		void createStructVertexAndIndice();
 
 	private:
+		GLuint	_vao;		//vertex array
 
-		GLuint _vao;		//vertex array
-		GLuint _ebo;		//element buffer
-		GLuint _vbo;		//vertex buffer
+		bool	_bEbo;		// whether using ebo
+		GLuint	_ebo;		//element buffer
+		GLuint	_vbo;		//vertex buffer
 
 		std::vector<Struct_Vertex> out_structVertexes;
 		std::vector<unsigned short> out_indices;

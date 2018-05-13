@@ -8,14 +8,16 @@ namespace CONTROL
 		_bOnceEnd = false;
 	}
 
-	void ControlOnce::checkKeyInput(GLFWwindow * pWindow)
+	bool ControlOnce::checkKeyInput(GLFWwindow * pWindow)
 	{
 		if (glfwGetKey(pWindow, _glfwKeyNum) == GLFW_PRESS) {
 			setBTrigger(true);
+			return true;
 		}
 		else {
 			_bOnceEnd = false;
 			setBTrigger(false);
+			return false;
 		}
 	}
 

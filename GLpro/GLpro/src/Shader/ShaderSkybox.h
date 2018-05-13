@@ -6,8 +6,9 @@ namespace SHADER
 	class ShaderSkybox : public ShaderObj
 	{
 	public:
-		ShaderSkybox(const char * vertexShader, const char * fragmentShader) : ShaderObj(vertexShader, fragmentShader) {
-
+		ShaderSkybox(const char * vertexShader, const char * fragmentShader)
+			: ShaderObj(vertexShader, fragmentShader)
+		{
 			if (m_shaderID != -1)
 			{
 				m_textureID = glGetUniformLocation(m_shaderID, _NameTextureSampler);
@@ -16,6 +17,11 @@ namespace SHADER
 				m_modelMatrixID = glGetUniformLocation(m_shaderID, _NameM);
 			}
 		}
+
+		GLuint m_textureID;
+		GLuint m_MVPMatrixID;
+		GLuint m_cameraViewMatrixID;
+		GLuint m_modelMatrixID;
 
 	private:
 		const char * _NameTextureSampler = "myTextureSampler";

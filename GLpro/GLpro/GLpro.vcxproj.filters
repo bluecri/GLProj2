@@ -58,6 +58,18 @@
     <Filter Include="소스 파일\src\renderTarget\skybox">
       <UniqueIdentifier>{87ce1b31-d454-4f86-99fe-ff974e8b5cc5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\src\camera">
+      <UniqueIdentifier>{ea747bb8-f27b-4298-b4c9-d6aba16833cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\renderTarget\normal">
+      <UniqueIdentifier>{1dbb7aa7-ce0f-4e01-8a75-24702959b055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\preComplie">
+      <UniqueIdentifier>{66753c7b-7a26-4a64-9259-f291b80c1b37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights">
+      <UniqueIdentifier>{1a71e95d-a002-4b35-88ed-fd5f281ad41c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -71,9 +83,6 @@
     </ClCompile>
     <ClCompile Include="src\Transform.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\ShaderLoader\shader.cpp">
-      <Filter>소스 파일\3rd</Filter>
     </ClCompile>
     <ClCompile Include="src\Control\Control.cpp">
       <Filter>소스 파일\src\control</Filter>
@@ -93,18 +102,6 @@
     <ClCompile Include="src\Player\Player.cpp">
       <Filter>소스 파일\src\Player</Filter>
     </ClCompile>
-    <ClCompile Include="src\Shader\ShaderText.cpp">
-      <Filter>소스 파일\src\shader</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\ObjectLoader\objectLoader.cpp">
-      <Filter>소스 파일\3rd</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\ObjectLoader\vboindexer.cpp">
-      <Filter>소스 파일\3rd</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\TextureLoader\textureLoader.cpp">
-      <Filter>소스 파일\3rd</Filter>
-    </ClCompile>
     <ClCompile Include="src\Resource\Model.cpp">
       <Filter>소스 파일\src\Resource</Filter>
     </ClCompile>
@@ -117,14 +114,47 @@
     <ClCompile Include="src\Resource\TextureManager.cpp">
       <Filter>소스 파일\src\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="src\Resource\ModelFromNotFile.cpp">
-      <Filter>소스 파일\src\Resource</Filter>
+    <ClCompile Include="src\TransformBuilder.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\Resource\ModelWithNoIndice.cpp">
-      <Filter>소스 파일\src\Resource</Filter>
+    <ClCompile Include="src\Camera\Camera.cpp">
+      <Filter>소스 파일\src\camera</Filter>
     </ClCompile>
-    <ClCompile Include="src\RenderTarget\Skybox\SkyboxRenderTarget.cpp">
+    <ClCompile Include="src\Camera\CameraManager.cpp">
+      <Filter>소스 파일\src\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera\CameraBuilder.cpp">
+      <Filter>소스 파일\src\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Render\RSkybox.cpp">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일\preComplie</Filter>
+    </ClCompile>
+    <ClCompile Include="src\3rdParty\ObjectLoader\objectLoader.cpp">
+      <Filter>소스 파일\3rd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\3rdParty\ObjectLoader\vboindexer.cpp">
+      <Filter>소스 파일\3rd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\3rdParty\ShaderLoader\shader.cpp">
+      <Filter>소스 파일\3rd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\3rdParty\TextureLoader\textureLoader.cpp">
+      <Filter>소스 파일\3rd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderTarget\Skybox\SkyboxTexture.cpp">
       <Filter>소스 파일\src\renderTarget\skybox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderTarget\Normal\NormalFObj.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Render\RNormal.cpp">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,21 +206,6 @@
     <ClInclude Include="src\Shader\ShaderText.h">
       <Filter>소스 파일\src\shader</Filter>
     </ClInclude>
-    <ClInclude Include="3rdParty\ShaderLoader\shader.h">
-      <Filter>소스 파일\3rd</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\ObjectLoader\objectLoader.h">
-      <Filter>소스 파일\3rd</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\ObjectLoader\vboindexer.h">
-      <Filter>소스 파일\3rd</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\ObjectLoader\Vertex.h">
-      <Filter>소스 파일\3rd</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\TextureLoader\textureLoader.h">
-      <Filter>소스 파일\3rd</Filter>
-    </ClInclude>
     <ClInclude Include="src\Resource\Model.h">
       <Filter>소스 파일\src\Resource</Filter>
     </ClInclude>
@@ -206,26 +221,8 @@
     <ClInclude Include="src\Render\RSkybox.h">
       <Filter>소스 파일\src\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Render\RObjectWithTexture.h">
-      <Filter>소스 파일\src\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="src\Shader\ShaderHeader.h">
       <Filter>소스 파일\src\shader</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Resource\ModelFromNotFile.h">
-      <Filter>소스 파일\src\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Resource\ModelWithNoIndice.h">
-      <Filter>소스 파일\src\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Render\RInterface.h">
-      <Filter>소스 파일\src\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Render\RLocator.h">
-      <Filter>소스 파일\src\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RenderTarget\Skybox\SkyboxRenderTarget.h">
-      <Filter>소스 파일\src\renderTarget\skybox</Filter>
     </ClInclude>
     <ClInclude Include="src\RenderTarget\Skybox\SkyboxModel.h">
       <Filter>소스 파일\src\renderTarget\skybox</Filter>
@@ -236,11 +233,50 @@
     <ClInclude Include="src\RenderTarget\Skybox\SkyboxFObj.h">
       <Filter>소스 파일\src\renderTarget\skybox</Filter>
     </ClInclude>
-    <ClInclude Include="src\FObj.h">
+    <ClInclude Include="src\Control\InputAction.h">
+      <Filter>소스 파일\src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TransfromBuilder.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\TransformBuilder.h">
-      <Filter>소스 파일</Filter>
+    <ClInclude Include="src\Camera\Camera.h">
+      <Filter>소스 파일\src\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera\CameraManager.h">
+      <Filter>소스 파일\src\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera\CameraBuilder.h">
+      <Filter>소스 파일\src\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderTarget\Normal\NormalFObj.h">
+      <Filter>소스 파일\src\renderTarget\normal</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>소스 파일\preComplie</Filter>
+    </ClInclude>
+    <ClInclude Include="src\3rdParty\ObjectLoader\objectLoader.h">
+      <Filter>소스 파일\3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\3rdParty\ObjectLoader\vboindexer.h">
+      <Filter>소스 파일\3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\3rdParty\ObjectLoader\Vertex.h">
+      <Filter>소스 파일\3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\3rdParty\ShaderLoader\shader.h">
+      <Filter>소스 파일\3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\3rdParty\TextureLoader\textureLoader.h">
+      <Filter>소스 파일\3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Render\RNormal.h">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>소스 파일\src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>소스 파일\src\lights</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

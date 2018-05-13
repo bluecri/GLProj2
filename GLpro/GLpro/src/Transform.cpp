@@ -1,9 +1,10 @@
 #include "Transform.h"
 
-Transform::Transform(const glm::mat4 &modelMatrix, const glm::mat4 &rotateMatrix, const glm::mat4 &scaleMatrix, int &type, Transform *childTransform) : Entity(type) {
-	_modelMatrix = modelMatrix;
-	_rotateMatrix = rotateMatrix;
-	_scaleMatrix = scaleMatrix;
+Transform::Transform(int entityID, const glm::mat4 &modelMatrix, const glm::mat4 &rotateMatrix, const glm::mat4 &scaleMatrix) 
+	: _entityID(entityID), _modelMatrix(modelMatrix), _rotateMatrix(_rotateMatrix), _scaleMatrix(_scaleMatrix)
+{
+	_parentTransformPtr = nullptr;
+	_childTransformPtrList = std::list<Transform*>();
 }
 
 const glm::mat4& Transform::getModelMatrixConstRef() const
@@ -14,6 +15,12 @@ const glm::mat4& Transform::getModelMatrixConstRef() const
 glm::mat4 Transform::getModelMatrix() const
 {
 	return _modelMatrix;
+}
+
+glm::vec3 Transform::getModelVec() const
+{
+	glm::vec3 ret = _modelMatrix[3];
+	return ret;
 }
 
 const glm::mat4 & Transform::getRotationMatrixConstRef() const
@@ -76,6 +83,15 @@ void Transform::setRotationMatrix(const glm::quat &quat)
 	_rotateMatrix = glm::toMat4(quat);
 }
 
+void Transform::setMVMatrixLookat(const glm::vec3 & lookat, const glm::vec3 & up)
+{
+	glm::vec3 modelVec = _modelMatrix[3];
+	_rotateMatrix = glm::lookAt(modelVec, modelVec + lookat, up);
+	_rotateMatrix[3][0] = 0;
+	_rotateMatrix[3][1] = 0;
+	_rotateMatrix[3][2] = 0;
+}
+
 void Transform::accModelMatrix(const glm::mat4 &modelMat)
 {
 	_modelMatrix[3][0] += modelMat[3][0];
@@ -113,4 +129,62 @@ void Transform::accScaleMatrix(const glm::vec3 &scaleVec)
 void Transform::accRotationMatrix(const glm::quat &quat)
 {
 	glm::toMat4(quat) * _rotateMatrix;
+}
+
+Transform * Transform::getParentTransformPtr()
+{
+	return _parentTransformPtr;
+}
+
+Transform * Transform::getChildTransformWithID(int id)
+{
+	for (auto elem : _childTransformPtrList)
+	{
+		if (elem->_entityID == id)
+		{
+			return elem;
+		}
+	}
+	return nullptr;
+
+}
+
+Transform * Transform::detachParentTransform()
+{
+	Transform* ret = _parentTransformPtr;
+	ret->detachChildTransformWithID(_entityID);
+	return ret;
+}
+
+Transform * Transform::detachChildTransformWithID(int id)
+{
+	auto it = std::find_if(_childTransformPtrList.begin(), _childTransformPtrList.end(), [id](const Transform* &elem) {
+		return elem->GetEntityID() == id;
+	});
+
+	if (it != _childTransformPtrList.end())
+	{
+		auto ret = (*it);
+		
+		(*it)->_parentTransformPtr = nullptr;
+		_childTransformPtrList.erase(it);
+
+		return ret;
+	}
+	
+	return nullptr;
+}
+
+
+void Transform::attachParentTransform(Transform * parentTransform)
+{
+	parentTransform->attachChildTransform(this);
+	return;
+}
+
+void Transform::attachChildTransform(Transform * childTransform)
+{
+	_childTransformPtrList.push_back(childTransform);
+	childTransform->_parentTransformPtr = this;
+	return;
 }

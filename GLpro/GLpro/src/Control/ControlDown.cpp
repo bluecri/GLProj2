@@ -7,11 +7,13 @@ namespace CONTROL
 		_glfwKeyNum = glfw_key_num;
 	}
 
-	void ControlDown::checkKeyInput(GLFWwindow* pWindow)
+	bool ControlDown::checkKeyInput(GLFWwindow* pWindow)
 	{
 		if (glfwGetKey(pWindow, _glfwKeyNum) == GLFW_PRESS) {
 			setBTrigger(true);
+			return true;
 		}
+		return false;
 	}
 
 	bool ControlDown::isKeyON()

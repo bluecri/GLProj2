@@ -1,8 +1,20 @@
-#include "InputManager.h"
-#include "ControlDown.h"
-#include "ControlOnce.h"
+#include "./InputManager.h"
 
 namespace CONTROL {
+	void InputManager::keyUpdate(GLFWwindow* window)
+	{
+		int idx = 0;
+		std::for_each(updateControlVec.begin(), updateControlVec.end(), [&](Control* elem) {
+			if (elem->checkKeyInput(window)) {
+				s_bitKeyState |= (1 << idx);
+				++idx;
+			}
+			else {
+				s_bitKeyState &= ~(1 << idx);
+				++idx;
+			}
+		});
+	}
 	void InputManager::init()
 	{
 		// Init key or mouse down check

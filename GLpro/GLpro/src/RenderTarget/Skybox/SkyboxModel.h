@@ -1,11 +1,7 @@
 #ifndef __SKYBOX_VERTEX_GROUP__H__
 #define __SKYBOX_VERTEX_GROUP__H__
 
-#include <glm/glm.hpp>
-
-#include <vector>
-
-#include "../../Resource/ModelWithNoIndiceNoFile.h"
+#include "../../Resource/Model.h"
 /*
 skybox vertex group : has distance and ModelWithNoIndiceNoFile.
 */
@@ -17,7 +13,7 @@ namespace RENDER_TARGET
 		{
 		public:
 			float _skybox_distance;
-			RESOURCE::ModelWithNoIndiceNoFile *_skbModel;
+			RESOURCE::Model *_skbModel;
 
 			std::vector<glm::vec3> _skyboxVertices;
 			std::vector<glm::vec2> _skyboxUVs;
@@ -79,9 +75,10 @@ namespace RENDER_TARGET
 					_skyboxNormals.push_back = skyboxNormals[i / 4];
 				}
 
-				_skbModel = new RESOURCE::ModelWithNoIndiceNoFile(_skyboxVertices, _skyboxUVs, _skyboxNormals);
+				_skbModel = new RESOURCE::Model;
+				_skbModel->init(_skyboxVertices, _skyboxUVs, _skyboxNormals, false);
 			}
-		}
+		};
 	}
-};
+}
 #endif

@@ -11,8 +11,8 @@ namespace CONTROL
 		ControlOnce(int glfw_key_num);
 		virtual ~ControlOnce() {};
 
-		void checkKeyInput(GLFWwindow* pWindow);
-		bool isKeyON();
+		virtual bool checkKeyInput(GLFWwindow* pWindow);
+		virtual bool isKeyON();
 
 	private:
 		int _glfwKeyNum;

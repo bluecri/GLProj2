@@ -1,85 +1,42 @@
 #ifndef __R_SKYBOX_H__
 #define __R_SKYBOX_H__
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "../../stdafx.h"
 
-#include "./RInterface.h"
-#include "../RenderTarget/Skybox/SkyboxRenderTarget.h"
-#include "../Shader/ShaderObj.h"
+namespace SHADER { class ShaderSkybox; }
+namespace RENDER_TARGET { namespace SKYBOX { class SkyboxFObj; } }
 
-#include <string>
+class RigidbodyComponent;
+class Camera;
 
-class RSkybox
+using RSkyboxElement	= std::pair<RENDER_TARGET::SKYBOX::SkyboxFObj*, RigidbodyComponent*>;
+using RSkyboxContainer	= std::list<RSkyboxElement>;
+
+namespace RENDER 
 {
-public:
-	RSkybox(SHADER::ShaderObj* shaderObj)
+	class RSkybox
 	{
-		_shaderObj = shaderObj;
-	}
-	virtual ~RSkybox() {};
-	void skyboxUpdate()
-	{
-		//TODO : move skybox model
-	}
-	void update(RENDER_TARGET::SKYBOX::SkyboxRenderTarget &skyboxRenderTarget) {
+	public:
+		RSkybox(SHADER::ShaderSkybox* shaderObj, float div = 1.1f);
+		virtual ~RSkybox() {};
 
-	}
-	void draw(const RENDER_TARGET::SKYBOX::SkyboxRenderTarget &skyboxRenderTarget) {
-		_shaderObj->bind();
+		RSkyboxElement* addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj, RigidbodyComponent* rigidComponent);
 
-		glm::mat4 tempMVP = m_ProjectionMatrix * m_viewMatrix * m_modelMatrix;
+		void update(CAMERA::Camera* cam);	//shader target camera update
 
-		_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, m_modelMatrix);
-		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, m_viewMatrix);
-		_shaderObj->loadMatrix4(_shaderObj->m_MVPMatrixID, tempMVP);
+		void draw();
 
-		glDepthMask(GL_FALSE);
-		_skyboxRenderTarget->skbModel->bind();	// model bind
+		virtual void chageShader(SHADER::ShaderSkybox* other);
 
-		glActiveTexture(GL_TEXTURE0);
-		for (int i = 0; i < 6; i++)
-		{
-			_skyboxRenderTarget->skbTexture->bind(i);
-			_shaderObj->loadInt(_shaderObj->m_textureID, 0);	//glUniform1i(shaderSkyboxVec[selectedSkyboxShaderIdx]->m_textureID, 0);
-			glDrawArrays(GL_TRIANGLE_STRIP, i * 4, 4);
-			_skyboxRenderTarget->skbTexture->unbind(i);
-		}
-		_skyboxRenderTarget->skbModel->unbind();
-		glDepthMask(GL_TRUE);
-	}
+		virtual SHADER::ShaderObj* getShader() const;
 
+	private:
+		SHADER::ShaderSkybox* _shaderObj;
+		CAMERA::Camera *_targetCamera;
 
-private:
-	SHADER::ShaderObj* _shaderObj;
-};
+		float _div = 1.1f;
 
+		RSkyboxContainer _skyboxFobjcetContainer;
+	};
+}
 #endif
-
-/*
-		void setUniformModelMatrix(glm::mat4 &modelMatrix) {
-			m_modelMatrix = modelMatrix;
-		}
-		void setUniformModelMatrixWithDivide(glm::mat4 &modelMatrix, float div) {
-			m_modelMatrix = modelMatrix;
-			m_modelMatrix[3][0] /= div;
-			m_modelMatrix[3][1] /= div;
-			m_modelMatrix[3][2] /= div;
-		}
-
-		void setUniformViewMatrix(glm::mat4 &viewMatrix) {
-			m_viewMatrix = viewMatrix;
-		}
-		void setUniformProjectionMatrix(glm::mat4 &projectionMatrix) {
-			m_ProjectionMatrix = projectionMatrix;
-		}
-
-		~SkyboxObjManager() {
-			for (int i = 0; i < skyboxObjStorageVec.size(); i++) {
-				delete skyboxObjStorageVec[i];
-			}
-			for (int i = 0; i < shaderSkyboxVec.size(); i++) {
-				delete shaderSkyboxVec[i];
-			}
-		}
-		*/

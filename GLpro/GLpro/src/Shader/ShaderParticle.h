@@ -3,9 +3,12 @@
 
 namespace SHADER
 {
-	class ShaderParticle : public ShaderObj {
+	class ShaderParticle : public ShaderObj
+	{
 	public:
-		ShaderParticle(const char * vertexShader, const char * fragmentShader) : ShaderObj(vertexShader, fragmentShader) {
+		ShaderParticle(const char * vertexShader, const char * fragmentShader)
+			: ShaderObj(vertexShader, fragmentShader) 
+		{
 			if (m_shaderID != -1) {
 				m_textureID = glGetUniformLocation(m_shaderID, _NameTextureSampler);
 
@@ -15,6 +18,12 @@ namespace SHADER
 
 			}
 		}
+
+		GLuint m_textureID;
+		GLuint m_cameraRight_worldspace_ID;
+		GLuint m_cameraUp_worldspace_ID;
+		GLuint m_viewProjMatrixID;
+
 	private:
 		const char * _NameTextureSampler = "myTextureSampler";
 		const char * _NameCamRight = "CameraRight_worldspace";

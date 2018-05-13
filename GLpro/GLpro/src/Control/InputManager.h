@@ -2,6 +2,12 @@
 #define __INPUTMANAGER_H__
 
 #include "./Control.h"
+#include "./ControlDown.h"
+#include "./ControlOnce.h"
+
+#include <algorithm>
+
+class FObj;
 
 namespace CONTROL 
 {
@@ -10,17 +16,8 @@ namespace CONTROL
 		public:
 			InputManager() {};
 			virtual ~InputManager() {};
-			enum ENUM_BEHAVIOR {
-				MOVE_LEFT = 0,
-				MOVE_RIGHT,
-				MOVE_UP,
-				MOVE_DOWN,
-				CLICK_L_ONCE,
-				CLICK_R_ONCE,
-				CLICK_L_DOWN,
-				CLICK_R_DOWN,
-				ENUM_BEHAVIOR_SIZE
-			};
+
+			void keyUpdate(GLFWwindow* window);		// Do Key State Update
 		private:
 			std::vector<Control*> updateControlVec = std::vector<Control*>(ENUM_BEHAVIOR_SIZE, nullptr);	// Target to update controls
 			void init();
