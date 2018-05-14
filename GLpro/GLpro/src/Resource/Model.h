@@ -17,6 +17,9 @@ namespace RESOURCE
 		void unbind() const;
 		void genVao();
 
+		int getGLCount();
+		bool isEBO();
+
 	protected:
 		
 		std::vector<glm::vec3> _out_vertices;

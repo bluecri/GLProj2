@@ -1,5 +1,5 @@
 #include "./TransfromBuilder.h"
-
+/*
 TransformBuilder::TransformBuilder() {
 	_modelMatrix = glm::mat4();
 	_rotateMatrix = glm::mat4();
@@ -32,6 +32,7 @@ Transform& TransformBuilder::setScaleMat(const glm::vec3 &scaleVec) {
 	_scaleMatrix = glm::scale(glm::mat4(), scaleVec);
 }
 
+/*
 Transform& TransformBuilder::addChildTrnasform(Transform *childTransform) {
 	_childTransformPtrList.push_back(childTransform);
 	//childTransform->_parentTransformPtr = this;
@@ -43,10 +44,13 @@ Transform& TransformBuilder::addParentTrnasform(Transform *parentTransform) {
 }
 
 Transform* TransformBuilder::constructPtr() {
-	Transform * ret = new Transform(_modelMatrix, _rotateMatrix, _scaleMatrix, _parentTransformPtr, _childTransformPtrList);
+	//Transform * ret = new Transform(_modelMatrix, _rotateMatrix, _scaleMatrix, _parentTransformPtr, _childTransformPtrList);
+	Transform * ret = new Transform(_modelMatrix, _rotateMatrix, _scaleMatrix);
 	ret->attachParentTransform(_parentTransformPtr);	//attach parent
 
 	std::for_each(_childTransformPtrList.begin(), _childTransformPtrList.end(), [=](Transform* childPtr) {
 		ret->attachChildTransform(childPtr);
 	});
 }
+
+*/

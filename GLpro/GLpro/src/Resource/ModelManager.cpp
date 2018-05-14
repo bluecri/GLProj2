@@ -8,7 +8,7 @@ namespace RESOURCE
 	{
 		std::for_each(_mapModelWithFileName.begin(), _mapModelWithFileName.end(), [](auto &elem)
 		{
-			delete elem->second;
+			delete elem.second;
 		});
 	};
 
@@ -28,7 +28,6 @@ namespace RESOURCE
 
 		return makeNewModel;
 	};
-
-	ModelManager* GModelManager = nullptr;
-
 }
+
+RESOURCE::ModelManager* GModelManager = nullptr;

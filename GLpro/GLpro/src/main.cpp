@@ -9,9 +9,10 @@
 
 int main() {
 
-	GModelManager = new RESOURCE::ModelManager();
-	GTextureManager = new RESOURCE::TextureManager();
-	GLightManager = new LightManager();
-	GCameraManager = new CAMERA::CameraManager();
+	//GModelManager = new RESOURCE::ModelManager();
+	//GTextureManager = new RESOURCE::TextureManager();
+	//GLightManager = new LightManager();
+	//GCameraManager = new CAMERA::CameraManager();
+
 	return 0;
 }

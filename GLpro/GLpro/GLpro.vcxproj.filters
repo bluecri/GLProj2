@@ -70,6 +70,9 @@
     <Filter Include="소스 파일\src\lights">
       <UniqueIdentifier>{1a71e95d-a002-4b35-88ed-fd5f281ad41c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\components">
+      <UniqueIdentifier>{73886d1b-7ee0-4aa6-be10-07f6e4cdc076}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -154,6 +157,15 @@
       <Filter>소스 파일\src\renderer</Filter>
     </ClCompile>
     <ClCompile Include="LightManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidbodyComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderTarget\Skybox\SkyboxModel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\ShaderObj.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -277,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="DirectionalLight.h">
       <Filter>소스 파일\src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidbodyComponent.h">
+      <Filter>소스 파일\components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

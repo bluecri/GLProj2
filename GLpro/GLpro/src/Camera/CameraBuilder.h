@@ -1,25 +1,27 @@
 #ifndef __CAMERA_BUILDER_H__
 #define __CAMERA_BUILDER_H__
 
-#include "./Camera.h"
-#include "../TransfromBuilder.h"
+#include <string>
+
+namespace CAMERA { class Camera; };
+
 
 namespace CAMERA
 {
 	class CameraBuilder
 	{
 	public:
-		CameraBuilder(Transform *transform);
+		CameraBuilder(std::string& name, int type);
 
 		Camera* constructPtr();
-		Camera& setFov(float fov, float horizontalFov, float verticalFov);
-		Camera& setFrustrum(float frontFrustrum, float backFrustrum);
-		Camera& setSpeed(int moveSpeed, int mouseSpeed);
-		Camera& setIsProjection(bool isProjection);
+		CameraBuilder& setFov(float fov, float horizontalFov, float verticalFov);
+		CameraBuilder& setFrustrum(float frontFrustrum, float backFrustrum);
+		CameraBuilder& setSpeed(float moveSpeed, float mouseSpeed);
+		CameraBuilder& setIsProjection(bool isProjection);
 
 	private:
-		Transform * _camTransform;
-		glm::mat4 _camProjMat;
+		std::string& _name;
+		int _type;
 		bool _bProjection = true;
 
 		float _speed; // 3.0f == 3 units / second

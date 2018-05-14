@@ -1,15 +1,12 @@
 #pragma once
 
-class Transform;
 class Entity;
+class Transform;
 
 class RigidbodyComponent
 {
 public:
-	RigidbodyComponent(Entity* bindedEntity) : _bindedEntity(bindedEntity) 
-	{
-		_transform = new Transform(_bindedEntity->getID());
-	};
+	RigidbodyComponent(Entity* bindedEntity);
 	virtual ~RigidbodyComponent()
 	{
 		// todo : delete´Â _bindedEntity ¿¡¼­..

@@ -18,6 +18,8 @@ public:
 
 	int GetEntityID() const {	return _entityID; };
 	
+	virtual glm::mat4 getTotalMat() const;
+
 	// model mat
 	virtual const glm::mat4& getModelMatrixConstRef() const;
 	virtual glm::mat4 getModelMatrix() const;

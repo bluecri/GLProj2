@@ -1,16 +1,21 @@
 #ifndef __R_SKYBOX_H__
 #define __R_SKYBOX_H__
 
-#include "../../stdafx.h"
+#include <list>
+#include <utility>
 
-namespace SHADER { class ShaderSkybox; }
+namespace SHADER {
+	class ShaderSkybox; 
+	class ShaderObj;
+}
 namespace RENDER_TARGET { namespace SKYBOX { class SkyboxFObj; } }
+namespace CAMERA { class Camera; }
 
 class RigidbodyComponent;
 class Camera;
 
-using RSkyboxElement	= std::pair<RENDER_TARGET::SKYBOX::SkyboxFObj*, RigidbodyComponent*>;
-using RSkyboxContainer	= std::list<RSkyboxElement>;
+using RSkyboxDrawElement	= std::pair<RENDER_TARGET::SKYBOX::SkyboxFObj*, RigidbodyComponent*>;
+using RSkyboxDrawElemContainer	= std::list<RSkyboxDrawElement*>;
 
 namespace RENDER 
 {
@@ -20,7 +25,7 @@ namespace RENDER
 		RSkybox(SHADER::ShaderSkybox* shaderObj, float div = 1.1f);
 		virtual ~RSkybox() {};
 
-		RSkyboxElement* addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj, RigidbodyComponent* rigidComponent);
+		RSkyboxDrawElement* addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj, RigidbodyComponent* rigidComponent);
 
 		void update(CAMERA::Camera* cam);	//shader target camera update
 
@@ -36,7 +41,7 @@ namespace RENDER
 
 		float _div = 1.1f;
 
-		RSkyboxContainer _skyboxFobjcetContainer;
+		RSkyboxDrawElemContainer _skyboxDrawElemContainer;
 	};
 }
 #endif

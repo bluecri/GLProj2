@@ -1,12 +1,45 @@
 #include "./CameraBuilder.h"
+#include "./Camera.h"
 
 namespace CAMERA
 {
-
-	CameraBuilder::CameraBuilder(Transform *transform)
+	CameraBuilder& CameraBuilder::setFov(float fov, float horizontalFov, float verticalFov)
 	{
-		_camTransform = transform;
-		_camProjMat;
+		_fov = fov;
+		_horizontalFovValue = horizontalFov;
+		_verticalFovValue = verticalFov;
+
+		return *this;
+	}
+
+
+
+	CameraBuilder& CameraBuilder::setFrustrum(float frontFrustrum, float backFrustrum)
+	{
+		_frontFrustrumValue = frontFrustrum;
+		_backFrustrumValue = backFrustrum;
+		return *this;
+	}
+
+	CameraBuilder& CameraBuilder::setSpeed(float moveSpeed, float mouseSpeed)
+	{
+		_speed = moveSpeed;
+		_mouseSpeed = mouseSpeed;
+		return *this;
+	}
+
+	CameraBuilder& CameraBuilder::setIsProjection(bool bProjection)
+	{
+		_bProjection = bProjection;
+		return *this;
+	}
+
+
+
+	CameraBuilder::CameraBuilder(std::string & name, int type) : _name(name)
+	{
+		_type = type;
+
 		_bProjection = true;
 
 		_speed = 0.1f; // 3.0f == 3 units / second
@@ -19,32 +52,8 @@ namespace CAMERA
 		_backFrustrumValue = 100.0f;	//100.0f
 	}
 
-	Camera& CameraBuilder::setFov(float fov, float horizontalFov, float verticalFov)
-	{
-		_fov = fov;
-		_horizontalFovValue = horizontalFov;
-		_verticalFovValue = verticalFov;
-	}
-
-	Camera& CameraBuilder::setFrustrum(float frontFrustrum, float backFrustrum)
-	{
-		_frontFrustrumValue = frontFrustrum;
-		_backFrustrumValue = backFrustrum;
-	}
-
-	Camera& CameraBuilder::setSpeed(int moveSpeed, int mouseSpeed)
-	{
-		_speed = moveSpeed;
-		_mouseSpeed = mouseSpeed;
-	}
-
-	Camera& CameraBuilder::setIsProjection(bool bProjection)
-	{
-		_bProjection = bProjection;
-	}
-
 	Camera* CameraBuilder::constructPtr()
 	{
-		return new Camera(_camTransform, _fov, _speed, _mouseSpeed, _horizontalFovValue, _verticalFovValue, _frontFrustrumValue, _backFrustrumValue);
+		return new Camera(_name, _type, _fov, _speed, _mouseSpeed, _horizontalFovValue, _verticalFovValue, _frontFrustrumValue, _backFrustrumValue);
 	}
 }

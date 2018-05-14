@@ -1,66 +1,78 @@
 #include "./RNormal.h"
+#include "../Camera/CameraManager.h"
 #include "../Camera/Camera.h"
+
 #include "../RenderTarget/Normal/NormalFObj.h"
 #include "../Shader/ShaderMain.h"
 #include "../../LightManager.h"
-#include "../Camera/CameraManager.h"
+
+#include "../Resource/Model.h"
+#include "../Resource/Texture.h"
+#include "../../RigidbodyComponent.h"
 
 namespace RENDER
 {
-	RNormal::RNormal(SHADER::ShaderMain * shaderObj, float div)
+	RNormal::RNormal(SHADER::ShaderMain * shaderObj)
 	{
 		_shaderObj = shaderObj;
 	}
 
-	void RNormal::addToDrawList(RENDER_TARGET::NORMAL::NormalFObj * skyboxFObj)
-	{
-		
-	}
 
 	void RNormal::draw()
 	{
 		glCullFace(GL_BACK);
 		_shaderObj->bind();
 
-		glm::mat4 modelMatrix = _targetCamera->getCamModelMatRef;
+		_targetCamera->updateRecentVPAndViewMat();
+		//glm::mat4 modelMatrix = _targetCamera->getCamModelMatRef;
 		glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
-		// move skybox shorter than real position
-		modelMatrix[3][0] /= _div;
-		modelMatrix[3][1] /= _div;
-		modelMatrix[3][2] /= _div;
+		
 
-		_shaderObj->loadVector3(_shaderObj->m_lightInvDirID, GLightManager->directionalLightVec[0].GetLightVec3());
-		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, GCameraManager->GetMainCamera()->getCamViewMatRef());
-		_shaderObj->loadMatrix4(_shaderObj->m_depthBiasID, GLightManager->directionalLightVec[0].GetDepthBiasMVP());
+		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, _targetCamera->getRecentViewMat());
+		_shaderObj->loadMatrix4(_shaderObj->m_depthBiasID, depthBiasMVP);
+		_shaderObj->loadVector3(_shaderObj->m_lightInvDirID, GLightManager->directionalLightVec[0].GetLightVec3());	// 1 light
 
-		glUniformMatrix4fv(shaderMainPtr->m_cameraViewMatrixID, 1, GL_FALSE, &m_viewMatrix[0][0]);
-		glUniformMatrix4fv(shaderMainPtr->m_depthBiasID, 1, GL_FALSE, &depthBiasMVP[0][0]);
+		// bind shadow texture
+		glActiveTexture(GL_TEXTURE1);
+		// todo : glBindTexture(GL_TEXTURE_2D, m_bufferManager->depthTexture);	// previous shadow texture
+		_shaderObj->loadInt(_shaderObj->m_shadowMapID, 1);
 
-		glm::mat4 tempMVP = _targetCamera->getCamProjMatRef() * _targetCamera->getCamViewMatRef() * modelMatrix;
-		_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, modelMatrix);
-		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, _targetCamera->getCamViewMatRef());
-		//_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, _camViewMatrix);
-		_shaderObj->loadMatrix4(_shaderObj->m_MVPMatrixID, tempMVP);
 
-		glDepthMask(GL_FALSE);
+		for (auto elem : _normalDrawElemContainer) {
+			RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = elem->first;
+			Transform* targetTransform = elem->second->_transform;
 
-		for (int i = 0; i < _normalFobjcetContainer.size(); i++) {
-			RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = _normalFobjcetContainer[i];
+			normalRenderTarget->_model->bind();		// Model buffer bind
 
-			normalRenderTarget->_model->bind();	// Model bind
+			glActiveTexture(GL_TEXTURE0);			// active texture #
+			normalRenderTarget->_texture->bind();	// real texture bind to #
+			_shaderObj->loadInt(_shaderObj->m_textureID, 0);	// set shader use for # shader
 
-			glActiveTexture(GL_TEXTURE0);
-			normalRenderTarget->_texture->bind();		// Texture bind
+			mat4 targetModelMat = targetTransform->getTotalMat();
+			mat4 mvpMat = _targetCamera->getRecentVPMat() * targetModelMat;
+			_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, targetModelMat);
+			_shaderObj->loadMatrix4(_shaderObj->m_MVPMatrixID, mvpMat);
 
-			_shaderObj->loadInt(_shaderObj->m_textureID, 0);	//glUniform1i(shaderSkyboxVec[selectedSkyboxShaderIdx]->m_textureID, 0);
-			glDrawArrays(GL_TRIANGLE_STRIP, i * 4, 4);
-			normalRenderTarget->_texture->unbind(i);
-
+			glDrawElements(
+				GL_TRIANGLES,      // mode
+				normalRenderTarget->_model->getGLCount(),    // count
+				GL_UNSIGNED_SHORT,   // type
+				(void*)0         // element array buffer offset
+			);
+			
+			normalRenderTarget->_texture->unbind();
 			normalRenderTarget->_model->unbind();
 		}
-		glDepthMask(GL_TRUE);
-		_shaderObj->unbind();
 
+		_shaderObj->unbind();
+	}
+
+	RNormalDrawElement* RNormal::addToDrawList(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent * rigidComponent)
+	{
+		// todo : elem에서 바로 제거 가능하도록 하는 container 생성
+		RNormalDrawElement* elem = new RNormalDrawElement(normalFObj, rigidComponent);
+		_normalDrawElemContainer.push_back(elem);
+		return elem;
 	}
 
 	void RNormal::update(CAMERA::Camera * cam)

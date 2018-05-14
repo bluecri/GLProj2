@@ -1,7 +1,7 @@
 #ifndef __SKYBOX_TEXTURE_GROUP_H__
 #define __SKYBOX_TEXTURE_GROUP_H__
 
-class RESOURCE::Texture;
+namespace RESOURCE { class Texture; }
 
 /*
 	skybox texture group : has 6 texture.

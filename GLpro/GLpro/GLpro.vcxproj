@@ -90,12 +90,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win32;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\Win32;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;openal32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win64;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\x64;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3dll.lib;glfw3.lib;opengl32.lib;openal32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -124,19 +125,20 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win32;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\Win32;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win64;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\x64;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;openal32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="LightManager.cpp" />
+    <ClCompile Include="RigidbodyComponent.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\objectLoader.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\vboindexer.cpp" />
     <ClCompile Include="src\3rdParty\ShaderLoader\shader.cpp" />
@@ -153,6 +155,7 @@
     <ClCompile Include="src\Player\Enemy.cpp" />
     <ClCompile Include="src\Player\Player.cpp" />
     <ClCompile Include="src\RenderTarget\Normal\NormalFObj.cpp" />
+    <ClCompile Include="src\RenderTarget\Skybox\SkyboxModel.cpp" />
     <ClCompile Include="src\RenderTarget\Skybox\SkyboxTexture.cpp" />
     <ClCompile Include="src\Render\RNormal.cpp" />
     <ClCompile Include="src\Render\RSkybox.cpp" />
@@ -160,6 +163,7 @@
     <ClCompile Include="src\Resource\ModelManager.cpp" />
     <ClCompile Include="src\Resource\Texture.cpp" />
     <ClCompile Include="src\Resource\TextureManager.cpp" />
+    <ClCompile Include="src\Shader\ShaderObj.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\TransformBuilder.cpp" />
     <ClCompile Include="src\window.cpp" />
@@ -170,6 +174,7 @@
   <ItemGroup>
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="LightManager.h" />
+    <ClInclude Include="RigidbodyComponent.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\objectLoader.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\vboindexer.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\Vertex.h" />

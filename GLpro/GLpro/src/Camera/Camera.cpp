@@ -21,6 +21,22 @@ namespace CAMERA {
 		_camProjMat = glm::perspective(glm::radians(_fov), _horizontalFovValue / _verticalFovValue, _frontFrustrumValue, _backFrustrumValue);
 	}
 
+	glm::mat4 & Camera::getRecentVPMat()
+	{
+		return _vpMatRecentUsed;
+	}
+
+	glm::mat4 & Camera::getRecentViewMat()
+	{
+		return _viewMatRecentUsed;
+	}
+
+	void Camera::updateRecentVPAndViewMat()
+	{
+		_viewMatRecentUsed = _rigidbodyComponent->_transform->getTotalMat();
+		_vpMatRecentUsed = _camProjMat * _viewMatRecentUsed;
+	}
+
 }
 
 

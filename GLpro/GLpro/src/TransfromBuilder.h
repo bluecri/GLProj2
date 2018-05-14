@@ -6,6 +6,7 @@
 class TransformBuilder
 {
 public:
+	/*
 	TransformBuilder();
 
 	Transform& setModelMat(const glm::mat4 &modelMat);
@@ -27,6 +28,7 @@ public:
 	Transform& setType(int type);
 
 	Transform* constructPtr();
+	*/
 
 private:
 	glm::mat4 _modelMatrix;

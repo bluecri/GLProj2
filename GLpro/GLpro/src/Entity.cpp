@@ -4,7 +4,7 @@
 
 int Entity::_sMaxID = 0;
 
-Entity::Entity(int type = 0) {
+Entity::Entity(int type) {
 	_ID = _sMaxID;
 	_name = std::to_string(_sMaxID);
 	_type = type;
@@ -13,7 +13,7 @@ Entity::Entity(int type = 0) {
 	++_sMaxID;
 }
 
-Entity::Entity(std::string name, int type = 0) {
+Entity::Entity(std::string name, int type) {
 	_ID = _sMaxID;
 	_name = name;
 	_type = type;

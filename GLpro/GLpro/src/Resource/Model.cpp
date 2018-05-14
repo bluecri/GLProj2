@@ -77,6 +77,23 @@ namespace RESOURCE
 		glGenVertexArrays(1, &_vao);
 	}
 
+	int Model::getGLCount()
+	{
+		if (_bEbo)
+		{
+			return out_indices.size();
+		}
+		else
+		{
+			return out_structVertexes.size();
+		}
+	}
+
+	bool Model::isEBO()
+	{
+		return _bEbo;
+	}
+
 	// {vertices, uvs, normals} -> {structVertices}
 	void Model::createStructVertex()
 	{
@@ -104,6 +121,7 @@ namespace RESOURCE
 			printf("%s load obj fail\n", fileName);
 			return false;
 		}
+		return true;
 	}
 
 	//{structVertices, indices} -> vbo, ebo

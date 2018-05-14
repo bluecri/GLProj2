@@ -8,7 +8,7 @@ namespace RESOURCE
 	{
 		std::for_each(_mapTexturesWithFileName.begin(), _mapTexturesWithFileName.end(), [](auto &elem)
 		{
-			delete elem->second;
+			delete elem.second;
 		});
 	}
 

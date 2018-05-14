@@ -7,6 +7,11 @@ Transform::Transform(int entityID, const glm::mat4 &modelMatrix, const glm::mat4
 	_childTransformPtrList = std::list<Transform*>();
 }
 
+glm::mat4 Transform::getTotalMat() const
+{
+	return _modelMatrix * _rotateMatrix * _scaleMatrix;
+}
+
 const glm::mat4& Transform::getModelMatrixConstRef() const
 {
 	return _modelMatrix;
@@ -158,7 +163,7 @@ Transform * Transform::detachParentTransform()
 
 Transform * Transform::detachChildTransformWithID(int id)
 {
-	auto it = std::find_if(_childTransformPtrList.begin(), _childTransformPtrList.end(), [id](const Transform* &elem) {
+	auto it = std::find_if(_childTransformPtrList.begin(), _childTransformPtrList.end(), [id](Transform* &elem) {
 		return elem->GetEntityID() == id;
 	});
 

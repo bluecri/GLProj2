@@ -36,10 +36,18 @@ namespace CAMERA
 
 		void SetWithLookAt(const glm::vec3 &lookat, const glm::vec3 &up)
 		{
-			_rigidbodyComponent->_transform->setRotationMatrixLookat(lookat, up);
+			_rigidbodyComponent->_transform->setMVMatrixLookat(lookat, up);
 		}
 
 		virtual ~Camera() {}
+
+		glm::mat4& getRecentVPMat();
+		glm::mat4& getRecentViewMat();
+		void updateRecentVPAndViewMat();
+
+	public:
+		glm::mat4 _vpMatRecentUsed;
+		glm::mat4 _viewMatRecentUsed;
 	};
 
 }

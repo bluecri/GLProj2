@@ -1,22 +1,23 @@
 #ifndef __TEXTURE_MANAGER_H__
 #define __TEXTURE_MANAGER_H__
 
-#include "../../stdafx.h"
+#include <map>
+#include <string>
 
-class Texture;
+namespace RESOURCE { class Texture; }
+using TextureElemContainer = std::map<std::string, RESOURCE::Texture*>;
 
 namespace RESOURCE
 {
 	class TextureManager
 	{
 	public:
-		//TODO : try to make unique_ptr texture ?
 		TextureManager() {};
 		virtual ~TextureManager();
 		Texture* getTextureWithFileName(const std::string &textureFileName, const std::string &type);
 		
 	private:
-		std::map<std::string, Texture*> _mapTexturesWithFileName;
+		TextureElemContainer _mapTexturesWithFileName;
 	};
 }
 
