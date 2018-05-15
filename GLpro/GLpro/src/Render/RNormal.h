@@ -3,6 +3,7 @@
 
 #include <list>
 #include <utility>
+#include <memory>
 
 namespace CAMERA { class Camera; }
 
@@ -12,7 +13,7 @@ namespace SHADER { class ShaderMain; }
 class RigidbodyComponent;
 
 using RNormalDrawElement = std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>;
-using RNormalDrawElemContainer = std::list<RNormalDrawElement*>;
+using RNormalDrawElemContainer = std::list<std::shared_ptr<RNormalDrawElement>>;
 
 namespace RENDER
 {
@@ -22,7 +23,7 @@ namespace RENDER
 			RNormal(SHADER::ShaderMain* shaderObj);
 			virtual ~RNormal() {};
 
-			RNormalDrawElement* addToDrawList(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent* rigidComponent);
+			std::shared_ptr<RNormalDrawElement> addToDrawList(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent* rigidComponent);
 
 			void update(CAMERA::Camera* cam);	//shader target camera update
 
@@ -32,7 +33,8 @@ namespace RENDER
 
 			virtual SHADER::ShaderMain* getShader() const;
 
-		private:
+			void destructor(std::shared_ptr<RNormalDrawElement> shared);
+	private:
 			SHADER::ShaderMain* _shaderObj;
 			CAMERA::Camera *_targetCamera;
 

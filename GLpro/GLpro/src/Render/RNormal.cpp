@@ -67,10 +67,9 @@ namespace RENDER
 		_shaderObj->unbind();
 	}
 
-	RNormalDrawElement* RNormal::addToDrawList(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent * rigidComponent)
+	std::shared_ptr<RNormalDrawElement> RNormal::addToDrawList(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent * rigidComponent)
 	{
-		// todo : elem에서 바로 제거 가능하도록 하는 container 생성
-		RNormalDrawElement* elem = new RNormalDrawElement(normalFObj, rigidComponent);
+		auto elem = std::make_shared<RNormalDrawElement>(normalFObj, rigidComponent);
 		_normalDrawElemContainer.push_back(elem);
 		return elem;
 	}
@@ -91,4 +90,17 @@ namespace RENDER
 		return _shaderObj;
 	}
 
+	void RNormal::destructor(std::shared_ptr<RNormalDrawElement> shared)
+	{
+		RNormalDrawElement* ptr = shared.get();
+		for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end();)
+		{
+			if ((*it).get() == ptr)
+			{
+				_normalDrawElemContainer.erase(it);
+				return;
+			}
+			++it;
+		}
+	}
 }

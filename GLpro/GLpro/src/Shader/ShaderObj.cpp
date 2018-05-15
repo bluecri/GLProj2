@@ -1,8 +1,11 @@
 #include "../../stdafx.h"
 #include "ShaderObj.h"
 
-SHADER::ShaderObj::ShaderObj(const char * vertexShader, const char * fragmentShader) {
+SHADER::ShaderObj::ShaderObj(const char * vertexShader, const char * fragmentShader)
+	: _keyStr(vertexShader)
+{
 	m_shaderID = LoadShaders(vertexShader, fragmentShader);
+	_keyStr.append(vertexShader);
 }
 
 SHADER::ShaderObj::~ShaderObj() { glDeleteProgram(m_shaderID); }
@@ -30,4 +33,9 @@ void SHADER::ShaderObj::loadVector3(GLuint location, const glm::vec3 & vector)
 void SHADER::ShaderObj::loadMatrix4(GLuint location, const glm::mat4 & matrix)
 {
 	glUniformMatrix4fv(location, 1, GL_FALSE, (GLfloat*)&matrix);
+}
+
+std::string & SHADER::ShaderObj::getKeyStr()
+{
+	return _keyStr;
 }

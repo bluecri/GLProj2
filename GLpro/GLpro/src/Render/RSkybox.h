@@ -3,6 +3,7 @@
 
 #include <list>
 #include <utility>
+#include <memory>
 
 namespace SHADER {
 	class ShaderSkybox; 
@@ -15,7 +16,7 @@ class RigidbodyComponent;
 class Camera;
 
 using RSkyboxDrawElement	= std::pair<RENDER_TARGET::SKYBOX::SkyboxFObj*, RigidbodyComponent*>;
-using RSkyboxDrawElemContainer	= std::list<RSkyboxDrawElement*>;
+using RSkyboxDrawElemContainer	= std::list<std::shared_ptr<RSkyboxDrawElement>>;
 
 namespace RENDER 
 {
@@ -25,7 +26,7 @@ namespace RENDER
 		RSkybox(SHADER::ShaderSkybox* shaderObj, float div = 1.1f);
 		virtual ~RSkybox() {};
 
-		RSkyboxDrawElement* addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj, RigidbodyComponent* rigidComponent);
+		std::shared_ptr<RSkyboxDrawElement> addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj, RigidbodyComponent* rigidComponent);
 
 		void update(CAMERA::Camera* cam);	//shader target camera update
 
@@ -35,6 +36,7 @@ namespace RENDER
 
 		virtual SHADER::ShaderObj* getShader() const;
 
+		void destructor(std::shared_ptr<RSkyboxDrawElement> shared);
 	private:
 		SHADER::ShaderSkybox* _shaderObj;
 		CAMERA::Camera *_targetCamera;

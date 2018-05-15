@@ -12,6 +12,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <tchar.h>
+#include <DbgHelp.h>
 
 #include <algorithm>
 #include <string.h>
@@ -66,9 +67,11 @@ using namespace google;
 #include "src/3rdParty/TextureLoader/textureLoader.h"
 #include "src/3rdParty/ShaderLoader/shader.h"
 
+// origin
+#include "./origin/FastSpinlock.h"
+#include "./origin/Exception.h"
 /*
-#include "origin\FastSpinlock.h"
-#include "origin\Exception.h"
+
 
 #include "protoGen/GetSource/PacketRecvHadler.h"
 #include "protoGen/GetSource/protoTypeEnum.h"

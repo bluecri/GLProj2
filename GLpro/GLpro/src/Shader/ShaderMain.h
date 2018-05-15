@@ -1,4 +1,6 @@
+#pragma once
 #include "./ShaderObj.h"
+
 namespace SHADER
 {
 	class ShaderMain : public ShaderObj 

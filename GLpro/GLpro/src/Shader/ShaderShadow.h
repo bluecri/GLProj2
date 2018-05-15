@@ -1,3 +1,4 @@
+#pragma once
 #include "./ShaderObj.h"
 
 namespace SHADER {

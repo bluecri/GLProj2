@@ -1,6 +1,8 @@
 #ifndef __SHADER_OBJ_H__
 #define __SHADER_OBJ_H__
 
+#include "../../stdafx.h"
+
 namespace SHADER
 {
 	class ShaderObj
@@ -19,8 +21,11 @@ namespace SHADER
 		void loadVector3(GLuint location, const glm::vec3& vector);
 		void loadMatrix4(GLuint location, const glm::mat4& matrix);
 
+		std::string& getKeyStr();
+
 	protected:
 		GLuint m_shaderID;
+		std::string _keyStr;
 	};
 
 }

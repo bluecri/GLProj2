@@ -61,9 +61,6 @@
     <Filter Include="소스 파일\src\camera">
       <UniqueIdentifier>{ea747bb8-f27b-4298-b4c9-d6aba16833cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\src\renderTarget\normal">
-      <UniqueIdentifier>{1dbb7aa7-ce0f-4e01-8a75-24702959b055}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\preComplie">
       <UniqueIdentifier>{66753c7b-7a26-4a64-9259-f291b80c1b37}</UniqueIdentifier>
     </Filter>
@@ -72,6 +69,15 @@
     </Filter>
     <Filter Include="소스 파일\components">
       <UniqueIdentifier>{73886d1b-7ee0-4aa6-be10-07f6e4cdc076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\Resource\Buffer">
+      <UniqueIdentifier>{2df57526-623d-4159-a954-7f2ce418cb32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\origin">
+      <UniqueIdentifier>{fac8985c-5a52-49aa-b565-77a0c3551c6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\shaders">
+      <UniqueIdentifier>{7b3e5204-1fb0-4796-8b8f-034ef7ef2f02}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -165,8 +171,35 @@
     <ClCompile Include="src\RenderTarget\Skybox\SkyboxModel.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\Shader\ShaderObj.cpp">
+    <ClCompile Include="TextFObj.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="origin\CircularBuffer.cpp">
+      <Filter>소스 파일\origin</Filter>
+    </ClCompile>
+    <ClCompile Include="origin\FastSpinlock.cpp">
+      <Filter>소스 파일\origin</Filter>
+    </ClCompile>
+    <ClCompile Include="RText.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\ShaderObj.cpp">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="origin\LockOrderChecker.cpp">
+      <Filter>소스 파일\origin</Filter>
+    </ClCompile>
+    <ClCompile Include="origin\ThreadLocal.cpp">
+      <Filter>소스 파일\origin</Filter>
+    </ClCompile>
+    <ClCompile Include="origin\Exception.cpp">
+      <Filter>소스 파일\origin</Filter>
+    </ClCompile>
+    <ClCompile Include="origin\MemoryPool.cpp">
+      <Filter>소스 파일\origin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -260,9 +293,6 @@
     <ClInclude Include="src\Camera\CameraBuilder.h">
       <Filter>소스 파일\src\camera</Filter>
     </ClInclude>
-    <ClInclude Include="src\RenderTarget\Normal\NormalFObj.h">
-      <Filter>소스 파일\src\renderTarget\normal</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>소스 파일\preComplie</Filter>
     </ClInclude>
@@ -293,5 +323,103 @@
     <ClInclude Include="RigidbodyComponent.h">
       <Filter>소스 파일\components</Filter>
     </ClInclude>
+    <ClInclude Include="src\RenderTarget\Normal\NormalFObj.h">
+      <Filter>소스 파일\src\renderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="TextFObj.h">
+      <Filter>소스 파일\src\renderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="RText.h">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBuffer.h">
+      <Filter>소스 파일\src\Resource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowBuffer.h">
+      <Filter>소스 파일\src\Resource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="origin\CircularBuffer.h">
+      <Filter>소스 파일\origin</Filter>
+    </ClInclude>
+    <ClInclude Include="origin\FastSpinlock.h">
+      <Filter>소스 파일\origin</Filter>
+    </ClInclude>
+    <ClInclude Include="origin\LockOrderChecker.h">
+      <Filter>소스 파일\origin</Filter>
+    </ClInclude>
+    <ClInclude Include="origin\ThreadLocal.h">
+      <Filter>소스 파일\origin</Filter>
+    </ClInclude>
+    <ClInclude Include="origin\Exception.h">
+      <Filter>소스 파일\origin</Filter>
+    </ClInclude>
+    <ClInclude Include="origin\MemoryPool.h">
+      <Filter>소스 파일\origin</Filter>
+    </ClInclude>
+    <ClInclude Include="origin\ObjectPool.h">
+      <Filter>소스 파일\origin</Filter>
+    </ClInclude>
+    <ClInclude Include="origin\SyncExecutable.h">
+      <Filter>소스 파일\origin</Filter>
+    </ClInclude>
+    <ClInclude Include="origin\TypeTraits.h">
+      <Filter>소스 파일\origin</Filter>
+    </ClInclude>
+    <ClInclude Include="origin\XTL.h">
+      <Filter>소스 파일\origin</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>소스 파일\src\lights</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\Shader\DepthRTT.fragmentshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\DepthRTT.vertexshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\Particle.fragmentshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\Particle.vertexshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\Passthrough.vertexshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\ShadowMapping.fragmentshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\ShadowMapping.vertexshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\ShadowMapping_SimpleVersion.fragmentshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\ShadowMapping_SimpleVersion.vertexshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\Simple.fragmentshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\Simple.vertexshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\SimpleTexture.fragmentshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\SkyboxMapping.fragmentshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\SkyboxMapping.vertexshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\TextVertexShader.fragmentshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\TextVertexShader.vertexshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -12,10 +12,10 @@ namespace RENDER
 		_div = div;
 	}
 
-	RSkyboxDrawElement* RSkybox::addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj, RigidbodyComponent* rigidComponent)
+
+	std::shared_ptr<RSkyboxDrawElement> RSkybox::addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj * skyboxFObj, RigidbodyComponent * rigidComponent)
 	{
-		// todo : elem에서 바로 제거 가능하도록 하는 container 생성
-		RSkyboxDrawElement* elem = new RSkyboxDrawElement(skyboxFObj, rigidComponent);
+		auto elem = std::make_shared<RSkyboxDrawElement>(skyboxFObj, rigidComponent);
 		_skyboxDrawElemContainer.push_back(elem);
 		return elem;
 	}
@@ -69,8 +69,24 @@ namespace RENDER
 	{
 		_shaderObj = other;
 	}
+
 	SHADER::ShaderObj* RSkybox::getShader() const
 	{
 		return _shaderObj;
 	}
+
+	void RSkybox::destructor(std::shared_ptr<RSkyboxDrawElement> shared)
+	{
+		RSkyboxDrawElement* ptr = shared.get();
+		for (auto it = _skyboxDrawElemContainer.begin(); it != _skyboxDrawElemContainer.end();)
+		{
+			if ((*it).get() == ptr)
+			{
+				_skyboxDrawElemContainer.erase(it);
+				return;
+			}
+			++it;
+		}
+	}
+	
 }
