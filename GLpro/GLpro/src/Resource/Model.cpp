@@ -17,7 +17,7 @@ namespace RESOURCE
 		}
 		else
 		{
-			createStructVertex();
+			createBuffer();
 		}
 
 		createVboOrEbo(_bEbo);
@@ -40,7 +40,7 @@ namespace RESOURCE
 		}
 		else
 		{
-			createStructVertex();
+			createBuffer();
 		}
 
 		createVboOrEbo(_bEbo);
@@ -85,7 +85,7 @@ namespace RESOURCE
 		}
 		else
 		{
-			return out_structVertexes.size();
+			return _vertices.size();
 		}
 	}
 
@@ -95,7 +95,7 @@ namespace RESOURCE
 	}
 
 	// {vertices, uvs, normals} -> {structVertices}
-	void Model::createStructVertex()
+	void Model::createBuffer()
 	{
 		Struct_Vertex tempVertexWithTexture;
 
@@ -103,14 +103,14 @@ namespace RESOURCE
 			tempVertexWithTexture.vertice = _out_vertices[i];
 			tempVertexWithTexture.uv = _out_uvs[i];
 			tempVertexWithTexture.normal = _out_normals[i];
-			out_structVertexes.push_back(tempVertexWithTexture);
+			_vertices.push_back(tempVertexWithTexture);
 		}
 	}
 
 	// {vertices, uvs, normals} -> {structVertices, indices}
 	void Model::createStructVertexAndIndice()
 	{
-		createVBOWithVertex(_out_vertices, _out_uvs, _out_normals, out_indices, out_structVertexes);
+		createVBOWithVertex(_out_vertices, _out_uvs, _out_normals, out_indices, _vertices);
 	}
 
 	// {file} -> {vertices, uvs, normals}
@@ -139,7 +139,7 @@ namespace RESOURCE
 			// VBO buffer bind
 			glGenBuffers(1, &_vbo);
 			glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-			glBufferData(GL_ARRAY_BUFFER, out_structVertexes.size() * sizeof(out_structVertexes[0]), out_structVertexes.data(), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(_vertices[0]), _vertices.data(), GL_STATIC_DRAW);
 		}
 		
 		glEnableVertexAttribArray(0);

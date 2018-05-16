@@ -79,6 +79,12 @@
     <Filter Include="리소스 파일\shaders">
       <UniqueIdentifier>{7b3e5204-1fb0-4796-8b8f-034ef7ef2f02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\src\Resource\structs">
+      <UniqueIdentifier>{c920cf81-4627-461b-a30e-1961dd65dc71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\config">
+      <UniqueIdentifier>{534c46ff-7c05-45a6-86fd-e11f9a9672c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -183,9 +189,6 @@
     <ClCompile Include="origin\FastSpinlock.cpp">
       <Filter>소스 파일\origin</Filter>
     </ClCompile>
-    <ClCompile Include="RText.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\Shader\ShaderObj.cpp">
       <Filter>소스 파일\src\shader</Filter>
     </ClCompile>
@@ -200,6 +203,39 @@
     </ClCompile>
     <ClCompile Include="origin\MemoryPool.cpp">
       <Filter>소스 파일\origin</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleBuffer.cpp">
+      <Filter>소스 파일\src\Resource\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleStruct.cpp">
+      <Filter>소스 파일\src\Resource\structs</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleCreateInfo.cpp">
+      <Filter>소스 파일\src\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="RText.cpp">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="RParticle.cpp">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleFObj.h">
+      <Filter>소스 파일\src\renderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleFObj.cpp">
+      <Filter>소스 파일\src\renderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sound\ALSource.cpp">
+      <Filter>소스 파일\src\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sound\ALListener.cpp">
+      <Filter>소스 파일\src\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sound\ALManager.cpp">
+      <Filter>소스 파일\src\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sound\ALSound.cpp">
+      <Filter>소스 파일\src\sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -370,6 +406,33 @@
     </ClInclude>
     <ClInclude Include="light.h">
       <Filter>소스 파일\src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleBuffer.h">
+      <Filter>소스 파일\src\Resource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleStruct.h">
+      <Filter>소스 파일\src\Resource\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleCreateInfo.h">
+      <Filter>소스 파일\src\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="RParticle.h">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="configs.h">
+      <Filter>소스 파일\src\config</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Sound\ALListener.h">
+      <Filter>소스 파일\src\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Sound\ALManager.h">
+      <Filter>소스 파일\src\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Sound\ALSound.h">
+      <Filter>소스 파일\src\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Sound\ALSource.h">
+      <Filter>소스 파일\src\sound</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

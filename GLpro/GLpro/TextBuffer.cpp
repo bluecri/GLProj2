@@ -89,6 +89,11 @@ void RESOURCE::TextBuffer::unbind() const
 	glBindVertexArray(0);
 }
 
+void RESOURCE::TextBuffer::render()
+{
+	glDrawArrays(GL_TRIANGLES, 0, getGLCount());
+}
+
 int RESOURCE::TextBuffer::getGLCount()
 {
 	// print가능한 모든 칸 수(_printUVs 초과시) vs print할 uv수

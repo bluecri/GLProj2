@@ -66,7 +66,7 @@ void RENDER::RText::draw(float deltaTime)
 			// check rigidComponent != nullptr
 		}
 
-		glDrawArrays(GL_TRIANGLES, 0, textFObj->_textBuffer->getGLCount());
+		textFObj->_textBuffer->render();
 
 		textFObj->_texture->unbind();
 		textFObj->_textBuffer->unbind();

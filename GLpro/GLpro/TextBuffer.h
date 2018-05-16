@@ -19,6 +19,7 @@ namespace RESOURCE
 		
 		void unbind() const;
 
+		void render();
 		int getGLCount();
 
 	private:

@@ -27,7 +27,7 @@ namespace RESOURCE
 		std::vector<glm::vec3> _out_normals;
 
 		virtual void createVboOrEbo(bool createEbo);
-		void createStructVertex();
+		void createBuffer();
 		void createStructVertexAndIndice();
 
 	private:
@@ -37,7 +37,7 @@ namespace RESOURCE
 		GLuint	_ebo;		//element buffer
 		GLuint	_vbo;		//vertex buffer
 
-		std::vector<Struct_Vertex> out_structVertexes;
+		std::vector<Struct_Vertex> _vertices;
 		std::vector<unsigned short> out_indices;
 
 		bool loadObjFile(const std::string &fileName);
