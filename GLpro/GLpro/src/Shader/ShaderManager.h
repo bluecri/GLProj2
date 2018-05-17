@@ -19,18 +19,8 @@ namespace SHADER
 {
 	class ShaderManager {
 	public:
-		ShaderElemContainer m_shaderStorage;
 
-		ShaderManager()
-		{
-			for (int i = 0; i < ENUM_SHADER_TYPE::SHADER_TYPE_NUM; i++)
-			{
-				m_shaderStorage.push_back(std::map<std::string, SHADER::ShaderObj*>());
-			}
-			m_shaderStorage[SHADER_TYPE_MAIN].insert(std::make_pair("shader/ShadowMapping.vertexshader,shader/ShadowMapping.fragmentshader", new ShaderMain("shader/ShadowMapping.vertexshader", "shader/ShadowMapping.fragmentshader")));
-			m_shaderStorage[SHADER_TYPE_SHADOW].insert(std::make_pair("shader/DepthRTT.vertexshader,shader/DepthRTT.fragmentshade", new ShaderShadow("shader/DepthRTT.vertexshader", "shader/DepthRTT.fragmentshader")));
-			//m_shaderStorage[SHADER_TYPE_COLISION].push_back(new ShaderMain("shader/Simple.vertexshader", "shader/Simple.fragmentshader"));
-		}
+		ShaderManager();
 
 		
 		template<class T>
@@ -46,66 +36,26 @@ namespace SHADER
 			}
 
 			ShaderObj* tempShader = new T(vertexShader, fragmentShader);
-			if (tempShader->m_shaderID != -1) {
-				m_shaderStorage[type].push_back(tempShader);
+			if (tempShader->getShaderID() != -1) {
+				m_shaderStorage[type].insert(std::make_pair(keyStr, tempShader));
 				return tempShader;
 			}
 			
 			return nullptr;
 		}
 		
-		ShaderObj* getShaderPtr(ENUM_SHADER_TYPE type, const char * vertexShader, const char * fragmentShader) 
-		{
-			std::string keyStr(vertexShader);
-			keyStr.append(fragmentShader);
-			auto elem = m_shaderStorage[type].find(keyStr);
+		ShaderObj* getShaderPtr(ENUM_SHADER_TYPE type, const char * vertexShader, const char * fragmentShader);
 
-			if (m_shaderStorage[type].end() != elem)
-			{
-				return elem->second;
-			}
+		void removeShaderPtr(ENUM_SHADER_TYPE type, const char * vertexShader, const char * fragmentShader);
 
-			return nullptr;
-		}
+		void removeShaderPtr(ENUM_SHADER_TYPE type, ShaderObj* delShaderObj);
 
-		void removeShaderPtr(ENUM_SHADER_TYPE type, const char * vertexShader, const char * fragmentShader) 
-		{
-			std::string keyStr(vertexShader);
-			keyStr.append(fragmentShader);
-			auto elem = m_shaderStorage[type].find(keyStr);
+		virtual ~ShaderManager();
+	public:
+		ShaderElemContainer m_shaderStorage;
 
-			if (m_shaderStorage[type].end() != elem)
-			{
-				m_shaderStorage[type].erase(elem);
-				return;
-			}
-			return;
-		}
-
-		void removeShaderPtr(ENUM_SHADER_TYPE type, ShaderObj* delShaderObj)
-		{
-			auto elem = m_shaderStorage[type].find(delShaderObj->getKeyStr());
-
-			if (m_shaderStorage[type].end() != elem)
-			{
-				m_shaderStorage[type].erase(elem);
-				return;
-			}
-
-		}
-
-		virtual ~ShaderManager() 
-		{
-			for (auto elem : m_shaderStorage)
-			{
-				for (auto inElem : elem)
-				{
-					delete inElem.second;
-				}
-			}
-		}
 	};
 }
-
+extern SHADER::ShaderManager* GShaderManager;
 
 #endif

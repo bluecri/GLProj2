@@ -8,7 +8,13 @@ namespace SHADER {
 	class ShaderParticle;
 	class ShaderObj;
 }
-namespace RENDER_TARGET { namespace PARTICLE { class ParticleFObj; } }
+namespace RENDER_TARGET {
+	namespace PARTICLE {
+		class ParticleFObj;
+	}
+}
+
+
 namespace CAMERA { class Camera; }
 
 class RigidbodyComponent;

@@ -1,11 +1,8 @@
 #pragma once
-
 #include "stdafx.h"
 #include "ParticleStruct.h"
 
-#include <vector>
-
-#define PARTICLE_CONTAINER_DEFAULT_SIZE 360		//3sec * 2 particle per 1 frame
+#define PARTICLE_CONTAINER_DEFAULT_SIZE		360		//3sec * 2 particle per 1 frame
 
 namespace RESOURCE
 {

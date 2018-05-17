@@ -4,67 +4,97 @@
 
 #include "../RenderTarget/Normal/NormalFObj.h"
 #include "../Shader/ShaderMain.h"
+#include "../Shader/ShaderShadow.h"
 #include "../../LightManager.h"
 
 #include "../Resource/Model.h"
 #include "../Resource/Texture.h"
 #include "../../RigidbodyComponent.h"
 
+#include "../../Option.h"
+#include "../../ShadowBufferTexture.h"
+
 namespace RENDER
 {
-	RNormal::RNormal(SHADER::ShaderMain * shaderObj)
+
+	RNormal::RNormal(SHADER::ShaderMain * shaderObj, SHADER::ShaderShadow * oldShaderShadow)
 	{
 		_shaderObj = shaderObj;
+		_oldShaderShadow = _oldShaderShadow;
 	}
 
 
 	void RNormal::draw()
 	{
-		glCullFace(GL_BACK);
-		_shaderObj->bind();
+		if (GOption->_oldLightUse)
+		{
+			// ===============draw object on shadow buffer==============
+			GShadowBufferTexture->bindFBO();
+			_oldShaderShadow->bind();
 
-		_targetCamera->updateRecentVPAndViewMat();
-		//glm::mat4 modelMatrix = _targetCamera->getCamModelMatRef;
-		glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
-		
+			_targetCamera->updateRecentVPAndViewMat();
+			glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
 
-		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, _targetCamera->getRecentViewMat());
-		_shaderObj->loadMatrix4(_shaderObj->m_depthBiasID, depthBiasMVP);
-		_shaderObj->loadVector3(_shaderObj->m_lightInvDirID, GLightManager->directionalLightVec[0].GetLightVec3());	// 1 light
+			for (auto elem : _normalDrawElemContainer) {
+				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = elem->first;
+				Transform* targetTransform = elem->second->_transform;
 
-		// bind shadow texture
-		glActiveTexture(GL_TEXTURE1);
-		// todo : glBindTexture(GL_TEXTURE_2D, m_bufferManager->depthTexture);	// previous shadow texture
-		_shaderObj->loadInt(_shaderObj->m_shadowMapID, 1);
+				normalRenderTarget->_model->bind();		// Model buffer bind
+
+				mat4 targetTotalMat = depthBiasMVP * targetTransform->getTotalMat();
+				_oldShaderShadow->loadMatrix4(_oldShaderShadow->depthMatrixID, targetTotalMat);
+
+				normalRenderTarget->_model->render();
+
+				normalRenderTarget->_model->unbind();
+			}
+
+			GShadowBufferTexture->unbindFBO();
+
+			// ====================draw object on screen=====================
+
+			glCullFace(GL_BACK);
+			_shaderObj->bind();
+
+			_targetCamera->updateRecentVPAndViewMat();
+			//glm::mat4 modelMatrix = _targetCamera->getCamModelMatRef;
+			//glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
+
+			_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, _targetCamera->getRecentViewMat());
+			_shaderObj->loadMatrix4(_shaderObj->m_depthBiasID, depthBiasMVP);
+
+			//_oldLightUse
+			_shaderObj->loadVector3(_shaderObj->m_lightInvDirID, GLightManager->directionalLightVec[0].GetLightVec3());	// 1 light
+
+			// bind shadow texture
+			glActiveTexture(GL_TEXTURE1);
+			GShadowBufferTexture->bindTexture();
+			_shaderObj->loadInt(_shaderObj->m_shadowMapID, 1);
 
 
-		for (auto elem : _normalDrawElemContainer) {
-			RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = elem->first;
-			Transform* targetTransform = elem->second->_transform;
+			for (auto elem : _normalDrawElemContainer) {
+				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = elem->first;
+				Transform* targetTransform = elem->second->_transform;
 
-			normalRenderTarget->_model->bind();		// Model buffer bind
+				normalRenderTarget->_model->bind();		// Model buffer bind
 
-			glActiveTexture(GL_TEXTURE0);			// active texture #
-			normalRenderTarget->_texture->bind();	// real texture bind to #
-			_shaderObj->loadInt(_shaderObj->m_textureID, 0);	// set shader use for # shader
+				glActiveTexture(GL_TEXTURE0);			// active texture #
+				normalRenderTarget->_texture->bind();	// real texture bind to #
+				_shaderObj->loadInt(_shaderObj->m_textureID, 0);	// set shader use for # shader
 
-			mat4 targetModelMat = targetTransform->getTotalMat();
-			mat4 mvpMat = _targetCamera->getRecentVPMat() * targetModelMat;
-			_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, targetModelMat);
-			_shaderObj->loadMatrix4(_shaderObj->m_MVPMatrixID, mvpMat);
+				mat4 targetModelMat = targetTransform->getTotalMat();
+				mat4 mvpMat = _targetCamera->getRecentVPMat() * targetModelMat;
+				_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, targetModelMat);
+				_shaderObj->loadMatrix4(_shaderObj->m_MVPMatrixID, mvpMat);
 
-			glDrawElements(
-				GL_TRIANGLES,      // mode
-				normalRenderTarget->_model->getGLCount(),    // count
-				GL_UNSIGNED_SHORT,   // type
-				(void*)0         // element array buffer offset
-			);
-			
-			normalRenderTarget->_texture->unbind();
-			normalRenderTarget->_model->unbind();
+				normalRenderTarget->_model->render();
+
+				normalRenderTarget->_texture->unbind();
+				normalRenderTarget->_model->unbind();
+			}
+
+			_shaderObj->unbind();
 		}
-
-		_shaderObj->unbind();
 	}
 
 	std::shared_ptr<RNormalDrawElement> RNormal::addToDrawList(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent * rigidComponent)

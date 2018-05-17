@@ -1,5 +1,4 @@
 #include "./ParticleCreateInfo.h"
-#include "./ParticleStruct.h"
 #include "./ParticleFObj.h"
 #include "./src/Transform.h"
 
@@ -54,6 +53,7 @@ void ParticleCreateInfo::genNewParticles(RENDER_TARGET::PARTICLE::ParticleFObj *
 			crateNewParticleStructWithInfo(pStruct);
 		}
 	}
+	
 	return;
 }
 

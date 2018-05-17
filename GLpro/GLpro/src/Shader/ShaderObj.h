@@ -16,6 +16,7 @@ namespace SHADER
 		GLuint getShaderID();
 
 		void loadInt(GLuint location, int value);
+		void loadVector2i(GLuint location, const int& int1, const int& int2);
 		void loadFloat(GLuint location, float value);
 		void loadVector2(GLuint location, const glm::vec2& vector);
 		void loadVector3(GLuint location, const glm::vec3& vector);

@@ -108,6 +108,7 @@ void RENDER::RParticle::beforeDraw(float deltaTime)
 		particleCreateInfo->genNewParticles(particleFObj);
 
 		// sort with distance
+		
 		particleFObj->sortContainerByDist();
 
 		// fill ParticleBuffer (pos buffer & color buffer)

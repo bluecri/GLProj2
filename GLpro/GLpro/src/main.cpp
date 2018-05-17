@@ -1,18 +1,12 @@
 #include <iostream>
 
-#include "Resource\ModelManager.h"
-#include "Resource\TextureManager.h"
 
-#include "Transform.h"
-#include "../LightManager.h"
-#include "Camera\CameraManager.h"
+#include "window.h"
 
 int main() {
-
-	GModelManager = new RESOURCE::ModelManager();
-	GTextureManager = new RESOURCE::TextureManager();
-	GLightManager = new LightManager();
-	GCameraManager = new CAMERA::CameraManager();
-
+	GWindow = new WINDOW::Window();
+	GWindow->init();
+	GWindow->draws();
+		
 	return 0;
 }

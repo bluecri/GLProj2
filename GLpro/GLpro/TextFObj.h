@@ -19,6 +19,7 @@ namespace RENDER_TARGET
 			RESOURCE::Texture * _texture = nullptr;
 
 			TextFObj(const char* textureFileName, const char* textureType, int lineN, int lengthN, int fontSize);
+			TextFObj(const char* textureFileName, const char* textureType, int width, int height);
 			~TextFObj() {	};
 
 			void changePrintStr(std::string& inStr);
@@ -28,6 +29,9 @@ namespace RENDER_TARGET
 			void setBindToScreen(glm::vec2& pos, glm::vec2& deltaPos);
 			void setPos(glm::vec2& pos);
 			void setDeltaPos(glm::vec2& deltaPos);
+
+			// for box
+			void changeBoxSize(int height, int width);
 
 		public:
 			bool _bTemporary;
@@ -41,6 +45,7 @@ namespace RENDER_TARGET
 			TextFObj() {};
 
 			std::string printStr;
+			bool _bBox;
 		};
 	}
 }

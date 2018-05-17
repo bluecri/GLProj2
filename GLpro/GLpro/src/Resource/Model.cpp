@@ -77,6 +77,16 @@ namespace RESOURCE
 		glGenVertexArrays(1, &_vao);
 	}
 
+	void Model::render()
+	{
+		glDrawElements(
+			GL_TRIANGLES,      // mode
+			getGLCount(),    // count
+			GL_UNSIGNED_SHORT,   // type
+			(void*)0         // element array buffer offset
+		);
+	}
+
 	int Model::getGLCount()
 	{
 		if (_bEbo)

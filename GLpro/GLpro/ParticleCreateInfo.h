@@ -3,12 +3,12 @@
 #include "./stdafx.h"
 #include "ParticleStruct.h"
 
-class Transform;
 namespace RENDER_TARGET {
 	namespace PARTICLE {
 		class ParticleFObj;
 	}
 }
+class Transform;
 
 class ParticleCreateInfo
 {

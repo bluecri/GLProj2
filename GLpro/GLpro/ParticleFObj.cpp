@@ -28,11 +28,14 @@ RENDER_TARGET::PARTICLE::ParticleFObj::~ParticleFObj()
 
 void RENDER_TARGET::PARTICLE::ParticleFObj::sortContainerByDist()
 {
+	// TODO
+	/*
 	std::sort(_particleContainer.begin(), _particleContainer.end(),
-		[](const ParticleStruct* &lhs, const ParticleStruct* &rhs) -> bool
+	[](const ParticleStruct* &lhs, const ParticleStruct* &rhs) -> bool
 	{
-		return lhs->_cameradistance > rhs->_cameradistance;
+	return lhs->_cameradistance > rhs->_cameradistance;
 	} );
+	*/
 }
 
 void RENDER_TARGET::PARTICLE::ParticleFObj::orderFillParticleBuffer()
@@ -82,3 +85,4 @@ ParticleStruct & RENDER_TARGET::PARTICLE::ParticleFObj::GetUnusedParticle()
 
 	return *_particleContainer[0]; // All particles are taken, override the first one
 }
+

@@ -16,6 +16,7 @@ namespace RESOURCE
 		void bind() const;
 		void unbind() const;
 
+		void render();
 		int getGLCount();
 		bool isEBO();
 

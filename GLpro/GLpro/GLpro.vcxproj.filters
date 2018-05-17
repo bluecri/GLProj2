@@ -34,9 +34,6 @@
     <Filter Include="소스 파일\src\shader">
       <UniqueIdentifier>{a28b0359-aa7e-40d5-9807-70084592ebf7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\src\skybox">
-      <UniqueIdentifier>{46101aa7-9f33-4ec9-b6f9-cc8cef461019}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\src\sound">
       <UniqueIdentifier>{843d4484-56f7-4870-94c6-b4def63973ee}</UniqueIdentifier>
     </Filter>
@@ -85,12 +82,21 @@
     <Filter Include="소스 파일\src\config">
       <UniqueIdentifier>{534c46ff-7c05-45a6-86fd-e11f9a9672c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\src\Resource\ShadowOld">
+      <UniqueIdentifier>{28edb467-40ed-4808-9296-1f959aa95280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\option">
+      <UniqueIdentifier>{a0187a7c-252f-493a-ad08-431adad4b452}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Menus">
+      <UniqueIdentifier>{fbd7820d-fedc-4356-a61a-0e046ec2d807}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene">
+      <UniqueIdentifier>{698321eb-9503-4dc3-90a4-0b85a6a09785}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\window.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Entity.cpp">
@@ -210,20 +216,8 @@
     <ClCompile Include="ParticleStruct.cpp">
       <Filter>소스 파일\src\Resource\structs</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleCreateInfo.cpp">
-      <Filter>소스 파일\src\particle</Filter>
-    </ClCompile>
     <ClCompile Include="RText.cpp">
       <Filter>소스 파일\src\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="RParticle.cpp">
-      <Filter>소스 파일\src\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleFObj.h">
-      <Filter>소스 파일\src\renderTarget</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleFObj.cpp">
-      <Filter>소스 파일\src\renderTarget</Filter>
     </ClCompile>
     <ClCompile Include="src\Sound\ALSource.cpp">
       <Filter>소스 파일\src\sound</Filter>
@@ -236,6 +230,30 @@
     </ClCompile>
     <ClCompile Include="src\Sound\ALSound.cpp">
       <Filter>소스 파일\src\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowBufferTexture.cpp">
+      <Filter>소스 파일\src\Resource\ShadowOld</Filter>
+    </ClCompile>
+    <ClCompile Include="Option.cpp">
+      <Filter>소스 파일\src\option</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleCreateInfo.cpp">
+      <Filter>소스 파일\src\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="RParticle.cpp">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleFObj.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\ShaderManager.cpp">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="RBox.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -273,9 +291,6 @@
       <Filter>소스 파일\src\Player</Filter>
     </ClInclude>
     <ClInclude Include="src\Shader\ShaderMain.h">
-      <Filter>소스 파일\src\shader</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Shader\ShaderParticle.h">
       <Filter>소스 파일\src\shader</Filter>
     </ClInclude>
     <ClInclude Include="src\Shader\ShaderShadow.h">
@@ -371,9 +386,6 @@
     <ClInclude Include="TextBuffer.h">
       <Filter>소스 파일\src\Resource\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="ShadowBuffer.h">
-      <Filter>소스 파일\src\Resource\Buffer</Filter>
-    </ClInclude>
     <ClInclude Include="origin\CircularBuffer.h">
       <Filter>소스 파일\origin</Filter>
     </ClInclude>
@@ -413,12 +425,6 @@
     <ClInclude Include="ParticleStruct.h">
       <Filter>소스 파일\src\Resource\structs</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleCreateInfo.h">
-      <Filter>소스 파일\src\particle</Filter>
-    </ClInclude>
-    <ClInclude Include="RParticle.h">
-      <Filter>소스 파일\src\renderer</Filter>
-    </ClInclude>
     <ClInclude Include="configs.h">
       <Filter>소스 파일\src\config</Filter>
     </ClInclude>
@@ -433,6 +439,45 @@
     </ClInclude>
     <ClInclude Include="src\Sound\ALSource.h">
       <Filter>소스 파일\src\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowBufferTexture.h">
+      <Filter>소스 파일\src\Resource\ShadowOld</Filter>
+    </ClInclude>
+    <ClInclude Include="Option.h">
+      <Filter>소스 파일\src\option</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleCreateInfo.h">
+      <Filter>소스 파일\src\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="RParticle.h">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ROldLight.h">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleFObj.h">
+      <Filter>소스 파일\src\renderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ShaderParticle.h">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>소스 파일\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBox.h">
+      <Filter>소스 파일\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageBox.h">
+      <Filter>소스 파일\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>소스 파일\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSession.h">
+      <Filter>소스 파일\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="RBox.h">
+      <Filter>소스 파일\src\renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

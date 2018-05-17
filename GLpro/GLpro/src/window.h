@@ -8,14 +8,20 @@
 
 namespace WINDOW
 {
-	GLFWwindow* _pWindow;
-	
-	int _windowWidth;		// window size
-	int _windowHeight;
+	class Window
+	{
+	public:	
+		Window(int windowWidth = 800, int windowHeight = 600);
+		int init();
+		void draws();
+		void exitWindow();
 
-	int init(int windowWidth, int windowHeight);
-
-	void exitWindow();
+	public:
+		GLFWwindow* _pWindow;
+		int _windowWidth;		// window size
+		int _windowHeight;
+	};
 }
 
+extern WINDOW::Window* GWindow;
 #endif

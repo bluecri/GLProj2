@@ -5,6 +5,16 @@ RESOURCE::TextBuffer::TextBuffer(int lineN, int lengthN, int fontSize)
 	: _lineN(lineN), _lengthN(lengthN), _fontSize(fontSize), _bUpdatePosVBO(false), _bUpdateUVVBO(false),
 	_prevPosVBOSize(0), _prevUVVBOSize(0)
 {
+	_bBox = false;
+	genVao();
+	bind();
+	createBuffer();
+	unbind();
+}
+
+RESOURCE::TextBuffer::TextBuffer(int width, int height)
+{
+	_bBox = true;
 	genVao();
 	bind();
 	createBuffer();
@@ -39,6 +49,11 @@ void RESOURCE::TextBuffer::bind()
 
 void RESOURCE::TextBuffer::setUVBufferWithString(std::string & printStr)
 {
+	if (_bBox)
+	{
+		printf_s("[LOG] : TextBuffer::setUVBufferWithString is called in bBox\n");
+		return;
+	}
 	_printUVs.clear();
 
 	for (int i = 0; i < printStr.length(); i++)
@@ -58,30 +73,31 @@ void RESOURCE::TextBuffer::setUVBufferWithString(std::string & printStr)
 
 void RESOURCE::TextBuffer::setPosBuffer(int lineN, int lengthN, int fontSize)
 {
+	if (_bBox)
+	{
+		printf_s("[LOG] : TextBuffer::setPosBuffer is called in bBox\n");
+		return;
+	}
 	_vertexes.clear();
 
 	// Fill _vertexes vector (static)
-	for (int line = 0; line < _lineN; line++) {
-		for (int len = 0; len < _lengthN; len++) {
-			glm::vec2 vertex_up_left = glm::vec2(len * _fontSize / 2, -line * _fontSize);
-			glm::vec2 vertex_up_right = glm::vec2(len * _fontSize / 2 + _fontSize, -line * _fontSize);
-			glm::vec2 vertex_down_right = glm::vec2(len * _fontSize / 2 + _fontSize, -line * _fontSize - _fontSize);
-			glm::vec2 vertex_down_left = glm::vec2(len * _fontSize / 2, -line * _fontSize - _fontSize);
-
-			_vertexes.push_back(vertex_up_left);
-			_vertexes.push_back(vertex_down_left);
-			_vertexes.push_back(vertex_up_right);
-
-			_vertexes.push_back(vertex_down_right);
-			_vertexes.push_back(vertex_up_right);
-			_vertexes.push_back(vertex_down_left);
-		}
-	}
+	privateSetPosBuffer(lineN, lengthN, fontSize);
 
 	//	updatePosVBO(); -> 실제 사용될 시에(glBindVertexArray) update한다.
 	_bUpdatePosVBO = true;
 
 	return;
+}
+
+void RESOURCE::TextBuffer::setBoxPosBuffer(int width, int height)
+{
+	if (!_bBox)
+	{
+		printf_s("[LOG] : :TextBuffer::setBoxPosBuffer is called in not bBox\n");
+		return;
+	}
+	privateSetBoxPosBuffer(width, height);
+	_bUpdatePosVBO = true;
 }
 
 void RESOURCE::TextBuffer::unbind() const
@@ -107,15 +123,13 @@ void RESOURCE::TextBuffer::genVao()
 
 void RESOURCE::TextBuffer::createBuffer()
 {
-	// Fill _preMadeUVs vector
-	for (unsigned int charIndex = 0; charIndex<ASCII_LEN_NUM; charIndex++) {
-		float uv_x = (charIndex % 16) / 16.0f;
-		float uv_y = (charIndex / 16) / 16.0f;
-
-		glm::vec2 uv_up_left = glm::vec2(uv_x, uv_y);
-		glm::vec2 uv_up_right = glm::vec2(uv_x + 1.0f / 16.0f, uv_y);
-		glm::vec2 uv_down_right = glm::vec2(uv_x + 1.0f / 16.0f, (uv_y + 1.0f / 16.0f));
-		glm::vec2 uv_down_left = glm::vec2(uv_x, (uv_y + 1.0f / 16.0f));
+	if (_bBox)
+	{
+		// one box UV ( 00, 10, 11, 01 )
+		glm::vec2 uv_up_left = glm::vec2(0, 0);
+		glm::vec2 uv_up_right = glm::vec2(1, 0);
+		glm::vec2 uv_down_right = glm::vec2(1, 1);
+		glm::vec2 uv_down_left = glm::vec2(0, 1);
 
 		_preMadeUVs.push_back(uv_up_left);
 		_preMadeUVs.push_back(uv_down_left);
@@ -124,24 +138,31 @@ void RESOURCE::TextBuffer::createBuffer()
 		_preMadeUVs.push_back(uv_down_right);
 		_preMadeUVs.push_back(uv_up_right);
 		_preMadeUVs.push_back(uv_down_left);
+
+		privateSetBoxPosBuffer(_width, _height);
 	}
+	else
+	{
+		// Fill _preMadeUVs vector
+		for (unsigned int charIndex = 0; charIndex < ASCII_LEN_NUM; charIndex++) {
+			float uv_x = (charIndex % 16) / 16.0f;
+			float uv_y = (charIndex / 16) / 16.0f;
 
-	// Fill _vertexes vector (static)
-	for (int line = 0; line < _lineN; line++) {
-		for (int len = 0; len < _lengthN; len++) {
-			glm::vec2 vertex_up_left = glm::vec2(len * _fontSize / 2, -line * _fontSize);
-			glm::vec2 vertex_up_right = glm::vec2(len * _fontSize / 2 + _fontSize, -line * _fontSize);
-			glm::vec2 vertex_down_right = glm::vec2(len * _fontSize / 2 + _fontSize, -line * _fontSize - _fontSize);
-			glm::vec2 vertex_down_left = glm::vec2(len * _fontSize / 2, -line * _fontSize - _fontSize);
+			glm::vec2 uv_up_left = glm::vec2(uv_x, uv_y);
+			glm::vec2 uv_up_right = glm::vec2(uv_x + 1.0f / 16.0f, uv_y);
+			glm::vec2 uv_down_right = glm::vec2(uv_x + 1.0f / 16.0f, (uv_y + 1.0f / 16.0f));
+			glm::vec2 uv_down_left = glm::vec2(uv_x, (uv_y + 1.0f / 16.0f));
 
-			_vertexes.push_back(vertex_up_left);
-			_vertexes.push_back(vertex_down_left);
-			_vertexes.push_back(vertex_up_right);
+			_preMadeUVs.push_back(uv_up_left);
+			_preMadeUVs.push_back(uv_down_left);
+			_preMadeUVs.push_back(uv_up_right);
 
-			_vertexes.push_back(vertex_down_right);
-			_vertexes.push_back(vertex_up_right);
-			_vertexes.push_back(vertex_down_left);
+			_preMadeUVs.push_back(uv_down_right);
+			_preMadeUVs.push_back(uv_up_right);
+			_preMadeUVs.push_back(uv_down_left);
 		}
+
+		privateSetPosBuffer(_lineN, _lengthN, _fontSize);
 	}
 
 	glGenBuffers(1, &_posVBO);
@@ -182,3 +203,41 @@ void RESOURCE::TextBuffer::updateUVVBO()
 	glBufferData(GL_ARRAY_BUFFER, _prevUVVBOSize, &_printUVs[0], GL_STATIC_DRAW);
 }
 
+// text vertices create function with line, length, fontsize
+void RESOURCE::TextBuffer::privateSetPosBuffer(int lineN, int lengthN, int fontSize)
+{
+	// Fill _vertexes vector (static)
+	for (int line = 0; line < _lineN; line++) {
+		for (int len = 0; len < _lengthN; len++) {
+			glm::vec2 vertex_up_left = glm::vec2(len * _fontSize / 2, -line * _fontSize);
+			glm::vec2 vertex_up_right = glm::vec2(len * _fontSize / 2 + _fontSize, -line * _fontSize);
+			glm::vec2 vertex_down_right = glm::vec2(len * _fontSize / 2 + _fontSize, -line * _fontSize - _fontSize);
+			glm::vec2 vertex_down_left = glm::vec2(len * _fontSize / 2, -line * _fontSize - _fontSize);
+
+			_vertexes.push_back(vertex_up_left);
+			_vertexes.push_back(vertex_down_left);
+			_vertexes.push_back(vertex_up_right);
+
+			_vertexes.push_back(vertex_down_right);
+			_vertexes.push_back(vertex_up_right);
+			_vertexes.push_back(vertex_down_left);
+		}
+	}
+}
+
+// 1 box vertex create function with width and height
+void RESOURCE::TextBuffer::privateSetBoxPosBuffer(int width, int height)
+{
+	glm::vec2 vertex_up_left = glm::vec2(0, 0);
+	glm::vec2 vertex_up_right = glm::vec2(width, 0);
+	glm::vec2 vertex_down_right = glm::vec2(width, -height);
+	glm::vec2 vertex_down_left = glm::vec2(0, -height);
+
+	_vertexes.push_back(vertex_up_left);
+	_vertexes.push_back(vertex_down_left);
+	_vertexes.push_back(vertex_up_right);
+
+	_vertexes.push_back(vertex_down_right);
+	_vertexes.push_back(vertex_up_right);
+	_vertexes.push_back(vertex_down_left);
+}

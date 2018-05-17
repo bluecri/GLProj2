@@ -8,9 +8,30 @@
 
 RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char * textureType, int lineN, int lengthN, int fontSize)
 {
+	_bBox = false;
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
 	_textBuffer = new RESOURCE::TextBuffer(lineN, lengthN, fontSize);
 	
+	if (_texture == nullptr || _textBuffer == nullptr)
+	{
+		_texture = nullptr;
+		_textBuffer = nullptr;
+		printf_s("[LOG] : _texture, _textBuffer nullptr\n");
+	}
+}
+RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char * textureType, int width, int height)
+{
+	_bBox = true;
+	
+	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
+	_textBuffer = new RESOURCE::TextBuffer(width, height);
+
+	if (_texture == nullptr || _textBuffer == nullptr)
+	{
+		_texture = nullptr;
+		_textBuffer = nullptr;
+		printf_s("[LOG] : _texture, _textBuffer nullptr\n");
+	}
 }
 void RENDER_TARGET::TEXT::TextFObj::changePrintStr(std::string & inStr)
 {
@@ -22,6 +43,12 @@ void RENDER_TARGET::TEXT::TextFObj::changeFrame(int lineN, int lengthN, int font
 {
 	_textBuffer->setPosBuffer(lineN, lengthN, fontSize);
 }
+
+void RENDER_TARGET::TEXT::TextFObj::changeBoxSize(int height, int width)
+{
+	_textBuffer->setBoxPosBuffer(height, width);
+}
+
 
 void RENDER_TARGET::TEXT::TextFObj::setTemporary(float lifeTime)
 {

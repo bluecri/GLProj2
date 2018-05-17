@@ -8,7 +8,9 @@
 namespace CAMERA { class Camera; }
 
 namespace RENDER_TARGET{ namespace NORMAL { class NormalFObj; } }
-namespace SHADER { class ShaderMain; }
+namespace SHADER {
+	class ShaderMain; class ShaderShadow;
+}
 
 class RigidbodyComponent;
 
@@ -20,7 +22,7 @@ namespace RENDER
 	class RNormal
 	{
 		public:
-			RNormal(SHADER::ShaderMain* shaderObj);
+			RNormal(SHADER::ShaderMain* shaderObj, SHADER::ShaderShadow* oldShaderShadow);
 			virtual ~RNormal() {};
 
 			std::shared_ptr<RNormalDrawElement> addToDrawList(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent* rigidComponent);
@@ -37,6 +39,8 @@ namespace RENDER
 	private:
 			SHADER::ShaderMain* _shaderObj;
 			CAMERA::Camera *_targetCamera;
+
+			SHADER::ShaderShadow* _oldShaderShadow;
 
 			RNormalDrawElemContainer _normalDrawElemContainer;
 	};
