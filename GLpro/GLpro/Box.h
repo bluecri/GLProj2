@@ -1,8 +1,9 @@
 #pragma once
 
 #include <functional>
+#include "UIEntity.h"
 
-class Box
+class Box : UIEntity
 {
 public:
 	Box(int width, int height, int widthLT, int heightLT)
@@ -38,6 +39,8 @@ public:
 
 	void SetKeyFocus(bool& b) {	_keyFocusOn = b;}
 	bool GetKeyFocus() { return _keyFocusOn; }
+
+	// width, height update function not exit)
 	bool IsInBox(int width, int height) 
 	{
 		if (_widthLT < width && width < _width + _widthLT
@@ -47,7 +50,7 @@ public:
 		}
 		return false;
 	}
-	virtual void render(float deltaTime) = 0;
+
 
 private:
 	bool _keyFocusOn;
@@ -56,4 +59,7 @@ private:
 	std::function<void()> _evMouseOnCallBack;
 	std::function<void()> _evMouseClickCallBack;
 	std::function<void()> _evMouseOutCallBack;
+
+	// UIEntity을(를) 통해 상속됨
+	virtual void singleSetBRender(bool bRender) {};
 };

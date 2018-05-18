@@ -16,20 +16,6 @@ SHADER::ShaderManager::ShaderManager()
 
 }
 
-SHADER::ShaderObj * SHADER::ShaderManager::getShaderPtr(ENUM_SHADER_TYPE type, const char * vertexShader, const char * fragmentShader)
-{
-	std::string keyStr(vertexShader);
-	keyStr.append(fragmentShader);
-	auto elem = m_shaderStorage[type].find(keyStr);
-
-	if (m_shaderStorage[type].end() != elem)
-	{
-		return elem->second;
-	}
-
-	return nullptr;
-}
-
 void SHADER::ShaderManager::removeShaderPtr(ENUM_SHADER_TYPE type, const char * vertexShader, const char * fragmentShader)
 {
 	std::string keyStr(vertexShader);

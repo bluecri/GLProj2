@@ -12,15 +12,17 @@
 #include "../../RigidbodyComponent.h"
 
 #include "../../Option.h"
-#include "../../ShadowBufferTexture.h"
+#include "../../ShadowBufferTextureShader.h"
+#include "../Shader/ShaderManager.h"
+
+#include "../../RRender.h"
 
 namespace RENDER
 {
 
-	RNormal::RNormal(SHADER::ShaderMain * shaderObj, SHADER::ShaderShadow * oldShaderShadow)
+	RNormal::RNormal(SHADER::ShaderMain * shaderObj) : RReneder()
 	{
 		_shaderObj = shaderObj;
-		_oldShaderShadow = _oldShaderShadow;
 	}
 
 
@@ -30,7 +32,7 @@ namespace RENDER
 		{
 			// ===============draw object on shadow buffer==============
 			GShadowBufferTexture->bindFBO();
-			_oldShaderShadow->bind();
+			GShadowBufferTexture->bindShader();
 
 			_targetCamera->updateRecentVPAndViewMat();
 			glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
@@ -42,13 +44,13 @@ namespace RENDER
 				normalRenderTarget->_model->bind();		// Model buffer bind
 
 				mat4 targetTotalMat = depthBiasMVP * targetTransform->getTotalMat();
-				_oldShaderShadow->loadMatrix4(_oldShaderShadow->depthMatrixID, targetTotalMat);
-
+				GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->depthMatrixID, targetTotalMat);	// bind global old shader
 				normalRenderTarget->_model->render();
 
 				normalRenderTarget->_model->unbind();
 			}
 
+			GShadowBufferTexture->unbindShader();
 			GShadowBufferTexture->unbindFBO();
 
 			// ====================draw object on screen=====================
@@ -107,12 +109,6 @@ namespace RENDER
 	void RNormal::update(CAMERA::Camera * cam)
 	{
 		_targetCamera = cam;
-	}
-
-
-	void RNormal::chageShader(SHADER::ShaderMain * other)
-	{
-		_shaderObj = other;
 	}
 
 	SHADER::ShaderMain * RNormal::getShader() const

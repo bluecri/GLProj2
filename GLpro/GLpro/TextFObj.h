@@ -18,8 +18,8 @@ namespace RENDER_TARGET
 			RESOURCE::TextBuffer * _textBuffer = nullptr;
 			RESOURCE::Texture * _texture = nullptr;
 
-			TextFObj(const char* textureFileName, const char* textureType, int lineN, int lengthN, int fontSize);
-			TextFObj(const char* textureFileName, const char* textureType, int width, int height);
+			TextFObj(const char* textureFileName, const char* textureType, int lineN, int lengthN, glm::vec2 pos, int fontSize);
+			TextFObj(const char* textureFileName, const char* textureType, int width, int height, int widthLT, int heightLT);
 			~TextFObj() {	};
 
 			void changePrintStr(std::string& inStr);
@@ -32,6 +32,10 @@ namespace RENDER_TARGET
 
 			// for box
 			void changeBoxSize(int height, int width);
+
+			// common
+			void setRender(bool bRender);
+			bool getRender() { return _bRender; }
 
 		public:
 			bool _bTemporary;
@@ -46,6 +50,8 @@ namespace RENDER_TARGET
 
 			std::string printStr;
 			bool _bBox;
+			bool _bRender;
 		};
+
 	}
 }

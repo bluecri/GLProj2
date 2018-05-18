@@ -22,7 +22,7 @@ void RENDER::RBox::update(CAMERA::Camera * cam)
 	// none camera
 }
 
-void RENDER::RBox::draw(float deltaTime, int widthLT, int heightLT)
+void RENDER::RBox::draw(float deltaTime)
 {
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -31,7 +31,13 @@ void RENDER::RBox::draw(float deltaTime, int widthLT, int heightLT)
 	_shaderObj->bind();
 	for (auto it = _boxDrawElemContainer.begin(); it != _boxDrawElemContainer.end(); )
 	{
-		RBoxDrawElem& textFObj = (*it);
+		
+		RBoxDrawElem textFObj = (*it);
+
+		if (!textFObj->getRender())
+		{
+			continue;
+		}
 
 		textFObj->_textBuffer->bind();
 		glActiveTexture(GL_TEXTURE4);
@@ -39,7 +45,7 @@ void RENDER::RBox::draw(float deltaTime, int widthLT, int heightLT)
 		_shaderObj->loadInt(_shaderObj->m_text2DUniformID, 4);
 		
 		// 원래 용도는 움직이는 text. => position으로 사용
-		_shaderObj->loadVector2i(_shaderObj->m_movedVec2ID, widthLT, heightLT);
+		_shaderObj->loadVector2(_shaderObj->m_movedVec2ID, textFObj->_pos);
 
 		textFObj->_textBuffer->render();
 

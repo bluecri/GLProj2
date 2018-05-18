@@ -1,26 +1,29 @@
 #include "stdafx.h"
-#include "ShadowBufferTexture.h"
+#include "ShadowBufferTextureShader.h"
 #include "src/Shader/ShaderManager.h"
+#include "src/Shader/ShaderShadow.h"
 
-RESOURCE::ShadowBufferTexture::ShadowBufferTexture(int fboX, int fboY)
+RESOURCE::ShadowBufferTextureShader::ShadowBufferTextureShader(int fboX, int fboY)
 {
 	_fboX = fboX;
 	_fboY = fboY;
-
+	_shadowShader = GShaderManager->m_addShader<SHADER::ShaderShadow>(ENUM_SHADER_TYPE::SHADER_TYPE_SHADOW, "data/Shader/DepthRTT.vertexshader", "data/Shader/DepthRTT.fragmentshader");
 }
 
-RESOURCE::ShadowBufferTexture::~ShadowBufferTexture()
+RESOURCE::ShadowBufferTextureShader::~ShadowBufferTextureShader()
 {
 	glDeleteBuffers(1, &_shadowFBO);
 }
 
-void RESOURCE::ShadowBufferTexture::init()
+void RESOURCE::ShadowBufferTextureShader::init()
 {
+	_shadowShader = GShaderManager->m_addShader<SHADER::ShaderShadow>(SHADER_TYPE_SHADOW, "data/Shader/DepthRTT.vertexshader", "data/Shader/DepthRTT.fragmentshader");
+
 	createBuffer();
 	unbindFBO();
 }
 
-void RESOURCE::ShadowBufferTexture::bindFBO()
+void RESOURCE::ShadowBufferTextureShader::bindFBO()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, _shadowFBO);		// render to buffer -> texture
 
@@ -29,7 +32,7 @@ void RESOURCE::ShadowBufferTexture::bindFBO()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RESOURCE::ShadowBufferTexture::unbindFBO()
+void RESOURCE::ShadowBufferTextureShader::unbindFBO()
 {
 	glCullFace(GL_BACK);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -38,12 +41,22 @@ void RESOURCE::ShadowBufferTexture::unbindFBO()
 	// glViewport(0, 0, m_control->m_width, m_control->m_height); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 }
 
-void RESOURCE::ShadowBufferTexture::bindTexture()
+void RESOURCE::ShadowBufferTextureShader::bindTexture()
 {
 	glBindTexture(GL_TEXTURE_2D, _shadowDepthTexture);
 }
 
-void RESOURCE::ShadowBufferTexture::createBuffer()
+void RESOURCE::ShadowBufferTextureShader::bindShader()
+{
+	_shadowShader->bind();
+}
+
+void RESOURCE::ShadowBufferTextureShader::unbindShader()
+{
+	_shadowShader->unbind();
+}
+
+void RESOURCE::ShadowBufferTextureShader::createBuffer()
 {
 	glGenFramebuffers(1, &_shadowFBO);
 	glGenTextures(1, &_shadowDepthTexture);
@@ -62,9 +75,9 @@ void RESOURCE::ShadowBufferTexture::createBuffer()
 	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
-		printf_s("[ERR] : ShadowBufferTexture::createBuffer glCheckFramebufferStatus error\n");
+		printf_s("[ERR] : ShadowBufferTextureShader::createBuffer glCheckFramebufferStatus error\n");
 		return;
 	}
 }
 
-RESOURCE::ShadowBufferTexture* GShadowBufferTexture = nullptr;
+RESOURCE::ShadowBufferTextureShader* GShadowBufferTexture = nullptr;

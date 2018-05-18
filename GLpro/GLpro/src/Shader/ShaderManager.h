@@ -22,9 +22,9 @@ namespace SHADER
 
 		ShaderManager();
 
-		
+		//todo : check T -> shaderObj in static time
 		template<class T>
-		ShaderObj* m_addShader(ENUM_SHADER_TYPE type, const char * vertexShader, const char * fragmentShader)
+		T* m_addShader(ENUM_SHADER_TYPE type, const char * vertexShader, const char * fragmentShader)
 		{
 			std::string keyStr(vertexShader);
 			keyStr.append(fragmentShader);
@@ -32,26 +32,24 @@ namespace SHADER
 
 			if (m_shaderStorage[type].end() != elem)
 			{
-				return elem->second;	// already exist
+				return static_cast<T*>(elem->second);	// already exist
 			}
 
 			ShaderObj* tempShader = new T(vertexShader, fragmentShader);
 			if (tempShader->getShaderID() != -1) {
 				m_shaderStorage[type].insert(std::make_pair(keyStr, tempShader));
-				return tempShader;
+				return static_cast<T*>(tempShader);
 			}
 			
 			return nullptr;
 		}
-		
-		ShaderObj* getShaderPtr(ENUM_SHADER_TYPE type, const char * vertexShader, const char * fragmentShader);
 
 		void removeShaderPtr(ENUM_SHADER_TYPE type, const char * vertexShader, const char * fragmentShader);
 
 		void removeShaderPtr(ENUM_SHADER_TYPE type, ShaderObj* delShaderObj);
 
 		virtual ~ShaderManager();
-	public:
+	private:
 		ShaderElemContainer m_shaderStorage;
 
 	};

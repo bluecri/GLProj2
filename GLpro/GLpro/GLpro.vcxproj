@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Box.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="ParticleBuffer.cpp" />
@@ -192,6 +193,7 @@
     </ClCompile>
     <ClCompile Include="TextBuffer.cpp" />
     <ClCompile Include="TextFObj.cpp" />
+    <ClCompile Include="UIEntity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.h" />
@@ -218,6 +220,7 @@
     <ClInclude Include="ParticleFObj.h" />
     <ClInclude Include="ParticleStruct.h" />
     <ClInclude Include="RBox.h" />
+    <ClInclude Include="RenderManager.h" />
     <ClInclude Include="RigidbodyComponent.h" />
     <ClInclude Include="ROldLight.h" />
     <ClInclude Include="RParticle.h" />
@@ -268,6 +271,7 @@
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TextBuffer.h" />
     <ClInclude Include="TextFObj.h" />
+    <ClInclude Include="UIEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\Shader\DepthRTT.fragmentshader" />

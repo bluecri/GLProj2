@@ -6,9 +6,10 @@
 
 #include "../../TextBuffer.h"
 
-RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char * textureType, int lineN, int lengthN, int fontSize)
+RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char * textureType, int lineN, int lengthN, glm::vec2 pos, int fontSize)
 {
 	_bBox = false;
+	_pos = pos;
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
 	_textBuffer = new RESOURCE::TextBuffer(lineN, lengthN, fontSize);
 	
@@ -19,10 +20,12 @@ RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char
 		printf_s("[LOG] : _texture, _textBuffer nullptr\n");
 	}
 }
-RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char * textureType, int width, int height)
+RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char * textureType, int width, int height, int widthLT, int heightLT)
 {
 	_bBox = true;
-	
+	_pos.x = widthLT;
+	_pos.y = heightLT;
+
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
 	_textBuffer = new RESOURCE::TextBuffer(width, height);
 
@@ -30,7 +33,7 @@ RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char
 	{
 		_texture = nullptr;
 		_textBuffer = nullptr;
-		printf_s("[LOG] : _texture, _textBuffer nullptr\n");
+		printf_s("[LOG] : _texture, _textBuffer nullptr .. empty box\n");
 	}
 }
 void RENDER_TARGET::TEXT::TextFObj::changePrintStr(std::string & inStr)
@@ -47,6 +50,12 @@ void RENDER_TARGET::TEXT::TextFObj::changeFrame(int lineN, int lengthN, int font
 void RENDER_TARGET::TEXT::TextFObj::changeBoxSize(int height, int width)
 {
 	_textBuffer->setBoxPosBuffer(height, width);
+}
+
+// common
+
+inline void RENDER_TARGET::TEXT::TextFObj::setRender(bool bRender) {
+	_bRender = bRender;
 }
 
 

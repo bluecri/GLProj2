@@ -32,7 +32,7 @@ namespace RENDER
 
 		void update(CAMERA::Camera* cam);	//shader target camera update
 
-		void draw(float deltaTime, int widthLT, int heightLT);
+		void draw(float deltaTime);
 
 		virtual void chageShader(SHADER::ShaderText* other);
 

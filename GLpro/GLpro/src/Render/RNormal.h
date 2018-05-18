@@ -14,15 +14,17 @@ namespace SHADER {
 
 class RigidbodyComponent;
 
+using TYPE_SHADER = SHADER::ShaderMain;
+
 using RNormalDrawElement = std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>;
 using RNormalDrawElemContainer = std::list<std::shared_ptr<RNormalDrawElement>>;
 
 namespace RENDER
 {
-	class RNormal
+	class RNormal : public RReneder
 	{
 		public:
-			RNormal(SHADER::ShaderMain* shaderObj, SHADER::ShaderShadow* oldShaderShadow);
+			RNormal(SHADER::ShaderMain* shaderObj);
 			virtual ~RNormal() {};
 
 			std::shared_ptr<RNormalDrawElement> addToDrawList(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent* rigidComponent);
@@ -31,7 +33,7 @@ namespace RENDER
 
 			void draw();
 
-			virtual void chageShader(SHADER::ShaderMain* other);
+			//	virtual void chageShader(SHADER::ShaderMain* other);	-> make fixed.
 
 			virtual SHADER::ShaderMain* getShader() const;
 

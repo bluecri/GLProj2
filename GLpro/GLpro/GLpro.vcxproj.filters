@@ -255,6 +255,12 @@
     <ClCompile Include="RBox.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="UIEntity.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -477,6 +483,12 @@
       <Filter>소스 파일\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="RBox.h">
+      <Filter>소스 파일\src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEntity.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager.h">
       <Filter>소스 파일\src\renderer</Filter>
     </ClInclude>
   </ItemGroup>
