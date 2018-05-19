@@ -17,7 +17,10 @@ namespace RENDER { class RBox; }
 
 enum ENUM_PREMADE_TEXTBOX
 {
-	PREMADE_TEXTBOX_BOTTOMCHAT
+	PREMADE_TEXTBOX_CHATLOG,
+	PREMADE_TEXTBOX_INPUT,
+	PREMADE_TEXTBOX_CHATINPUT,
+	PREMADE_TEXTBOX_SIZE
 };
 
 
@@ -88,7 +91,7 @@ public:
 
 	virtual void moveLTPosition(int widthLT, int heightLT)
 	{
-		_textFObj->setPos(glm::vec2(_widthLT, _heightLT);
+		_textFObj->setPos(glm::vec2(_widthLT, _heightLT));
 	}
 
 public:
@@ -97,7 +100,9 @@ public:
 		SHADER::ShaderText* shaderText = GShaderManager->m_addShader<SHADER::ShaderText>(ENUM_SHADER_TYPE::SHADER_TYPE_TEXT, "data/Shader/TextVertexShader.vertexshader", "TextVertexShader.fragmentshader");
 		RESOURCE::Texture* asciiTexture = GTextureManager->getTextureWithFileName("data/Texture/Holstein.DDS", "dds");
 
-		preMadeTextBoxesVec.push_back(new TextBox(5, 80, glm::vec2(300, 300), 16, asciiTexture, shaderText));
+		preMadeTextBoxesVec.push_back(new TextBox(6, 80, glm::vec2(300, 300), 16, asciiTexture, shaderText));
+		preMadeTextBoxesVec.push_back(new TextBox(1, 20, glm::vec2(300, 300), 20, asciiTexture, shaderText));
+		preMadeTextBoxesVec.push_back(new TextBox(1, 80, glm::vec2(300, 300), 16, asciiTexture, shaderText));
 	}
 
 public:

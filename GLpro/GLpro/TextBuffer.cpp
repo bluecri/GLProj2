@@ -2,8 +2,8 @@
 #include "TextBuffer.h"
 
 RESOURCE::TextBuffer::TextBuffer(int lineN, int lengthN, int fontSize)
-	: _lineN(lineN), _lengthN(lengthN), _fontSize(fontSize), _bUpdatePosVBO(false), _bUpdateUVVBO(false),
-	_prevPosVBOSize(0), _prevUVVBOSize(0)
+	: _lineN(lineN), _lengthN(lengthN), _fontSize(fontSize), _bUpdateVBO(false), _bUpdateUVBO(false),
+	_prevVBOSize(0), _prevUVBOSize(0)
 {
 	_bBox = false;
 	genVao();
@@ -23,8 +23,8 @@ RESOURCE::TextBuffer::TextBuffer(int width, int height)
 
 RESOURCE::TextBuffer::~TextBuffer()
 {
-	glDeleteBuffers(1, &_posVBO);
-	glDeleteBuffers(1, &_uvVBO);
+	glDeleteBuffers(1, &_vbo);
+	glDeleteBuffers(1, &_uvbo);
 
 	glDeleteVertexArrays(1, &_vao);
 }
@@ -33,15 +33,15 @@ void RESOURCE::TextBuffer::bind()
 {
 	glBindVertexArray(_vao);
 
-	if (_bUpdatePosVBO)
+	if (_bUpdateVBO)
 	{
-		updatePosVBO();
-		_bUpdatePosVBO = false;
+		updateVBO();
+		_bUpdateVBO = false;
 	}
-	if (_bUpdateUVVBO)
+	if (_bUpdateUVBO)
 	{
 		updateUVVBO();
-		_bUpdateUVVBO = false;
+		_bUpdateUVBO = false;
 	}
 
 	return;
@@ -66,16 +66,16 @@ void RESOURCE::TextBuffer::setUVBufferWithString(std::string & printStr)
 	}
 
 	//	updateUVVBO(); -> 실제 사용될 시에(glBindVertexArray) update한다.
-	_bUpdateUVVBO = true;
+	_bUpdateUVBO = true;
 
 	return;
 }
 
-void RESOURCE::TextBuffer::setPosBuffer(int lineN, int lengthN, int fontSize)
+void RESOURCE::TextBuffer::updateTextVBO(int lineN, int lengthN, int fontSize)
 {
 	if (_bBox)
 	{
-		printf_s("[LOG] : TextBuffer::setPosBuffer is called in bBox\n");
+		printf_s("[LOG] : TextBuffer::updateTextVBO is called in bBox\n");
 		return;
 	}
 	_vertexes.clear();
@@ -83,21 +83,21 @@ void RESOURCE::TextBuffer::setPosBuffer(int lineN, int lengthN, int fontSize)
 	// Fill _vertexes vector (static)
 	privateSetPosBuffer(lineN, lengthN, fontSize);
 
-	//	updatePosVBO(); -> 실제 사용될 시에(glBindVertexArray) update한다.
-	_bUpdatePosVBO = true;
+	//	updateVBO(); -> 실제 사용될 시에(glBindVertexArray) update한다.
+	_bUpdateVBO = true;
 
 	return;
 }
 
-void RESOURCE::TextBuffer::setBoxPosBuffer(int width, int height)
+void RESOURCE::TextBuffer::updateBoxVBO(int width, int height)
 {
 	if (!_bBox)
 	{
-		printf_s("[LOG] : :TextBuffer::setBoxPosBuffer is called in not bBox\n");
+		printf_s("[LOG] : :TextBuffer::updateBoxVBO is called in not bBox\n");
 		return;
 	}
 	privateSetBoxPosBuffer(width, height);
-	_bUpdatePosVBO = true;
+	_bUpdateVBO = true;
 }
 
 void RESOURCE::TextBuffer::unbind() const
@@ -165,16 +165,16 @@ void RESOURCE::TextBuffer::createBuffer()
 		privateSetPosBuffer(_lineN, _lengthN, _fontSize);
 	}
 
-	glGenBuffers(1, &_posVBO);
-	glGenBuffers(1, &_uvVBO);
+	glGenBuffers(1, &_vbo);
+	glGenBuffers(1, &_uvbo);
 
-	_prevPosVBOSize = _vertexes.size() * sizeof(glm::vec2);		// save prev size for glBindBuffer(NULL)
-	_prevUVVBOSize = _printUVs.size() * sizeof(glm::vec2);
+	_prevVBOSize = _vertexes.size() * sizeof(glm::vec2);		// save prev size for glBindBuffer(NULL)
+	_prevUVBOSize = _printUVs.size() * sizeof(glm::vec2);
 
-	glBindBuffer(GL_ARRAY_BUFFER, _posVBO);
-	glBufferData(GL_ARRAY_BUFFER, _prevPosVBOSize, &_vertexes[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, _uvVBO);
-	glBufferData(GL_ARRAY_BUFFER, _prevUVVBOSize, &_printUVs[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	glBufferData(GL_ARRAY_BUFFER, _prevVBOSize, &_vertexes[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, _uvbo);
+	glBufferData(GL_ARRAY_BUFFER, _prevUVBOSize, &_printUVs[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -185,22 +185,22 @@ void RESOURCE::TextBuffer::createBuffer()
 }
 
 
-void RESOURCE::TextBuffer::updatePosVBO()
+void RESOURCE::TextBuffer::updateVBO()
 {
 	// should be called when glBindVertexArray(_vao) is already called
-	glBindBuffer(GL_ARRAY_BUFFER, _posVBO);
-	glBufferData(GL_ARRAY_BUFFER, _prevPosVBOSize, NULL, GL_STATIC_DRAW);
-	_prevPosVBOSize = _vertexes.size() * sizeof(glm::vec2);
-	glBufferData(GL_ARRAY_BUFFER, _prevPosVBOSize, &_vertexes[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	glBufferData(GL_ARRAY_BUFFER, _prevVBOSize, NULL, GL_STATIC_DRAW);
+	_prevVBOSize = _vertexes.size() * sizeof(glm::vec2);
+	glBufferData(GL_ARRAY_BUFFER, _prevVBOSize, &_vertexes[0], GL_STATIC_DRAW);
 }
 
 void RESOURCE::TextBuffer::updateUVVBO()
 {
 	// should be called when glBindVertexArray(_vao) is already called
-	glBindBuffer(GL_ARRAY_BUFFER, _uvVBO);
-	glBufferData(GL_ARRAY_BUFFER, _prevUVVBOSize, NULL, GL_STATIC_DRAW);
-	_prevUVVBOSize = _vertexes.size() * sizeof(glm::vec2);
-	glBufferData(GL_ARRAY_BUFFER, _prevUVVBOSize, &_printUVs[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, _uvbo);
+	glBufferData(GL_ARRAY_BUFFER, _prevUVBOSize, NULL, GL_STATIC_DRAW);
+	_prevUVBOSize = _vertexes.size() * sizeof(glm::vec2);
+	glBufferData(GL_ARRAY_BUFFER, _prevUVBOSize, &_printUVs[0], GL_STATIC_DRAW);
 }
 
 // text vertices create function with line, length, fontsize

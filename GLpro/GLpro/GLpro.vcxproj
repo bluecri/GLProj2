@@ -138,6 +138,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="ImageBox.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="ParticleBuffer.cpp" />
@@ -151,6 +153,7 @@
     <ClCompile Include="ParticleFObj.cpp" />
     <ClCompile Include="ParticleStruct.cpp" />
     <ClCompile Include="RBox.cpp" />
+    <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="RigidbodyComponent.cpp" />
     <ClCompile Include="RParticle.cpp" />
     <ClCompile Include="RText.cpp" />
@@ -225,6 +228,7 @@
     <ClInclude Include="ROldLight.h" />
     <ClInclude Include="RParticle.h" />
     <ClInclude Include="RText.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="ShadowBufferTextureShader.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\objectLoader.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\vboindexer.h" />

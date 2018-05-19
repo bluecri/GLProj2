@@ -264,6 +264,15 @@
     <ClCompile Include="ShadowBufferTextureShader.cpp">
       <Filter>소스 파일\src\Resource\ShadowOld</Filter>
     </ClCompile>
+    <ClCompile Include="RenderManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageBox.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -493,6 +502,9 @@
     </ClInclude>
     <ClInclude Include="ShadowBufferTextureShader.h">
       <Filter>소스 파일\src\Resource\ShadowOld</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\GameScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

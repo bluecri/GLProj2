@@ -2,18 +2,7 @@
 #include "Canvas.h"
 #include "Box.h"
 
-inline void Canvas::setFocusBox(int x, int y)
-{
-	for (auto elem : _boxList)
-	{
-		if (elem->IsInBox(x, y))
-		{
-			_focusBox = elem;
-			return;
-		}
-	}
-	return;
-}
+// set focusBox that was clicked.
 
 inline void Canvas::transferKeyInputToFocusBox(int inputKey)
 {
@@ -24,7 +13,20 @@ inline void Canvas::transferKeyInputToFocusBox(int inputKey)
 
 }
 
-void Canvas::addBox(Box * box)
+inline void Canvas::transferMouseClickToBox(int x, int y)
 {
-	_boxList.push_back(box);
+	for (auto elem : _boxMap)
+	{
+		if (elem.second->IsInBox(x, y))
+		{
+			_focusBox = elem.second->getBoxWithCoord(x, y);
+			_focusBox->eventMouseClick();
+			return;
+		}
+	}
+}
+
+void Canvas::addBox(Box * inbox)
+{
+	_boxMap.insert(std::make_pair(inbox->_name, inbox));
 }

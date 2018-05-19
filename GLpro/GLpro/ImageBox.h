@@ -63,7 +63,7 @@ public:
 
 	virtual void moveLTPosition(int widthLT, int heightLT)
 	{
-		_textFObj->setPos(glm::vec2(_widthLT, _heightLT);
+		_textFObj->setPos(glm::vec2(_widthLT, _heightLT));
 	}
 
 public:

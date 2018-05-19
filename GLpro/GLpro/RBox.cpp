@@ -10,9 +10,9 @@ RENDER::RBox::RBox(SHADER::ShaderText * shaderObj)
 	_shaderObj = shaderObj;
 }
 
-RBoxDrawElem RENDER::RBox::addToDrawList(RBoxDrawElem normalFObj)
+RBoxDrawElem RENDER::RBox::addToDrawList(RBoxDrawElem textFObjBOX)
 {
-	auto elem = normalFObj;
+	auto elem = textFObjBOX;
 	_boxDrawElemContainer.push_back(elem);
 	return elem;
 }
@@ -32,25 +32,25 @@ void RENDER::RBox::draw(float deltaTime)
 	for (auto it = _boxDrawElemContainer.begin(); it != _boxDrawElemContainer.end(); )
 	{
 		
-		RBoxDrawElem textFObj = (*it);
+		RBoxDrawElem _textFObj = (*it);
 
-		if (!textFObj->getRender())
+		if (!_textFObj->getRender())
 		{
 			continue;
 		}
 
-		textFObj->_textBuffer->bind();
+		_textFObj->_textBuffer->bind();
 		glActiveTexture(GL_TEXTURE4);
-		textFObj->_texture->bind();
+		_textFObj->_texture->bind();
 		_shaderObj->loadInt(_shaderObj->m_text2DUniformID, 4);
 		
 		// 원래 용도는 움직이는 text. => position으로 사용
-		_shaderObj->loadVector2(_shaderObj->m_movedVec2ID, textFObj->_pos);
+		_shaderObj->loadVector2(_shaderObj->m_movedVec2ID, _textFObj->_pos);
 
-		textFObj->_textBuffer->render();
+		_textFObj->_textBuffer->render();
 
-		textFObj->_texture->unbind();
-		textFObj->_textBuffer->unbind();
+		_textFObj->_texture->unbind();
+		_textFObj->_textBuffer->unbind();
 
 		it++;
 	}

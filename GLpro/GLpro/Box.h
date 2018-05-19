@@ -3,6 +3,11 @@
 #include <functional>
 #include "UIEntity.h"
 
+enum ENUM_PREMADE_BOX
+{
+	PREMADE_BOX_EMPTY
+};
+
 class Box : public UIEntity
 {
 public:
@@ -100,12 +105,9 @@ public:
 public:
 	static void initPreMade()
 	{
+		preMadeBoxesVec.push_back(new Box(10, 10, 10, 10));
 	}
 
-	enum ENUM_PREMADE_BOX
-	{
-		PREMADE_BOX_EMPTY
-	};
 
 	static std::vector<Box*> preMadeBoxesVec;
 

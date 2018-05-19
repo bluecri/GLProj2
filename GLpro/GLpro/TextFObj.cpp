@@ -76,12 +76,12 @@ void RENDER_TARGET::TEXT::TextFObj::changePrintStr(std::string & inStr)
 
 void RENDER_TARGET::TEXT::TextFObj::changeFrame(int lineN, int lengthN, int fontSize)
 {
-	_textBuffer->setPosBuffer(lineN, lengthN, fontSize);
+	_textBuffer->updateTextVBO(lineN, lengthN, fontSize);
 }
 
 void RENDER_TARGET::TEXT::TextFObj::changeBoxSize(int height, int width)
 {
-	_textBuffer->setBoxPosBuffer(height, width);
+	_textBuffer->updateBoxVBO(height, width);
 }
 
 // common

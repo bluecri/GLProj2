@@ -1,7 +1,23 @@
 #include "./CameraManager.h"
 #include "./Camera.h"
+#include "./CameraBuilder.h"
 
 CAMERA::CameraManager* GCameraManager = nullptr;
+
+inline CAMERA::CameraManager::CameraManager()
+{
+	CameraBuilder camBuild(std::string("mainCam"), 0);
+	_mainCamera = camBuild.constructPtr();
+	AddCamera(_mainCamera);
+}
+
+inline CAMERA::CameraManager::~CameraManager()
+{
+	for (auto elem : _cameraMap)
+	{
+		delete elem.second;
+	}
+}
 
 bool CAMERA::CameraManager::AddCamera(Camera * cam)
 {
