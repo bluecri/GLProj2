@@ -15,13 +15,14 @@ namespace CAMERA { class Camera; }
 class RigidbodyComponent;
 class Camera;
 
-using RSkyboxDrawElement	= std::pair<RENDER_TARGET::SKYBOX::SkyboxFObj*, RigidbodyComponent*>;
-using RSkyboxDrawElemContainer	= std::list<std::shared_ptr<RSkyboxDrawElement>>;
-
 namespace RENDER 
 {
 	class RSkybox
 	{
+	public:
+		using TYPE_SHADER = SHADER::ShaderSkybox;
+		using RSkyboxDrawElement = std::pair<RENDER_TARGET::SKYBOX::SkyboxFObj*, RigidbodyComponent*>;
+		using RSkyboxDrawElemContainer = std::list<std::shared_ptr<RSkyboxDrawElement>>;
 	public:
 		RSkybox(SHADER::ShaderSkybox* shaderObj, float div = 1.1f);
 		virtual ~RSkybox() {};

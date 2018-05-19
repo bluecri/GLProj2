@@ -19,7 +19,11 @@ namespace RENDER_TARGET
 			RESOURCE::Texture * _texture = nullptr;
 
 			TextFObj(const char* textureFileName, const char* textureType, int lineN, int lengthN, glm::vec2 pos, int fontSize);
+			TextFObj(RESOURCE::Texture * texture, int lineN, int lengthN, glm::vec2 pos, int fontSize);
+
+			// for box(RBox)
 			TextFObj(const char* textureFileName, const char* textureType, int width, int height, int widthLT, int heightLT);
+			TextFObj(RESOURCE::Texture * texture, int width, int height, int widthLT, int heightLT);
 			~TextFObj() {	};
 
 			void changePrintStr(std::string& inStr);
@@ -42,7 +46,7 @@ namespace RENDER_TARGET
 			float _lifeTime;		// if 0 -> will be deleted.
 
 			bool _bBindToScreen;
-			glm::vec2 _pos;
+			glm::vec2 _pos;			// print position
 			glm::vec2 _deltaPos;
 
 		private:

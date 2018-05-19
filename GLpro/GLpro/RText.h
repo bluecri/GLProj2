@@ -14,14 +14,15 @@ namespace CAMERA { class Camera; }
 class RigidbodyComponent;
 class Camera;
 
-using RTextDrawElement = std::pair<RENDER_TARGET::TEXT::TextFObj*, RigidbodyComponent*>;
-using RTextDrawElemContainer = std::list<std::shared_ptr<RTextDrawElement>>;
-
 namespace RENDER
 {
 	class RText
 	{
 	public:
+		using TYPE_SHADER = SHADER::ShaderText;
+		using RTextDrawElement = std::pair<RENDER_TARGET::TEXT::TextFObj*, RigidbodyComponent*>;
+		using RTextDrawElemContainer = std::list<std::shared_ptr<RTextDrawElement>>;
+
 		RText(SHADER::ShaderText* shaderObj);
 		virtual ~RText() {};
 

@@ -33,7 +33,7 @@ public:
 	virtual void attachChildUIEntity(UIEntity* childUIEntity);
 
 	virtual void setAllBRender(bool bRender);
-	virtual void singleSetBRender(bool bRender) = 0;		//must implement
+	virtual void setBRender(bool bRender) = 0;		//must implement
 
 public:
 	static int _sMaxID;		//object 고유 ID(0 ~ ). 자동 생성.

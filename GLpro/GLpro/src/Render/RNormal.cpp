@@ -15,12 +15,11 @@
 #include "../../ShadowBufferTextureShader.h"
 #include "../Shader/ShaderManager.h"
 
-#include "../../RRender.h"
 
 namespace RENDER
 {
 
-	RNormal::RNormal(SHADER::ShaderMain * shaderObj) : RReneder()
+	RNormal::RNormal(SHADER::ShaderMain * shaderObj)
 	{
 		_shaderObj = shaderObj;
 	}
@@ -99,9 +98,9 @@ namespace RENDER
 		}
 	}
 
-	std::shared_ptr<RNormalDrawElement> RNormal::addToDrawList(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent * rigidComponent)
+	std::shared_ptr<RNormal::DrawElement> RNormal::addDrawElem(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent * rigidComponent)
 	{
-		auto elem = std::make_shared<RNormalDrawElement>(normalFObj, rigidComponent);
+		auto elem = std::make_shared<DrawElement>(normalFObj, rigidComponent);
 		_normalDrawElemContainer.push_back(elem);
 		return elem;
 	}
@@ -116,9 +115,10 @@ namespace RENDER
 		return _shaderObj;
 	}
 
-	void RNormal::destructor(std::shared_ptr<RNormalDrawElement> shared)
+	
+	void RNormal::removeDrawElem(std::shared_ptr<DrawElement> shared)
 	{
-		RNormalDrawElement* ptr = shared.get();
+		DrawElement* ptr = shared.get();
 		for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end();)
 		{
 			if ((*it).get() == ptr)
@@ -129,4 +129,5 @@ namespace RENDER
 			++it;
 		}
 	}
+	
 }

@@ -20,9 +20,23 @@ RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char
 		printf_s("[LOG] : _texture, _textBuffer nullptr\n");
 	}
 }
+RENDER_TARGET::TEXT::TextFObj::TextFObj(RESOURCE::Texture * texture, int lineN, int lengthN, glm::vec2 pos, int fontSize)
+{
+	_bBox = false;
+	_pos = pos;
+	_texture = texture;
+	_textBuffer = new RESOURCE::TextBuffer(lineN, lengthN, fontSize);
+
+	if (_texture == nullptr || _textBuffer == nullptr)
+	{
+		_texture = nullptr;
+		_textBuffer = nullptr;
+		printf_s("[LOG] : _texture, _textBuffer nullptr\n");
+	}
+}
 RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char * textureType, int width, int height, int widthLT, int heightLT)
 {
-	_bBox = true;
+	_bBox = true;		// ¥‹¿œ box
 	_pos.x = widthLT;
 	_pos.y = heightLT;
 
@@ -36,6 +50,24 @@ RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char
 		printf_s("[LOG] : _texture, _textBuffer nullptr .. empty box\n");
 	}
 }
+
+RENDER_TARGET::TEXT::TextFObj::TextFObj(RESOURCE::Texture * texture, int width, int height, int widthLT, int heightLT)
+{
+	_bBox = true;
+	_pos.x = widthLT;
+	_pos.y = heightLT;
+
+	_texture = texture;
+	_textBuffer = new RESOURCE::TextBuffer(width, height);
+
+	if (_texture == nullptr || _textBuffer == nullptr)
+	{
+		_texture = nullptr;
+		_textBuffer = nullptr;
+		printf_s("[LOG] : _texture, _textBuffer nullptr .. empty box\n");
+	}
+}
+
 void RENDER_TARGET::TEXT::TextFObj::changePrintStr(std::string & inStr)
 {
 	printStr = inStr;

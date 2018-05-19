@@ -10,7 +10,8 @@
 #include "Shader\ShaderManager.h"
 
 #include "../Option.h"
-#include "../ShadowBufferTexture.h"
+#include "../ShadowBufferTextureShader.h"
+#include "../RenderManager.h"
 
 WINDOW::Window::Window(int windowWidth, int windowHeight)
 {
@@ -73,10 +74,10 @@ int WINDOW::Window::init()
 	GLightManager = new LightManager();
 	GCameraManager = new CAMERA::CameraManager();
 	GShaderManager = new SHADER::ShaderManager();
+	GRendermanager = new RENDER::RenderManager();
 	GOption = new Option();
-
 	//
-	GShadowBufferTexture = new RESOURCE::ShadowBufferTexture();
+	GShadowBufferTexture = new RESOURCE::ShadowBufferTextureShader();
 
 	return 0;
 }

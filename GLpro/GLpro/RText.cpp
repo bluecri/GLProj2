@@ -12,7 +12,7 @@ RENDER::RText::RText(SHADER::ShaderText * shaderObj)
 }
 
 // weak_ptr로 변환하여 사용.
-std::shared_ptr<RTextDrawElement> RENDER::RText::addToDrawList(RENDER_TARGET::TEXT::TextFObj * textFObj, RigidbodyComponent * rigidbodyComponent)
+std::shared_ptr<RENDER::RText::RTextDrawElement> RENDER::RText::addToDrawList(RENDER_TARGET::TEXT::TextFObj * textFObj, RigidbodyComponent * rigidbodyComponent)
 {
 	auto elem = std::make_shared<RTextDrawElement>(textFObj, rigidbodyComponent);
 	_textDrawElemContainer.push_back(elem);
@@ -54,11 +54,14 @@ void RENDER::RText::draw(float deltaTime)
 		textFObj->_texture->bind();
 		_shaderObj->loadInt(_shaderObj->m_text2DUniformID, 4);
 
+		textFObj->_pos += (textFObj->_deltaPos) * deltaTime;
+		_shaderObj->loadVector2(_shaderObj->m_movedVec2ID, textFObj->_pos);
+
 		// text bind to object OR to screen
 		if (textFObj->_bBindToScreen)
 		{
-			textFObj->_pos += (textFObj->_deltaPos) * deltaTime;
-			_shaderObj->loadVector2(_shaderObj->m_movedVec2ID, textFObj->_pos);
+			// textFObj->_pos += (textFObj->_deltaPos) * deltaTime;
+			// _shaderObj->loadVector2(_shaderObj->m_movedVec2ID, textFObj->_pos);
 		}
 		else
 		{

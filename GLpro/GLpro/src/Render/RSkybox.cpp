@@ -13,7 +13,7 @@ namespace RENDER
 	}
 
 
-	std::shared_ptr<RSkyboxDrawElement> RSkybox::addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj * skyboxFObj, RigidbodyComponent * rigidComponent)
+	std::shared_ptr<RENDER::RSkybox::RSkyboxDrawElement> RSkybox::addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj * skyboxFObj, RigidbodyComponent * rigidComponent)
 	{
 		auto elem = std::make_shared<RSkyboxDrawElement>(skyboxFObj, rigidComponent);
 		_skyboxDrawElemContainer.push_back(elem);

@@ -21,37 +21,40 @@ class RigidbodyComponent;
 class Camera;
 class ParticleCreateInfo;
 
-using RParticleDrawElement = std::pair<RENDER_TARGET::PARTICLE::ParticleFObj*, ParticleCreateInfo*>;
-using RParticleDrawElemContainer = std::list<std::shared_ptr<RParticleDrawElement>>;
-
 namespace RENDER
 {
 	class RParticle
 	{
 	public:
-		RParticle(SHADER::ShaderParticle* shaderObj);
+		using TYPE_SHADER = SHADER::ShaderParticle;
+		using FObjElem = RENDER_TARGET::PARTICLE::ParticleFObj;
+		using DrawElement = std::pair<RENDER_TARGET::PARTICLE::ParticleFObj*, ParticleCreateInfo*>;
+		using DrawElemContainer = std::list<std::shared_ptr<DrawElement>>;
+
+	public:
+		RParticle(TYPE_SHADER* shaderObj);
 		virtual ~RParticle() {};
 
 		// use this with weak_ptr
-		std::shared_ptr<RParticleDrawElement> addToDrawList(RENDER_TARGET::PARTICLE::ParticleFObj* particleFObj, RigidbodyComponent* rigidbodyComponent);
+		std::shared_ptr<DrawElement> addToDrawList(FObjElem* particleFObj, RigidbodyComponent* rigidbodyComponent);
 
 		void update(CAMERA::Camera* cam);	//shader target camera update
 
 		void draw(float deltaTime);
 
-		virtual void chageShader(SHADER::ShaderParticle* other);
+		virtual void chageShader(TYPE_SHADER* other);
 
-		virtual SHADER::ShaderParticle* getShader() const;
+		virtual TYPE_SHADER * getShader() const;
 
-		void destructor(std::shared_ptr<RParticleDrawElement> shared);
+		void destructor(std::shared_ptr<DrawElement> shared);
 
 	private:
 		void beforeDraw(float deltaTime);
 
 	private:
-		SHADER::ShaderParticle* _shaderObj;
+		TYPE_SHADER* _shaderObj;
 		CAMERA::Camera *_targetCamera;
 
-		RParticleDrawElemContainer _particleDrawElemContainer;
+		DrawElemContainer _particleDrawElemContainer;
 	};
 }

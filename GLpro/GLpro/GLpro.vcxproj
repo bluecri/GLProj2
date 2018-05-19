@@ -154,7 +154,7 @@
     <ClCompile Include="RigidbodyComponent.cpp" />
     <ClCompile Include="RParticle.cpp" />
     <ClCompile Include="RText.cpp" />
-    <ClCompile Include="ShadowBufferTexture.cpp" />
+    <ClCompile Include="ShadowBufferTextureShader.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\objectLoader.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\vboindexer.cpp" />
     <ClCompile Include="src\3rdParty\ShaderLoader\shader.cpp" />
@@ -225,7 +225,7 @@
     <ClInclude Include="ROldLight.h" />
     <ClInclude Include="RParticle.h" />
     <ClInclude Include="RText.h" />
-    <ClInclude Include="ShadowBufferTexture.h" />
+    <ClInclude Include="ShadowBufferTextureShader.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\objectLoader.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\vboindexer.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\Vertex.h" />

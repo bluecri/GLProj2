@@ -94,6 +94,9 @@
     <Filter Include="소스 파일\GameScene">
       <UniqueIdentifier>{698321eb-9503-4dc3-90a4-0b85a6a09785}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\src\renderer\Parent">
+      <UniqueIdentifier>{0ef5e8c6-7991-4ccf-812b-88a3836cd875}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -231,9 +234,6 @@
     <ClCompile Include="src\Sound\ALSound.cpp">
       <Filter>소스 파일\src\sound</Filter>
     </ClCompile>
-    <ClCompile Include="ShadowBufferTexture.cpp">
-      <Filter>소스 파일\src\Resource\ShadowOld</Filter>
-    </ClCompile>
     <ClCompile Include="Option.cpp">
       <Filter>소스 파일\src\option</Filter>
     </ClCompile>
@@ -260,6 +260,9 @@
     </ClCompile>
     <ClCompile Include="Box.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowBufferTextureShader.cpp">
+      <Filter>소스 파일\src\Resource\ShadowOld</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -446,9 +449,6 @@
     <ClInclude Include="src\Sound\ALSource.h">
       <Filter>소스 파일\src\sound</Filter>
     </ClInclude>
-    <ClInclude Include="ShadowBufferTexture.h">
-      <Filter>소스 파일\src\Resource\ShadowOld</Filter>
-    </ClInclude>
     <ClInclude Include="Option.h">
       <Filter>소스 파일\src\option</Filter>
     </ClInclude>
@@ -490,6 +490,9 @@
     </ClInclude>
     <ClInclude Include="RenderManager.h">
       <Filter>소스 파일\src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowBufferTextureShader.h">
+      <Filter>소스 파일\src\Resource\ShadowOld</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

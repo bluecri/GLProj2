@@ -18,17 +18,21 @@ namespace RESOURCE
 		void unbind() const;
 
 		void setUVBufferWithString(std::string& printStr);	// can be faster(변경문자만 변경)
-		void setPosBuffer(int lineN, int lengthN, int fontSize);	// can be faster(변경문자만 변경)
+		void updateTextVBO(int lineN, int lengthN, int fontSize);	// can be faster(변경문자만 변경)
 		
-		void setBoxPosBuffer(int width, int height);	// box
+		void updateBoxVBO(int width, int height);	// box
 		
 		void render();
 		int getGLCount();
 
+		int getLineN() {return _lineN; }
+		int getLenN() {	return _lengthN; }
+		int getFontSize() {	return _fontSize; }
+
 	private:
 		void genVao();
 		virtual void createBuffer();
-		void updatePosVBO();
+		void updateVBO();
 		void updateUVVBO();
 		void privateSetPosBuffer(int lineN, int lengthN, int fontSize);
 
@@ -37,13 +41,13 @@ namespace RESOURCE
 	private:
 		GLuint	_vao;		//vertex array
 
-		GLuint	_posVBO;		// vertex buffer
-		GLuint	_uvVBO;		// element buffer
+		GLuint	_vbo;		// vertex buffer
+		GLuint	_uvbo;		// element buffer
 
-		bool _bUpdatePosVBO;
-		bool _bUpdateUVVBO;
-		GLsizeiptr _prevPosVBOSize;
-		GLsizeiptr _prevUVVBOSize;
+		bool _bUpdateVBO;
+		bool _bUpdateUVBO;
+		GLsizeiptr _prevVBOSize;
+		GLsizeiptr _prevUVBOSize;
 
 		std::vector<glm::vec2> _vertexes;
 		std::vector<glm::vec2> _printUVs;		// print에 사용될 uv vector

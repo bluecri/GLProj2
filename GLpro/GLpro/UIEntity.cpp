@@ -139,7 +139,7 @@ void UIEntity::setAllBRender(bool bRender)
 {
 	for (auto elem : _childUIEntityList)
 	{
-		elem->singleSetBRender(bRender);
+		elem->setBRender(bRender);
 		elem->setAllBRender(bRender);
 	}
 }

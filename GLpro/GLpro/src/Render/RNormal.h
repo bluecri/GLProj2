@@ -14,20 +14,20 @@ namespace SHADER {
 
 class RigidbodyComponent;
 
-using TYPE_SHADER = SHADER::ShaderMain;
-
-using RNormalDrawElement = std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>;
-using RNormalDrawElemContainer = std::list<std::shared_ptr<RNormalDrawElement>>;
 
 namespace RENDER
 {
-	class RNormal : public RReneder
+	class RNormal
 	{
 		public:
-			RNormal(SHADER::ShaderMain* shaderObj);
-			virtual ~RNormal() {};
+			using TYPE_SHADER = SHADER::ShaderMain;
+			using DrawElement = std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>;
+			using DrawElemContainer = std::list<std::shared_ptr<DrawElement>>;
 
-			std::shared_ptr<RNormalDrawElement> addToDrawList(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent* rigidComponent);
+			RNormal(SHADER::ShaderMain* shaderObj);
+			virtual ~RNormal() {};	// Render 삭제시 DrawElemContainer이 shared_ptr 이므로 자동 해제.
+
+			std::shared_ptr<RNormal::DrawElement> addDrawElem(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent* rigidComponent);
 
 			void update(CAMERA::Camera* cam);	//shader target camera update
 
@@ -37,14 +37,14 @@ namespace RENDER
 
 			virtual SHADER::ShaderMain* getShader() const;
 
-			void destructor(std::shared_ptr<RNormalDrawElement> shared);
+			void removeDrawElem(std::shared_ptr<DrawElement> shared);		
 	private:
 			SHADER::ShaderMain* _shaderObj;
 			CAMERA::Camera *_targetCamera;
 
 			SHADER::ShaderShadow* _oldShaderShadow;
 
-			RNormalDrawElemContainer _normalDrawElemContainer;
+			DrawElemContainer _normalDrawElemContainer;
 	};
 }
 #endif
