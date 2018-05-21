@@ -1,5 +1,6 @@
-#include "../stdafx.h"
+#pragma once
 
+#include "../stdafx.h"
 #include "../RigidbodyComponent.h"
 /******************************************************
 *  Document   :	Entity.h
@@ -7,6 +8,8 @@
 *	Entity의 부모, 자식을 붙일 때 rigidbodyComponent 안 transform의 부모, 자식이 연결되며,
 *	component의 경우 부모, 자식 관계가 존재하지 않는다.
 *******************************************************/
+class GameSession;
+
 class Entity 
 {
 public:
@@ -36,6 +39,7 @@ public:
 public:
 	static int _sMaxID;		//object 고유 ID(0 ~ ). 자동 생성.
 	std::string _name;
+	GameSession* _gameSession;		//registered gamesession
 
 	Entity* _parentEntity;
 	std::list<Entity*> _childEntityList;

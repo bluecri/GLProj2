@@ -33,7 +33,7 @@ namespace CAMERA {
 
 	void Camera::updateRecentVPAndViewMat()
 	{
-		_viewMatRecentUsed = _rigidbodyComponent->_transform->getTotalMat();
+		_viewMatRecentUsed = _rigidbodyComponent->_transform->getWorldMat();
 		_vpMatRecentUsed = _camProjMat * _viewMatRecentUsed;
 	}
 

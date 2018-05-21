@@ -6,7 +6,7 @@
 int main() {
 	GWindow = new WINDOW::Window();
 	GWindow->init();
-	GWindow->draws();
+	GWindow->mainLoop();
 		
 	return 0;
 }

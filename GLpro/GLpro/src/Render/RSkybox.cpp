@@ -13,9 +13,9 @@ namespace RENDER
 	}
 
 
-	std::shared_ptr<RENDER::RSkybox::RSkyboxDrawElement> RSkybox::addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj * skyboxFObj, RigidbodyComponent * rigidComponent)
+	std::shared_ptr<RENDER::RSkybox::DrawElement> RSkybox::addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj * skyboxFObj, RigidbodyComponent * rigidComponent)
 	{
-		auto elem = std::make_shared<RSkyboxDrawElement>(skyboxFObj, rigidComponent);
+		auto elem = std::make_shared<DrawElement>(skyboxFObj, rigidComponent);
 		_skyboxDrawElemContainer.push_back(elem);
 		return elem;
 	}
@@ -31,9 +31,9 @@ namespace RENDER
 
 		// set camera view matrix(camera rotate mat * camera position mat)
 		Transform* cameraTransform = _targetCamera->_rigidbodyComponent->_transform;
-		const glm::mat4& cameraModelMatrix = cameraTransform->getModelMatrixConstRef();
-		const glm::mat4& cameraRotationMatrix= cameraTransform->getRotationMatrixConstRef();
-		const glm::mat4& cameraViewMatrix = cameraRotationMatrix * cameraModelMatrix;
+		//const glm::mat4& cameraModelMatrix = cameraTransform->getModelMatrixConstRef();
+		//const glm::mat4& cameraRotationMatrix= cameraTransform->getLocalRotationMatrixConstRef();
+		const glm::mat4& cameraViewMatrix = cameraTransform->getWorldMatRef();
 
 		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cameraViewMatrix);
 
@@ -42,7 +42,7 @@ namespace RENDER
 		for (auto elem : _skyboxDrawElemContainer) {
 			RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxRenderTarget = elem->first;
 			Transform* targetTransform = elem->second->_transform;
-			glm::mat4 totalModelMat = targetTransform->getTotalMat();
+			glm::mat4 totalModelMat = targetTransform->getWorldMat();
 
 			glm::mat4 tempMVP = _targetCamera->getCamProjMatRef() * cameraViewMatrix * totalModelMat;
 			_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, totalModelMat);
@@ -75,9 +75,9 @@ namespace RENDER
 		return _shaderObj;
 	}
 
-	void RSkybox::destructor(std::shared_ptr<RSkyboxDrawElement> shared)
+	void RSkybox::destructor(std::shared_ptr<DrawElement> shared)
 	{
-		RSkyboxDrawElement* ptr = shared.get();
+		DrawElement* ptr = shared.get();
 		for (auto it = _skyboxDrawElemContainer.begin(); it != _skyboxDrawElemContainer.end();)
 		{
 			if ((*it).get() == ptr)

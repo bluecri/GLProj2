@@ -29,7 +29,7 @@ class TextBox : public Box
 {
 public:
 	TextBox(int line, int len, glm::vec2 pos, int fontSize, const std::string &textTextureFileName, const std::string &type, SHADER::ShaderText* shaderText)
-		: Box(len * fontSize, line * fontSize, pos.x, pos.y)	// pos & size calc
+		: Box(len * static_cast<int>(fontSize), line * static_cast<int>(fontSize), static_cast<int>(pos.x), static_cast<int>(pos.y))	// pos & size calc
 	{
 		_rText = GRendermanager->getRRender<RENDER::RText, SHADER::ShaderText>(shaderText);
 		_textFObj = new RENDER_TARGET::TEXT::TextFObj(textTextureFileName.c_str(), type.c_str(), line, len, pos, fontSize);
@@ -45,7 +45,7 @@ public:
 	}
 
 	TextBox(int line, int len, glm::vec2 pos, int fontSize, RESOURCE::Texture * texture, SHADER::ShaderText* shaderText)
-		: Box(len * fontSize, line * fontSize, pos.x, pos.y)
+		: Box(len * static_cast<int>(fontSize), line * static_cast<int>(fontSize), static_cast<int>(pos.x), static_cast<int>(pos.y))
 	{
 		_rText = GRendermanager->getRRender<RENDER::RText, SHADER::ShaderText>(shaderText);
 		_textFObj = new RENDER_TARGET::TEXT::TextFObj(texture, line, len, pos, fontSize);
@@ -108,7 +108,7 @@ public:
 public:
 	static std::vector<TextBox*> preMadeTextBoxesVec;
 
-	std::weak_ptr<RENDER::RText::RTextDrawElement> drawElement;		// draw elem from renderer ( send to renderer for remove )
+	std::weak_ptr<RENDER::RText::DrawElement> drawElement;		// draw elem from renderer ( send to renderer for remove )
 	RENDER_TARGET::TEXT::TextFObj * _textFObj;						// fobj
 	RENDER::RText* _rText;									// which renderer is used
 };

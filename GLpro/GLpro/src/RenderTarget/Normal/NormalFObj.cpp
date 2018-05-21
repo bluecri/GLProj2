@@ -15,6 +15,11 @@ namespace RENDER_TARGET
 			_model = GModelManager->getModelWithFileName(modelFileName, createEbo);
 			_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
 		}
+		NormalFObj::NormalFObj(RESOURCE::Model * model, RESOURCE::Texture * texture)
+		{
+			_model = model;
+			_texture = texture;
+		}
 	}
 }
 

@@ -10,7 +10,7 @@ RENDER::RBox::RBox(SHADER::ShaderText * shaderObj)
 	_shaderObj = shaderObj;
 }
 
-RBoxDrawElem RENDER::RBox::addToDrawList(RBoxDrawElem textFObjBOX)
+RENDER::RBox::DrawElement RENDER::RBox::addToDrawList(DrawElement textFObjBOX)
 {
 	auto elem = textFObjBOX;
 	_boxDrawElemContainer.push_back(elem);
@@ -32,7 +32,7 @@ void RENDER::RBox::draw(float deltaTime)
 	for (auto it = _boxDrawElemContainer.begin(); it != _boxDrawElemContainer.end(); )
 	{
 		
-		RBoxDrawElem _textFObj = (*it);
+		DrawElement _textFObj = (*it);
 
 		if (!_textFObj->getRender())
 		{
@@ -71,9 +71,9 @@ SHADER::ShaderText * RENDER::RBox::getShader() const
 	return _shaderObj;
 }
 
-void RENDER::RBox::destructor(RBoxDrawElem delElem)
+void RENDER::RBox::destructor(DrawElement delElem)
 {
-	RBoxDrawElem ptr = delElem;
+	DrawElement ptr = delElem;
 	for (auto it = _boxDrawElemContainer.begin(); it != _boxDrawElemContainer.end();)
 	{
 		if ((*it) == ptr)

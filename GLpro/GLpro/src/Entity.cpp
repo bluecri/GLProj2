@@ -9,7 +9,8 @@ Entity::Entity(int type) {
 	_name = std::to_string(_sMaxID);
 	_type = type;
 	_rigidbodyComponent = new RigidbodyComponent(this);
-	_parentEntity = nullptr;
+	_parentEntity = nullptr; 
+	_gameSession = nullptr;
 	++_sMaxID;
 }
 
@@ -19,6 +20,7 @@ Entity::Entity(std::string name, int type) {
 	_type = type;
 	_rigidbodyComponent = new RigidbodyComponent(this);
 	_parentEntity = nullptr;
+	_gameSession = nullptr;
 
 	++_sMaxID;
 }

@@ -20,14 +20,14 @@ namespace RENDER
 	{
 	public:
 		using TYPE_SHADER = SHADER::ShaderText;
-		using RTextDrawElement = std::pair<RENDER_TARGET::TEXT::TextFObj*, RigidbodyComponent*>;
-		using RTextDrawElemContainer = std::list<std::shared_ptr<RTextDrawElement>>;
+		using DrawElement = std::pair<RENDER_TARGET::TEXT::TextFObj*, RigidbodyComponent*>;
+		using DrawElemContainer = std::list<std::shared_ptr<DrawElement>>;
 
 		RText(SHADER::ShaderText* shaderObj);
 		virtual ~RText() {};
 
 		// use this with weak_ptr
-		std::shared_ptr<RTextDrawElement> addToDrawList(RENDER_TARGET::TEXT::TextFObj* _textFObj, RigidbodyComponent* rigidbodyComponent);
+		std::shared_ptr<DrawElement> addToDrawList(RENDER_TARGET::TEXT::TextFObj* _textFObj, RigidbodyComponent* rigidbodyComponent);
 				
 		void update(CAMERA::Camera* cam);	//shader target camera update
 
@@ -37,12 +37,12 @@ namespace RENDER
 
 		virtual SHADER::ShaderText* getShader() const;
 
-		void destructor(std::shared_ptr<RTextDrawElement> shared);
+		void destructor(std::shared_ptr<DrawElement> shared);
 
 	private:
 		SHADER::ShaderText* _shaderObj;
 		CAMERA::Camera *_targetCamera;
 
-		RTextDrawElemContainer _textDrawElemContainer;
+		DrawElemContainer _textDrawElemContainer;
 	};
 }

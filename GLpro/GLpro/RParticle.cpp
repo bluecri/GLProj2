@@ -96,6 +96,7 @@ namespace RENDER
 
 	void RParticle::beforeDraw(float deltaTime)
 	{
+		glm::vec3 camPosVec = _targetCamera->_rigidbodyComponent->_transform->getWorldPosVec();
 		for (auto it = _particleDrawElemContainer.begin(); it != _particleDrawElemContainer.end(); )
 		{
 			RENDER_TARGET::PARTICLE::ParticleFObj* particleFObj = (*it)->first;
@@ -104,8 +105,8 @@ namespace RENDER
 			// update exist particles
 			for (auto elem : particleFObj->_particleContainer)
 			{
-
-				elem->update(deltaTime, _targetCamera->_rigidbodyComponent->_transform->getModelVec());
+				// campos
+				elem->update(deltaTime, camPosVec);
 			}
 			// create new particles [ get new particle & modify info with particleCreateInfo ]
 			particleCreateInfo->genNewParticles(particleFObj);

@@ -13,6 +13,8 @@
 #define ROOM_COL_CNT 2
 #define PLAYER_ROW_CNT 20
 #define PLAYER_COL_CNT 8
+#define MENU_ROW_CNT 6
+#define MENU_COL_CNT 2
 
 enum ENUM_PREMADE_CANVAS
 {
@@ -190,19 +192,27 @@ public:
 			}
 		}
 		{
-			// Canvas* ingameMenuCanvas = new Canvas();
-			ImageBox* RoomImageBox = ImageBox::preMadeImageBoxesVec[ENUM_PREMADE_IMAGEBOX::PREMADE_IMAGEBOX_IRON];
-			RoomImageBox->setName(std::string("RoomImageBox") + std::to_string(i));
-			RoomImageBox->modifyImageBoxSize(100, 20);
-			RoomImageBox->moveLTPosition(200 * boxWidthGap * k, 200 + boxHeightGap * i);
+			int boxHeightGap = 20;
+			int boxWidthGap = 100;
+			for (int i = 0; i < MENU_ROW_CNT; i++)
+			{
+				for (int k = 0; k < MENU_COL_CNT; k++)
+				{
+					// Canvas* ingameMenuCanvas = new Canvas();
+					ImageBox* RoomImageBox = ImageBox::preMadeImageBoxesVec[ENUM_PREMADE_IMAGEBOX::PREMADE_IMAGEBOX_IRON];
+					RoomImageBox->setName(std::string("RoomImageBox") + std::to_string(i));
+					RoomImageBox->modifyImageBoxSize(100, 20);
+					RoomImageBox->moveLTPosition(200 * boxWidthGap * k, 200 + boxHeightGap * i);
 
-			TextBox* RoomTextBox = TextBox::preMadeTextBoxesVec[ENUM_PREMADE_TEXTBOX::PREMADE_TEXTBOX_INPUT];
-			RoomTextBox->setName(std::string("RoomTextBox") + std::to_string(i));
-			RoomTextBox->moveLTPosition(200 * boxWidthGap * k, 200 + boxHeightGap * i);
+					TextBox* RoomTextBox = TextBox::preMadeTextBoxesVec[ENUM_PREMADE_TEXTBOX::PREMADE_TEXTBOX_INPUT];
+					RoomTextBox->setName(std::string("RoomTextBox") + std::to_string(i));
+					RoomTextBox->moveLTPosition(200 * boxWidthGap * k, 200 + boxHeightGap * i);
 
-			RoomImageBox->attachChildUIEntity(RoomTextBox);
-			ingameMenuCanvas->addBox(RoomImageBox);
-			ingameMenuCanvas->addBox(RoomTextBox);
+					RoomImageBox->attachChildUIEntity(RoomTextBox);
+					ingameMenuCanvas->addBox(RoomImageBox);
+					ingameMenuCanvas->addBox(RoomTextBox);
+				}
+			}
 		}
 		{
 			// Canvas* gameCanvas = new Canvas();

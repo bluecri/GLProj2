@@ -13,7 +13,8 @@ namespace WINDOW
 	public:	
 		Window(int windowWidth = 800, int windowHeight = 600);
 		int init();
-		void draws();
+		void mainLoop();
+		void renderAll(float acc);
 		void exitWindow();
 
 	public:

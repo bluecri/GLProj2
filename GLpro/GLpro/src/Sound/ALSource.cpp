@@ -14,8 +14,8 @@ ALSource::ALSource() {
 	alSourcef(m_sourceID, AL_GAIN, m_gain);
 	alSourcefv(m_sourceID, AL_POSITION, m_sourcePos);
 	alSourcei(m_sourceID, AL_LOOPING, m_isLoop);
-	alSourcei(m_sourceID, AL_MAX_DISTANCE, 10.0f);
-	alSourcei(m_sourceID, AL_REFERENCE_DISTANCE, 1.0);
+	alSourcei(m_sourceID, AL_MAX_DISTANCE, 10);
+	alSourcei(m_sourceID, AL_REFERENCE_DISTANCE, 1);
 }
 
 ALSource::ALSource(Transform* transform, float pitch = 1.0f, float gain = 1.0f) 
@@ -31,8 +31,8 @@ ALSource::ALSource(Transform* transform, float pitch = 1.0f, float gain = 1.0f)
 	alSourcef(m_sourceID, AL_GAIN, m_gain);
 	alSourcefv(m_sourceID, AL_POSITION, m_sourcePos);
 	alSourcei(m_sourceID, AL_LOOPING, m_isLoop);
-	alSourcei(m_sourceID, AL_MAX_DISTANCE, 10.0f);
-	alSourcei(m_sourceID, AL_REFERENCE_DISTANCE, 1.0);
+	alSourcei(m_sourceID, AL_MAX_DISTANCE, 10);
+	alSourcei(m_sourceID, AL_REFERENCE_DISTANCE, 1);
 }
 
 void ALSource::initSource(ALuint soundBufferID) {
@@ -48,11 +48,12 @@ void ALSource::bindSourceToALSound(ALSound * alSound) {
 }
 
 void ALSource::updatePos() {
-	glm::vec3& modelVec = _transform->getModelVec();
-	m_sourcePos[0] = modelVec[0];
-	m_sourcePos[1] = modelVec[1];
-	m_sourcePos[2] = modelVec[2];
+	const glm::vec3& posVec = _transform->getWorldPosVec();
+	m_sourcePos[0] = posVec[0];
+	m_sourcePos[1] = posVec[1];
+	m_sourcePos[2] = posVec[2];
 
+	// can transfer posVec direct. (for save source pos)
 	alSourcefv(m_sourceID, AL_POSITION, m_sourcePos);
 }
 

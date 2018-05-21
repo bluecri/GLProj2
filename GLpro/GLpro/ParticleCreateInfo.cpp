@@ -60,7 +60,7 @@ void ParticleCreateInfo::genNewParticles(RENDER_TARGET::PARTICLE::ParticleFObj *
 void ParticleCreateInfo::crateNewParticleStructWithInfo(ParticleStruct & refP)
 {
 	refP._life = _particleLife;
-	refP._pos = _bindedTransform->getModelVec();
+	refP._pos = _bindedTransform->getWorldPosVec();
 
 	glm::vec3 randomdir = glm::vec3(
 		(rand() % 2000 - 1000.0f) / 1000.0f,

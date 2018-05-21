@@ -1,24 +1,21 @@
 #ifndef  __CAMERA_MANAGER_H__
 #define __CAMERA_MANAGER_H__
 
-#include "./Camera.h"
+#include <map>
+#include <string>
+
+namespace CAMERA
+{
+	class Camera;
+}
 
 namespace CAMERA
 {
 	class CameraManager
 	{
 	public:
-		CameraManager()
-		{
-			_mainCamera = nullptr;
-		}
-		~CameraManager() 
-		{
-			for (auto elem : _cameraMap)
-			{
-				delete elem.second;
-			}
-		}
+		CameraManager();
+		~CameraManager();
 
 		bool AddCamera(Camera* cam);
 		Camera* GetMainCamera() { return _mainCamera; }
@@ -31,6 +28,6 @@ namespace CAMERA
 	};
 }
 
-#endif // ! __CAMERA_MANAGER_H__
-
 extern CAMERA::CameraManager* GCameraManager;
+
+#endif 

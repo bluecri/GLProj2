@@ -42,7 +42,7 @@ namespace RENDER
 
 				normalRenderTarget->_model->bind();		// Model buffer bind
 
-				mat4 targetTotalMat = depthBiasMVP * targetTransform->getTotalMat();
+				mat4 targetTotalMat = depthBiasMVP * targetTransform->getWorldMat();
 				GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->depthMatrixID, targetTotalMat);	// bind global old shader
 				normalRenderTarget->_model->render();
 
@@ -83,7 +83,7 @@ namespace RENDER
 				normalRenderTarget->_texture->bind();	// real texture bind to #
 				_shaderObj->loadInt(_shaderObj->m_textureID, 0);	// set shader use for # shader
 
-				mat4 targetModelMat = targetTransform->getTotalMat();
+				mat4 targetModelMat = targetTransform->getWorldMat();
 				mat4 mvpMat = _targetCamera->getRecentVPMat() * targetModelMat;
 				_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, targetModelMat);
 				_shaderObj->loadMatrix4(_shaderObj->m_MVPMatrixID, mvpMat);

@@ -31,10 +31,12 @@ public:
 	*/
 
 private:
+	/*
 	glm::mat4 _modelMatrix;
 	glm::mat4 _rotateMatrix;
 	glm::mat4 _scaleMatrix;
 	std::vector<Transform*> _childTransformPtrList;
 	Transform* _parentTransformPtr;
+	*/
 };
 #endif

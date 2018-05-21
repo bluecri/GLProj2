@@ -35,7 +35,8 @@ int UIEntity::getID() const {
 	return _ID;
 }
 
-void UIEntity::setName(const std::string& name) {
+void UIEntity::setName(std::string & name)
+{
 	_name = name;
 }
 

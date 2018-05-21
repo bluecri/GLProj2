@@ -28,9 +28,6 @@
     <Filter Include="소스 파일\src\particle">
       <UniqueIdentifier>{5f9f6c13-6383-47bd-9fca-2026fdaee365}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\src\Player">
-      <UniqueIdentifier>{c3065048-b109-4730-9562-5b8eebd963c6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\src\shader">
       <UniqueIdentifier>{a28b0359-aa7e-40d5-9807-70084592ebf7}</UniqueIdentifier>
     </Filter>
@@ -97,6 +94,12 @@
     <Filter Include="소스 파일\src\renderer\Parent">
       <UniqueIdentifier>{0ef5e8c6-7991-4ccf-812b-88a3836cd875}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects">
+      <UniqueIdentifier>{73944bdf-67c4-4430-9c6f-0b7eed45974f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\components\collision">
+      <UniqueIdentifier>{baaf5c72-8991-4ba5-b5de-18300ff38b19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -120,12 +123,6 @@
     <ClCompile Include="src\Control\InputManager.cpp">
       <Filter>소스 파일\src\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player\Enemy.cpp">
-      <Filter>소스 파일\src\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Player\Player.cpp">
-      <Filter>소스 파일\src\Player</Filter>
-    </ClCompile>
     <ClCompile Include="src\Resource\Model.cpp">
       <Filter>소스 파일\src\Resource</Filter>
     </ClCompile>
@@ -142,9 +139,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera\Camera.cpp">
-      <Filter>소스 파일\src\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Camera\CameraManager.cpp">
       <Filter>소스 파일\src\camera</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera\CameraBuilder.cpp">
@@ -273,6 +267,24 @@
     <ClCompile Include="ImageBox.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>소스 파일\GameScene\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\GameScene\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="OBBCollisionComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionComponentManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera\CameraManager.cpp">
+      <Filter>소스 파일\src\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceSkybox.cpp">
+      <Filter>소스 파일\GameScene\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -301,12 +313,6 @@
     </ClInclude>
     <ClInclude Include="src\Shader\ShaderObj.h">
       <Filter>소스 파일\src\shader</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Player\Enemy.h">
-      <Filter>소스 파일\src\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Player\Player.h">
-      <Filter>소스 파일\src\Player</Filter>
     </ClInclude>
     <ClInclude Include="src\Shader\ShaderMain.h">
       <Filter>소스 파일\src\shader</Filter>
@@ -354,9 +360,6 @@
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera\Camera.h">
-      <Filter>소스 파일\src\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Camera\CameraManager.h">
       <Filter>소스 파일\src\camera</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera\CameraBuilder.h">
@@ -505,6 +508,30 @@
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>소스 파일\GameScene\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\GameScene\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionComponent.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionComponentManager.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="OBBCollisionComp.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Octree.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera\CameraManager.h">
+      <Filter>소스 파일\src\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceSkybox.h">
+      <Filter>소스 파일\GameScene\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

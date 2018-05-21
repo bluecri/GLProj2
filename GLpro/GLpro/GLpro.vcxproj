@@ -139,8 +139,11 @@
   <ItemGroup>
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="CollisionComponentManager.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="ImageBox.cpp" />
     <ClCompile Include="LightManager.cpp" />
+    <ClCompile Include="OBBCollisionComp.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="ParticleBuffer.cpp" />
     <ClCompile Include="origin\CircularBuffer.cpp" />
@@ -152,12 +155,14 @@
     <ClCompile Include="ParticleCreateInfo.cpp" />
     <ClCompile Include="ParticleFObj.cpp" />
     <ClCompile Include="ParticleStruct.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="RBox.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="RigidbodyComponent.cpp" />
     <ClCompile Include="RParticle.cpp" />
     <ClCompile Include="RText.cpp" />
     <ClCompile Include="ShadowBufferTextureShader.cpp" />
+    <ClCompile Include="SpaceSkybox.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\objectLoader.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\vboindexer.cpp" />
     <ClCompile Include="src\3rdParty\ShaderLoader\shader.cpp" />
@@ -171,8 +176,6 @@
     <ClCompile Include="src\Control\InputManager.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Player\Enemy.cpp" />
-    <ClCompile Include="src\Player\Player.cpp" />
     <ClCompile Include="src\RenderTarget\Normal\NormalFObj.cpp" />
     <ClCompile Include="src\RenderTarget\Skybox\SkyboxModel.cpp" />
     <ClCompile Include="src\RenderTarget\Skybox\SkyboxTexture.cpp" />
@@ -201,12 +204,17 @@
   <ItemGroup>
     <ClInclude Include="Box.h" />
     <ClInclude Include="Canvas.h" />
+    <ClInclude Include="CollisionComponent.h" />
+    <ClInclude Include="CollisionComponentManager.h" />
     <ClInclude Include="configs.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameSession.h" />
     <ClInclude Include="ImageBox.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="LightManager.h" />
+    <ClInclude Include="OBBCollisionComp.h" />
+    <ClInclude Include="Octree.h" />
     <ClInclude Include="Option.h" />
     <ClInclude Include="ParticleBuffer.h" />
     <ClInclude Include="origin\CircularBuffer.h" />
@@ -222,6 +230,7 @@
     <ClInclude Include="ParticleCreateInfo.h" />
     <ClInclude Include="ParticleFObj.h" />
     <ClInclude Include="ParticleStruct.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="RBox.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="RigidbodyComponent.h" />
@@ -230,6 +239,7 @@
     <ClInclude Include="RText.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShadowBufferTextureShader.h" />
+    <ClInclude Include="SpaceSkybox.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\objectLoader.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\vboindexer.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\Vertex.h" />
@@ -244,8 +254,6 @@
     <ClInclude Include="src\Control\InputAction.h" />
     <ClInclude Include="src\Control\InputManager.h" />
     <ClInclude Include="src\Entity.h" />
-    <ClInclude Include="src\Player\Enemy.h" />
-    <ClInclude Include="src\Player\Player.h" />
     <ClInclude Include="src\RenderTarget\Normal\NormalFObj.h" />
     <ClInclude Include="src\RenderTarget\Skybox\SkyboxFObj.h" />
     <ClInclude Include="src\RenderTarget\Skybox\SkyboxTexture.h" />

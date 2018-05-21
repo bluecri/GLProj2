@@ -54,10 +54,6 @@ public:
 	{
 		_evMouseOutCallBack = evCallBack;
 	}
-	virtual void bindEvMouseOut(std::function<void()>& evCallBack)
-	{
-		_evKeyInputCallBack = evCallBack;
-	}
 
 	virtual Box* getBoxWithCoord(int x, int y)
 	{
@@ -92,8 +88,6 @@ public:
 	{
 		_width = width;
 		_height = height;
-		_widthLT = widthLT;
-		_heightLT = heightLT;
 	}
 
 	virtual void moveLTPosition(int widthLT, int heightLT)

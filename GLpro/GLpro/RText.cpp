@@ -12,9 +12,9 @@ RENDER::RText::RText(SHADER::ShaderText * shaderObj)
 }
 
 // weak_ptr로 변환하여 사용.
-std::shared_ptr<RENDER::RText::RTextDrawElement> RENDER::RText::addToDrawList(RENDER_TARGET::TEXT::TextFObj * _textFObj, RigidbodyComponent * rigidbodyComponent)
+std::shared_ptr<RENDER::RText::DrawElement> RENDER::RText::addToDrawList(RENDER_TARGET::TEXT::TextFObj * _textFObj, RigidbodyComponent * rigidbodyComponent)
 {
-	auto elem = std::make_shared<RTextDrawElement>(_textFObj, rigidbodyComponent);
+	auto elem = std::make_shared<DrawElement>(_textFObj, rigidbodyComponent);
 	_textDrawElemContainer.push_back(elem);
 	return elem;
 }
@@ -95,9 +95,9 @@ SHADER::ShaderText * RENDER::RText::getShader() const
 	return _shaderObj;
 }
 
-void RENDER::RText::destructor(std::shared_ptr<RTextDrawElement> shared)
+void RENDER::RText::destructor(std::shared_ptr<DrawElement> shared)
 {
-	RTextDrawElement* ptr = shared.get();
+	DrawElement* ptr = shared.get();
 	for (auto it = _textDrawElemContainer.begin(); it != _textDrawElemContainer.end();)
 	{
 		if ((*it).get() == ptr)

@@ -18,7 +18,7 @@ struct _ParticleStruct
 		return this->_cameradistance > that._cameradistance;
 	}
 
-	void update(float deltaTime, glm::vec3& cameraPos)
+	void update(float deltaTime, const glm::vec3& cameraPos)
 	{
 		if (_life >= 0.0f)
 		{

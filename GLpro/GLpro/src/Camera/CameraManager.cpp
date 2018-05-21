@@ -1,17 +1,17 @@
-#include "./CameraManager.h"
+#include "../../stdafx.h"
+#include "CameraManager.h"
 #include "./Camera.h"
 #include "./CameraBuilder.h"
+#include "../Entity.h"
 
-CAMERA::CameraManager* GCameraManager = nullptr;
-
-inline CAMERA::CameraManager::CameraManager()
+CAMERA::CameraManager::CameraManager()
 {
 	CameraBuilder camBuild(std::string("mainCam"), 0);
 	_mainCamera = camBuild.constructPtr();
 	AddCamera(_mainCamera);
 }
 
-inline CAMERA::CameraManager::~CameraManager()
+CAMERA::CameraManager::~CameraManager()
 {
 	for (auto elem : _cameraMap)
 	{
@@ -32,6 +32,8 @@ bool CAMERA::CameraManager::AddCamera(Camera * cam)
 		printf_s("[LOG] : CameraManager AddCamera already has same name camera\n");
 		return false;
 	}
+
+	return true;
 }
 
 bool CAMERA::CameraManager::ChangeMainCamera(const std::string & cameraName)
@@ -48,3 +50,5 @@ bool CAMERA::CameraManager::ChangeMainCamera(const std::string & cameraName)
 		return false;
 	}
 }
+
+CAMERA::CameraManager* GCameraManager = nullptr;

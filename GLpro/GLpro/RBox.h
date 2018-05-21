@@ -14,9 +14,6 @@ namespace CAMERA { class Camera; }
 class RigidbodyComponent;
 class Camera;
 
-using RBoxDrawElem = RENDER_TARGET::TEXT::TextFObj*;
-using RBoxDrawElemContainer = std::list<RBoxDrawElem>;
-
 namespace RENDER
 {
 	// Use TextFObj & ShaderText(widthLT, heightLT)
@@ -24,11 +21,15 @@ namespace RENDER
 	class RBox
 	{
 	public:
+		using TYPE_SHADER = SHADER::ShaderText;
+		using DrawElement = RENDER_TARGET::TEXT::TextFObj*;
+		using DrawElemContainer = std::list<DrawElement>;
+
 		RBox(SHADER::ShaderText* shaderObj);
 		virtual ~RBox() {};
 
 		// use this with weak_ptr
-		RBoxDrawElem addToDrawList(RBoxDrawElem textFObjBOX);
+		DrawElement addToDrawList(DrawElement textFObjBOX);
 
 		void update(CAMERA::Camera* cam);	//shader target camera update
 
@@ -38,11 +39,11 @@ namespace RENDER
 
 		virtual SHADER::ShaderText* getShader() const;
 
-		void destructor(RBoxDrawElem delElem);
+		void destructor(DrawElement delElem);
 
 	private:
 		SHADER::ShaderText* _shaderObj;
 
-		RBoxDrawElemContainer _boxDrawElemContainer;
+		DrawElemContainer _boxDrawElemContainer;
 	};
 }

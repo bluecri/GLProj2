@@ -1,139 +1,160 @@
 #include "Transform.h"
 
 Transform::Transform(int entityID, const glm::mat4 &modelMatrix, const glm::mat4 &rotateMatrix, const glm::mat4 &scaleMatrix) 
-	: _entityID(entityID), _modelMatrix(modelMatrix), _rotateMatrix(_rotateMatrix), _scaleMatrix(_scaleMatrix)
+	: _entityID(entityID), _localModelMatrix(modelMatrix), _localRotateMatrix(_localRotateMatrix), _localScaleMatrix(_localScaleMatrix)
 {
+	_velocity = glm::vec3();
+	_bVelocity = false;
 	_parentTransformPtr = nullptr;
 	_childTransformPtrList = std::list<Transform*>();
+	_bDirty = true;		// update local -> world	:: 없으면 child로 신규 생성시 world update X
 }
 
-glm::mat4 Transform::getTotalMat() const
+const glm::mat4 & Transform::getWorldMatRef() const
 {
-	return _modelMatrix * _rotateMatrix * _scaleMatrix;
+	return _worldTotalMatrix;
+}
+
+
+glm::mat4 Transform::getWorldMat() const
+{
+	return _worldTotalMatrix;
+}
+
+glm::vec3 Transform::getWorldPosVec() const
+{
+	return _worldTotalMatrix[3];
 }
 
 const glm::mat4& Transform::getModelMatrixConstRef() const
 {
-	return _modelMatrix;
+	return _localModelMatrix;
 }
 
 glm::mat4 Transform::getModelMatrix() const
 {
-	return _modelMatrix;
+	return _localModelMatrix;
 }
 
 glm::vec3 Transform::getModelVec() const
 {
-	glm::vec3 ret = _modelMatrix[3];
+	glm::vec3 ret = _localModelMatrix[3];
 	return ret;
 }
 
-const glm::mat4 & Transform::getRotationMatrixConstRef() const
+const glm::mat4 & Transform::getLocalRotationMatrixConstRef() const
 {
-	return _rotateMatrix;
+	return _localRotateMatrix;
 }
 
-glm::mat4 Transform::getRotationMatrix() const
+glm::mat4 Transform::getLocalRotationMatrix() const
 {
-	return _rotateMatrix;
+	return _localRotateMatrix;
 }
 
-const glm::mat4 & Transform::getScaleMatrixConstRef() const
+const glm::mat4 & Transform::getLocalScaleMatrixConstRef() const
 {
-	return _scaleMatrix;
+	return _localScaleMatrix;
 }
 
-glm::mat4 Transform::getScaleMatrix() const
+glm::mat4 Transform::getLocalScaleMatrix() const
 {
-	return _scaleMatrix;
+	return _localScaleMatrix;
 }
 
-glm::quat Transform::getQuarternion() const
+glm::quat Transform::getLocalQuarternion() const
 {
-	return glm::quat_cast(_rotateMatrix);
+	return glm::quat_cast(_localRotateMatrix);
 }
 
-void Transform::setModelMatrix(const glm::mat4 &modelMat)
+void Transform::setModelMatrix(const glm::mat4 &localModelMatrix)
 {
-	_modelMatrix = modelMat;
+	_localModelMatrix = localModelMatrix;
 }
 
 void Transform::setRotationMatrix(const glm::mat4 &rotateMat)
 {
-	_rotateMatrix = rotateMat;
+	_localRotateMatrix = rotateMat;
 }
 
-void Transform::setScaleMatrix(const glm::mat4 &scaleMat)
+void Transform::setScaleMatrix(const glm::mat4 &localScaleMat)
 {
-	_scaleMatrix = scaleMat;
+	_localScaleMatrix = localScaleMat;
 }
 
-void Transform::setModelMatrix(const glm::vec3 &modelVec)
+void Transform::setModelMatrix(const glm::vec3 &localModelVec)
 {
-	_modelMatrix = glm::translate(glm::mat4(), modelVec);
+	_localModelMatrix = glm::translate(glm::mat4(), localModelVec);
 }
 
 void Transform::setRotationMatrix(const glm::vec3 &rotateVec)
 {
-	_rotateMatrix =  glm::toMat4(glm::quat(rotateVec));
+	_localRotateMatrix =  glm::toMat4(glm::quat(rotateVec));
 }
 
-void Transform::setScaleMatrix(const glm::vec3 &scaleVec)
+void Transform::setScaleMatrix(const glm::vec3 &localScaleVec)
 {
-	_scaleMatrix = glm::scale(glm::mat4(), scaleVec);
+	_localScaleMatrix = glm::scale(glm::mat4(), localScaleVec);
 }
 
 void Transform::setRotationMatrix(const glm::quat &quat)
 {
-	_rotateMatrix = glm::toMat4(quat);
+	_localRotateMatrix = glm::toMat4(quat);
+}
+void Transform::setVMatrixLookat(const glm::vec3 & lookat, const glm::vec3 & up)
+{
+	glm::vec3 modelVec = _localModelMatrix[3];
+	_localRotateMatrix = glm::lookAt(modelVec, modelVec + lookat, up);
+	_localRotateMatrix[3][0] = 0;
+	_localRotateMatrix[3][1] = 0;
+	_localRotateMatrix[3][2] = 0;
 }
 
-void Transform::setMVMatrixLookat(const glm::vec3 & lookat, const glm::vec3 & up)
+void Transform::setVMatrixLookat(const glm::vec3 & pos, const glm::vec3 & lookat, const glm::vec3 & up)
 {
-	glm::vec3 modelVec = _modelMatrix[3];
-	_rotateMatrix = glm::lookAt(modelVec, modelVec + lookat, up);
-	_rotateMatrix[3][0] = 0;
-	_rotateMatrix[3][1] = 0;
-	_rotateMatrix[3][2] = 0;
+	_localRotateMatrix = glm::lookAt(pos, pos + lookat, up);
+	_localRotateMatrix[3][0] = 0;
+	_localRotateMatrix[3][1] = 0;
+	_localRotateMatrix[3][2] = 0;
 }
 
-void Transform::accModelMatrix(const glm::mat4 &modelMat)
+void Transform::accModelMatrix(const glm::mat4 &localAccModelMatrix)
 {
-	_modelMatrix[3][0] += modelMat[3][0];
-	_modelMatrix[3][1] += modelMat[3][1];
-	_modelMatrix[3][2] += modelMat[3][2];
+	_localModelMatrix[3][0] += localAccModelMatrix[3][0];
+	_localModelMatrix[3][1] += localAccModelMatrix[3][1];
+	_localModelMatrix[3][2] += localAccModelMatrix[3][2];
 }
 
-void Transform::accRotationMatrix(const glm::mat4 &rotateMat)
+void Transform::accRotationMatrix(const glm::mat4 &localAccRotateMat)
 {
-	_rotateMatrix = rotateMat * _rotateMatrix;
+	_localRotateMatrix = localAccRotateMat * _localRotateMatrix;
 }
 
 void Transform::accScaleMatrix(const glm::mat4 &scaleMat)
 {
-	_scaleMatrix[0][0] *= scaleMat[0][0];
-	_scaleMatrix[1][1] *= scaleMat[1][1];
-	_scaleMatrix[2][2] *= scaleMat[2][2];
+	_localScaleMatrix[0][0] *= scaleMat[0][0];
+	_localScaleMatrix[1][1] *= scaleMat[1][1];
+	_localScaleMatrix[2][2] *= scaleMat[2][2];
 }
 
 void Transform::accModelMatrix(const glm::vec3 &modelVec)
 {
-	_modelMatrix = glm::translate(_modelMatrix, modelVec);
+	_localModelMatrix = glm::translate(_localModelMatrix, modelVec);
 }
 
 void Transform::accRotationMatrix(const float &degree, glm::vec3 &rotateAxis)
 {
-	_rotateMatrix = glm::rotate(_rotateMatrix, glm::radians(degree), rotateAxis);
+	_localRotateMatrix = glm::rotate(_localRotateMatrix, glm::radians(degree), rotateAxis);
 }
 
 void Transform::accScaleMatrix(const glm::vec3 &scaleVec)
 {
-	_scaleMatrix = glm::scale(_scaleMatrix, scaleVec);
+	_localScaleMatrix = glm::scale(_localScaleMatrix, scaleVec);
 }
 
 void Transform::accRotationMatrix(const glm::quat &quat)
 {
-	glm::toMat4(quat) * _rotateMatrix;
+	glm::toMat4(quat) * _localRotateMatrix;
 }
 
 Transform * Transform::getParentTransformPtr()

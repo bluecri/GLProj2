@@ -18,6 +18,7 @@ namespace RENDER_TARGET
 			RESOURCE::Texture * _texture = nullptr;
 
 			NormalFObj(const char* modelFileName, bool createEbo, const char* textureFileName, const char* textureType);
+			NormalFObj(RESOURCE::Model * model, RESOURCE::Texture * texture);
 			~NormalFObj() {	};
 
 		private:

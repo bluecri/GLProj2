@@ -21,13 +21,13 @@ namespace RENDER
 	{
 	public:
 		using TYPE_SHADER = SHADER::ShaderSkybox;
-		using RSkyboxDrawElement = std::pair<RENDER_TARGET::SKYBOX::SkyboxFObj*, RigidbodyComponent*>;
-		using RSkyboxDrawElemContainer = std::list<std::shared_ptr<RSkyboxDrawElement>>;
+		using DrawElement = std::pair<RENDER_TARGET::SKYBOX::SkyboxFObj*, RigidbodyComponent*>;
+		using DrawElemContainer = std::list<std::shared_ptr<DrawElement>>;
 	public:
 		RSkybox(SHADER::ShaderSkybox* shaderObj, float div = 1.1f);
 		virtual ~RSkybox() {};
 
-		std::shared_ptr<RSkyboxDrawElement> addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj, RigidbodyComponent* rigidComponent);
+		std::shared_ptr<DrawElement> addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj, RigidbodyComponent* rigidComponent);
 
 		void update(CAMERA::Camera* cam);	//shader target camera update
 
@@ -37,14 +37,14 @@ namespace RENDER
 
 		virtual SHADER::ShaderObj* getShader() const;
 
-		void destructor(std::shared_ptr<RSkyboxDrawElement> shared);
+		void destructor(std::shared_ptr<DrawElement> shared);
 	private:
 		SHADER::ShaderSkybox* _shaderObj;
 		CAMERA::Camera *_targetCamera;
 
 		float _div = 1.1f;
 
-		RSkyboxDrawElemContainer _skyboxDrawElemContainer;
+		DrawElemContainer _skyboxDrawElemContainer;
 	};
 }
 #endif
