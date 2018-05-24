@@ -1,7 +1,7 @@
 #include "Transform.h"
 
 Transform::Transform(int entityID, const glm::mat4 &modelMatrix, const glm::mat4 &rotateMatrix, const glm::mat4 &scaleMatrix) 
-	: _entityID(entityID), _localModelMatrix(modelMatrix), _localRotateMatrix(_localRotateMatrix), _localScaleMatrix(_localScaleMatrix)
+	: _entityID(entityID), _localModelMatrix(modelMatrix), _localRotateMatrix(rotateMatrix), _localScaleMatrix(scaleMatrix)
 {
 	_velocity = glm::vec3();
 	_bVelocity = false;

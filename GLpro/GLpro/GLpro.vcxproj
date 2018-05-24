@@ -141,6 +141,7 @@
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CollisionComponentManager.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="ImageBox.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="OBBCollisionComp.cpp" />
@@ -159,10 +160,12 @@
     <ClCompile Include="RBox.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="RigidbodyComponent.cpp" />
+    <ClCompile Include="RigidbodyComponentManager.cpp" />
     <ClCompile Include="RParticle.cpp" />
     <ClCompile Include="RText.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShadowBufferTextureShader.cpp" />
-    <ClCompile Include="SpaceSkybox.cpp" />
+    <ClCompile Include="SkyboxGObject.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\objectLoader.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\vboindexer.cpp" />
     <ClCompile Include="src\3rdParty\ShaderLoader\shader.cpp" />
@@ -177,6 +180,7 @@
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\RenderTarget\Normal\NormalFObj.cpp" />
+    <ClCompile Include="src\RenderTarget\Skybox\SkyboxFObj.cpp" />
     <ClCompile Include="src\RenderTarget\Skybox\SkyboxModel.cpp" />
     <ClCompile Include="src\RenderTarget\Skybox\SkyboxTexture.cpp" />
     <ClCompile Include="src\Render\RNormal.cpp" />
@@ -197,6 +201,7 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TextBuffer.cpp" />
     <ClCompile Include="TextFObj.cpp" />
     <ClCompile Include="UIEntity.cpp" />
@@ -209,6 +214,7 @@
     <ClInclude Include="configs.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Fobj.h" />
     <ClInclude Include="GameSession.h" />
     <ClInclude Include="ImageBox.h" />
     <ClInclude Include="light.h" />
@@ -234,12 +240,13 @@
     <ClInclude Include="RBox.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="RigidbodyComponent.h" />
-    <ClInclude Include="ROldLight.h" />
+    <ClInclude Include="RigidbodyComponentManager.h" />
     <ClInclude Include="RParticle.h" />
+    <ClInclude Include="RRender.h" />
     <ClInclude Include="RText.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShadowBufferTextureShader.h" />
-    <ClInclude Include="SpaceSkybox.h" />
+    <ClInclude Include="SkyboxGObject.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\objectLoader.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\vboindexer.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\Vertex.h" />
@@ -251,7 +258,6 @@
     <ClInclude Include="src\Control\Control.h" />
     <ClInclude Include="src\Control\ControlDown.h" />
     <ClInclude Include="src\Control\ControlOnce.h" />
-    <ClInclude Include="src\Control\InputAction.h" />
     <ClInclude Include="src\Control\InputManager.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\RenderTarget\Normal\NormalFObj.h" />

@@ -38,7 +38,6 @@ void CollisionComponentManager::insertAllCompToOctaTree()
 	for (auto elem : _collisionComponentContainer)
 	{
 		// 순서 주의
-		elem.first->updateWithRigidComp();		// update collision box with rigidbody
 		elem.first->updateAABBForOctree();		// update aabb for _octree
 		_octree->insert(elem.first);				// insert
 	}
@@ -72,3 +71,5 @@ void CollisionComponentManager::clearOctree()
 {
 	_octree->clearPotentialCompPropa();
 }
+
+CollisionComponentManager* GCollisionComponentManager = nullptr;

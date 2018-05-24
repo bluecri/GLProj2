@@ -13,9 +13,6 @@ namespace CONTROL
 
 			virtual bool checkKeyInput(GLFWwindow* pWindow);
 			virtual bool isKeyON();
-
-		private:
-			int _glfwKeyNum;
 	};
 }
 

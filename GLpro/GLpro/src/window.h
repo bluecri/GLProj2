@@ -14,7 +14,7 @@ namespace WINDOW
 		Window(int windowWidth = 800, int windowHeight = 600);
 		int init();
 		void mainLoop();
-		void renderAll(float acc);
+		void renderAll(float usedDeltaTime, float acc);
 		void exitWindow();
 
 	public:

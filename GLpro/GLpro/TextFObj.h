@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "Fobj.h"
 
 namespace RESOURCE
 {
@@ -12,7 +13,7 @@ namespace RENDER_TARGET
 {
 	namespace TEXT
 	{
-		class TextFObj
+		class TextFObj : public FObj
 		{
 		public:
 			RESOURCE::TextBuffer * _textBuffer = nullptr;
@@ -36,10 +37,6 @@ namespace RENDER_TARGET
 
 			// for box
 			void changeBoxSize(int height, int width);
-
-			// common
-			void setRender(bool bRender);
-			bool getRender() { return _bRender; }
 
 		public:
 			bool _bTemporary;

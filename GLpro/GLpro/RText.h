@@ -4,6 +4,8 @@
 #include <utility>
 #include <memory>
 
+#include "../../RRender.h"
+
 namespace SHADER {
 	class ShaderText;
 	class ShaderObj;
@@ -16,7 +18,7 @@ class Camera;
 
 namespace RENDER
 {
-	class RText
+	class RText : public RRender
 	{
 	public:
 		using TYPE_SHADER = SHADER::ShaderText;
@@ -29,19 +31,18 @@ namespace RENDER
 		// use this with weak_ptr
 		std::shared_ptr<DrawElement> addToDrawList(RENDER_TARGET::TEXT::TextFObj* _textFObj, RigidbodyComponent* rigidbodyComponent);
 				
-		void update(CAMERA::Camera* cam);	//shader target camera update
+		virtual void update(CAMERA::Camera** cam);	//shader target camera update
 
-		void draw(float deltaTime);
+		virtual void draw(float deltaTime);
 
-		virtual void chageShader(SHADER::ShaderText* other);
+		void chageShader(SHADER::ShaderText* other);
 
-		virtual SHADER::ShaderText* getShader() const;
+		SHADER::ShaderText* getShader() const;
 
 		void destructor(std::shared_ptr<DrawElement> shared);
 
 	private:
 		SHADER::ShaderText* _shaderObj;
-		CAMERA::Camera *_targetCamera;
 
 		DrawElemContainer _textDrawElemContainer;
 	};

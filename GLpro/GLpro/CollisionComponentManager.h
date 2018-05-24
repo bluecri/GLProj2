@@ -32,3 +32,5 @@ private:
 	std::map<CollisionComponent*, CollisionComponent*> _collisionComponentContainer;
 	Octree* _octree;
 };
+
+extern CollisionComponentManager* GCollisionComponentManager;

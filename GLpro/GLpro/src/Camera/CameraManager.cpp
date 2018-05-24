@@ -36,6 +36,14 @@ bool CAMERA::CameraManager::AddCamera(Camera * cam)
 	return true;
 }
 
+void CAMERA::CameraManager::updateAllRecentMatrix()
+{
+	for (auto elem : _cameraMap)
+	{
+		elem.second->updateRecentVPAndViewMat();
+	}
+}
+
 bool CAMERA::CameraManager::ChangeMainCamera(const std::string & cameraName)
 {
 	auto it = _cameraMap.find(cameraName);

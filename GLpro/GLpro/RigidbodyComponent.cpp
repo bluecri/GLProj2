@@ -7,4 +7,6 @@ RigidbodyComponent::RigidbodyComponent(Entity * bindedEntity)
 	: _bindedEntity(bindedEntity)
 {
 	_transform = new Transform(_bindedEntity->getID());
+	_bdoDelete = false;
 };
+

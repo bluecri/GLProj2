@@ -11,98 +11,35 @@ enum ENUM_PREMADE_BOX
 class Box : public UIEntity
 {
 public:
-	Box(int width, int height, int widthLT, int heightLT)
-		: UIEntity(), _width(width), _height(height), _widthLT(widthLT), _heightLT(heightLT), _keyFocusOn(false)
-	{
-		_evMouseOnCallBack = nullptr;
-		_evMouseClickCallBack = nullptr;
-		_evMouseOutCallBack = nullptr;
-		_evKeyInputCallBack = nullptr;
-	}
+	Box(int width, int height, int widthLT, int heightLT);
 
-	Box(const Box& copy)
-		: UIEntity(), _width(copy._width), _height(copy._height), _widthLT(copy._widthLT), _heightLT(copy._heightLT), _keyFocusOn(false)
-	{
-	}
+	Box(const Box& copy);
 
-	virtual void eventMouseOn()
-	{
-		if(_evMouseOnCallBack)	_evMouseOnCallBack();
-	}
-	virtual void eventMouseClick()
-	{
-		if (_evMouseClickCallBack)	_evMouseClickCallBack();
-	}
-	virtual void eventMouseOut()
-	{
-		if (_evMouseOutCallBack)	_evMouseOutCallBack();
-	}
-	virtual void eventKeyInput(int inputKey)
-	{
-		if (_evKeyInputCallBack)	_evKeyInputCallBack(inputKey);
-	}
+	virtual void eventMouseOn();
+	virtual void eventMouseClick();
+	virtual void eventMouseOut();
+	virtual void eventKeyInput(long long inputKey);
+	virtual void eventKeyInput(std::string& inputStr);
 
-	virtual void bindEvMouseOnCallback(std::function<void()>& evCallBack)
-	{
-		_evMouseOnCallBack = evCallBack;
-	}
-	virtual void bindEvMouseClick(std::function<void()>& evCallBack)
-	{
-		_evMouseClickCallBack = evCallBack;
-	}
-	virtual void bindEvMouseOut(std::function<void()>& evCallBack)
-	{
-		_evMouseOutCallBack = evCallBack;
-	}
+	virtual void bindEvMouseOnCallback(std::function<void()>& evCallBack);
+	virtual void bindEvMouseClick(std::function<void()>& evCallBack);
+	virtual void bindEvMouseOut(std::function<void()>& evCallBack);
 
-	virtual Box* getBoxWithCoord(int x, int y)
-	{
-		for (auto elem : _childUIEntityList)
-		{
-			Box* childBox = static_cast<Box*>(elem);
-			if (childBox->IsInBox(x, y))
-			{
-				return childBox->getBoxWithCoord(x, y);
-			}
-		}
-
-		return this;
-	}
+	Box* getBoxWithCoord(int x, int y);
 
 	// width, height update function not exit)
-	bool IsInBox(int x, int y)
-	{
-		if (_widthLT < x && x < _width + _widthLT
-			&& _heightLT < y && y < _height + _heightLT)
-		{
-			return true;
-		}
-		return false;
-	}
+	bool IsInBox(int x, int y);
 
-	void SetKeyFocus(bool& b) {	_keyFocusOn = b;}
-	bool GetKeyFocus() { return _keyFocusOn; }
+	void SetKeyFocus(bool& b);
+	bool GetKeyFocus();
 
 	// only for empty box
-	virtual void modifyEmptySize(int width, int height)
-	{
-		_width = width;
-		_height = height;
-	}
+	virtual void modifyEmptySize(int width, int height);
 
-	virtual void moveLTPosition(int widthLT, int heightLT)
-	{
-		_widthLT = widthLT;
-		_heightLT = heightLT;
-	}
+	virtual void moveLTPosition(int widthLT, int heightLT);
 
 public:
-	static void initPreMade()
-	{
-		preMadeBoxesVec.push_back(new Box(10, 10, 10, 10));
-	}
-
-
+	static void initPreMade();
 	static std::vector<Box*> preMadeBoxesVec;
 
 protected:
@@ -118,6 +55,8 @@ protected:
 	std::function<void()> _evMouseClickCallBack;
 	std::function<void()> _evMouseOutCallBack;
 
-	std::function<void(int)> _evKeyInputCallBack;
-	
+	std::function<void(long long)> _evKeyInputCallBack;
+	std::function<void(std::string&)> _evKeyStrInputCallBack;
+
 };
+

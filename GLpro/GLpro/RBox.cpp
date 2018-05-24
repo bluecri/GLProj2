@@ -17,10 +17,11 @@ RENDER::RBox::DrawElement RENDER::RBox::addToDrawList(DrawElement textFObjBOX)
 	return elem;
 }
 
-void RENDER::RBox::update(CAMERA::Camera * cam)
+void RENDER::RBox::update(CAMERA::Camera ** cam)
 {
 	// none camera
 }
+
 
 void RENDER::RBox::draw(float deltaTime)
 {
@@ -34,10 +35,7 @@ void RENDER::RBox::draw(float deltaTime)
 		
 		DrawElement _textFObj = (*it);
 
-		if (!_textFObj->getRender())
-		{
-			continue;
-		}
+		if (!_textFObj->isRender())	continue;
 
 		_textFObj->_textBuffer->bind();
 		glActiveTexture(GL_TEXTURE4);

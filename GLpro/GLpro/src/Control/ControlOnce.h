@@ -5,6 +5,8 @@
 
 namespace CONTROL
 {
+	// 키를 지속적으로 누르고 있는 경우에도 한번의 input으로 처리한다.
+	// 다시 keyOn(true)을 받으려면 누름을 멈추고 다시 눌러야함.
 	class ControlOnce : public Control
 	{
 	public:
@@ -15,7 +17,6 @@ namespace CONTROL
 		virtual bool isKeyON();
 
 	private:
-		int _glfwKeyNum;
 		bool _bOnceEnd;
 	};
 }

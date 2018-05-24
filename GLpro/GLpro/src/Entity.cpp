@@ -1,4 +1,5 @@
 #include "./Entity.h"
+#include "../RigidbodyComponentManager.h"
 #include "../RigidbodyComponent.h"
 #include "./Transform.h"
 
@@ -8,7 +9,7 @@ Entity::Entity(int type) {
 	_ID = _sMaxID;
 	_name = std::to_string(_sMaxID);
 	_type = type;
-	_rigidbodyComponent = new RigidbodyComponent(this);
+	_rigidbodyComponent = GRigidbodyComponentManager->getNewRigidbodyComp(this);
 	_parentEntity = nullptr; 
 	_gameSession = nullptr;
 	++_sMaxID;
@@ -18,7 +19,7 @@ Entity::Entity(std::string name, int type) {
 	_ID = _sMaxID;
 	_name = name;
 	_type = type;
-	_rigidbodyComponent = new RigidbodyComponent(this);
+	_rigidbodyComponent = GRigidbodyComponentManager->getNewRigidbodyComp(this);
 	_parentEntity = nullptr;
 	_gameSession = nullptr;
 

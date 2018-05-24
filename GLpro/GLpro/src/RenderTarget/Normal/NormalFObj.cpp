@@ -11,11 +11,13 @@ namespace RENDER_TARGET
 	namespace NORMAL
 	{
 		NormalFObj::NormalFObj(const char * modelFileName, bool createEbo, const char * textureFileName, const char * textureType)
+			: FObj()
 		{
 			_model = GModelManager->getModelWithFileName(modelFileName, createEbo);
 			_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
 		}
 		NormalFObj::NormalFObj(RESOURCE::Model * model, RESOURCE::Texture * texture)
+			: FObj()
 		{
 			_model = model;
 			_texture = texture;

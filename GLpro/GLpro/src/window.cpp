@@ -12,7 +12,19 @@
 #include "../Option.h"
 #include "../ShadowBufferTextureShader.h"
 #include "../RenderManager.h"
+#include "../CollisionComponentManager.h"
+#include "../RigidbodyComponentManager.h"
+#include "../src/Control/InputManager.h"
 #include "../Scene.h"
+
+#include "../SkyboxGObject.h"
+#include "../Box.h"
+#include "../ImageBox.h"
+#include "../TextBox.h"
+#include "../Canvas.h"
+#include "../SkyboxGObject.h"
+#include "../GameSession.h"
+
 
 WINDOW::Window::Window(int windowWidth, int windowHeight)
 {
@@ -64,22 +76,37 @@ int WINDOW::Window::init()
 
 	glfwPollEvents();
 	glfwSetCursorPos(_pWindow, _windowWidth / 2, _windowHeight / 2);
-
+	
 	glClearColor(0.0f, 0.0f, 0.7f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
-
+	GInputManager = new CONTROL::InputManager();
+	GRigidbodyComponentManager = new RigidbodyComponentManager();
 	GModelManager = new RESOURCE::ModelManager();
 	GTextureManager = new RESOURCE::TextureManager();
-	GLightManager = new LightManager();
 	GCameraManager = new CAMERA::CameraManager();
+	GLightManager = new LightManager();
 	GShaderManager = new SHADER::ShaderManager();
 	GRendermanager = new RENDER::RenderManager();
+	GCollisionComponentManager = new CollisionComponentManager(3, 128);
 	GOption = new Option();
 	GScene = new Scene();
 	//
 	GShadowBufferTexture = new RESOURCE::ShadowBufferTextureShader();
+
+
+	//load test
+	Box::initPreMade();
+	ImageBox::initPreMade();
+	TextBox::initPreMade();
+	
+	Canvas::initPreMade();
+	SkyboxGObject::preMade();
+
+	GameSession::preMade();
+
+	//GScene->changeCanvas(
 
 	return 0;
 }
@@ -87,10 +114,14 @@ int WINDOW::Window::init()
 void WINDOW::Window::mainLoop()
 {
 	float t = 0.0;
+	float usedT = 0.0;
 	const float dt = 0.02;
 
 	float currentTime = glfwGetTime();
 	float acc = 0.0;
+	// test
+	//SkyboxGObject::preMadeSpaceSkybox[0]->skyboxFObj->setBRender(true);
+	SkyboxGObject::preMade();
 
 	// Draw loop (ESC key or window was closed)
 	do {
@@ -100,38 +131,48 @@ void WINDOW::Window::mainLoop()
 		currentTime = newTime;
 
 		acc += intervalTime;
-
-		/*physics loop
+		GInputManager->keyUpdate();
+		while (acc >= dt)
+		{
+			/*physics loop
 			*{
-			*rigidbody Comp에서 최상위 transform부터 dirty bit를 이용한 world matrix update 시작하며
+			* rigidbody Comp에서 최상위 transform부터 dirty bit를 이용한 world matrix update 시작하며
 			*		delta 존재시 적용후 dirty on(O(n))	// transform 자식으로 collision을 넣어 collision update도 하면서 순회도중에 dirty init 하는 방법 존재.
 			*		collision box update에 dirty & world matrix 사용
 			*		collision event push & collision message 남김
 			*		dirty bit init(O(n))
 			* }
-			*transform 개별 조작시(logic update) dirty,
-			*collision message로 logic update
+			* transform 개별 조작시(logic update) dirty,
+			* collision message로 logic update
 			*/
-		while (acc >= dt)
-		{
+			GRigidbodyComponentManager->updateRigidbodyComps(dt);
+			GCollisionComponentManager->doCollisionTest();
+			GRigidbodyComponentManager->resetRigidbodyCompsDirty();
+
 			// todo : update
 			acc -= dt;
 			t += dt;
+			usedT += dt;
 		}
 
 		// dt 보정 2가지 방법
 		// 1. 1frame 늦게 출력(past - current사이 정확한 interpolation)
 		// 2. acc만큼의 예상 이동 경로 그냥 그리기(acc가 dt에 가까울 수록 interpolation error 증가)
 		// 2번으로 시도.
-		renderAll(acc);
+
+		renderAll(usedT, acc);
+		usedT = 0.0;
 
 	} while (glfwGetKey(_pWindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 		glfwWindowShouldClose(_pWindow) == 0);
 }
 
-void WINDOW::Window::renderAll(float acc)
+void WINDOW::Window::renderAll(float usedDeltaTime, float acc)
 {
 	// RRenrder all with acc
+	GCameraManager->updateAllRecentMatrix();			// camera matrix update
+	GRendermanager->renderAll(usedDeltaTime, acc);		//render
+	GRendermanager->swapRenderBuffer();					// swap render buffer
 }
 
 void WINDOW::Window::exitWindow()

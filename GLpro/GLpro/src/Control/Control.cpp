@@ -7,13 +7,6 @@ namespace CONTROL {
 		_bTriggered = false;
 	}
 
-	static bool controlCheck(ENUM_BEHAVIOR en) {
-		if (s_bitKeyState & (1 << en)) {
-			return true;
-		}
-		return false;
-	}
-
 	bool Control::isBTriggerOn()
 	{
 		return _bTriggered;

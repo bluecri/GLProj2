@@ -8,6 +8,7 @@ namespace CAMERA {
 	{
 		_speed = speed;
 		_mouseSpeed = mouseSpeed;
+		_fov = fov;
 		_horizontalFovValue = horizontalFovValue;
 		_verticalFovValue = verticalFovValue;
 		_frontFrustrumValue = frontFrustrumValue;

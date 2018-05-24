@@ -4,6 +4,7 @@
 #include "ParticleBuffer.h"
 
 RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName, const char * textureType, std::vector<glm::vec3>& vertices, int particleContainerSize)
+	: FObj()
 {
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
 	_particleBuffer = new RESOURCE::ParticleBuffer(vertices);

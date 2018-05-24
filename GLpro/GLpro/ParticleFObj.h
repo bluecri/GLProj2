@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "ParticleStruct.h"
 
+#include "Fobj.h"
+
 #define PARTICLE_CONTAINER_DEFAULT_SIZE		360		//3sec * 2 particle per 1 frame
 
 namespace RESOURCE
@@ -14,7 +16,7 @@ namespace RENDER_TARGET
 {
 	namespace PARTICLE
 	{
-		class ParticleFObj
+		class ParticleFObj : public FObj
 		{
 		public:
 

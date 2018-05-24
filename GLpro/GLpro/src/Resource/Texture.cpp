@@ -1,11 +1,15 @@
 #include "./Texture.h"
-
+#include <cctype>
 namespace RESOURCE
 {
 	Texture::Texture(std::string fileName, std::string type)
 	{
 		_fileName = fileName;
-		if (type.compare("DDS"))
+		for (int i = 0; i < type.length(); i++)
+		{
+			type[i] = toupper(type[i]);
+		}
+		if (type.compare("DDS") == 0)
 		{
 			_textureID = loadDDS(fileName.c_str());
 		}

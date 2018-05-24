@@ -5,6 +5,8 @@
 #include "./ALSound.h"
 #include "../Transform.h"
 
+class ALManager;
+
 class ALSource {
 
 public:
@@ -16,14 +18,31 @@ public:
 	void bindSourceToBuffer(ALuint soundBufferID);
 	void bindSourceToALSound(ALSound *alSound);
 
-	void updatePos();		// with _transform pos
-
-	void sourcePlay();
-	void sourceStop();
-
+	void updateTransformPtr(Transform * transform)
+	{
+		_transform = transform;
+	}
+	void play()
+	{
+		_bDoPlay = true;
+	}
+	void stop()
+	{
+		_bDoStop = true;
+	}
 	~ALSource();
 
-public:
+private:
+	void sourcePlay();
+	void sourceStop();
+	void updatePos();		// with _transform pos
+	friend class ALManager;
+
+private:
+	bool _bDoDeleted;
+	bool _bDoPlay;
+	bool _bDoStop;
+
 	ALuint m_sourceID;
 	float m_pitch;
 	float m_gain;

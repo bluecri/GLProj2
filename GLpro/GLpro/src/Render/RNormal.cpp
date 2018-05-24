@@ -15,6 +15,8 @@
 #include "../../ShadowBufferTextureShader.h"
 #include "../Shader/ShaderManager.h"
 
+#include "../window.h"
+
 
 namespace RENDER
 {
@@ -22,23 +24,32 @@ namespace RENDER
 	RNormal::RNormal(SHADER::ShaderMain * shaderObj)
 	{
 		_shaderObj = shaderObj;
+		_targetCamera = GCameraManager->GetMainCamera();
 	}
 
 
-	void RNormal::draw()
+	void RNormal::draw(float deltaTime)
 	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glViewport(0, 0, GWindow->_windowWidth, GWindow->_windowHeight); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+		glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+
+
+		CAMERA::Camera* cam = *_targetCamera;
 		if (GOption->_oldLightUse)
 		{
 			// ===============draw object on shadow buffer==============
 			GShadowBufferTexture->bindFBO();
 			GShadowBufferTexture->bindShader();
 
-			_targetCamera->updateRecentVPAndViewMat();
 			glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
 
 			for (auto elem : _normalDrawElemContainer) {
 				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = elem->first;
 				Transform* targetTransform = elem->second->_transform;
+
+				if (!normalRenderTarget->isRender()) continue;
 
 				normalRenderTarget->_model->bind();		// Model buffer bind
 
@@ -57,11 +68,10 @@ namespace RENDER
 			glCullFace(GL_BACK);
 			_shaderObj->bind();
 
-			_targetCamera->updateRecentVPAndViewMat();
 			//glm::mat4 modelMatrix = _targetCamera->getCamModelMatRef;
 			//glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
 
-			_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, _targetCamera->getRecentViewMat());
+			_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cam->getRecentViewMat());
 			_shaderObj->loadMatrix4(_shaderObj->m_depthBiasID, depthBiasMVP);
 
 			//_oldLightUse
@@ -77,6 +87,8 @@ namespace RENDER
 				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = elem->first;
 				Transform* targetTransform = elem->second->_transform;
 
+				if (!normalRenderTarget->isRender()) continue;
+
 				normalRenderTarget->_model->bind();		// Model buffer bind
 
 				glActiveTexture(GL_TEXTURE0);			// active texture #
@@ -84,7 +96,7 @@ namespace RENDER
 				_shaderObj->loadInt(_shaderObj->m_textureID, 0);	// set shader use for # shader
 
 				mat4 targetModelMat = targetTransform->getWorldMat();
-				mat4 mvpMat = _targetCamera->getRecentVPMat() * targetModelMat;
+				mat4 mvpMat = cam->getRecentVPMat() * targetModelMat;
 				_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, targetModelMat);
 				_shaderObj->loadMatrix4(_shaderObj->m_MVPMatrixID, mvpMat);
 
@@ -105,7 +117,7 @@ namespace RENDER
 		return elem;
 	}
 
-	void RNormal::update(CAMERA::Camera * cam)
+	void RNormal::update(CAMERA::Camera** cam)
 	{
 		_targetCamera = cam;
 	}

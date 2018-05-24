@@ -19,9 +19,9 @@ std::shared_ptr<RENDER::RText::DrawElement> RENDER::RText::addToDrawList(RENDER_
 	return elem;
 }
 
-void RENDER::RText::update(CAMERA::Camera * cam)
+void RENDER::RText::update(CAMERA::Camera ** cam)
 {
-	_targetCamera = cam;
+	// no need
 }
 
 void RENDER::RText::draw(float deltaTime)
@@ -35,6 +35,8 @@ void RENDER::RText::draw(float deltaTime)
 	{
 		RENDER_TARGET::TEXT::TextFObj* _textFObj = (*it)->first;
 		RigidbodyComponent* rigitComponent = (*it)->second;
+
+		if (!_textFObj->isRender()) continue;
 
 		// check text lifetime
 		if (_textFObj->_bTemporary)

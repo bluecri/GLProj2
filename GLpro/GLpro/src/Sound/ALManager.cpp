@@ -41,18 +41,41 @@ ALSource * ALManager::getNewALSource(std::string & soundName, Transform * transf
 	return newALSource;
 }
 
-void ALManager::removeALSource(ALSource * delSource)
+void ALManager::updateALSource()
 {
 	for (auto it = _ALSourceContainer.begin(); it != _ALSourceContainer.end();		)
 	{
-		if ((*it) == delSource)
+		// check delete
+		if ((*it)->_bDoDeleted)
 		{
-			_ALSourceContainer.erase(it);
-			return;
+			ALenum state;
+			alGetSourcei((*it)->m_sourceID, AL_SOURCE_STATE, &state);
+
+			if (state != AL_PLAYING)
+			{
+				it = _ALSourceContainer.erase(it);
+				continue;
+			}
 		}
+
+		// doopt : 재생중에만 update
+		(*it)->updatePos();
+
+		// check stop & play
+
+		if ((*it)->_bDoPlay)
+		{
+			(*it)->sourcePlay();
+		}
+
+		if ((*it)->_bDoStop)
+		{
+			(*it)->sourceStop();
+		}
+
 		++it;
 	}
-	printf_s("[LOG] : Fail remove alsource in ALManager::removeALSource\n");
+	printf_s("[LOG] : Fail remove alsource in ALManager::updateALSource\n");
 	return;
 }
 

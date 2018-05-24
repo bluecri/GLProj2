@@ -5,7 +5,7 @@ namespace CONTROL
 	ControlOnce::ControlOnce(int glfw_key_num)
 	{
 		_glfwKeyNum = glfw_key_num;
-		_bOnceEnd = false;
+		_bOnceEnd = false;	
 	}
 
 	bool ControlOnce::checkKeyInput(GLFWwindow * pWindow)

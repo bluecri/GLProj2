@@ -4,6 +4,8 @@
 #include <utility>
 #include <memory>
 
+#include "../../RRender.h"
+
 namespace SHADER {
 	class ShaderParticle;
 	class ShaderObj;
@@ -14,7 +16,6 @@ namespace RENDER_TARGET {
 	}
 }
 
-
 namespace CAMERA { class Camera; }
 
 class RigidbodyComponent;
@@ -23,7 +24,7 @@ class ParticleCreateInfo;
 
 namespace RENDER
 {
-	class RParticle
+	class RParticle : public RRender
 	{
 	public:
 		using TYPE_SHADER = SHADER::ShaderParticle;
@@ -38,13 +39,13 @@ namespace RENDER
 		// use this with weak_ptr
 		std::shared_ptr<DrawElement> addToDrawList(FObjElem* particleFObj, RigidbodyComponent* rigidbodyComponent);
 
-		void update(CAMERA::Camera* cam);	//shader target camera update
+		virtual void update(CAMERA::Camera** cam);	//shader target camera update
 
-		void draw(float deltaTime);
+		virtual void draw(float deltaTime);
 
-		virtual void chageShader(TYPE_SHADER* other);
+		void chageShader(TYPE_SHADER* other);
 
-		virtual TYPE_SHADER * getShader() const;
+		TYPE_SHADER * getShader() const;
 
 		void destructor(std::shared_ptr<DrawElement> shared);
 
@@ -53,7 +54,7 @@ namespace RENDER
 
 	private:
 		TYPE_SHADER* _shaderObj;
-		CAMERA::Camera *_targetCamera;
+		CAMERA::Camera **_targetCamera;
 
 		DrawElemContainer _particleDrawElemContainer;
 	};

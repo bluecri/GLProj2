@@ -7,6 +7,7 @@
 #include "../../TextBuffer.h"
 
 RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char * textureType, int lineN, int lengthN, glm::vec2 pos, int fontSize)
+	: FObj()
 {
 	_bBox = false;
 	_pos = pos;
@@ -21,6 +22,7 @@ RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char
 	}
 }
 RENDER_TARGET::TEXT::TextFObj::TextFObj(RESOURCE::Texture * texture, int lineN, int lengthN, glm::vec2 pos, int fontSize)
+	: FObj()
 {
 	_bBox = false;
 	_pos = pos;
@@ -83,13 +85,6 @@ void RENDER_TARGET::TEXT::TextFObj::changeBoxSize(int height, int width)
 {
 	_textBuffer->updateBoxVBO(height, width);
 }
-
-// common
-
-inline void RENDER_TARGET::TEXT::TextFObj::setRender(bool bRender) {
-	_bRender = bRender;
-}
-
 
 void RENDER_TARGET::TEXT::TextFObj::setTemporary(float lifeTime)
 {

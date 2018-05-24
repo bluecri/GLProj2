@@ -2,6 +2,7 @@
 #define __PLAYER_H__
 
 #include "./src/Entity.h"
+#include "./src/Render/RNormal.h"
 
 //#include "CollisionComponent.h"
 class CollisionComponent;
@@ -14,7 +15,6 @@ namespace RENDER_TARGET
 		class NormalFObj;
 	}
 }
-namespace RENDER { class RNormal; }
 namespace SHADER { class ShaderMain; }
 namespace RESOURCE { class Model;  class Texture;}
 
@@ -34,7 +34,7 @@ public:
 	RENDER::RNormal* _rNormal;		//which rbox get(which shader? use same rbox)
 	RENDER_TARGET::NORMAL::NormalFObj * _normalFObj;
 private:
-	std::shared_ptr<RNormal::DrawElement> registeredElemInRenderer;
+	std::shared_ptr<RENDER::RNormal::DrawElement> registeredElemInRenderer;
 
 };
 

@@ -4,6 +4,8 @@
 #include <utility>
 #include <memory>
 
+#include "../../RRender.h"
+
 namespace SHADER {
 	class ShaderText;
 	class ShaderObj;
@@ -12,13 +14,12 @@ namespace RENDER_TARGET { namespace TEXT { class TextFObj; } }
 namespace CAMERA { class Camera; }
 
 class RigidbodyComponent;
-class Camera;
 
 namespace RENDER
 {
 	// Use TextFObj & ShaderText(widthLT, heightLT)
 
-	class RBox
+	class RBox : public RRender
 	{
 	public:
 		using TYPE_SHADER = SHADER::ShaderText;
@@ -28,16 +29,15 @@ namespace RENDER
 		RBox(SHADER::ShaderText* shaderObj);
 		virtual ~RBox() {};
 
-		// use this with weak_ptr
 		DrawElement addToDrawList(DrawElement textFObjBOX);
 
-		void update(CAMERA::Camera* cam);	//shader target camera update
+		virtual void update(CAMERA::Camera** cam) override;	//shader target camera update
 
-		void draw(float deltaTime);
+		virtual void draw(float deltaTime);
 
-		virtual void chageShader(SHADER::ShaderText* other);
+		void chageShader(SHADER::ShaderText* other);
 
-		virtual SHADER::ShaderText* getShader() const;
+		SHADER::ShaderText* getShader() const;
 
 		void destructor(DrawElement delElem);
 

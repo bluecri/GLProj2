@@ -252,16 +252,10 @@
     <ClCompile Include="UIEntity.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Box.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="ShadowBufferTextureShader.cpp">
       <Filter>소스 파일\src\Resource\ShadowOld</Filter>
     </ClCompile>
     <ClCompile Include="RenderManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Canvas.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ImageBox.cpp">
@@ -282,8 +276,29 @@
     <ClCompile Include="src\Camera\CameraManager.cpp">
       <Filter>소스 파일\src\camera</Filter>
     </ClCompile>
-    <ClCompile Include="SpaceSkybox.cpp">
-      <Filter>소스 파일\GameScene\GameObjects</Filter>
+    <ClCompile Include="RigidbodyComponentManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyboxGObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSession.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBox.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>소스 파일\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderTarget\Skybox\SkyboxFObj.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -353,9 +368,6 @@
     <ClInclude Include="src\RenderTarget\Skybox\SkyboxFObj.h">
       <Filter>소스 파일\src\renderTarget\skybox</Filter>
     </ClInclude>
-    <ClInclude Include="src\Control\InputAction.h">
-      <Filter>소스 파일\src\control</Filter>
-    </ClInclude>
     <ClInclude Include="src\TransfromBuilder.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
@@ -391,9 +403,6 @@
     </ClInclude>
     <ClInclude Include="DirectionalLight.h">
       <Filter>소스 파일\src\lights</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidbodyComponent.h">
-      <Filter>소스 파일\components</Filter>
     </ClInclude>
     <ClInclude Include="src\RenderTarget\Normal\NormalFObj.h">
       <Filter>소스 파일\src\renderTarget</Filter>
@@ -470,29 +479,17 @@
     <ClInclude Include="RParticle.h">
       <Filter>소스 파일\src\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="ROldLight.h">
-      <Filter>소스 파일\src\renderer</Filter>
-    </ClInclude>
     <ClInclude Include="ParticleFObj.h">
       <Filter>소스 파일\src\renderTarget</Filter>
     </ClInclude>
     <ClInclude Include="src\Shader\ShaderParticle.h">
       <Filter>소스 파일\src\shader</Filter>
     </ClInclude>
-    <ClInclude Include="Canvas.h">
-      <Filter>소스 파일\Menus</Filter>
-    </ClInclude>
     <ClInclude Include="TextBox.h">
       <Filter>소스 파일\Menus</Filter>
     </ClInclude>
     <ClInclude Include="ImageBox.h">
       <Filter>소스 파일\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Box.h">
-      <Filter>소스 파일\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="GameSession.h">
-      <Filter>소스 파일\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="RBox.h">
       <Filter>소스 파일\src\renderer</Filter>
@@ -505,9 +502,6 @@
     </ClInclude>
     <ClInclude Include="ShadowBufferTextureShader.h">
       <Filter>소스 파일\src\Resource\ShadowOld</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>소스 파일\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>소스 파일\GameScene\GameObjects</Filter>
@@ -530,8 +524,32 @@
     <ClInclude Include="src\Camera\CameraManager.h">
       <Filter>소스 파일\src\camera</Filter>
     </ClInclude>
-    <ClInclude Include="SpaceSkybox.h">
+    <ClInclude Include="RRender.h">
+      <Filter>소스 파일\src\renderer\Parent</Filter>
+    </ClInclude>
+    <ClInclude Include="Fobj.h">
+      <Filter>소스 파일\src\renderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidbodyComponentManager.h">
+      <Filter>소스 파일\components</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidbodyComponent.h">
+      <Filter>소스 파일\components</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyboxGObject.h">
       <Filter>소스 파일\GameScene\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>소스 파일\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSession.h">
+      <Filter>소스 파일\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>소스 파일\Menus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

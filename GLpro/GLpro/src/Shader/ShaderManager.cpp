@@ -12,7 +12,7 @@ SHADER::ShaderManager::ShaderManager()
 	// todo : template class·Î ¹Ù²ãº¼°Í
 	m_addShader<SHADER::ShaderMain>(SHADER_TYPE_MAIN, "data/Shader/ShadowMapping.vertexshader", "data/Shader/ShadowMapping.fragmentshader");
 	m_addShader<SHADER::ShaderShadow>(SHADER_TYPE_SHADOW, "data/Shader/DepthRTT.vertexshader", "data/Shader/DepthRTT.fragmentshader");
-	//m_shaderStorage[SHADER_TYPE_COLISION].push_back(new ShaderMain("shader/Simple.vertexshader", "shader/Simple.fragmentshader"));
+	//m_shaderStorage[SHADER_TYPE_COLISION].push_back(new ShaderMain("data/Shader//Simple.vertexshader", "data/Shader//Simple.fragmentshader"));
 
 }
 

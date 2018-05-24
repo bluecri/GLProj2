@@ -15,13 +15,14 @@ class ALManager {
 public:
 	ALManager() {};
 	virtual ~ALManager();
+
 	void init();
 	void loadAllWaveFile();
 
 	void loadWaveFile(std::string soundName, std::string soundFileName);	// create ALSound
 
 	ALSource* getNewALSource(std::string& soundName, Transform* transform, float pitch, float gain);	// create ALSource
-	void removeALSource(ALSource* delSource);
+	void updateALSource();
 
 private:
 	ALSound* getALSoundPtrWithName(std::string soundName);

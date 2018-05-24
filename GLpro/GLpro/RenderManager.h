@@ -4,6 +4,8 @@
 #include <type_traits>
 #include <string>
 
+#include "./src/window.h"
+
 #include "RBox.h"
 #include "src/Render/RNormal.h"
 #include "src/Render/RSkybox.h"
@@ -31,6 +33,7 @@ enum RRENDER_TYPE
 
 namespace RENDER
 {
+
 	// TODO : RRenerer is base of T (type check)
 	template<class T, class K>	// T = R*****(renderer class), K== shaderObj(child)
 	class RRenderContainerClass
@@ -40,8 +43,9 @@ namespace RENDER
 		T* addOrGetRenderer(K* inShaderPtr);
 		// renderer 제거.
 		void removeRenderer(T* delRenderer);
-	private:
-		std::map<K*, T*> _rRenderContainer;		// 아래에 있으면 안잡힘..
+		void render(float deltaTime);
+	public:
+		std::map<K*, T*> _rRenderContainer;
 	};
 
 	// Use TextFObj & ShaderText(widthLT, heightLT)
@@ -58,8 +62,12 @@ namespace RENDER
 	public:
 		RenderManager()
 		{
-
 		}
+
+		// todo : acc 처리
+		void renderAll(float deltaTime, float acc);
+
+		void swapRenderBuffer();
 
 		// T = RenderClass , K shaderObj children
 		template<class T, class K>
@@ -116,7 +124,6 @@ namespace RENDER
 		_rRenderContainer.insert(std::make_pair(inShaderPtr, newRenderer));
 
 		return newRenderer;
-
 	}
 
 	// renderer 제거.
@@ -130,6 +137,16 @@ namespace RENDER
 			return;
 		}
 	}
+
+	template<class T, class K>
+	inline void RRenderContainerClass<T, K>::render(float deltaTime)
+	{
+		for (auto elem : _rRenderContainer)
+		{
+			elem.second->draw(deltaTime);
+		}
+	}
+	
 }
 
 extern RENDER::RenderManager* GRendermanager;

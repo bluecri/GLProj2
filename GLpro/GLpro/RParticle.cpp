@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RParticle.h"
 #include "src/Camera/Camera.h"
+#include "src/Camera/CameraManager.h"
 #include "src\Shader\ShaderParticle.h"
 #include "src/Resource/Texture.h"
 #include "RigidbodyComponent.h"
@@ -15,6 +16,7 @@ namespace RENDER
 	RParticle::RParticle(RParticle::TYPE_SHADER * shaderObj)
 	{
 		_shaderObj = shaderObj;
+		_targetCamera = GCameraManager->GetMainCamera();
 	}
 
 	std::shared_ptr<RParticle::DrawElement> RParticle::addToDrawList(FObjElem* particleFObj, RigidbodyComponent * rigidbodyComponent)
@@ -27,7 +29,7 @@ namespace RENDER
 		return elem;
 	}
 
-	void RParticle::update(CAMERA::Camera * cam)
+	void RParticle::update(CAMERA::Camera ** cam)
 	{
 		_targetCamera = cam;
 	}
@@ -35,6 +37,7 @@ namespace RENDER
 	void RParticle::draw(float deltaTime)
 	{
 		beforeDraw(deltaTime);		//update particle
+		CAMERA::Camera* cam = *_targetCamera;
 
 		_shaderObj->bind();
 		for (auto it = _particleDrawElemContainer.begin(); it != _particleDrawElemContainer.end(); )
@@ -43,14 +46,16 @@ namespace RENDER
 			// ParticleCreateInfo* particleCreateInfo = (*it)->second;
 			// RParticle에서는 particle 생성시에만 bind된 rigidbody position을 사용한다.
 
+			if (!particleFObj->isRender()) continue;
+
 			particleFObj->_particleBuffer->bind();
 
 			glActiveTexture(GL_TEXTURE3);
 			particleFObj->_texture->bind();
 			_shaderObj->loadInt(_shaderObj->m_textureID, 3);
 
-			glm::mat4& cameraViewMat = _targetCamera->getRecentViewMat();
-			glm::mat4& cameraVPMat = _targetCamera->getRecentVPMat();
+			glm::mat4& cameraViewMat = cam->getRecentViewMat();
+			glm::mat4& cameraVPMat = cam->getRecentVPMat();
 			_shaderObj->loadVector3(_shaderObj->m_cameraRight_worldspace_ID, cameraViewMat[0][0], cameraViewMat[1][0], cameraViewMat[2][0]);
 			_shaderObj->loadVector3(_shaderObj->m_cameraUp_worldspace_ID, cameraViewMat[0][1], cameraViewMat[1][1], cameraViewMat[2][1]);
 			_shaderObj->loadMatrix4(_shaderObj->m_viewProjMatrixID, cameraVPMat);
@@ -96,7 +101,7 @@ namespace RENDER
 
 	void RParticle::beforeDraw(float deltaTime)
 	{
-		glm::vec3 camPosVec = _targetCamera->_rigidbodyComponent->_transform->getWorldPosVec();
+		glm::vec3 camPosVec = (*_targetCamera)->_rigidbodyComponent->_transform->getWorldPosVec();
 		for (auto it = _particleDrawElemContainer.begin(); it != _particleDrawElemContainer.end(); )
 		{
 			RENDER_TARGET::PARTICLE::ParticleFObj* particleFObj = (*it)->first;

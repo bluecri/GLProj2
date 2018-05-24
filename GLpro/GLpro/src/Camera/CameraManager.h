@@ -18,7 +18,9 @@ namespace CAMERA
 		~CameraManager();
 
 		bool AddCamera(Camera* cam);
-		Camera* GetMainCamera() { return _mainCamera; }
+		Camera** GetMainCamera() { return &_mainCamera; }
+		void updateAllRecentMatrix();
+
 
 		bool ChangeMainCamera(const std::string& cameraName);
 

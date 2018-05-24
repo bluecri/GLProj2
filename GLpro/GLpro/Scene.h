@@ -1,78 +1,27 @@
 #pragma once
 
-//class Canvas;
-#include"Canvas.h"
-#include"GameSession.h"
-
 class GameSession;
+class Canvas;
 
 class Scene
 {
 public:
-	void changeCanvas(Canvas* newTargetCanvas)
-	{
-		_targetCanvas->setBRender(false);
-		newTargetCanvas->setBRender(true);
-		_targetCanvas = newTargetCanvas;
-	}
+	void changeCanvas(Canvas* newTargetCanvas);
 
-	void startGame()
-	{
-		changeCanvas(nullptr);
+	void startGame();
+	void endGame();
 
-		//_targetGameSession start
-	}
-	
-	void endGame()
-	{
-		changeCanvas(Canvas::preMadeCanvasVec[PREMADE_CANVAS_ROOM]);
-	}
+	void networkPacketProcess();
 
-	void networkPacketProcess()
-	{
-		// targetCanvas에 따라 패킷 처리
-		
-		/*
-		switch (packetType)
-		{
-			// ui packet
-			if (_targetCanvas != nullptr)
-			{
-				packetType == _targetCanvas type 인 경우에만 전달
-			}
+	void mouseInput(int x, int y);
+	void keyInput(long long inputKey);
+	void keyInput(std::string& inputStr);
 
-			// game packet
-			if (_targetGameSession != nullptr)
-			{
-				
-			}
-		}
-		*/
-	}
 
-	void mouseInput(int x, int y)
-	{
-		if (_targetGameSession != nullptr)
-		{
-			_targetGameSession->transferMouseClickToBox(x, y);
-			return;
-		}
-		_targetCanvas->transferMouseClickToBox(x, y);
-	}
-	void keyInput(int inputKey)
-	{
-		if (_targetGameSession != nullptr)
-		{
-			_targetGameSession->transferKeyInputToFocusBox(inputKey);
-			return;
-		}
-		_targetCanvas->transferKeyInputToFocusBox(inputKey);
-	}
-
-// pre elems
+	// pre elems
 private:
 	Canvas * _targetCanvas;		// user Canvas::preMadeCanvasVec
 	GameSession * _targetGameSession;
 };
 
-Scene* GScene = nullptr;
+extern Scene* GScene;

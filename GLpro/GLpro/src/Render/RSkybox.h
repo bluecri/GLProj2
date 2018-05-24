@@ -5,6 +5,8 @@
 #include <utility>
 #include <memory>
 
+#include "../../RRender.h"
+
 namespace SHADER {
 	class ShaderSkybox; 
 	class ShaderObj;
@@ -17,30 +19,32 @@ class Camera;
 
 namespace RENDER 
 {
-	class RSkybox
+	class RSkybox : public RRender
 	{
+
 	public:
 		using TYPE_SHADER = SHADER::ShaderSkybox;
 		using DrawElement = std::pair<RENDER_TARGET::SKYBOX::SkyboxFObj*, RigidbodyComponent*>;
 		using DrawElemContainer = std::list<std::shared_ptr<DrawElement>>;
+
 	public:
 		RSkybox(SHADER::ShaderSkybox* shaderObj, float div = 1.1f);
 		virtual ~RSkybox() {};
 
 		std::shared_ptr<DrawElement> addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj, RigidbodyComponent* rigidComponent);
 
-		void update(CAMERA::Camera* cam);	//shader target camera update
+		virtual void update(CAMERA::Camera** cam) override;		//shader target camera update
 
-		void draw();
+		virtual void draw(float deltaTime);
 
-		virtual void chageShader(SHADER::ShaderSkybox* other);
+		void chageShader(SHADER::ShaderSkybox* other);
 
-		virtual SHADER::ShaderObj* getShader() const;
+		SHADER::ShaderObj* getShader() const;
 
 		void destructor(std::shared_ptr<DrawElement> shared);
 	private:
 		SHADER::ShaderSkybox* _shaderObj;
-		CAMERA::Camera *_targetCamera;
+		CAMERA::Camera **_targetCamera;
 
 		float _div = 1.1f;
 
