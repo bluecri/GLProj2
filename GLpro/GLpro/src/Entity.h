@@ -9,6 +9,7 @@
 *	component의 경우 부모, 자식 관계가 존재하지 않는다.
 *******************************************************/
 class GameSession;
+class CollisionInfo;
 
 class Entity 
 {
@@ -35,6 +36,15 @@ public:
 
 	virtual void attachParentEntity(Entity* parentEntity);
 	virtual void attachChildEntity(Entity* childEntity);
+
+	virtual void setAllChildBRender(bool bRender);
+	virtual void setBRender(bool bRender);
+
+	virtual void setAllChildCollisionComp(bool bCollision);
+	virtual void setCollisionComp(bool bCollision);
+
+	virtual void logicUpdate(float deltaTime, float acc);
+	virtual void collisionCallBack(CollisionInfo* collisionInfo);
 
 public:
 	static int _sMaxID;		//object 고유 ID(0 ~ ). 자동 생성.

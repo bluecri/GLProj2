@@ -28,40 +28,40 @@ ImageBox::ImageBox(int width, int height, int widthLT, int heightLT, RESOURCE::T
 
 // UIEntity 부모자식관계 및 event 함수 바인딩 제외 Copy
 
-inline ImageBox::ImageBox(const ImageBox & copy) : Box(copy._width, copy._height, copy._widthLT, copy._heightLT)
+ImageBox::ImageBox(const ImageBox & copy) : Box(copy._width, copy._height, copy._widthLT, copy._heightLT)
 {
 	_rBox = copy._rBox;
 	_textFObj = new RENDER_TARGET::TEXT::TextFObj(copy._textFObj->_texture, copy._width, copy._height, copy._widthLT, copy._heightLT);
 	_rBox->addToDrawList(_textFObj);
 }
 
-inline ImageBox::~ImageBox()
+ImageBox::~ImageBox()
 {
 	_rBox->destructor(_textFObj);		//destroy render Target in Renderer's container
 	delete _textFObj;
 }
 
-inline void ImageBox::setBRender(bool bRender)
+void ImageBox::setBRender(bool bRender)
 {
 	_textFObj->setBRender(bRender);		// render flag(bool) modify
 }
 
-inline void ImageBox::modifyEmptySize(int width, int height)
+void ImageBox::modifyEmptySize(int width, int height)
 {
 	printf_s("ImageBox modifyEmptySize is not vaild. Use modifyImageBoxSize instead.\n");
 }
 
-inline void ImageBox::modifyImageBoxSize(int width, int height)
+void ImageBox::modifyImageBoxSize(int width, int height)
 {
 	_textFObj->changeBoxSize(height, width);
 }
 
-inline void ImageBox::moveLTPosition(int widthLT, int heightLT)
+void ImageBox::moveLTPosition(int widthLT, int heightLT)
 {
 	_textFObj->setPos(glm::vec2(_widthLT, _heightLT));
 }
 
-inline void ImageBox::initPreMade()
+void ImageBox::initPreMade()
 {
 	SHADER::ShaderText* shaderText = GShaderManager->m_addShader<SHADER::ShaderText>(ENUM_SHADER_TYPE::SHADER_TYPE_TEXT, "data/Shader/TextVertexShader.vertexshader", "data/Shader/TextVertexShader.fragmentshader");
 	RESOURCE::Texture* blockTexture = GTextureManager->getTextureWithFileName("data/Texture/block.dds", "dds");

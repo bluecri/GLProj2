@@ -32,20 +32,15 @@ namespace RENDER
 
 	void RSkybox::draw(float deltaTime)
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport(0, 0, GWindow->_windowWidth, GWindow->_windowHeight); // Render on the whole framebuffer, complete from the lower left corner to the upper right
-
 		CAMERA::Camera* cam = *_targetCamera;
 
 		_shaderObj->bind();
 
 		// set camera view matrix(camera rotate mat * camera position mat)
 		Transform* cameraTransform = cam->_rigidbodyComponent->_transform;
-		//const glm::mat4& cameraModelMatrix = cameraTransform->getModelMatrixConstRef();
-		//const glm::mat4& cameraRotationMatrix= cameraTransform->getLocalRotationMatrixConstRef();
-		const glm::mat4& cameraViewMatrix = cameraTransform->getWorldMatRef();
+		glm::mat4 cameraViewMatrix = cam->getRecentViewMat();
 
+		// todo : use _div
 		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cameraViewMatrix);
 
 		glDepthMask(GL_FALSE);
@@ -69,7 +64,7 @@ namespace RENDER
 			{
 				skyboxRenderTarget->_skbTexture->bind(i);		// Texture bind
 				_shaderObj->loadInt(_shaderObj->m_textureID, 0);	//glUniform1i(shaderSkyboxVec[selectedSkyboxShaderIdx]->m_textureID, 0);
-				glDrawArrays(GL_TRIANGLE_STRIP, i * 4, 4);
+				glDrawArrays(GL_TRIANGLE_STRIP, i * 4, 4);		// direct draw Arrays call
 				skyboxRenderTarget->_skbTexture->unbind(i);
 			}
 			skyboxRenderTarget->_skbModel->unbind();

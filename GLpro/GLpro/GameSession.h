@@ -25,13 +25,13 @@ public:
 	void pauseGame();
 	void resumeGame();
 
-	void transferKeyInputToFocusBox(long long inputKey);
+	void transferKeyInput(long long inputKey);
+	void transferKeyInput(std::string& inputStr);
+//	void transferMouseClickToBox(int x, int y);		// set focusBox that was clicked.
 
-	void transferKeyInputToFocusBox(std::string& inputStr);
-	// set focusBox that was clicked.
-	void transferMouseClickToBox(int x, int y);
 	void initGameSession();
-	void updateGameLogic(float deltaTime);
+	void setAllEntityRRender(bool bRender);
+	void update(float deltaTime, float acc);
 
 	// register new entity in game session
 	void registerEntityToGameSession(Entity* entity);

@@ -4,10 +4,12 @@ Transform::Transform(int entityID, const glm::mat4 &modelMatrix, const glm::mat4
 	: _entityID(entityID), _localModelMatrix(modelMatrix), _localRotateMatrix(rotateMatrix), _localScaleMatrix(scaleMatrix)
 {
 	_velocity = glm::vec3();
-	_bVelocity = false;
+	_bMove = true;				
+	_bVelocity = false;			// bVelocity == use original velocity for move
 	_parentTransformPtr = nullptr;
 	_childTransformPtrList = std::list<Transform*>();
 	_bDirty = true;		// update local -> world	:: 없으면 child로 신규 생성시 world update X
+	_maxZSpeed = 3.0f;	// 100 velocity
 }
 
 const glm::mat4 & Transform::getWorldMatRef() const
@@ -139,7 +141,51 @@ void Transform::accScaleMatrix(const glm::mat4 &scaleMat)
 
 void Transform::accModelMatrix(const glm::vec3 &modelVec)
 {
+	for(int i=0; i<3; i++)
+		_localModelMatrix[3][i] += modelVec[i];
+}
+
+void Transform::translateModelMatrix(const glm::vec3 &modelVec)
+{
 	_localModelMatrix = glm::translate(_localModelMatrix, modelVec);
+}
+
+void Transform::setVelocity(const glm::vec3 & velocity)
+{
+	_velocity = velocity;
+}
+
+glm::vec3 Transform::getVelocity() const
+{
+	return _velocity;
+}
+
+glm::vec3 & Transform::getVelocityRef()
+{
+	return _velocity;
+}
+
+void Transform::speedAdd(float add)
+{
+	_speed = max(-_maxZSpeed, min(_maxZSpeed, _speed + add));
+}
+
+void Transform::speedSet(float speed)
+{
+	_speed = max(-_maxZSpeed, min(speed, speed));
+}
+
+float Transform::getSpeed() {
+	return _speed;
+}
+
+float Transform::getMaxSpeed() {
+	return _maxZSpeed;
+}
+
+void Transform::setMaxSpeed(float maxSpeed)
+{
+	_maxZSpeed = maxSpeed;
 }
 
 void Transform::accRotationMatrix(const float &degree, glm::vec3 &rotateAxis)
@@ -213,4 +259,210 @@ void Transform::attachChildTransform(Transform * childTransform)
 	_childTransformPtrList.push_back(childTransform);
 	childTransform->_parentTransformPtr = this;
 	return;
+}
+
+void Transform::resetDirty()
+{
+	_bDirty = false;
+}
+
+bool Transform::isDirty()
+{
+	return _bDirty;
+}
+
+void Transform::setDirty()
+{
+	_bDirty = true;
+}
+
+void Transform::setMove(bool bMove)
+{
+	_bMove = bMove;
+}
+
+void Transform::update(float deltaTime)
+{
+	if (_parentTransformPtr != nullptr)		// skip if child (will be visited by tree traversal.
+	{
+		return;
+	}
+
+	if (!_bMove)
+	{
+		for (auto childTransformPtr : _childTransformPtrList)
+		{
+			childTransformPtr->updateWIthNoDirtyParent(deltaTime);
+		}
+		return;
+	}
+
+	if (_bDirty)
+	{
+		updateLocalWithVelocityOrSpeed(deltaTime);
+		_worldTotalMatrix = (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
+		for (auto childTransformPtr : _childTransformPtrList)
+		{
+			childTransformPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
+		}
+		return;
+	}
+
+	if (bUpdateLocalWithVelocityOrSpeed(deltaTime)) {
+		_bDirty = true;
+		_worldTotalMatrix = (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
+		for (auto childTransformPtr : _childTransformPtrList)
+		{
+			childTransformPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
+		}
+		return;
+	}
+
+	for (auto childTransformPtr : _childTransformPtrList)
+	{
+		childTransformPtr->updateWIthNoDirtyParent(deltaTime);
+	}
+
+}
+
+//for debug
+
+void Transform::printLocalModel()
+{
+	std::cout << "model vec" << std::endl;
+	for (int i = 0; i < 3; i++)
+		std::cout << _localModelMatrix[3][i] << ", ";
+	std::cout << std::endl;
+}
+
+void Transform::printLocalRotMat()
+{
+	std::cout << "rotation mat" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int k = 0; k < 4; k++)
+		{
+			std::cout << _localRotateMatrix[i][k] << ", ";
+		}
+		std::cout << std::endl;
+	}
+}
+
+void Transform::printWorldMat()
+{
+	std::cout << "world mat" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int k = 0; k < 4; k++)
+		{
+			std::cout << _worldTotalMatrix[i][k] << ", ";
+		}
+		std::cout << std::endl;
+	}
+}
+
+// if velocity is not 0 -> return true
+bool Transform::bUpdateLocalWithVelocityOrSpeed(float deltaTime)
+{
+	if (_bVelocity)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			_localModelMatrix[3][i] += _velocity[i] * deltaTime;
+		}
+		for (int i = 0; i < 3; i++)
+		{
+			if (_velocity[i] > glm::epsilon<float>())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// use speed
+	_velocity = _localRotateMatrix[2] * _speed;
+	//_velocity = glm::vec3(0.0f, 0.0f, 1.0f) * _speed;
+	for (int i = 0; i < 3; i++)
+	{
+		_localModelMatrix[3][i] += _velocity[i] * deltaTime;
+	}
+
+	if (std::fabs(_speed) > glm::epsilon<float>())
+	{
+		return true;
+	}
+	return false;
+}
+
+void Transform::updateLocalWithVelocityOrSpeed(float deltaTime)
+{
+	if (_bVelocity)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			_localModelMatrix[3][i] += _velocity[i] * deltaTime;
+		}
+		
+		return;
+	}
+
+	// use speed
+	_velocity = _localRotateMatrix[2] * _speed;
+	for (int i = 0; i < 3; i++)
+	{
+		_localModelMatrix[3][i] += _velocity[i] * deltaTime;
+	}
+
+	return;
+}
+
+void Transform::updateWithDirtyParent(float deltaTime, glm::mat4 & _parentWorldMat)
+{
+	if (!_bMove)
+	{
+		for (auto childTransformPtr : _childTransformPtrList)
+		{
+			childTransformPtr->updateWIthNoDirtyParent(deltaTime);
+		}
+		
+		return;
+	}
+
+	_bDirty = true;
+	_worldTotalMatrix = _parentWorldMat * (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
+	for (auto childTransformPtr : _childTransformPtrList)
+	{
+		childTransformPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
+	}
+}
+
+void Transform::updateWIthNoDirtyParent(float deltaTime)
+{
+	if (!_bMove)
+	{
+		for (auto childTransformPtr : _childTransformPtrList)
+		{
+			childTransformPtr->updateWIthNoDirtyParent(deltaTime);
+		}
+		return;
+	}
+
+	if (_bDirty)	// this transform is dirty.. dirty propagation.
+	{
+		bUpdateLocalWithVelocityOrSpeed(deltaTime);
+		_worldTotalMatrix = _parentTransformPtr->getWorldMatRef() * (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
+
+		for (auto childTransformPtr : _childTransformPtrList)
+		{
+			childTransformPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
+		}
+		return;
+	}
+
+	// no dirty.
+	for (auto childTransformPtr : _childTransformPtrList)
+	{
+		childTransformPtr->updateWIthNoDirtyParent(deltaTime);
+	}
 }

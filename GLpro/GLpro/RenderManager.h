@@ -66,6 +66,13 @@ namespace RENDER
 
 		// todo : acc 처리
 		void renderAll(float deltaTime, float acc);
+		void renderBufferInit()
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glViewport(0, 0, GWindow->_windowWidth, GWindow->_windowHeight); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+		}
 
 		void swapRenderBuffer();
 
@@ -128,7 +135,7 @@ namespace RENDER
 
 	// renderer 제거.
 	template<class T, class K>
-	inline void RRenderContainerClass<T, K>::removeRenderer(T * delRenderer)
+	void RRenderContainerClass<T, K>::removeRenderer(T * delRenderer)
 	{
 		auto it = _rRenderContainer.find(delRenderer->getShader());
 		if (it != _rRenderContainer.end())
@@ -139,7 +146,7 @@ namespace RENDER
 	}
 
 	template<class T, class K>
-	inline void RRenderContainerClass<T, K>::render(float deltaTime)
+	void RRenderContainerClass<T, K>::render(float deltaTime)
 	{
 		for (auto elem : _rRenderContainer)
 		{

@@ -100,6 +100,9 @@
     <Filter Include="소스 파일\components\collision">
       <UniqueIdentifier>{baaf5c72-8991-4ba5-b5de-18300ff38b19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\components\collision\collisionInfo">
+      <UniqueIdentifier>{49ce33ad-128b-496e-952f-b4a23d861e74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -298,6 +301,9 @@
       <Filter>소스 파일\Menus</Filter>
     </ClCompile>
     <ClCompile Include="src\RenderTarget\Skybox\SkyboxFObj.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -550,6 +556,12 @@
     </ClInclude>
     <ClInclude Include="Box.h">
       <Filter>소스 파일\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformCamera.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionInfo.h">
+      <Filter>소스 파일\components\collision\collisionInfo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

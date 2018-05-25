@@ -53,6 +53,7 @@ namespace RESOURCE
 		if (_bEbo)
 		{ 
 			glDeleteBuffers(1, &_ebo);
+			glDeleteBuffers(1, &_vbo);
 		}
 		else
 		{
@@ -79,19 +80,27 @@ namespace RESOURCE
 
 	void Model::render()
 	{
-		glDrawElements(
-			GL_TRIANGLES,      // mode
-			getGLCount(),    // count
-			GL_UNSIGNED_SHORT,   // type
-			(void*)0         // element array buffer offset
-		);
+		if (_bEbo)
+		{
+			glDrawElements(
+				GL_TRIANGLES,      // mode
+				getGLCount(),    // count
+				GL_UNSIGNED_SHORT,   // type
+				(void*)0         // element array buffer offset
+			);
+		}
+		else
+		{
+			glDrawArrays(GL_TRIANGLES, 0, getGLCount());
+		}
+		
 	}
 
 	int Model::getGLCount()
 	{
 		if (_bEbo)
 		{
-			return out_indices.size();
+			return _elemVertices.size();
 		}
 		else
 		{
@@ -120,7 +129,7 @@ namespace RESOURCE
 	// {vertices, uvs, normals} -> {structVertices, indices}
 	void Model::createStructVertexAndIndice()
 	{
-		createVBOWithVertex(_out_vertices, _out_uvs, _out_normals, out_indices, _vertices);
+		createVBOWithVertex(_out_vertices, _out_uvs, _out_normals, _elemVertices, _vertices);
 	}
 
 	// {file} -> {vertices, uvs, normals}
@@ -142,15 +151,14 @@ namespace RESOURCE
 			// EBO buffer bind
 			glGenBuffers(1, &_ebo);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, out_indices.size() * sizeof(out_indices[0]), out_indices.data(), GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, _elemVertices.size() * sizeof(_elemVertices[0]), _elemVertices.data(), GL_STATIC_DRAW);
 		}
-		else
-		{
-			// VBO buffer bind
-			glGenBuffers(1, &_vbo);
-			glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-			glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(_vertices[0]), _vertices.data(), GL_STATIC_DRAW);
-		}
+
+		// VBO buffer bind
+		glGenBuffers(1, &_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+		glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(_vertices[0]), _vertices.data(), GL_STATIC_DRAW);
+		
 		
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

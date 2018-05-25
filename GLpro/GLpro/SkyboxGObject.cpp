@@ -10,6 +10,7 @@ std::vector<SkyboxGObject*> SkyboxGObject::_preMadeSpaceSkybox;
 
 SkyboxGObject::SkyboxGObject(SHADER::ShaderSkybox * shader, RENDER_TARGET::SKYBOX::SkyboxFObj * skyboxFObj)
 {
+	_skyboxFObj = skyboxFObj;
 	rSkybox = GRendermanager->getRRender<RENDER::RSkybox, SHADER::ShaderSkybox>(shader);
 	registeredElemInRenderer = rSkybox->addToDrawList(skyboxFObj, _rigidbodyComponent);
 }
@@ -17,14 +18,19 @@ SkyboxGObject::SkyboxGObject(SHADER::ShaderSkybox * shader, RENDER_TARGET::SKYBO
 SkyboxGObject::~SkyboxGObject()
 {
 	rSkybox->destructor(registeredElemInRenderer);
-	delete skyboxFObj;
+	delete _skyboxFObj;
+}
+
+void SkyboxGObject::setBRender(bool bRender)
+{
+	_skyboxFObj->setBRender(bRender);
 }
 
 void SkyboxGObject::preMade()
 {
 	SHADER::ShaderSkybox* skyboxShader = GShaderManager->m_addShader<SHADER::ShaderSkybox>(ENUM_SHADER_TYPE::SHADER_TYPE_SKYBOX, "data/Shader/SkyboxMapping.vertexshader", "data/Shader/SkyboxMapping.fragmentshader");
 	RENDER_TARGET::SKYBOX::SkyboxFObj* tempSkyboxFObj = new RENDER_TARGET::SKYBOX::SkyboxFObj("data/Texture/sky_bot.dds", "data/Texture/sky_top.dds", "data/Texture/sky_back.dds", "data/Texture/sky_front.dds", "data/Texture/sky_right.dds", "data/Texture/sky_left.dds");
-	tempSkyboxFObj->setBRender(true);
+	tempSkyboxFObj->setBRender(false);
 	_preMadeSpaceSkybox.push_back(new SkyboxGObject(skyboxShader, tempSkyboxFObj));
 }
 

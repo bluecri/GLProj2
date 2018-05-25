@@ -10,87 +10,100 @@
 #include "src/Resource/ModelManager.h"
 #include "src/Resource/Texture.h"
 #include "src/Resource/TextureManager.h"
-#include "src/Resource/TextureManager.h"
 #include "src/Shader/ShaderManager.h"
 #include "src/Shader/ShaderMain.h"
+#include "src/Control/InputManager.h"
 
 #include "src/RenderTarget/Skybox/SkyboxFObj.h"
 #include "src/RenderTarget/Normal/NormalFObj.h"
 #include "SkyboxGObject.h"
+#include "Fobj.h"
+
+#include "Canvas.h"
+#include "src/Transform.h"
+#include "RigidbodyComponent.h"
+#include "src/window.h"
 
 std::vector<GameSession*> GameSession::preMadeGameSession;
 
 
-inline GameSession::GameSession()
+GameSession::GameSession()
 {
 	_menuCanvas = Canvas::preMadeCanvasVec[PREMADE_CANVAS_INGAMEMENU];
 }
 
-inline void GameSession::pauseGame()
+void GameSession::pauseGame()
 {
+	// todo : stop all entities's component(collide, rigid update...)
 	_menuCanvas->setBRender(true);
 	_bMenuOn = true;
 }
 
-inline void GameSession::resumeGame()
+void GameSession::resumeGame()
 {
 	_menuCanvas->setBRender(false);
 	_bMenuOn = false;
 }
 
-inline void GameSession::transferKeyInputToFocusBox(long long inputKey)
+void GameSession::transferKeyInput(long long inputKey)
 {
 	if (_bMenuOn)
 	{
+		_menuCanvas->transferKeyInputToFocusBox(inputKey);
 		return;
 	}
 
-	// todo : transfer to game process
+	// transfer key to player
+	_player->inputProgress(inputKey);
+	
 }
 
-inline void GameSession::transferKeyInputToFocusBox(std::string & inputStr)
+void GameSession::transferKeyInput(std::string & inputStr)
 {
 	if (_bMenuOn)
 	{
-		// todo : transfer to menu string
-	}
-
-	// todo : transfer to game process
-}
-
-// set focusBox that was clicked.
-
-inline void GameSession::transferMouseClickToBox(int x, int y)
-{
-	if (_bMenuOn)
-	{
+		// transfer to menu string
+		_menuCanvas->transferKeyInputToFocusBox(inputStr);
 		return;
 	}
 
-	// process
+	// todo : string input 처리 ( not in player )
 }
 
-inline void GameSession::initGameSession()
+void GameSession::initGameSession()
 {
 	// load plane, other plane...
 
 }
 
-inline void GameSession::updateGameLogic(float deltaTime)
+void GameSession::setAllEntityRRender(bool bRender) {
+	for (auto elem : _allEntityMap)
+	{
+		elem.second->setBRender(bRender);
+	}
+}
+
+void GameSession::update(float deltaTime, float acc)
 {
+	if (!_bMenuOn)
+	{
+		return;
+	}
+
 	// main game logic loop
+
 
 }
 
 // register new entity in game session
 
-inline void GameSession::registerEntityToGameSession(Entity * entity)
+void GameSession::registerEntityToGameSession(Entity * entity)
 {
 	entity->_gameSession = this;
 	_allEntityMap.insert(std::make_pair(entity->getID(), entity));
 }
 
-inline void GameSession::preMade()
+void GameSession::preMade()
 {
 	int TEST_ENEMY_NUM = 20;
 
@@ -104,9 +117,26 @@ inline void GameSession::preMade()
 
 	// player & camera attach
 	Player * newPlayer = new Player(planeModel, planeTexture, shaderMain);
+	//newPlayer->_rigidbodyComponent->_transform->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	newPlayer->_rigidbodyComponent->_transform->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
+	newPlayer->_rigidbodyComponent->_transform->setDirty();
+
 	CAMERA::Camera** mainCam = GCameraManager->GetMainCamera();
-	newPlayer->_normalFObj->setBRender(false);
+	//(*mainCam)->_rigidbodyComponent->_transform->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	(*mainCam)->_rigidbodyComponent->_transform->accModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
+	(*mainCam)->_rigidbodyComponent->_transform->setDirty();
+	newPlayer->_normalFObj->setBRender(true);
 	newPlayer->attachChildEntity(*mainCam);
+
+	//ttest
+	Player * testP = new Player(planeModel, planeTexture, shaderMain);
+	testP->_rigidbodyComponent->_transform->accModelMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
+	testP->_rigidbodyComponent->_transform->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
+	testP->_rigidbodyComponent->_transform->setDirty();
+	newPlayer->attachChildEntity(testP);
+	premadeSession->registerEntityToGameSession(testP);
+
+
 	//todo player collide compo ( sound 는 player 안에서 ), ...
 	//todo : camera pos, lookat local modify
 
@@ -123,12 +153,14 @@ inline void GameSession::preMade()
 	}
 
 	// space skybox
-	SHADER::ShaderSkybox* skyboxShader = GShaderManager->m_addShader<SHADER::ShaderSkybox>(ENUM_SHADER_TYPE::SHADER_TYPE_SKYBOX, "data/shader/SkyboxMapping.vertexshader", "data/shader/SkyboxMapping.fragmentshader");
-	RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj = new RENDER_TARGET::SKYBOX::SkyboxFObj("data/Texture/sky_bot.dds", "data/Texture/sky_top.dds", "data/Texture/sky_back.dds", "data/Texture/sky_front.dds", "data/Texture/sky_right.dds", "data/Texture/sky_left.dds", 40.0f);
-	skyboxFObj->setBRender(false);
 
-	SkyboxGObject * spaceSkybox = new SkyboxGObject(skyboxShader, skyboxFObj);
-	premadeSession->_player->attachChildEntity(spaceSkybox);
+	//SHADER::ShaderSkybox* skyboxShader = GShaderManager->m_addShader<SHADER::ShaderSkybox>(ENUM_SHADER_TYPE::SHADER_TYPE_SKYBOX, "data/shader/SkyboxMapping.vertexshader", "data/shader/SkyboxMapping.fragmentshader");
+	//RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj = new RENDER_TARGET::SKYBOX::SkyboxFObj("data/Texture/sky_bot.dds", "data/Texture/sky_top.dds", "data/Texture/sky_back.dds", "data/Texture/sky_front.dds", "data/Texture/sky_right.dds", "data/Texture/sky_left.dds", 40.0f);
+	//skyboxFObj->setBRender(false);
+	
+	//SkyboxGObject * spaceSkybox = new SkyboxGObject(skyboxShader, skyboxFObj);
+	SkyboxGObject * spaceSkybox = SkyboxGObject::_preMadeSpaceSkybox[0];
+	spaceSkybox->setBRender(true);
 	premadeSession->_spaceSkybox = spaceSkybox;
 	premadeSession->registerEntityToGameSession(spaceSkybox);
 

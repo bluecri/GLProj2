@@ -4,6 +4,8 @@
 #include "Box.h"
 #include "ImageBox.h"
 #include "TextBox.h"
+#include "./src/Control/InputManager.h"
+#include "./src/window.h"
 
 
 std::vector<Canvas*> Canvas::preMadeCanvasVec;
@@ -11,8 +13,19 @@ std::vector<Canvas*> Canvas::preMadeCanvasVec;
 
 // set focusBox that was clicked.
 
-inline void Canvas::transferKeyInputToFocusBox(long long inputKey)
+void Canvas::transferKeyInputToFocusBox(long long inputKey)
 {
+	// If inputKey == mouse click --> find focus box
+	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::CLICK_L_ONCE))
+	{
+		double xPos, yPos;
+		glfwGetCursorPos(GWindow->_pWindow, &xPos, &yPos);
+
+		printf_s("[LOG] mouse click %lf %lf \n", xPos, yPos);
+
+		refindFocusBoxWithClick(static_cast<int>(xPos), static_cast<int>(yPos));
+	}
+
 	if (_focusBox == nullptr)
 		return;
 
@@ -20,7 +33,7 @@ inline void Canvas::transferKeyInputToFocusBox(long long inputKey)
 
 }
 
-inline void Canvas::transferKeyInputToFocusBox(std::string & inputStr)
+void Canvas::transferKeyInputToFocusBox(std::string & inputStr)
 {
 	if (_focusBox == nullptr)
 		return;
@@ -30,8 +43,7 @@ inline void Canvas::transferKeyInputToFocusBox(std::string & inputStr)
 }
 
 // set focusBox that was clicked.
-
-inline void Canvas::transferMouseClickToBox(int x, int y)
+void Canvas::refindFocusBoxWithClick(int x, int y)
 {
 	for (auto elem : _boxMap)
 	{
@@ -44,12 +56,12 @@ inline void Canvas::transferMouseClickToBox(int x, int y)
 	}
 }
 
-inline void Canvas::addBox(Box * box)
+void Canvas::addBox(Box * box)
 {
 	_boxMap.insert(std::make_pair(box->_name, box));
 }
 
-inline void Canvas::setBRender(bool bRender)
+void Canvas::setBRender(bool bRender)
 {
 	for (auto elem : _boxMap)
 	{
@@ -57,7 +69,11 @@ inline void Canvas::setBRender(bool bRender)
 	}
 }
 
-inline void Canvas::initPreMade()
+void Canvas::update(float deltaTime, float acc)
+{
+}
+
+void Canvas::initPreMade()
 {
 	Canvas* loginCanvas = new Canvas();
 	preMadeCanvasVec.push_back(loginCanvas);

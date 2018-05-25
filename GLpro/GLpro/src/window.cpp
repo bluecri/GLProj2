@@ -87,6 +87,8 @@ int WINDOW::Window::init()
 	GTextureManager = new RESOURCE::TextureManager();
 	GCameraManager = new CAMERA::CameraManager();
 	GLightManager = new LightManager();
+	// ttest
+	GLightManager->AddDirectinalLight(DirectionalLight(glm::vec3(1.0f, 2.0f, 1.0f)));
 	GShaderManager = new SHADER::ShaderManager();
 	GRendermanager = new RENDER::RenderManager();
 	GCollisionComponentManager = new CollisionComponentManager(3, 128);
@@ -94,9 +96,9 @@ int WINDOW::Window::init()
 	GScene = new Scene();
 	//
 	GShadowBufferTexture = new RESOURCE::ShadowBufferTextureShader();
+	GShadowBufferTexture->init();
 
-
-	//load test
+	//load ttest
 	Box::initPreMade();
 	ImageBox::initPreMade();
 	TextBox::initPreMade();
@@ -106,7 +108,10 @@ int WINDOW::Window::init()
 
 	GameSession::preMade();
 
+	GScene->_targetGameSession = GameSession::preMadeGameSession[0];
+	GScene->_targetGameSession->setAllEntityRRender(true);
 	//GScene->changeCanvas(
+	//SkyboxGObject::preMadeSpaceSkybox[0]->skyboxFObj->setBRender(true);
 
 	return 0;
 }
@@ -119,9 +124,6 @@ void WINDOW::Window::mainLoop()
 
 	float currentTime = glfwGetTime();
 	float acc = 0.0;
-	// test
-	//SkyboxGObject::preMadeSpaceSkybox[0]->skyboxFObj->setBRender(true);
-	SkyboxGObject::preMade();
 
 	// Draw loop (ESC key or window was closed)
 	do {
@@ -131,7 +133,8 @@ void WINDOW::Window::mainLoop()
 		currentTime = newTime;
 
 		acc += intervalTime;
-		GInputManager->keyUpdate();
+		glfwPollEvents();
+		GInputManager->keyUpdate();		// transfer keyinput to GScene
 		while (acc >= dt)
 		{
 			/*physics loop
@@ -159,7 +162,7 @@ void WINDOW::Window::mainLoop()
 		// 1. 1frame 늦게 출력(past - current사이 정확한 interpolation)
 		// 2. acc만큼의 예상 이동 경로 그냥 그리기(acc가 dt에 가까울 수록 interpolation error 증가)
 		// 2번으로 시도.
-
+		GScene->update(dt, acc);
 		renderAll(usedT, acc);
 		usedT = 0.0;
 

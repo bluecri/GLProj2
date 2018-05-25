@@ -147,3 +147,35 @@ void Entity::attachChildEntity(Entity * childEntity)
 	return;
 }
 
+void Entity::setAllChildBRender(bool bRender)
+{
+	for (auto elem : _childEntityList)
+	{
+		elem->setBRender(bRender);
+		elem->setAllChildBRender(bRender);
+	}
+}
+
+void Entity::setBRender(bool bRender) 
+{
+	// do nothing
+}
+
+void Entity::setAllChildCollisionComp(bool bCollision)
+{
+	for (auto elem : _childEntityList)
+	{
+		elem->setCollisionComp(bCollision);
+		elem->setAllChildCollisionComp(bCollision);
+	}
+}
+
+void Entity::setCollisionComp(bool bCollision)
+{
+	//do nothing
+}
+
+void Entity::logicUpdate(float deltaTime, float acc) {}
+
+void Entity::collisionCallBack(CollisionInfo * collisionInfo) {}
+

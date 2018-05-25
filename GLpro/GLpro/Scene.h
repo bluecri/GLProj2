@@ -13,13 +13,16 @@ public:
 
 	void networkPacketProcess();
 
-	void mouseInput(int x, int y);
 	void keyInput(long long inputKey);
 	void keyInput(std::string& inputStr);
 
+	void update(float deltaTime, float acc);
+
 
 	// pre elems
-private:
+
+	//ttest : to be private
+public:		
 	Canvas * _targetCanvas;		// user Canvas::preMadeCanvasVec
 	GameSession * _targetGameSession;
 };

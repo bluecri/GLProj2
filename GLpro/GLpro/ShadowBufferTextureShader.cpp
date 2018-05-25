@@ -2,6 +2,7 @@
 #include "ShadowBufferTextureShader.h"
 #include "src/Shader/ShaderManager.h"
 #include "src/Shader/ShaderShadow.h"
+#include "src/window.h"
 
 RESOURCE::ShadowBufferTextureShader::ShadowBufferTextureShader(int fboX, int fboY)
 {
@@ -28,17 +29,15 @@ void RESOURCE::ShadowBufferTextureShader::bindFBO()
 	glBindFramebuffer(GL_FRAMEBUFFER, _shadowFBO);		// render to buffer -> texture
 
 	glViewport(0, 0, _fboX, _fboY); // Render on the whole framebuffer, complete from the lower left corner to the upper right
-	glCullFace(GL_FRONT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glCullFace(GL_FRONT);
 }
 
 void RESOURCE::ShadowBufferTextureShader::unbindFBO()
 {
-	glCullFace(GL_BACK);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);	// renter to screen
-	// TODO : roll back viewport
-	// glViewport(0, 0, m_control->m_width, m_control->m_height); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+	glViewport(0, 0, GWindow->_windowWidth, GWindow->_windowHeight); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+	glCullFace(GL_BACK);
 }
 
 void RESOURCE::ShadowBufferTextureShader::bindTexture()

@@ -39,7 +39,8 @@ namespace CONTROL
 			void keyUpdate();		// Do Key State Update
 			void changeInputMode(ENUM_INPUT_MODE mode);
 
-			static bool controlCheck(ENUM_BEHAVIOR en);
+			static bool controlCheckGlobal(ENUM_BEHAVIOR en);	// check key input global
+			static bool controlCheck(long long inKey, ENUM_BEHAVIOR en);
 
 	public:
 		std::string _inputString;
@@ -49,7 +50,7 @@ namespace CONTROL
 
 	private:
 			ENUM_INPUT_MODE _mode;
-			std::vector<Control*> updateControlVec = std::vector<Control*>(ENUM_BEHAVIOR_SIZE, nullptr);	// Target to update controls
+			std::vector<Control*> updateControlVec;	// Target to update controls
 			static long long int _bitKeyState;	//global key state
 
 	};

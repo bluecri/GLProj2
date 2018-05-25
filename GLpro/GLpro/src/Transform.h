@@ -28,7 +28,7 @@ public:
 
 	virtual ~Transform() {};
 
-	int GetEntityID() const {	return _entityID; };
+	virtual int GetEntityID() const {	return _entityID; };
 	
 	virtual const glm::mat4& getWorldMatRef() const;
 	virtual glm::mat4 getWorldMat() const;
@@ -45,6 +45,17 @@ public:
 
 	virtual void accModelMatrix(const glm::mat4 &localAccModelMatrix);
 	virtual void accModelMatrix(const glm::vec3 &localAccModelVec);
+
+	virtual void translateModelMatrix(const glm::vec3 & modelVec);
+	virtual void setVelocity(const glm::vec3& velocity);
+	virtual glm::vec3 getVelocity() const;
+	virtual glm::vec3& getVelocityRef();
+
+	virtual void speedAdd(float add);
+	virtual void speedSet(float speed);
+	virtual float getSpeed();
+	virtual float getMaxSpeed();
+	virtual void setMaxSpeed(float maxSpeed);
 
 	// rotate mat
 	virtual const glm::mat4& getLocalRotationMatrixConstRef() const;
@@ -80,113 +91,23 @@ public:
 	virtual void attachParentTransform(Transform* parentTransform);
 	virtual void attachChildTransform(Transform* childTransform);
 
-	void resetDirty()
-	{
-		_bDirty = false;
-	}
+	virtual void resetDirty();
+	virtual bool isDirty();
+	virtual void setDirty();
+	virtual void setMove(bool bMove);
+	virtual void update(float deltaTime);
 
-	bool isDirty()
-	{
-		return _bDirty;
-	}
+	//for debug
+	virtual void printLocalModel();
+	virtual void printLocalRotMat();
+	virtual void printWorldMat();
 
-	void setDirty()
-	{
-		_bDirty = true;
-	}
-
-	void update(float deltaTime)
-	{
-		if (_parentTransformPtr != nullptr)		// skip if child (will be visited by tree traversal.
-		{
-			return;
-		}
-
-		// do tre traversal update
-		if (_bDirty)
-		{
-			if (_bVelocity)
-			{
-				glm::vec3 changedVelocity = _velocity * deltaTime;
-				for (int i = 0; i < 3; i++)
-				{
-					_localModelMatrix[i] += changedVelocity[i];
-				}
-			}
-			_worldTotalMatrix = (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
-			for (auto childTransformPtr : _childTransformPtrList)
-			{
-				childTransformPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
-			}
-		}
-		else
-		{
-			if (_bVelocity)
-			{
-				_bDirty = true;
-				if (_bVelocity)
-				{
-					glm::vec3 changedVelocity = _velocity * deltaTime;
-					for (int i = 0; i < 3; i++)
-					{
-						_localModelMatrix[i] += changedVelocity[i];
-					}
-				}
-				_worldTotalMatrix = (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
-				for (auto childTransformPtr : _childTransformPtrList)
-				{
-					childTransformPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
-				}
-				return;
-			}
-
-			for (auto childTransformPtr : _childTransformPtrList)
-			{
-				childTransformPtr->updateWIthNoDirtyParent(deltaTime);
-			}
-		}
-	}
 
 protected:
-	void updateWithDirtyParent(float deltaTime, glm::mat4& _parentWorldMat)
-	{
-		_bDirty = true;
-		_worldTotalMatrix = _parentWorldMat * (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
-		for (auto childTransformPtr : _childTransformPtrList)
-		{
-			childTransformPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
-		}
-	}
-
-	void updateWIthNoDirtyParent(float deltaTime) 
-	{
-		if (_bDirty || _bVelocity)	// this transform is dirty.. dirty propagation.
-		{
-			_bDirty = true;
-			if (_bVelocity)
-			{
-				glm::vec3 changedVelocity = _velocity * deltaTime;
-				for (int i = 0; i < 3; i++)
-				{
-					_localModelMatrix[i] += changedVelocity[i];
-				}
-			}
-			_worldTotalMatrix = _parentTransformPtr->getWorldMatRef() * (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
-			
-			for (auto childTransformPtr : _childTransformPtrList)
-			{
-				childTransformPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
-			}
-			return;
-		}
-
-		// no dirty.
-		for (auto childTransformPtr : _childTransformPtrList)
-		{
-			childTransformPtr->updateWIthNoDirtyParent(deltaTime);
-		}
-	}
-
+	virtual bool bUpdateLocalWithVelocityOrSpeed(float deltaTime);
+	virtual void updateLocalWithVelocityOrSpeed(float deltaTime);
+	virtual void updateWithDirtyParent(float deltaTime, glm::mat4& _parentWorldMat);
+	virtual void updateWIthNoDirtyParent(float deltaTime);
 
 private:
 	int _entityID;
@@ -194,8 +115,11 @@ private:
 	glm::mat4 _localRotateMatrix;
 	glm::mat4 _localScaleMatrix;
 
-	bool _bVelocity;
+	bool _bMove;		// update move or not
+	bool _bVelocity;	// update move with original glm::vec3 _velocity
 	glm::vec3 _velocity;
+	float _speed;
+	float _maxZSpeed;
 
 
 	glm::mat4 _worldTotalMatrix;

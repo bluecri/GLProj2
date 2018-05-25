@@ -10,7 +10,7 @@
 
 std::vector<TextBox*> TextBox::preMadeTextBoxesVec;
 
-inline TextBox::TextBox(int line, int len, glm::vec2 pos, int fontSize, const std::string & textTextureFileName, const std::string & type, SHADER::ShaderText * shaderText)
+TextBox::TextBox(int line, int len, glm::vec2 pos, int fontSize, const std::string & textTextureFileName, const std::string & type, SHADER::ShaderText * shaderText)
 	: Box(len * static_cast<int>(fontSize), line * static_cast<int>(fontSize), static_cast<int>(pos.x), static_cast<int>(pos.y))	// pos & size calc
 {
 	_rText = GRendermanager->getRRender<RENDER::RText, SHADER::ShaderText>(shaderText);
@@ -26,7 +26,7 @@ inline TextBox::TextBox(int line, int len, glm::vec2 pos, int fontSize, const st
 	_rText->addToDrawList(_textFObj, nullptr);
 }
 
-inline TextBox::TextBox(int line, int len, glm::vec2 pos, int fontSize, RESOURCE::Texture * texture, SHADER::ShaderText * shaderText)
+TextBox::TextBox(int line, int len, glm::vec2 pos, int fontSize, RESOURCE::Texture * texture, SHADER::ShaderText * shaderText)
 	: Box(len * static_cast<int>(fontSize), line * static_cast<int>(fontSize), static_cast<int>(pos.x), static_cast<int>(pos.y))
 {
 	_rText = GRendermanager->getRRender<RENDER::RText, SHADER::ShaderText>(shaderText);
@@ -35,7 +35,7 @@ inline TextBox::TextBox(int line, int len, glm::vec2 pos, int fontSize, RESOURCE
 	_rText->addToDrawList(_textFObj, nullptr);
 }
 
-inline TextBox::TextBox(const TextBox & copy) : Box(copy._width, copy._height, copy._widthLT, copy._heightLT)
+TextBox::TextBox(const TextBox & copy) : Box(copy._width, copy._height, copy._widthLT, copy._heightLT)
 {
 	_rText = copy._rText;
 	RESOURCE::TextBuffer* copyTextBuffer = _textFObj->_textBuffer;
@@ -43,40 +43,40 @@ inline TextBox::TextBox(const TextBox & copy) : Box(copy._width, copy._height, c
 	drawElement = _rText->addToDrawList(_textFObj, nullptr);
 }
 
-inline TextBox::~TextBox()
+TextBox::~TextBox()
 {
 	auto shared = drawElement.lock();
 	_rText->destructor(shared);		//destroy render Target in Renderer's container
 	delete _textFObj;
 }
 
-inline void TextBox::setBRender(bool bRender)
+void TextBox::setBRender(bool bRender)
 {
 	_textFObj->setBRender(bRender);		// render flag(bool) modify
 }
 
-inline void TextBox::modifyEmptySize(int width, int height)
+void TextBox::modifyEmptySize(int width, int height)
 {
 	// pos 변경은 FObj에서
 	printf_s("TextBox modifyEmptySize is not vaild\n");
 }
 
-inline void TextBox::modifyTextBoxSize(int line, int len, int fontSize)
+void TextBox::modifyTextBoxSize(int line, int len, int fontSize)
 {
 	_textFObj->changeFrame(line, len, fontSize);
 }
 
-inline void TextBox::modifyTextComment(std::string & str)
+void TextBox::modifyTextComment(std::string & str)
 {
 	_textFObj->changePrintStr(str);
 }
 
-inline void TextBox::moveLTPosition(int widthLT, int heightLT)
+void TextBox::moveLTPosition(int widthLT, int heightLT)
 {
 	_textFObj->setPos(glm::vec2(_widthLT, _heightLT));
 }
 
-inline void TextBox::initPreMade()
+void TextBox::initPreMade()
 {
 	SHADER::ShaderText* shaderText = GShaderManager->m_addShader<SHADER::ShaderText>(ENUM_SHADER_TYPE::SHADER_TYPE_TEXT, "data/Shader/TextVertexShader.vertexshader", "data/Shader/TextVertexShader.fragmentshader");
 	RESOURCE::Texture* asciiTexture = GTextureManager->getTextureWithFileName("data/Texture/Holstein.DDS", "dds");

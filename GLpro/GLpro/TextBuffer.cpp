@@ -174,7 +174,7 @@ void RESOURCE::TextBuffer::createBuffer()
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, _prevVBOSize, &_vertexes[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, _uvbo);
-	glBufferData(GL_ARRAY_BUFFER, _prevUVBOSize, &_printUVs[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, _prevUVBOSize, static_cast<void*>(&_printUVs), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);

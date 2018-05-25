@@ -3,8 +3,11 @@
 RENDER::RenderManager* GRendermanager = nullptr;;
 
 // todo : acc Ã³¸®
-inline void RENDER::RenderManager::renderAll(float deltaTime, float acc)
+void RENDER::RenderManager::renderAll(float deltaTime, float acc)
 {
+	//draw init (clear buffer)
+	renderBufferInit();
+
 	// skybox draw
 	_skyboxContainer.render(deltaTime);
 
@@ -21,9 +24,8 @@ inline void RENDER::RenderManager::renderAll(float deltaTime, float acc)
 	_textContainer.render(deltaTime);
 }
 
-inline void RENDER::RenderManager::swapRenderBuffer()
+void RENDER::RenderManager::swapRenderBuffer()
 {
 	// Swap buffers
 	glfwSwapBuffers(GWindow->_pWindow);
-	glfwPollEvents();
 }

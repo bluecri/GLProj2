@@ -34,7 +34,13 @@ namespace CAMERA {
 
 	void Camera::updateRecentVPAndViewMat()
 	{
-		_viewMatRecentUsed = _rigidbodyComponent->_transform->getWorldMat();
+		const glm::mat4& camWorldMat = _rigidbodyComponent->_transform->getWorldMatRef();
+
+		glm::vec3 tempEye = camWorldMat[3];
+		glm::vec3 fowardVec = camWorldMat[2];
+		glm::vec3 upVec = camWorldMat[1];
+
+		_viewMatRecentUsed = glm::lookAt(tempEye, fowardVec + tempEye, upVec);
 		_vpMatRecentUsed = _camProjMat * _viewMatRecentUsed;
 	}
 

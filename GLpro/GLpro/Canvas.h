@@ -32,11 +32,14 @@ public:
 	void transferKeyInputToFocusBox(std::string & inputStr);
 
 	// set focusBox that was clicked.
-	void transferMouseClickToBox(int x, int y);
 	void addBox(Box* box);
 	void setBRender(bool bRender);
+	void update(float deltaTime, float acc);
 
 	static void initPreMade();
+
+private:
+	void refindFocusBoxWithClick(int x, int y);
 
 public:
 	std::map<std::string, Box*> _boxMap;

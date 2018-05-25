@@ -39,7 +39,7 @@ namespace RESOURCE
 		GLuint	_vbo;		//vertex buffer
 
 		std::vector<Struct_Vertex> _vertices;
-		std::vector<unsigned short> out_indices;
+		std::vector<unsigned short> _elemVertices;
 
 		bool loadObjFile(const std::string &fileName);
 

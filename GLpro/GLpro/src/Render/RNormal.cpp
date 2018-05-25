@@ -30,19 +30,13 @@ namespace RENDER
 
 	void RNormal::draw(float deltaTime)
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport(0, 0, GWindow->_windowWidth, GWindow->_windowHeight); // Render on the whole framebuffer, complete from the lower left corner to the upper right
-		glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
-
-
 		CAMERA::Camera* cam = *_targetCamera;
 		if (GOption->_oldLightUse)
 		{
 			// ===============draw object on shadow buffer==============
 			GShadowBufferTexture->bindFBO();
 			GShadowBufferTexture->bindShader();
-
+			
 			glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
 
 			for (auto elem : _normalDrawElemContainer) {
@@ -59,18 +53,19 @@ namespace RENDER
 
 				normalRenderTarget->_model->unbind();
 			}
+			
 
 			GShadowBufferTexture->unbindShader();
 			GShadowBufferTexture->unbindFBO();
 
 			// ====================draw object on screen=====================
 
-			glCullFace(GL_BACK);
 			_shaderObj->bind();
 
 			//glm::mat4 modelMatrix = _targetCamera->getCamModelMatRef;
 			//glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
 
+			
 			_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cam->getRecentViewMat());
 			_shaderObj->loadMatrix4(_shaderObj->m_depthBiasID, depthBiasMVP);
 
@@ -105,9 +100,10 @@ namespace RENDER
 				normalRenderTarget->_texture->unbind();
 				normalRenderTarget->_model->unbind();
 			}
-
+			
 			_shaderObj->unbind();
 		}
+		
 	}
 
 	std::shared_ptr<RNormal::DrawElement> RNormal::addDrawElem(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent * rigidComponent)

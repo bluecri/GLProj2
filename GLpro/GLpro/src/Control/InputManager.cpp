@@ -12,6 +12,7 @@ namespace CONTROL {
 	InputManager::InputManager() 
 	{
 		_mode = ENUM_INPUT_GAME;
+		init();
 	}
 
 	void InputManager::keyUpdate()
@@ -22,6 +23,7 @@ namespace CONTROL {
 			GScene->keyInput(_inputString);
 			_inputString.clear();
 			break;
+
 		case ENUM_INPUT_MODE::ENUM_INPUT_GAME :
 			int idx = 0;
 			std::for_each(updateControlVec.begin(), updateControlVec.end(), [&](Control* elem) {
@@ -38,7 +40,6 @@ namespace CONTROL {
 			GScene->keyInput(_bitKeyState);
 			break;
 		}
-		
 	}
 
 	// Do Key State Update
@@ -57,7 +58,15 @@ namespace CONTROL {
 		}
 	}
 
-	bool InputManager::controlCheck(ENUM_BEHAVIOR en) {
+	bool InputManager::controlCheckGlobal(ENUM_BEHAVIOR en) {
+		if (_bitKeyState & (1ULL << en)) {
+			return true;
+		}
+		return false;
+	}
+
+	bool InputManager::controlCheck(long long inKey, ENUM_BEHAVIOR en)
+	{
 		if (_bitKeyState & (1ULL << en)) {
 			return true;
 		}
@@ -67,6 +76,10 @@ namespace CONTROL {
 	void InputManager::init()
 	{
 		// Init key or mouse down check
+		for (int i = 0; i < ENUM_BEHAVIOR::ENUM_BEHAVIOR_SIZE; i++)
+		{
+			updateControlVec.push_back(nullptr);
+		}
 		updateControlVec[ENUM_BEHAVIOR::MOVE_LEFT] = new ControlDown(GLFW_KEY_A);
 		updateControlVec[ENUM_BEHAVIOR::MOVE_RIGHT] = new ControlDown(GLFW_KEY_D);
 		updateControlVec[ENUM_BEHAVIOR::MOVE_UP] = new ControlDown(GLFW_KEY_W);

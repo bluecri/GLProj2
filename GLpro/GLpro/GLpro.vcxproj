@@ -140,6 +140,7 @@
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CollisionComponentManager.cpp" />
+    <ClCompile Include="CollisionInfo.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="ImageBox.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="CollisionComponentManager.h" />
+    <ClInclude Include="CollisionInfo.h" />
     <ClInclude Include="configs.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Enemy.h" />
@@ -289,6 +291,7 @@
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TextBuffer.h" />
     <ClInclude Include="TextFObj.h" />
+    <ClInclude Include="TransformCamera.h" />
     <ClInclude Include="UIEntity.h" />
   </ItemGroup>
   <ItemGroup>
