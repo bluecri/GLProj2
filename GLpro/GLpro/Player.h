@@ -1,40 +1,32 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
-#include "./src/Entity.h"
-#include "./src/Render/RNormal.h"
+#include "./IPlane.h"
 
-//#include "CollisionComponent.h"
-class CollisionComponent;
-
-namespace RENDER_TARGET
-{
-	namespace NORMAL
-	{
-		class NormalFObj;
-	}
-}
-namespace SHADER { class ShaderMain; }
-namespace RESOURCE { class Model;  class Texture;}
-
-class Player : public Entity 
+class Player : public IPlane
 {
 public:
 	Player(RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
-	void inputProgress(long long transferKeyInput);
 	virtual ~Player();
-
+	void init()
+	{
+		_shotDelay = 0.5f;
+		_shotDmg = 10;
+		_hp = 100;
+		_maxHp = 100;
+		_armor = 0;
+		_maxArmor = 100;
+		_deltaSpeed = 0.1f;
+	}
+	void inputProgress(long long transferKeyInput);
 	virtual void logicUpdate(float deltaTime, float acc) override;
-	
+	virtual void collisionFunc(CollisionComponent* collisionComp) override;
 
-	virtual void setBRender(bool bRender);
-
+	bool isCanGetDmg()
+	{
+		return true;
+	}
 public:
-	CollisionComponent * collisionComp;
-
-	RENDER::RNormal* _rNormal;		//which rbox get(which shader? use same rbox)
-	RENDER_TARGET::NORMAL::NormalFObj * _normalFObj;
-
 	float _shotDelay;
 	int _shotDmg;
 	int _hp;
@@ -43,9 +35,6 @@ public:
 	int _maxArmor;
 
 	float _deltaSpeed;
-
-private:
-	std::shared_ptr<RENDER::RNormal::DrawElement> registeredElemInRenderer;
 
 };
 

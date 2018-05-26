@@ -103,6 +103,12 @@
     <Filter Include="소스 파일\components\collision\collisionInfo">
       <UniqueIdentifier>{49ce33ad-128b-496e-952f-b4a23d861e74}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\missile">
+      <UniqueIdentifier>{aa8c4c2f-eead-435e-95b3-5f45e2646c63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\user">
+      <UniqueIdentifier>{6524fd5a-a959-4b88-a01b-28fa87ce978a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -264,12 +270,6 @@
     <ClCompile Include="ImageBox.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>소스 파일\GameScene\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>소스 파일\GameScene\GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="OBBCollisionComp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -304,6 +304,21 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CollisionInfo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IMissile.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IPlane.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalMissile.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -509,12 +524,6 @@
     <ClInclude Include="ShadowBufferTextureShader.h">
       <Filter>소스 파일\src\Resource\ShadowOld</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>소스 파일\GameScene\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>소스 파일\GameScene\GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionComponent.h">
       <Filter>소스 파일\components\collision</Filter>
     </ClInclude>
@@ -557,11 +566,23 @@
     <ClInclude Include="Box.h">
       <Filter>소스 파일\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="TransformCamera.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionInfo.h">
       <Filter>소스 파일\components\collision\collisionInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="IMissile.h">
+      <Filter>소스 파일\GameScene\GameObjects\missile</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMissile.h">
+      <Filter>소스 파일\GameScene\GameObjects\missile</Filter>
+    </ClInclude>
+    <ClInclude Include="IPlane.h">
+      <Filter>소스 파일\GameScene\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

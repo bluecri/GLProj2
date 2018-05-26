@@ -14,7 +14,7 @@ void RigidbodyComponentManager::updateRigidbodyComps(float deltaTime)
 			continue;
 		}
 
-		(*it)->_transform->update(deltaTime);
+		(*it)->_transform->updateWorldMatrix(deltaTime);
 		++it;
 	}
 }

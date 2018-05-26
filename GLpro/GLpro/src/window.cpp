@@ -15,6 +15,7 @@
 #include "../CollisionComponentManager.h"
 #include "../RigidbodyComponentManager.h"
 #include "../src/Control/InputManager.h"
+#include "../src/Sound/ALManager.h"
 #include "../Scene.h"
 
 #include "../SkyboxGObject.h"
@@ -87,8 +88,10 @@ int WINDOW::Window::init()
 	GTextureManager = new RESOURCE::TextureManager();
 	GCameraManager = new CAMERA::CameraManager();
 	GLightManager = new LightManager();
+	GALManager = new ALManager();
 	// ttest
 	GLightManager->AddDirectinalLight(DirectionalLight(glm::vec3(1.0f, 2.0f, 1.0f)));
+
 	GShaderManager = new SHADER::ShaderManager();
 	GRendermanager = new RENDER::RenderManager();
 	GCollisionComponentManager = new CollisionComponentManager(3, 128);
@@ -163,6 +166,7 @@ void WINDOW::Window::mainLoop()
 		// 2. acc만큼의 예상 이동 경로 그냥 그리기(acc가 dt에 가까울 수록 interpolation error 증가)
 		// 2번으로 시도.
 		GScene->update(dt, acc);
+		GALManager->updateALSource();
 		renderAll(usedT, acc);
 		usedT = 0.0;
 

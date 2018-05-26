@@ -235,3 +235,5 @@ ALManager::~ALManager() {
 	alcDestroyContext(alCcontext);
 	alcCloseDevice(alcDevice);
 }
+
+ALManager* GALManager = nullptr;

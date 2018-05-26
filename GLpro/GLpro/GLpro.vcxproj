@@ -144,7 +144,10 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="ImageBox.cpp" />
+    <ClCompile Include="IMissile.cpp" />
+    <ClCompile Include="IPlane.cpp" />
     <ClCompile Include="LightManager.cpp" />
+    <ClCompile Include="NormalMissile.cpp" />
     <ClCompile Include="OBBCollisionComp.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="ParticleBuffer.cpp" />
@@ -219,8 +222,11 @@
     <ClInclude Include="Fobj.h" />
     <ClInclude Include="GameSession.h" />
     <ClInclude Include="ImageBox.h" />
+    <ClInclude Include="IMissile.h" />
+    <ClInclude Include="IPlane.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="LightManager.h" />
+    <ClInclude Include="NormalMissile.h" />
     <ClInclude Include="OBBCollisionComp.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="Option.h" />
@@ -291,7 +297,6 @@
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TextBuffer.h" />
     <ClInclude Include="TextFObj.h" />
-    <ClInclude Include="TransformCamera.h" />
     <ClInclude Include="UIEntity.h" />
   </ItemGroup>
   <ItemGroup>

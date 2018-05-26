@@ -13,14 +13,9 @@
 #include "src/Camera/CameraManager.h"
 #include "src/Camera/Camera.h"
 
-Player::Player(RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain) : Entity(0)
+Player::Player(RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
+	: IPlane(ENUM_ENTITY_TYPE::ENUM_ENTITY_PLANE_PLAYER, model, texture, shadermain)
 {
-	_rNormal = GRendermanager->getRRender<RENDER::RNormal, SHADER::ShaderMain>(shadermain);
-
-	_normalFObj = new RENDER_TARGET::NORMAL::NormalFObj(model, texture);
-	registeredElemInRenderer = _rNormal->addDrawElem(_normalFObj, _rigidbodyComponent);
-
-
 	// basic info
 	_shotDelay = 0.5f;
 	_shotDmg = 10;
@@ -85,19 +80,32 @@ void Player::inputProgress(long long inputKey)
 
 Player::~Player()
 {
-	_rNormal->removeDrawElem(registeredElemInRenderer);
-	delete _normalFObj;
 }
 
 
 void Player::logicUpdate(float deltaTime, float acc)
 {
+	collisionLogicUpdate();		// update collision event & clear collision info
+	
 	// shot
-
-	//collisionComp-> use callback
 }
 
-void Player::setBRender(bool bRender)
-{ 
-	_normalFObj->setBRender(bRender);
+void Player::collisionFunc(CollisionComponent * collisionComp)
+{
+	// collision event 처리 memeber 함수
+	Entity* entity = collisionComp->_rigidComp->_bindedEntity;
+	int entityType = entity->getType();
+
+	// missile collision logic은 모두 missile에서.
+	switch (entityType)
+	{
+	case ENUM_ENTITY_PLANE_PLAYER:
+		break;
+	case ENUM_ENTITY_MISSILE_NORMAL:
+		break;
+	case ENUM_ENTITY_ENEMY:
+		break;
+	default:
+		// none
+	}
 }

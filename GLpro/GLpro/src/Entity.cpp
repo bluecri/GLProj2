@@ -12,6 +12,7 @@ Entity::Entity(int type) {
 	_rigidbodyComponent = GRigidbodyComponentManager->getNewRigidbodyComp(this);
 	_parentEntity = nullptr; 
 	_gameSession = nullptr;
+	_bDeleted = false;
 	++_sMaxID;
 }
 
@@ -22,8 +23,13 @@ Entity::Entity(std::string name, int type) {
 	_rigidbodyComponent = GRigidbodyComponentManager->getNewRigidbodyComp(this);
 	_parentEntity = nullptr;
 	_gameSession = nullptr;
-
+	_bDeleted = false;
 	++_sMaxID;
+}
+
+Entity::~Entity() {
+	_rigidbodyComponent->_bdoDelete = true;
+	detachParentEntity();
 }
 
 int Entity::getType() {
@@ -40,6 +46,20 @@ int Entity::getType() const{
 
 int Entity::getID() const{
 	return _ID;
+}
+
+bool Entity::isBeDeleted() {
+	return _bDeleted;
+}
+
+// delete 시 모든 child entity도 delete.
+void Entity::setBeDeleted()
+{
+	_bDeleted = true;
+	for (auto elem : _childEntityList)
+	{
+		elem->setBeDeleted();
+	}
 }
 
 void Entity::setName(std::string& name) {
@@ -165,17 +185,16 @@ void Entity::setAllChildCollisionComp(bool bCollision)
 {
 	for (auto elem : _childEntityList)
 	{
-		elem->setCollisionComp(bCollision);
+		elem->setCollisionTest(bCollision);
 		elem->setAllChildCollisionComp(bCollision);
 	}
 }
 
-void Entity::setCollisionComp(bool bCollision)
+void Entity::setCollisionTest(bool bCollision)
 {
 	//do nothing
 }
 
 void Entity::logicUpdate(float deltaTime, float acc) {}
 
-void Entity::collisionCallBack(CollisionInfo * collisionInfo) {}
 

@@ -15,6 +15,7 @@ public:
 	~SkyboxGObject();
 
 	virtual void setBRender(bool bRender);
+	virtual void logicUpdate(float deltaTime, float acc) {};	// todo? : div 여기서 처리?
 
 	static void preMade();
 

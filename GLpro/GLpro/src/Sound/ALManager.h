@@ -35,3 +35,5 @@ private:
 	std::list<ALSource*> _ALSourceContainer;				// AL source for game
 
 };
+
+extern ALManager *GALManager;

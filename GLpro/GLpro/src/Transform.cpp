@@ -10,6 +10,7 @@ Transform::Transform(int entityID, const glm::mat4 &modelMatrix, const glm::mat4
 	_childTransformPtrList = std::list<Transform*>();
 	_bDirty = true;		// update local -> world	:: 없으면 child로 신규 생성시 world update X
 	_maxZSpeed = 3.0f;	// 100 velocity
+	_mass = 1.0f;
 }
 
 const glm::mat4 & Transform::getWorldMatRef() const
@@ -281,7 +282,16 @@ void Transform::setMove(bool bMove)
 	_bMove = bMove;
 }
 
-void Transform::update(float deltaTime)
+void Transform::setMass(float mass)
+{
+	_mass = mass;
+}
+
+float Transform::getMass() {
+	return _mass;
+}
+
+void Transform::updateWorldMatrix(float deltaTime)
 {
 	if (_parentTransformPtr != nullptr)		// skip if child (will be visited by tree traversal.
 	{

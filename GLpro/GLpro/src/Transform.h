@@ -28,86 +28,88 @@ public:
 
 	virtual ~Transform() {};
 
-	virtual int GetEntityID() const {	return _entityID; };
+	int GetEntityID() const {	return _entityID; };
 	
-	virtual const glm::mat4& getWorldMatRef() const;
-	virtual glm::mat4 getWorldMat() const;
-	virtual glm::vec3 getWorldPosVec() const;
+	const glm::mat4& getWorldMatRef() const;
+	glm::mat4 getWorldMat() const;
+	glm::vec3 getWorldPosVec() const;
 	//virtual const glm::vec3& getWorldPosVecRef() const;
 
 	// model mat
-	virtual const glm::mat4& getModelMatrixConstRef() const;
-	virtual glm::mat4 getModelMatrix() const;
-	virtual glm::vec3 getModelVec() const;
+	const glm::mat4& getModelMatrixConstRef() const;
+	glm::mat4 getModelMatrix() const;
+	glm::vec3 getModelVec() const;
 
-	virtual void setModelMatrix(const glm::mat4 &localModelMatrix);
-	virtual void setModelMatrix(const glm::vec3 &localModelVec);
+	void setModelMatrix(const glm::mat4 &localModelMatrix);
+	void setModelMatrix(const glm::vec3 &localModelVec);
 
-	virtual void accModelMatrix(const glm::mat4 &localAccModelMatrix);
-	virtual void accModelMatrix(const glm::vec3 &localAccModelVec);
+	void accModelMatrix(const glm::mat4 &localAccModelMatrix);
+	void accModelMatrix(const glm::vec3 &localAccModelVec);
 
-	virtual void translateModelMatrix(const glm::vec3 & modelVec);
-	virtual void setVelocity(const glm::vec3& velocity);
-	virtual glm::vec3 getVelocity() const;
-	virtual glm::vec3& getVelocityRef();
+	void translateModelMatrix(const glm::vec3 & modelVec);
+	void setVelocity(const glm::vec3& velocity);
+	glm::vec3 getVelocity() const;
+	glm::vec3& getVelocityRef();
 
-	virtual void speedAdd(float add);
-	virtual void speedSet(float speed);
-	virtual float getSpeed();
-	virtual float getMaxSpeed();
-	virtual void setMaxSpeed(float maxSpeed);
+	void speedAdd(float add);
+	void speedSet(float speed);
+	float getSpeed();
+	float getMaxSpeed();
+	void setMaxSpeed(float maxSpeed);
 
 	// rotate mat
-	virtual const glm::mat4& getLocalRotationMatrixConstRef() const;
-	virtual glm::mat4 getLocalRotationMatrix() const;
-	virtual glm::quat getLocalQuarternion() const;
+	const glm::mat4& getLocalRotationMatrixConstRef() const;
+	glm::mat4 getLocalRotationMatrix() const;
+	glm::quat getLocalQuarternion() const;
 
-	virtual void setRotationMatrix(const glm::mat4 &rotateMat);
-	virtual void setRotationMatrix(const glm::vec3 &rotateVec);
-	virtual void setRotationMatrix(const glm::quat &quat);
-	virtual void setVMatrixLookat(const glm::vec3 & lookat, const glm::vec3 & up);
-	virtual void setVMatrixLookat(const glm::vec3 & pos, const glm::vec3 & lookat, const glm::vec3 & up);
+	void setRotationMatrix(const glm::mat4 &rotateMat);
+	void setRotationMatrix(const glm::vec3 &rotateVec);
+	void setRotationMatrix(const glm::quat &quat);
+	void setVMatrixLookat(const glm::vec3 & lookat, const glm::vec3 & up);
+	void setVMatrixLookat(const glm::vec3 & pos, const glm::vec3 & lookat, const glm::vec3 & up);
 
-	virtual void accRotationMatrix(const glm::mat4 &localAccRotateMat);
-	virtual void accRotationMatrix(const float &degree, glm::vec3 &rotateAxis);
-	virtual void accRotationMatrix(const glm::quat &quat);
+	void accRotationMatrix(const glm::mat4 &localAccRotateMat);
+	void accRotationMatrix(const float &degree, glm::vec3 &rotateAxis);
+	void accRotationMatrix(const glm::quat &quat);
 
 	// scale mat
-	virtual const glm::mat4& getLocalScaleMatrixConstRef() const;
-	virtual glm::mat4 getLocalScaleMatrix() const;
+	const glm::mat4& getLocalScaleMatrixConstRef() const;
+	glm::mat4 getLocalScaleMatrix() const;
 
-	virtual void setScaleMatrix(const glm::mat4 &localScaleMat);
-	virtual void setScaleMatrix(const glm::vec3 &localScaleVec);
+	void setScaleMatrix(const glm::mat4 &localScaleMat);
+	void setScaleMatrix(const glm::vec3 &localScaleVec);
 
-	virtual void accScaleMatrix(const glm::mat4 &scaleMat);
-	virtual void accScaleMatrix(const glm::vec3 &scaleVec);
+	void accScaleMatrix(const glm::mat4 &scaleMat);
+	void accScaleMatrix(const glm::vec3 &scaleVec);
 
-	virtual Transform* getParentTransformPtr();
-	virtual Transform* getChildTransformWithID(int id);
+	Transform* getParentTransformPtr();
+	Transform* getChildTransformWithID(int id);
 
-	virtual Transform* detachParentTransform();
-	virtual Transform* detachChildTransformWithID(int idx);
+	Transform* detachParentTransform();
+	Transform* detachChildTransformWithID(int idx);
 	
-	virtual void attachParentTransform(Transform* parentTransform);
-	virtual void attachChildTransform(Transform* childTransform);
+	void attachParentTransform(Transform* parentTransform);
+	void attachChildTransform(Transform* childTransform);
 
-	virtual void resetDirty();
-	virtual bool isDirty();
-	virtual void setDirty();
-	virtual void setMove(bool bMove);
-	virtual void update(float deltaTime);
+	void resetDirty();
+	bool isDirty();
+	void setDirty();
+	void setMove(bool bMove);
+	void setMass(float mass);
+	float getMass();
+
+	void updateWorldMatrix(float deltaTime);
 
 	//for debug
-	virtual void printLocalModel();
-	virtual void printLocalRotMat();
-	virtual void printWorldMat();
-
+	void printLocalModel();
+	void printLocalRotMat();
+	void printWorldMat();
 
 protected:
-	virtual bool bUpdateLocalWithVelocityOrSpeed(float deltaTime);
-	virtual void updateLocalWithVelocityOrSpeed(float deltaTime);
-	virtual void updateWithDirtyParent(float deltaTime, glm::mat4& _parentWorldMat);
-	virtual void updateWIthNoDirtyParent(float deltaTime);
+	bool bUpdateLocalWithVelocityOrSpeed(float deltaTime);
+	void updateLocalWithVelocityOrSpeed(float deltaTime);
+	void updateWithDirtyParent(float deltaTime, glm::mat4& _parentWorldMat);
+	void updateWIthNoDirtyParent(float deltaTime);
 
 private:
 	int _entityID;
@@ -120,6 +122,7 @@ private:
 	glm::vec3 _velocity;
 	float _speed;
 	float _maxZSpeed;
+	float _mass;
 
 
 	glm::mat4 _worldTotalMatrix;

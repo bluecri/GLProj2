@@ -83,6 +83,23 @@ void GameSession::setAllEntityRRender(bool bRender) {
 	}
 }
 
+// 지워야 할 entity 제거	doopt : bool check delete -> delete pointer list
+void GameSession::removeEntityProcess() {
+	for (auto it = _allEntityMap.begin(); it != _allEntityMap.end(); )
+	{
+		if ((*it).second->isBeDeleted())
+		{
+			// delete all child of entity too
+
+			it = _allEntityMap.erase(it);
+			delete (*it).second;
+
+			continue;
+		}
+		++it;
+	}
+}
+
 void GameSession::update(float deltaTime, float acc)
 {
 	if (!_bMenuOn)
@@ -92,7 +109,13 @@ void GameSession::update(float deltaTime, float acc)
 
 	// main game logic loop
 
+	// entities game loop
+	for (auto elem : _allEntityMap)
+	{
+		elem.second->logicUpdate(deltaTime, acc);
+	}
 
+	removeEntityProcess();
 }
 
 // register new entity in game session
