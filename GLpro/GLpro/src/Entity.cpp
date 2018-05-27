@@ -60,8 +60,9 @@ void Entity::setBeDeleted()
 	{
 		elem->setBeDeleted();
 	}
+	setBeDeletedWithJob();
 	setAllChildBRender(false);
-	setAllChildCollisionComp(false);
+	doAllJobWithBeDeleted();
 }
 
 void Entity::setName(std::string& name) {
@@ -171,32 +172,28 @@ void Entity::attachChildEntity(Entity * childEntity)
 
 void Entity::setAllChildBRender(bool bRender)
 {
+		elem->setBRender(bRender);
 	for (auto elem : _childEntityList)
 	{
-		elem->setBRender(bRender);
 		elem->setAllChildBRender(bRender);
 	}
 }
 
-void Entity::setBRender(bool bRender) 
-{
-	// do nothing
-}
-
 void Entity::setAllChildCollisionComp(bool bCollision)
 {
+		elem->setCollisionTest(bCollision);
 	for (auto elem : _childEntityList)
 	{
-		elem->setCollisionTest(bCollision);
 		elem->setAllChildCollisionComp(bCollision);
 	}
 }
 
-void Entity::setCollisionTest(bool bCollision)
+void Entity::doAllJobWithBeDeleted()
 {
-	//do nothing
+		elem->doJobWithBeDeleted();
+	for(auto elem : _childEntityList)
+	{
+		elem->doAllJobWithBeDeleted();
+	}
 }
-
-void Entity::logicUpdate(float deltaTime, float acc) {}
-
 

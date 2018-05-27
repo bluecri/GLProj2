@@ -50,12 +50,15 @@ public:
 	void attachChildEntity(Entity* childEntity);
 
 	virtual void setAllChildBRender(bool bRender);
-	virtual void setBRender(bool bRender);
+	virtual void setBRender(bool bRender) = 0;		// many class use diverse renderer
 
 	virtual void setAllChildCollisionComp(bool bCollision);
-	virtual void setCollisionTest(bool bCollision);
+	virtual void setCollisionTest(bool bCollision) = 0;
 
-	virtual void logicUpdate(float deltaTime, float acc);
+	virtual void doAllJobWithBeDeleted();
+	virtual void doJobWithBeDeleted() = 0;		// done befoe setBeDeleted (resource bind remove)
+
+	virtual void logicUpdate(float deltaTime, float acc) = 0;
 
 public:
 	static int _sMaxID;		//object 고유 ID(0 ~ ). 자동 생성.

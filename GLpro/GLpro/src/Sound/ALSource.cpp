@@ -48,6 +48,7 @@ void ALSource::bindSourceToALSound(ALSound * alSound) {
 }
 
 void ALSource::updatePos() {
+	
 	const glm::vec3& posVec = _transform->getWorldPosVec();
 	m_sourcePos[0] = posVec[0];
 	m_sourcePos[1] = posVec[1];

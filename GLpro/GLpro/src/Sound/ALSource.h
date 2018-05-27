@@ -14,7 +14,6 @@ public:
 
 	ALSource(Transform* transform, float pitch, float gain);
 	void initSource(ALuint soundBufferID);
-
 	void bindSourceToBuffer(ALuint soundBufferID);
 	void bindSourceToALSound(ALSound *alSound);
 
@@ -30,6 +29,8 @@ public:
 	{
 		_bDoStop = true;
 	}
+
+	void setDoDelete() { _bDoDeleted = true;}
 	~ALSource();
 
 private:

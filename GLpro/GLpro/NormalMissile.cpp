@@ -47,7 +47,6 @@ void NormalMissile::collisionFunc(CollisionComponent * collisionComp)
 	switch (entityType)
 	{
 	case ENUM_ENTITY_PLANE_PLAYER:
-	{
 		Player* player;
 		player = static_cast<Player*>(entity);
 		if (player->isCanGetDmg())
@@ -72,8 +71,14 @@ void NormalMissile::collisionFunc(CollisionComponent * collisionComp)
 	default:
 		// none
 	}
-	}
 }
+
+void doJobWithBeDeleted()
+{
+	_startSound->setDoDelete();
+	_hitSound->setDoDelete();
+}
+
 
 void NormalMissile::afterDmgOther()
 {

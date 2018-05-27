@@ -24,12 +24,23 @@ Player::Player(RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::Shad
 	_curArmor = 0;
 	_maxArmor = 100;
 
+	_notDmgedTime = 3.0f;
+	_bNotDmged = false;
+	_curDmgedTime = 0.0f;
+
 	_deltaSpeed = 0.1f;
+
+	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent->_transform);
+}
+
+Player::init()
+{
+	_collisionComp = GCollisionComponentManager->GetNewCollisionComp(_rigidbodyComponent, ,);
 }
 
 void Player::inputProgress(long long inputKey)
 {
-
+	_bShotKeyDown = false;
 	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::MOVE_LEFT))
 	{
 		_rigidbodyComponent->_transform->accRotationMatrix(0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -74,6 +85,8 @@ void Player::inputProgress(long long inputKey)
 		glfwGetCursorPos(GWindow->_pWindow, &xPos, &yPos);
 
 		printf_s("[LOG] mouse click %lf %lf \n", xPos, yPos);
+
+		_bShotKeyDown = true;
 	}
 }
 
@@ -85,9 +98,43 @@ void Player::logicUpdate(float deltaTime, float acc)
 {
 	collisionLogicUpdate();		// update collision event & clear collision info
 	
+	if(_curHp < 0)
+	{
+		_explosionSound.play();
+		setBRender(false);
+		setCollisionTest(false);
+	}
+
 	_curShotDelay += deltaTime;
 
 	// shot
+	if(_bShotKeyDown)
+	{
+		if(_curShotDelay > _shotDelay)
+		{
+			// instant normal missile
+			NormalMissile* normalMissile = new NormalMissile(, , ,);
+			normalMissile.init();
+			_gameSession->registerEntityToGameSession(normalMissile);
+		}
+		else
+		{
+			// delay sound play
+		}
+	}
+
+	// overwhelimg
+	if(_bNotDmged)
+	{
+		_curDmgedTime += deltaTime;
+		if(_curDmgedTime > _notDmgedTime)
+		{
+			_bNotDmged = false;		// end overwhelming time
+			_curDmgedTime = 0.0f;
+			// todo : make plane opacity => 1.0
+
+		}
+	}
 }
 
 void Player::collisionFunc(CollisionComponent * collisionComp)
@@ -104,13 +151,22 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 	case ENUM_ENTITY_MISSILE_NORMAL:
 		break;
 	case ENUM_ENTITY_ENEMY:
+		_bNotDmged = true;
+		// todo : make plane opacity => 0.5
 		break;
 	default:
 		// none
 	}
 }
 
-inline bool Player::isCanGetDmg()
+void doJobWithBeDeleted()
 {
-	return true;
+	_explosionSound->setDoDelete();
+}
+
+
+bool Player::isCanGetDmg()
+{
+	return !_bNotDmged;
+
 }

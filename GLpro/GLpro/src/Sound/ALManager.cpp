@@ -59,7 +59,8 @@ void ALManager::updateALSource()
 		}
 
 		// doopt : 재생중에만 update
-		(*it)->updatePos();
+		if(!((*it)->_bDoDeleted))
+			(*it)->updatePos();		// _bDoDelete == true then transform is nullptr
 
 		// check stop & play
 
@@ -218,7 +219,7 @@ void ALManager::init() {
 	loadAllWaveFile();
 }
 
-ALSound * ALManager::getALSoundPtrWithName(std::string soundName) {
+ALSound * ALManager::getALSoundPtrWithName(std::string& soundName) {
 	std::map<std::string, ALSound*>::iterator it = m_nameToALSound.find(soundName);
 	if (it != m_nameToALSound.end()) {
 		return it->second;

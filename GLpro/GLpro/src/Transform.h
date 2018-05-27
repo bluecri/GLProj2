@@ -40,6 +40,8 @@ public:
 	glm::mat4 getModelMatrix() const;
 	glm::vec3 getModelVec() const;
 
+	void setLocalMatWithWorldMat(glm::mat4& worldMat);
+
 	void setModelMatrix(const glm::mat4 &localModelMatrix);
 	void setModelMatrix(const glm::vec3 &localModelVec);
 
