@@ -10,6 +10,7 @@
 IMissile::IMissile(int type, Entity* fromEntity, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IPlane(type, model, texture, shadermain), _fromEntity(fromEntity)
 {
+	_collisionComp->setCollisionVelocityUpdate(false);
 }
 
 IMissile::~IMissile()

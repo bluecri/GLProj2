@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionComponentManager.cpp" />
     <ClCompile Include="CollisionInfo.cpp" />
     <ClCompile Include="Enemy.cpp" />

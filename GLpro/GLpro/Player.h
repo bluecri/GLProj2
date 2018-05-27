@@ -12,29 +12,28 @@ public:
 	{
 		_shotDelay = 0.5f;
 		_shotDmg = 10;
-		_hp = 100;
+		_curHp = 100;
 		_maxHp = 100;
-		_armor = 0;
+		_curArmor = 0;
 		_maxArmor = 100;
 		_deltaSpeed = 0.1f;
 	}
 	void inputProgress(long long transferKeyInput);
 	virtual void logicUpdate(float deltaTime, float acc) override;
 	virtual void collisionFunc(CollisionComponent* collisionComp) override;
+	bool isCanGetDmg();
 
-	bool isCanGetDmg()
-	{
-		return true;
-	}
 public:
 	float _shotDelay;
+	float _curShotDelay;
 	int _shotDmg;
-	int _hp;
+	int _curHp;
 	int _maxHp;
-	int _armor;
+	int _curArmor;
 	int _maxArmor;
 
 	float _deltaSpeed;
+	float _angleSpeed;
 
 };
 

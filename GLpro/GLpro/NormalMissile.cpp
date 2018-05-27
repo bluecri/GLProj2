@@ -18,6 +18,11 @@ void NormalMissile::logicUpdate(float deltaTime, float acc)
 
 	_curHitInterval += deltaTime;
 	_curLifeTime += deltaTime;
+
+	if (_curLifeTime > _lifeTime || _hitCount == 0)
+	{
+		setBeDeleted();
+	}
 }
 
 void NormalMissile::collisionFunc(CollisionComponent * collisionComp)
@@ -38,22 +43,31 @@ void NormalMissile::collisionFunc(CollisionComponent * collisionComp)
 
 
 	// missile collision logic은 모두 missile에서.
+
 	switch (entityType)
 	{
 	case ENUM_ENTITY_PLANE_PLAYER:
 	{
+		Player* player;
+		player = static_cast<Player*>(entity);
+		if (player->isCanGetDmg())
 		{
-			Player* player = static_cast<Player*>(entity);
-			if (player->isCanGetDmg())
-			{
-				player->_hp -= getDmg();
-				afterDmgOther();
-			}
+			player->_curHp -= getDmg();
+			afterDmgOther();
 		}
 		break;
 	case ENUM_ENTITY_MISSILE_NORMAL:
 		break;
 	case ENUM_ENTITY_ENEMY:
+		/*
+		Enemy* enemy;
+		enemy = static_cast<Enemy*>(entity);
+		if (enemy->isCanGetDmg())
+		{
+		enemy->_curHp -= getDmg();
+		afterDmgOther();
+		}
+		*/
 		break;
 	default:
 		// none
@@ -69,7 +83,7 @@ void NormalMissile::afterDmgOther()
 
 bool NormalMissile::isDmgValid()
 {
-	if (_curHitInterval < _hitInterval || _curLifeTime > _lifeTime)
+	if (_curHitInterval < _hitInterval || _curLifeTime > _lifeTime || _hitCount == 0 )
 	{
 		return false;
 	}

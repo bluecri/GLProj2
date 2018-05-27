@@ -19,9 +19,9 @@ Player::Player(RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::Shad
 	// basic info
 	_shotDelay = 0.5f;
 	_shotDmg = 10;
-	_hp = 100;
+	_curHp = 100;
 	_maxHp = 100;
-	_armor = 0;
+	_curArmor = 0;
 	_maxArmor = 100;
 
 	_deltaSpeed = 0.1f;
@@ -73,7 +73,6 @@ void Player::inputProgress(long long inputKey)
 		double xPos, yPos;
 		glfwGetCursorPos(GWindow->_pWindow, &xPos, &yPos);
 
-		
 		printf_s("[LOG] mouse click %lf %lf \n", xPos, yPos);
 	}
 }
@@ -82,11 +81,12 @@ Player::~Player()
 {
 }
 
-
 void Player::logicUpdate(float deltaTime, float acc)
 {
 	collisionLogicUpdate();		// update collision event & clear collision info
 	
+	_curShotDelay += deltaTime;
+
 	// shot
 }
 
@@ -108,4 +108,9 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 	default:
 		// none
 	}
+}
+
+inline bool Player::isCanGetDmg()
+{
+	return true;
 }

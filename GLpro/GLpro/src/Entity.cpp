@@ -60,6 +60,8 @@ void Entity::setBeDeleted()
 	{
 		elem->setBeDeleted();
 	}
+	setAllChildBRender(false);
+	setAllChildCollisionComp(false);
 }
 
 void Entity::setName(std::string& name) {

@@ -22,13 +22,9 @@ public:
 		_bAlreadyVelocityUpdated = false;
 	};
 
-	void setDeleted(bool bDeleted) {
-		_bDeleted = bDeleted;
-	}
-	void setCollisionTest(bool bCollisionTest)
-	{
-		_bCollisionTest = bCollisionTest;
-	}
+	void setDeleted(bool bDeleted);
+	void setCollisionTest(bool bCollisionTest);
+	void setCollisionVelocityUpdate(bool bVelUpdate);
 
 protected:
 	virtual void updateWithRigidComp() = 0;		// collision local + rigidComp(world transform) -> collision world
@@ -47,9 +43,9 @@ public:
 
 private:
 	bool _bDeleted;						// component delete
-	bool _bCollisionTest;	// in octree for test or not
+	bool _bCollisionTest;				// in octree for test or not
+	bool _bCollideVelocityUpdate;		// force with collision or not
 	bool _bAlreadyVelocityUpdated;		// for CollisionComponentManager 
-	bool _bCollideVelocityUpdate;	// force with collision or not
 
 	friend CollisionComponentManager;
 };
