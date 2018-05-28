@@ -148,6 +148,7 @@
     <ClCompile Include="IMissile.cpp" />
     <ClCompile Include="IPlane.cpp" />
     <ClCompile Include="LightManager.cpp" />
+    <ClCompile Include="MissileGenerator.cpp" />
     <ClCompile Include="NormalMissile.cpp" />
     <ClCompile Include="OBBCollisionComp.cpp" />
     <ClCompile Include="Option.cpp" />
@@ -227,7 +228,9 @@
     <ClInclude Include="IPlane.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="LightManager.h" />
+    <ClInclude Include="MissileGenerator.h" />
     <ClInclude Include="NormalMissile.h" />
+    <ClInclude Include="NormalMissileInfo.h" />
     <ClInclude Include="OBBCollisionComp.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="Option.h" />

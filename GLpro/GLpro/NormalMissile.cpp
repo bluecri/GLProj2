@@ -5,12 +5,54 @@
 #include "Player.h"
 #include "Enemy.h"
 
+#include "./src/Sound/ALManager.h"
+#include "./src/Sound/ALSource.h"
+
 NormalMissile::NormalMissile(Entity* fromEntity, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IMissile(ENUM_ENTITY_TYPE::ENUM_ENTITY_MISSILE_NORMAL, fromEntity, model, texture, shadermain)
 {
 }
 
 NormalMissile::~NormalMissile() {}
+
+void NormalMissile::init(glm::mat4 & localMissilePos)
+{
+	_dmg = 10;
+	_hitCount = 1;
+	_hitInterval = 1.0f;
+	_firstSpeed = 4.0f;
+	_deltaSpeed = 0.8f;
+	_lifeTime = 3.0f;
+
+	_curLifeTime = 0.0f;
+	_curHitInterval = 0.0f;
+
+	_startSound = GALManager->getNewALSource(std::string("laser"), _rigidbodyComponent->_transform);
+	_startSound->play();
+	_hitSound = GALManager->getNewALSource(std::string("hit"), _rigidbodyComponent->_transform);
+
+	_rigidbodyComponent->_transform->setLocalMatWithWorldMat(localMissilePos);
+	_rigidbodyComponent->_transform->speedAdd(_firstSpeed);
+}
+
+void NormalMissile::init(glm::mat4 & localMissilePos, int dmg, int hitCount, float hitInterval, float firstSpeed, float deltaSpeed, float lifeTime)
+{
+	_dmg = dmg;
+	_hitCount = hitCount;
+	_hitInterval = hitInterval;
+	_firstSpeed = firstSpeed;
+	_deltaSpeed = deltaSpeed;
+	_lifeTime = lifeTime;
+
+	_curLifeTime = 0.0f;
+	_curHitInterval = 0.0f;
+
+	_startSound = GALManager->getNewALSource(std::string("laser"), _rigidbodyComponent->_transform);
+	_hitSound = GALManager->getNewALSource(std::string("hit"), _rigidbodyComponent->_transform);
+
+	_rigidbodyComponent->_transform->setLocalMatWithWorldMat(localMissilePos);
+	_rigidbodyComponent->_transform->speedAdd(_firstSpeed);
+}
 
 void NormalMissile::logicUpdate(float deltaTime, float acc)
 {
@@ -24,6 +66,7 @@ void NormalMissile::logicUpdate(float deltaTime, float acc)
 		setBeDeleted();
 	}
 }
+
 
 void NormalMissile::collisionFunc(CollisionComponent * collisionComp)
 {
@@ -73,7 +116,7 @@ void NormalMissile::collisionFunc(CollisionComponent * collisionComp)
 	}
 }
 
-void doJobWithBeDeleted()
+void NormalMissile::doJobWithBeDeleted()
 {
 	_startSound->setDoDelete();
 	_hitSound->setDoDelete();

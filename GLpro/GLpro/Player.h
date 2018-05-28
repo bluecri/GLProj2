@@ -3,26 +3,19 @@
 
 #include "./IPlane.h"
 
+class ALSource;
+
 class Player : public IPlane
 {
 public:
 	Player(RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
 	virtual ~Player();
-	void init()
-	{
-		_shotDelay = 0.5f;
-		_shotDmg = 10;
-		_curHp = 100;
-		_maxHp = 100;
-		_curArmor = 0;
-		_maxArmor = 100;
-		_deltaSpeed = 0.1f;
-	}
+	void init();
 
 	void inputProgress(long long transferKeyInput);
 	virtual void logicUpdate(float deltaTime, float acc) override;
 	virtual void collisionFunc(CollisionComponent* collisionComp) override;
-	virtual void setBeDeletedWithJob() override;		// done befoe setBeDeleted (resource bind remove)
+	virtual void doJobWithBeDeleted() override;		// done befoe setBeDeleted (resource bind remove)
 	bool isCanGetDmg();
 
 public:

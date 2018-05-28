@@ -21,11 +21,11 @@ public:
 
 	void loadWaveFile(std::string soundName, std::string soundFileName);	// create ALSound
 
-	ALSource* getNewALSource(std::string& soundName, Transform* transform, float pitch, float gain);	// create ALSource
+	ALSource* getNewALSource(std::string& soundName, Transform* transform, float pitch = 1.0f, float gain = 1.0f);	// create ALSource
 	void updateALSource();
 
 private:
-	ALSound* getALSoundPtrWithName(std::string soundName);
+	ALSound* getALSoundPtrWithName(std::string& soundName);
 	ALSound* loadWAVE(const char* filename);	//reference : https://www.gamedev.net/forums/topic/645923-loading-wav-file-with-openal-incorrect-audioformat/
 
 

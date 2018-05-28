@@ -13,6 +13,13 @@
 #include "src/Camera/CameraManager.h"
 #include "src/Camera/Camera.h"
 
+#include "./src/Sound/ALManager.h"
+#include "./src/Sound/ALSource.h"
+#include "CollisionComponentManager.h"
+#include "NormalMissile.h"
+
+#include "GameSession.h"
+
 Player::Player(RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IPlane(ENUM_ENTITY_TYPE::ENUM_ENTITY_PLANE_PLAYER, model, texture, shadermain)
 {
@@ -31,11 +38,6 @@ Player::Player(RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::Shad
 	_deltaSpeed = 0.1f;
 
 	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent->_transform);
-}
-
-Player::init()
-{
-	_collisionComp = GCollisionComponentManager->GetNewCollisionComp(_rigidbodyComponent, ,);
 }
 
 void Player::inputProgress(long long inputKey)
@@ -94,13 +96,29 @@ Player::~Player()
 {
 }
 
+void Player::init()
+{
+	_shotDelay = 0.5f;
+	_shotDmg = 10;
+	_curHp = 100;
+	_maxHp = 100;
+	_curArmor = 0;
+	_maxArmor = 100;
+	_deltaSpeed = 0.1f;
+
+	glm::mat4 collisionBoxMat = glm::mat4();
+	collisionBoxMat[3][2] += 0.2f;	// º¸Á¤
+	glm::vec3 missileCollisionBox = glm::vec3(0.02f, 0.02f, 0.2f);
+	_collisionComp = GCollisionComponentManager->GetNewCollisionComp(_rigidbodyComponent, collisionBoxMat, missileCollisionBox);
+}
+
 void Player::logicUpdate(float deltaTime, float acc)
 {
 	collisionLogicUpdate();		// update collision event & clear collision info
 	
 	if(_curHp < 0)
 	{
-		_explosionSound.play();
+		_explosionSound->play();
 		setBRender(false);
 		setCollisionTest(false);
 	}
@@ -112,10 +130,7 @@ void Player::logicUpdate(float deltaTime, float acc)
 	{
 		if(_curShotDelay > _shotDelay)
 		{
-			// instant normal missile
-			NormalMissile* normalMissile = new NormalMissile(, , ,);
-			normalMissile.init();
-			_gameSession->registerEntityToGameSession(normalMissile);
+			
 		}
 		else
 		{
@@ -159,11 +174,10 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 	}
 }
 
-void doJobWithBeDeleted()
+void Player::doJobWithBeDeleted()
 {
 	_explosionSound->setDoDelete();
 }
-
 
 bool Player::isCanGetDmg()
 {

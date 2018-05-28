@@ -324,6 +324,9 @@
     <ClCompile Include="CollisionComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="MissileGenerator.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -586,6 +589,12 @@
     </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+    </ClInclude>
+    <ClInclude Include="MissileGenerator.h">
+      <Filter>소스 파일\GameScene\GameObjects\missile</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMissileInfo.h">
+      <Filter>소스 파일\GameScene\GameObjects\missile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

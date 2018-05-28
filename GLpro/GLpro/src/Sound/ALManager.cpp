@@ -25,7 +25,7 @@ void ALManager::loadWaveFile(std::string soundName, std::string soundFileName) {
 	m_nameToALSound.insert(std::make_pair(soundName, alSound));
 }
 
-ALSource * ALManager::getNewALSource(std::string & soundName, Transform * transform, float pitch = 1.0f, float gain = 1.0f)
+ALSource * ALManager::getNewALSource(std::string & soundName, Transform * transform, float pitch, float gain)
 {
 	ALSound* targetALSound = getALSoundPtrWithName(soundName);
 	ALSource * newALSource = new ALSource(transform, pitch, gain);
