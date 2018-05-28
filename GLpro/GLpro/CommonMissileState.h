@@ -10,29 +10,16 @@ class ALSource;
 class GameSession;
 class Entity;
 
-
 class CommonMissileState
 {
 public:
-	CommonMissileState()
-	{
-		_missileModel =nullptr;
-		_missileTexture =nullptr;
-		_missileShaderMain =nullptr;
-		_missileAddPos =glm::vec3();
-		_missileShotSound ="";
-		_missileHitSound ="";
-		_curMissileDelay =0.0f;
-		_missileDelay =0.0f;
-	}
+	CommonMissileState();
+	void init(CommonNormalMissileInfo* commonNormalMissileInfo);
 
 	RESOURCE::Model* _missileModel;
 	RESOURCE::Texture* _missileTexture;
 	SHADER::ShaderMain* _missileShaderMain;
-	glm::vec3 _missileAddPos;
-	ALSource* _missileShotSound;
-	ALSource* _missileHitSound;
-	float _curMissileDelay;
+
 	float _missileDelay;
 };
 

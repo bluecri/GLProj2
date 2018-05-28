@@ -1,5 +1,7 @@
 #include "Transform.h"
 
+#include <glm/gtx/matrix_decompose.hpp>
+
 Transform::Transform(int entityID, const glm::mat4 &modelMatrix, const glm::mat4 &rotateMatrix, const glm::mat4 &scaleMatrix) 
 	: _entityID(entityID), _localModelMatrix(modelMatrix), _localRotateMatrix(rotateMatrix), _localScaleMatrix(scaleMatrix)
 {
@@ -43,6 +45,29 @@ glm::vec3 Transform::getModelVec() const
 {
 	glm::vec3 ret = _localModelMatrix[3];
 	return ret;
+}
+
+void Transform::setLocalMatWithWorldMat(const glm::mat4 & worldMat)
+{
+	// do matrix decomposition (Model -> scale, rotate, transition
+
+	for (int i = 0; i < 3; i++)
+		_localModelMatrix[3][i] = worldMat[3][i];
+
+	for (int i = 0; i < 3; i++)
+	{
+		glm::vec3 len = glm::vec3(worldMat[i][0], worldMat[i][1], worldMat[i][2]);
+		_localScaleMatrix[i][i] = glm::length(len)
+	}
+
+	for (int i = 0; i < 3; i++) {
+		for (int k = 0; k < 3; k++)
+		{
+			_localRotateMatrix[i][k] = worldMat[i][k] / _localScaleMatrix[i][i];
+		}
+	}
+
+	return;
 }
 
 const glm::mat4 & Transform::getLocalRotationMatrixConstRef() const

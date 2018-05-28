@@ -1,0 +1,74 @@
+#include "stdafx.h"
+#include "NormalMissileGenerator.h"
+
+#include "CommonMissileState.h"
+#include "SpecifiedNormalMissileState.h"
+
+#include "CommonNormalMissileInfo.h"
+#include "SpecifiedNormalMissileInfo.h"
+#include "NormalMissile.h"
+#include "./src/Transform.h"
+#include "MissileGeneratorStorage.h"
+#include "GameSession.h"
+
+#include "src/Sound/ALSource.h"
+
+void NormalMissileGenerator::genMissile()
+{
+	if (_curMissileDelay < _commonMissileState->_missileDelay)
+	{
+		return;
+	}
+
+	NormalMissile* normalMissile = new NormalMissile(_bindedEntity, _commonMissileState->_missileModel, _commonMissileState->_missileTexture, _commonMissileState->_missileShaderMain);
+	normalMissile->init(_entityTransform->getWorldMatRef(), static_cast<SpecifiedNormalMissileState*>(_specifiedMissileState));
+	_bindedEntity->_gameSession->registerEntityToGameSession(normalMissile);
+
+	normalMissile->_startSound->play();		// gen sound play
+
+	_curMissileDelay = 0.0f;
+}
+
+void NormalMissileGenerator::updateTimer(float deltaTime, float acc)
+{
+	_curMissileDelay += deltaTime;
+}
+
+void NormalMissileGenerator::init()
+{
+	// init common missile state with common info
+	_commonMissileState = new CommonMissileState();
+
+	CommonNormalMissileInfo* commonNormalMissileInfo = new CommonNormalMissileInfo();
+	commonNormalMissileInfo->init();		// or filename
+	_commonMissileState->init(commonNormalMissileInfo);
+
+	// normal state
+	SpecifiedNormalMissileState* tempSpecifiedNormalMissileState = new SpecifiedNormalMissileState();
+
+	SpecifiedNormalMissileInfo* specifiedNormalMissileInfo = new SpecifiedNormalMissileInfo();
+	specifiedNormalMissileInfo->init();		// or filename
+	tempSpecifiedNormalMissileState->init(specifiedNormalMissileInfo);
+
+	_specifiedMissileState = tempSpecifiedNormalMissileState;
+}
+
+void NormalMissileGenerator::init(std::string & commonMissileInfoFile, std::string & specifiedMissileInfo)
+{
+	// common state
+	_commonMissileState = new CommonMissileState();
+
+	CommonNormalMissileInfo* commonNormalMissileInfo = new CommonNormalMissileInfo();
+	commonNormalMissileInfo->init(commonMissileInfoFile);		// or filename
+	_commonMissileState->init(commonNormalMissileInfo);
+
+	// normal state
+	SpecifiedNormalMissileState* tempSpecifiedNormalMissileState = new SpecifiedNormalMissileState();
+	
+	SpecifiedNormalMissileInfo* specifiedNormalMissileInfo = new SpecifiedNormalMissileInfo();
+	specifiedNormalMissileInfo->init(specifiedMissileInfo);		// or filename
+	tempSpecifiedNormalMissileState->init(specifiedNormalMissileInfo);
+	
+	_specifiedMissileState = tempSpecifiedNormalMissileState;
+}
+

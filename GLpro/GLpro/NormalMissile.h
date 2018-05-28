@@ -2,14 +2,16 @@
 
 #include "IMissile.h"
 
+class SpecifiedNormalMissileState;
+
 class NormalMissile : public IMissile
 {
 public:
 	NormalMissile(Entity* fromEntity, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
 	virtual ~NormalMissile();
-	void init(glm::mat4& localMissilePos);
-	void init(glm::mat4 & localMissilePos, int dmg, int hitCount, float hitInterval, float firstSpeed, float deltaSpeed, float lifeTime, std::string & startSound, std::string & hitSound);
-	
+	void init(const glm::mat4& localMissileMat);
+	void init(const glm::mat4 & localMissileMat, SpecifiedNormalMissileState* specifiedNormalMissileState);
+
 	// Entity을(를) 통해 상속됨
 	virtual void logicUpdate(float deltaTime, float acc) override;
 	virtual void collisionFunc(CollisionComponent* collisionComp) override;

@@ -8,6 +8,8 @@
 #include "./src/Sound/ALManager.h"
 #include "./src/Sound/ALSource.h"
 
+#include "./SpecifiedNormalMissileState.h"
+
 NormalMissile::NormalMissile(Entity* fromEntity, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IMissile(ENUM_ENTITY_TYPE::ENUM_ENTITY_MISSILE_NORMAL, fromEntity, model, texture, shadermain)
 {
@@ -15,7 +17,7 @@ NormalMissile::NormalMissile(Entity* fromEntity, RESOURCE::Model* model, RESOURC
 
 NormalMissile::~NormalMissile() {}
 
-void NormalMissile::init(glm::mat4 & localMissilePos)
+void NormalMissile::init(const glm::mat4 & localMissileMat)
 {
 	_dmg = 10;
 	_hitCount = 1;
@@ -31,26 +33,27 @@ void NormalMissile::init(glm::mat4 & localMissilePos)
 	_startSound->play();
 	_hitSound = GALManager->getNewALSource(std::string("hit"), _rigidbodyComponent->_transform);
 
-	_rigidbodyComponent->_transform->setLocalMatWithWorldMat(localMissilePos);
+	_rigidbodyComponent->_transform->setLocalMatWithWorldMat(localMissileMat);
 	_rigidbodyComponent->_transform->speedAdd(_firstSpeed);
 }
 
-void NormalMissile::init(glm::mat4 & localMissilePos, int dmg, int hitCount, float hitInterval, float firstSpeed, float deltaSpeed, float lifeTime)
+void NormalMissile::init(const glm::mat4 & localMissileMat, SpecifiedNormalMissileState * specifiedNormalMissileState)
 {
-	_dmg = dmg;
-	_hitCount = hitCount;
-	_hitInterval = hitInterval;
-	_firstSpeed = firstSpeed;
-	_deltaSpeed = deltaSpeed;
-	_lifeTime = lifeTime;
+	_dmg = specifiedNormalMissileState->_curDmg;
+	_hitCount = specifiedNormalMissileState->_curHitCount;
+	_hitInterval = specifiedNormalMissileState->_curHitInterval;
+	_firstSpeed = specifiedNormalMissileState->_curFirstSpeed;
+	_deltaSpeed = specifiedNormalMissileState->_curDeltaSpeed;
+	_lifeTime = specifiedNormalMissileState->_curLifeTime;
 
 	_curLifeTime = 0.0f;
 	_curHitInterval = 0.0f;
 
-	_startSound = GALManager->getNewALSource(std::string("laser"), _rigidbodyComponent->_transform);
-	_hitSound = GALManager->getNewALSource(std::string("hit"), _rigidbodyComponent->_transform);
+	_startSound = GALManager->getNewALSource(specifiedNormalMissileState->_missileShotSoundStr, _rigidbodyComponent->_transform);
+	_hitSound = GALManager->getNewALSource(specifiedNormalMissileState->_missileHitSoundStr, _rigidbodyComponent->_transform);
 
-	_rigidbodyComponent->_transform->setLocalMatWithWorldMat(localMissilePos);
+	_rigidbodyComponent->_transform->setLocalMatWithWorldMat(localMissileMat);
+	_rigidbodyComponent->_transform->accModelMatrix(specifiedNormalMissileState->_missileGenAddPos);
 	_rigidbodyComponent->_transform->speedAdd(_firstSpeed);
 }
 

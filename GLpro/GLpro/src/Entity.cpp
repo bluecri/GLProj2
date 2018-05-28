@@ -60,8 +60,8 @@ void Entity::setBeDeleted()
 	{
 		elem->setBeDeleted();
 	}
-	setBeDeletedWithJob();
 	setAllChildBRender(false);
+	setAllChildCollisionComp(false);
 	doAllJobWithBeDeleted();
 }
 
