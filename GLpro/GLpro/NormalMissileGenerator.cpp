@@ -20,12 +20,11 @@ void NormalMissileGenerator::genMissile()
 		return;
 	}
 
-	NormalMissile* normalMissile = new NormalMissile(_bindedEntity, _commonMissileState->_missileModel, _commonMissileState->_missileTexture, _commonMissileState->_missileShaderMain);
+	NormalMissile* normalMissile = new NormalMissile(_bindedEntity, _bindedEntity->_gameSession, _commonMissileState);
 	normalMissile->init(_entityTransform->getWorldMatRef(), static_cast<SpecifiedNormalMissileState*>(_specifiedMissileState));
-	_bindedEntity->_gameSession->registerEntityToGameSession(normalMissile);
 
 	normalMissile->_startSound->play();		// gen sound play
-
+	printf_s("[Log] : missile gened\n");
 	_curMissileDelay = 0.0f;
 }
 

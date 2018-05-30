@@ -34,8 +34,6 @@ public:
 	void removeEntityProcess();
 	void update(float deltaTime, float acc);
 
-	// register new entity in game session
-	void registerEntityToGameSession(Entity* entity);
 
 	static void preMade();
 

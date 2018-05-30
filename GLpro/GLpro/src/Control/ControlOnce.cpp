@@ -2,7 +2,8 @@
 
 namespace CONTROL 
 {
-	ControlOnce::ControlOnce(int glfw_key_num)
+	ControlOnce::ControlOnce(int glfw_key_num, bool bKey)
+		: Control(bKey)
 	{
 		_glfwKeyNum = glfw_key_num;
 		_bOnceEnd = false;	
@@ -10,15 +11,32 @@ namespace CONTROL
 
 	bool ControlOnce::checkKeyInput(GLFWwindow * pWindow)
 	{
-		if (glfwGetKey(pWindow, _glfwKeyNum) == GLFW_PRESS) {
-			setBTrigger(true);
-			return true;
+		if (_bKey)
+		{
+			if (glfwGetKey(pWindow, _glfwKeyNum) == GLFW_PRESS) {
+				setBTrigger(true);
+				return true;
+			}
+			else {
+				_bOnceEnd = false;
+				setBTrigger(false);
+				return false;
+			}
 		}
-		else {
-			_bOnceEnd = false;
-			setBTrigger(false);
-			return false;
+		else
+		{
+			// mouse key
+			if (glfwGetMouseButton(pWindow, _glfwKeyNum) == GLFW_PRESS) {
+				setBTrigger(true);
+				return true;
+			}
+			else {
+				_bOnceEnd = false;
+				setBTrigger(false);
+				return false;
+			}
 		}
+		
 	}
 
 	bool ControlOnce::isKeyON()

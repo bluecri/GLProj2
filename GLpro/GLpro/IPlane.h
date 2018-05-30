@@ -4,6 +4,7 @@
 #include "./src/Render/RNormal.h"
 
 class CollisionComponent;
+class GameSession;
 
 namespace RENDER_TARGET { namespace NORMAL { class NormalFObj; } }
 namespace SHADER { class ShaderMain; }
@@ -12,7 +13,7 @@ namespace RESOURCE { class Model;  class Texture; }
 class IPlane : public Entity
 {
 public:
-	IPlane(int type, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
+	IPlane(int type, GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
 	virtual ~IPlane();
 
 	virtual void setBRender(bool bRender) override;

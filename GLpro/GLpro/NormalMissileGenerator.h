@@ -6,8 +6,8 @@ class MissileGeneratorStorage;
 class NormalMissileGenerator : public IMissileGenerator
 {
 public:
-	NormalMissileGenerator(MissileGeneratorStorage* missileGeneratorStorage, Entity* bindedEntity)
-		: IMissileGenerator(missileGeneratorStorage, bindedEntity)
+	NormalMissileGenerator(MissileGeneratorStorage* _missileGeneratorStorage, Entity* bindedEntity)
+		: IMissileGenerator(_missileGeneratorStorage, bindedEntity)
 	{
 		_missileType = ENUM_MISSILE_TYPE::ENUM_MISSILE_TYPE_NORMAL;
 	}

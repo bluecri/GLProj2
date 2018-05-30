@@ -23,8 +23,8 @@ enum ENUM_ENTITY_TYPE
 class Entity 
 {
 public:
-	Entity(int type = 0);
-	Entity(std::string name, int type = 0);
+	Entity(GameSession* gSession = nullptr, int type = 0);
+	Entity(std::string name, GameSession* gSession = nullptr, int type = 0);
 	virtual ~Entity();
 
 	int getType();

@@ -1,3 +1,4 @@
+/*
 #include "stdafx.h"
 #include "Player.h"
 #include "src/Resource/Model.h"
@@ -25,7 +26,7 @@
 Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IPlane(ENUM_ENTITY_TYPE::ENUM_ENTITY_PLANE_PLAYER, gSession, model, texture, shadermain)
 {
-	
+
 }
 
 void Player::inputProgress(long long inputKey)
@@ -33,8 +34,7 @@ void Player::inputProgress(long long inputKey)
 	_bShotKeyDown = false;
 	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::MOVE_LEFT))
 	{
-		_rigidbodyComponent->_transform->accQuaternion(1.0f,  glm::vec3(1.0f, 0.0f, 0.0f));
-		//_rigidbodyComponent->_transform->accQuaternion(_angleSpeedVec[0], glm::vec3(1.0f, 0.0f, 0.0f));
+		_rigidbodyComponent->_transform->accRotationMatrix(_angleSpeedVec[0], glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 
 	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::MOVE_RIGHT))
@@ -100,7 +100,7 @@ void Player::init()
 	_missileGeneratorStorage = new MissileGeneratorStorage(PLAYER_DEFAULT_WEAPON_MAX_NUM, this);
 
 	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent->_transform);
-	
+
 	glm::mat4 collisionBoxMat = glm::mat4();
 	collisionBoxMat[3][2] += 0.2f;	//collision box pos º¸Á¤
 	glm::vec3 missileCollisionBox = glm::vec3(0.02f, 0.02f, 0.2f);
@@ -111,8 +111,8 @@ void Player::logicUpdate(float deltaTime, float acc)
 {
 	collisionLogicUpdate();		// update collision event & clear collision info
 	GALManager->updateALListenerWithWorldMat(_rigidbodyComponent->_transform->getWorldMatRef());	 // listener pos update
-	
-	if(_curHp < 0)
+
+	if (_curHp < 0)
 	{
 		_explosionSound->play();
 		setBRender(false);
@@ -121,16 +121,16 @@ void Player::logicUpdate(float deltaTime, float acc)
 
 	// shot
 	_missileGeneratorStorage->update(deltaTime, acc);
-	if(_bShotKeyDown)
+	if (_bShotKeyDown)
 	{
 		_missileGeneratorStorage->shotMissile();
 	}
 
 	// overwhelimg
-	if(_bNotDmged)
+	if (_bNotDmged)
 	{
 		_curDmgedTime += deltaTime;
-		if(_curDmgedTime > _notDmgedTime)
+		if (_curDmgedTime > _notDmgedTime)
 		{
 			_bNotDmged = false;		// end overwhelming time
 			_curDmgedTime = 0.0f;
@@ -173,3 +173,5 @@ bool Player::isCanGetDmg()
 	return !_bNotDmged;
 
 }
+
+*/

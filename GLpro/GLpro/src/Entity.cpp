@@ -3,28 +3,44 @@
 #include "../RigidbodyComponent.h"
 #include "./Transform.h"
 
+#include "../GameSession.h"
+
 int Entity::_sMaxID = 0;
 
-Entity::Entity(int type) {
+Entity::Entity(GameSession * gSession, int type)
+{
 	_ID = _sMaxID;
 	_name = std::to_string(_sMaxID);
 	_type = type;
 	_rigidbodyComponent = GRigidbodyComponentManager->getNewRigidbodyComp(this);
-	_parentEntity = nullptr; 
-	_gameSession = nullptr;
+	_parentEntity = nullptr;
+	_gameSession = gSession;
 	_bDeleted = false;
 	++_sMaxID;
+
+	if (_gameSession != nullptr)
+	{
+		// register new entity in game session
+		_gameSession->_allEntityMap.insert(std::make_pair(_ID, this));
+	}
 }
 
-Entity::Entity(std::string name, int type) {
+Entity::Entity(std::string name, GameSession * gSession, int type)
+{
 	_ID = _sMaxID;
 	_name = name;
 	_type = type;
 	_rigidbodyComponent = GRigidbodyComponentManager->getNewRigidbodyComp(this);
 	_parentEntity = nullptr;
-	_gameSession = nullptr;
+	_gameSession = gSession;
 	_bDeleted = false;
 	++_sMaxID;
+
+	if (_gameSession != nullptr)
+	{
+		// register new entity in game session
+		_gameSession->_allEntityMap.insert(std::make_pair(_ID, this));
+	}
 }
 
 Entity::~Entity() {
@@ -172,7 +188,7 @@ void Entity::attachChildEntity(Entity * childEntity)
 
 void Entity::setAllChildBRender(bool bRender)
 {
-		elem->setBRender(bRender);
+	setBRender(bRender);
 	for (auto elem : _childEntityList)
 	{
 		elem->setAllChildBRender(bRender);
@@ -181,7 +197,7 @@ void Entity::setAllChildBRender(bool bRender)
 
 void Entity::setAllChildCollisionComp(bool bCollision)
 {
-		elem->setCollisionTest(bCollision);
+	setCollisionTest(bCollision);
 	for (auto elem : _childEntityList)
 	{
 		elem->setAllChildCollisionComp(bCollision);
@@ -190,7 +206,7 @@ void Entity::setAllChildCollisionComp(bool bCollision)
 
 void Entity::doAllJobWithBeDeleted()
 {
-		elem->doJobWithBeDeleted();
+	doJobWithBeDeleted();
 	for(auto elem : _childEntityList)
 	{
 		elem->doAllJobWithBeDeleted();

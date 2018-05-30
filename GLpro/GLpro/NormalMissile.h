@@ -3,11 +3,14 @@
 #include "IMissile.h"
 
 class SpecifiedNormalMissileState;
+class GameSession;
+class ALSource;
+class CommonMissileState;
 
 class NormalMissile : public IMissile
 {
 public:
-	NormalMissile(Entity* fromEntity, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
+	NormalMissile(Entity* fromEntity, GameSession* gSession, CommonMissileState* commonMissileState);
 	virtual ~NormalMissile();
 	void init(const glm::mat4& localMissileMat);
 	void init(const glm::mat4 & localMissileMat, SpecifiedNormalMissileState* specifiedNormalMissileState);
@@ -25,8 +28,10 @@ public:
 	int		_hitCount;			// hit count
 	float	_hitInterval;		// ¿¬¼Ó hit interval
 	float	_curHitInterval;
+
 	float 	_firstSpeed;
 	float	_deltaSpeed;
+
 	float	_lifeTime;
 	float	_curLifeTime;
 

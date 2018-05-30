@@ -2,14 +2,19 @@
 
 namespace CONTROL {
 
-	Control::Control()
+	Control::Control(bool bKey)
 	{
 		_bTriggered = false;
+		_bKey = bKey;
 	}
 
 	bool Control::isBTriggerOn()
 	{
 		return _bTriggered;
+	}
+
+	bool Control::isBKey() {
+		return _bKey;
 	}
 
 	void Control::doOn()

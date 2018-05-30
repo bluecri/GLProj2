@@ -24,6 +24,9 @@
 #include "RigidbodyComponent.h"
 #include "src/window.h"
 
+#include "NormalMissileGenerator.h"
+#include "MissileGeneratorStorage.h"
+
 std::vector<GameSession*> GameSession::preMadeGameSession;
 
 
@@ -54,7 +57,8 @@ void GameSession::transferKeyInput(long long inputKey)
 	}
 
 	// transfer key to player
-	_player->inputProgress(inputKey);
+	if(_player != nullptr)
+		_player->inputProgress(inputKey);
 	
 }
 
@@ -91,8 +95,8 @@ void GameSession::removeEntityProcess() {
 		{
 			// delete all child of entity too
 
-			it = _allEntityMap.erase(it);
 			delete (*it).second;
+			it = _allEntityMap.erase(it);
 
 			continue;
 		}
@@ -102,28 +106,19 @@ void GameSession::removeEntityProcess() {
 
 void GameSession::update(float deltaTime, float acc)
 {
-	if (!_bMenuOn)
-	{
-		return;
-	}
-
 	// main game logic loop
 
-	// entities game loop
-	for (auto elem : _allEntityMap)
+	if (!_bMenuOn)
 	{
-		elem.second->logicUpdate(deltaTime, acc);
+		// entities game loop
+		for (auto elem : _allEntityMap)
+		{
+			elem.second->logicUpdate(deltaTime, acc);
+		}
+
+		removeEntityProcess();
+		return;
 	}
-
-	removeEntityProcess();
-}
-
-// register new entity in game session
-
-void GameSession::registerEntityToGameSession(Entity * entity)
-{
-	entity->_gameSession = this;
-	_allEntityMap.insert(std::make_pair(entity->getID(), entity));
 }
 
 void GameSession::preMade()
@@ -139,39 +134,38 @@ void GameSession::preMade()
 	SHADER::ShaderMain* shaderMain = GShaderManager->m_addShader<SHADER::ShaderMain>(ENUM_SHADER_TYPE::SHADER_TYPE_MAIN, "data/Shader/ShadowMapping.vertexshader", "data/Shader/ShadowMapping.fragmentshader");
 
 	// player & camera attach
-	Player * newPlayer = new Player(planeModel, planeTexture, shaderMain);
+	Player * newPlayer = new Player(premadeSession, planeModel, planeTexture, shaderMain);
 	//newPlayer->_rigidbodyComponent->_transform->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	newPlayer->_rigidbodyComponent->_transform->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
 	newPlayer->_rigidbodyComponent->_transform->setDirty();
-
+	newPlayer->_normalFObj->setBRender(true);
+	newPlayer->init();
+	NormalMissileGenerator * normalMissileGenerator = new NormalMissileGenerator(newPlayer->_missileGeneratorStorage, newPlayer);
+	normalMissileGenerator->init();
+	newPlayer->_missileGeneratorStorage->addMissileGenerator(normalMissileGenerator);
+	
 	CAMERA::Camera** mainCam = GCameraManager->GetMainCamera();
 	//(*mainCam)->_rigidbodyComponent->_transform->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	(*mainCam)->_rigidbodyComponent->_transform->accModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
 	(*mainCam)->_rigidbodyComponent->_transform->setDirty();
-	newPlayer->_normalFObj->setBRender(true);
-	newPlayer->attachChildEntity(*mainCam);
-
+	//newPlayer->attachChildEntity(*mainCam);
+	
 	//ttest
-	Player * testP = new Player(planeModel, planeTexture, shaderMain);
-	testP->_rigidbodyComponent->_transform->accModelMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
-	testP->_rigidbodyComponent->_transform->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
-	testP->_rigidbodyComponent->_transform->setDirty();
-	newPlayer->attachChildEntity(testP);
-	premadeSession->registerEntityToGameSession(testP);
+	//Player * testP = new Player(premadeSession, planeModel, planeTexture, shaderMain);
+	//testP->_rigidbodyComponent->_transform->accModelMatrix(glm::vec3(0.0f, 0.0f, 15.0f));
+	//testP->_rigidbodyComponent->_transform->setDirty();
+	//testP->init();
 
 
 	//todo player collide compo ( sound 는 player 안에서 ), ...
 	//todo : camera pos, lookat local modify
 
-	premadeSession->registerEntityToGameSession(*mainCam);
-	premadeSession->registerEntityToGameSession(newPlayer);
 	premadeSession->_player = newPlayer;
 
 	// enemy
 	for (int i = 0; i < TEST_ENEMY_NUM; i++)
 	{
 		//Player* newEnemy = new Enemy(planeModel, planeTexture, shaderMain);
-		//premadeSession->registerEntityToGameSession(newEnemy);
 		//newEnemy->_normalFObj->setBRender(false);
 	}
 
@@ -185,7 +179,6 @@ void GameSession::preMade()
 	SkyboxGObject * spaceSkybox = SkyboxGObject::_preMadeSpaceSkybox[0];
 	spaceSkybox->setBRender(true);
 	premadeSession->_spaceSkybox = spaceSkybox;
-	premadeSession->registerEntityToGameSession(spaceSkybox);
 
 	preMadeGameSession.push_back(premadeSession);		// premade session
 }

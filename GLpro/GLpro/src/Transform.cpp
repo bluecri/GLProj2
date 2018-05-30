@@ -2,8 +2,8 @@
 
 #include <glm/gtx/matrix_decompose.hpp>
 
-Transform::Transform(int entityID, const glm::mat4 &modelMatrix, const glm::mat4 &rotateMatrix, const glm::mat4 &scaleMatrix) 
-	: _entityID(entityID), _localModelMatrix(modelMatrix), _localRotateMatrix(rotateMatrix), _localScaleMatrix(scaleMatrix)
+Transform::Transform(int entityID, const glm::mat4 &modelMatrix, const glm::mat4 &quaternion, const glm::mat4 &scaleMatrix)
+	: _entityID(entityID), _localModelMatrix(modelMatrix), _localQuaternion(quaternion), _localScaleMatrix(scaleMatrix)
 {
 	_velocity = glm::vec3();
 	_bMove = true;				
@@ -11,7 +11,7 @@ Transform::Transform(int entityID, const glm::mat4 &modelMatrix, const glm::mat4
 	_parentTransformPtr = nullptr;
 	_childTransformPtrList = std::list<Transform*>();
 	_bDirty = true;		// update local -> world	:: 없으면 child로 신규 생성시 world update X
-	_maxZSpeed = 3.0f;	// 100 velocity
+	_maxZSpeed = 100.0f;	// 100 velocity
 	_mass = 1.0f;
 }
 
@@ -57,27 +57,26 @@ void Transform::setLocalMatWithWorldMat(const glm::mat4 & worldMat)
 	for (int i = 0; i < 3; i++)
 	{
 		glm::vec3 len = glm::vec3(worldMat[i][0], worldMat[i][1], worldMat[i][2]);
-		_localScaleMatrix[i][i] = glm::length(len)
+		_localScaleMatrix[i][i] = glm::length(len);
 	}
 
+	glm::mat3 localRotateMatrix;
 	for (int i = 0; i < 3; i++) {
 		for (int k = 0; k < 3; k++)
 		{
-			_localRotateMatrix[i][k] = worldMat[i][k] / _localScaleMatrix[i][i];
+			localRotateMatrix[i][k] = worldMat[i][k] / _localScaleMatrix[i][i];
 		}
 	}
+
+	_localQuaternion = glm::toQuat(localRotateMatrix);
 
 	return;
 }
 
-const glm::mat4 & Transform::getLocalRotationMatrixConstRef() const
-{
-	return _localRotateMatrix;
-}
 
 glm::mat4 Transform::getLocalRotationMatrix() const
 {
-	return _localRotateMatrix;
+	return glm::toMat4(_localQuaternion);
 }
 
 const glm::mat4 & Transform::getLocalScaleMatrixConstRef() const
@@ -89,20 +88,20 @@ glm::mat4 Transform::getLocalScaleMatrix() const
 {
 	return _localScaleMatrix;
 }
-
+/*
 glm::quat Transform::getLocalQuarternion() const
 {
 	return glm::quat_cast(_localRotateMatrix);
-}
+}*/
 
 void Transform::setModelMatrix(const glm::mat4 &localModelMatrix)
 {
 	_localModelMatrix = localModelMatrix;
 }
 
-void Transform::setRotationMatrix(const glm::mat4 &rotateMat)
+void Transform::setQuaternion(const glm::mat4 &rotateMat)
 {
-	_localRotateMatrix = rotateMat;
+	_localQuaternion = glm::toQuat(rotateMat);
 }
 
 void Transform::setScaleMatrix(const glm::mat4 &localScaleMat)
@@ -115,9 +114,9 @@ void Transform::setModelMatrix(const glm::vec3 &localModelVec)
 	_localModelMatrix = glm::translate(glm::mat4(), localModelVec);
 }
 
-void Transform::setRotationMatrix(const glm::vec3 &rotateVec)
+void Transform::setQuaternion(const glm::vec3 &rotateVec)
 {
-	_localRotateMatrix =  glm::toMat4(glm::quat(rotateVec));
+	_localQuaternion =  glm::quat(rotateVec);
 }
 
 void Transform::setScaleMatrix(const glm::vec3 &localScaleVec)
@@ -125,25 +124,24 @@ void Transform::setScaleMatrix(const glm::vec3 &localScaleVec)
 	_localScaleMatrix = glm::scale(glm::mat4(), localScaleVec);
 }
 
-void Transform::setRotationMatrix(const glm::quat &quat)
+void Transform::setQuaternion(const glm::quat &quat)
 {
-	_localRotateMatrix = glm::toMat4(quat);
+	_localQuaternion = quat;
 }
+
 void Transform::setVMatrixLookat(const glm::vec3 & lookat, const glm::vec3 & up)
 {
 	glm::vec3 modelVec = _localModelMatrix[3];
-	_localRotateMatrix = glm::lookAt(modelVec, modelVec + lookat, up);
-	_localRotateMatrix[3][0] = 0;
-	_localRotateMatrix[3][1] = 0;
-	_localRotateMatrix[3][2] = 0;
+	glm::mat4 localRotateMatrix = glm::lookAt(modelVec, modelVec + lookat, up);
+	
+	_localQuaternion = glm::toQuat(localRotateMatrix);
 }
 
 void Transform::setVMatrixLookat(const glm::vec3 & pos, const glm::vec3 & lookat, const glm::vec3 & up)
 {
-	_localRotateMatrix = glm::lookAt(pos, pos + lookat, up);
-	_localRotateMatrix[3][0] = 0;
-	_localRotateMatrix[3][1] = 0;
-	_localRotateMatrix[3][2] = 0;
+	glm::mat4 localRotateMatrix = glm::lookAt(pos, pos + lookat, up);
+	
+	_localQuaternion = glm::toQuat(localRotateMatrix);
 }
 
 void Transform::accModelMatrix(const glm::mat4 &localAccModelMatrix)
@@ -153,9 +151,9 @@ void Transform::accModelMatrix(const glm::mat4 &localAccModelMatrix)
 	_localModelMatrix[3][2] += localAccModelMatrix[3][2];
 }
 
-void Transform::accRotationMatrix(const glm::mat4 &localAccRotateMat)
+void Transform::accQuaternion(const glm::mat4 &localAccRotateMat)
 {
-	_localRotateMatrix = localAccRotateMat * _localRotateMatrix;
+	_localQuaternion = glm::toQuat(localAccRotateMat) * _localQuaternion;
 }
 
 void Transform::accScaleMatrix(const glm::mat4 &scaleMat)
@@ -214,9 +212,9 @@ void Transform::setMaxSpeed(float maxSpeed)
 	_maxZSpeed = maxSpeed;
 }
 
-void Transform::accRotationMatrix(const float &degree, glm::vec3 &rotateAxis)
+void Transform::accQuaternion(const float &degree, glm::vec3 &rotateAxis)
 {
-	_localRotateMatrix = glm::rotate(_localRotateMatrix, glm::radians(degree), rotateAxis);
+	_localQuaternion = glm::rotate(_localQuaternion, glm::radians(degree), rotateAxis);
 }
 
 void Transform::accScaleMatrix(const glm::vec3 &scaleVec)
@@ -224,10 +222,11 @@ void Transform::accScaleMatrix(const glm::vec3 &scaleVec)
 	_localScaleMatrix = glm::scale(_localScaleMatrix, scaleVec);
 }
 
-void Transform::accRotationMatrix(const glm::quat &quat)
+void Transform::accQuaternion(const glm::quat &quat)
 {
-	glm::toMat4(quat) * _localRotateMatrix;
+	_localQuaternion = quat * _localQuaternion;
 }
+
 
 Transform * Transform::getParentTransformPtr()
 {
@@ -335,7 +334,7 @@ void Transform::updateWorldMatrix(float deltaTime)
 	if (_bDirty)
 	{
 		updateLocalWithVelocityOrSpeed(deltaTime);
-		_worldTotalMatrix = (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
+		_worldTotalMatrix = (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
 		for (auto childTransformPtr : _childTransformPtrList)
 		{
 			childTransformPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
@@ -345,7 +344,7 @@ void Transform::updateWorldMatrix(float deltaTime)
 
 	if (bUpdateLocalWithVelocityOrSpeed(deltaTime)) {
 		_bDirty = true;
-		_worldTotalMatrix = (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
+		_worldTotalMatrix = (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
 		for (auto childTransformPtr : _childTransformPtrList)
 		{
 			childTransformPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
@@ -377,9 +376,9 @@ void Transform::printLocalRotMat()
 	{
 		for (int k = 0; k < 4; k++)
 		{
-			std::cout << _localRotateMatrix[i][k] << ", ";
+			//std::cout << _localRotateMatrix[i][k] << ", ";
 		}
-		std::cout << std::endl;
+		//std::cout << std::endl;
 	}
 }
 
@@ -396,7 +395,7 @@ void Transform::printWorldMat()
 	}
 }
 
-// if velocity is not 0 -> return true
+// if velocity is not 0 OR rotated -> return true
 bool Transform::bUpdateLocalWithVelocityOrSpeed(float deltaTime)
 {
 	if (_bVelocity)
@@ -416,8 +415,10 @@ bool Transform::bUpdateLocalWithVelocityOrSpeed(float deltaTime)
 	}
 
 	// use speed
-	_velocity = _localRotateMatrix[2] * _speed;
 	//_velocity = glm::vec3(0.0f, 0.0f, 1.0f) * _speed;
+	_velocity = _localQuaternion * glm::vec3(0.0f, 0.0f, _speed);
+	printf_s("quat : %f %f %f %f, _velo : %f %f %f\n", _localQuaternion.x, _localQuaternion.y, _localQuaternion.z, _localQuaternion.w,
+		_velocity.x, _velocity.y, _velocity.z);
 	for (int i = 0; i < 3; i++)
 	{
 		_localModelMatrix[3][i] += _velocity[i] * deltaTime;
@@ -430,6 +431,7 @@ bool Transform::bUpdateLocalWithVelocityOrSpeed(float deltaTime)
 	return false;
 }
 
+// no velocity check
 void Transform::updateLocalWithVelocityOrSpeed(float deltaTime)
 {
 	if (_bVelocity)
@@ -443,7 +445,8 @@ void Transform::updateLocalWithVelocityOrSpeed(float deltaTime)
 	}
 
 	// use speed
-	_velocity = _localRotateMatrix[2] * _speed;
+	//_velocity =  _localRotateMatrix[2] * _speed;
+	_velocity = _localQuaternion * glm::vec3(0.0f, 0.0f, _speed);
 	for (int i = 0; i < 3; i++)
 	{
 		_localModelMatrix[3][i] += _velocity[i] * deltaTime;
@@ -465,7 +468,7 @@ void Transform::updateWithDirtyParent(float deltaTime, glm::mat4 & _parentWorldM
 	}
 
 	_bDirty = true;
-	_worldTotalMatrix = _parentWorldMat * (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
+	_worldTotalMatrix = _parentWorldMat * (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
 	for (auto childTransformPtr : _childTransformPtrList)
 	{
 		childTransformPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
@@ -486,7 +489,7 @@ void Transform::updateWIthNoDirtyParent(float deltaTime)
 	if (_bDirty)	// this transform is dirty.. dirty propagation.
 	{
 		bUpdateLocalWithVelocityOrSpeed(deltaTime);
-		_worldTotalMatrix = _parentTransformPtr->getWorldMatRef() * (_localModelMatrix * _localRotateMatrix * _localScaleMatrix);
+		_worldTotalMatrix = _parentTransformPtr->getWorldMatRef() * (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
 
 		for (auto childTransformPtr : _childTransformPtrList)
 		{

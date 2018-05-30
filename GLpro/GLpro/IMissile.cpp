@@ -7,14 +7,19 @@
 #include "src/Shader/ShaderMain.h"
 #include "CollisionComponent.h"
 
-IMissile::IMissile(int type, Entity* fromEntity, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
-	: IPlane(type, model, texture, shadermain), _fromEntity(fromEntity)
+IMissile::IMissile(int type, GameSession* gSession, Entity* fromEntity, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
+	: IPlane(type, gSession, model, texture, shadermain), _fromEntity(fromEntity)
 {
-	_collisionComp->setCollisionVelocityUpdate(false);
 }
 
 IMissile::~IMissile()
 {
 
+}
+
+
+
+void IMissile::logicUpdate(float deltaTime, float acc)
+{
 }
 

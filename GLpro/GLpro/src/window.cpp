@@ -89,8 +89,9 @@ int WINDOW::Window::init()
 	GCameraManager = new CAMERA::CameraManager();
 	GLightManager = new LightManager();
 	GALManager = new ALManager();
+	GALManager->init();
 	// ttest
-	GLightManager->AddDirectinalLight(DirectionalLight(glm::vec3(1.0f, 2.0f, 1.0f)));
+	GLightManager->AddDirectinalLight(DirectionalLight(glm::vec3(1.0f, 1.0f, 1.0f)));
 
 	GShaderManager = new SHADER::ShaderManager();
 	GRendermanager = new RENDER::RenderManager();
@@ -155,6 +156,10 @@ void WINDOW::Window::mainLoop()
 			GCollisionComponentManager->doCollisionTest();
 			GRigidbodyComponentManager->resetRigidbodyCompsDirty();
 
+			// logic loop
+			GScene->update(dt, acc);
+			GALManager->updateALSource();
+
 			// todo : update
 			acc -= dt;
 			t += dt;
@@ -165,8 +170,7 @@ void WINDOW::Window::mainLoop()
 		// 1. 1frame 늦게 출력(past - current사이 정확한 interpolation)
 		// 2. acc만큼의 예상 이동 경로 그냥 그리기(acc가 dt에 가까울 수록 interpolation error 증가)
 		// 2번으로 시도.
-		GScene->update(dt, acc);
-		GALManager->updateALSource();
+		// render lop
 		renderAll(usedT, acc);
 		usedT = 0.0;
 

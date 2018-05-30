@@ -8,7 +8,7 @@ namespace CONTROL
 	class ControlDown : public Control
 	{
 		public:
-			ControlDown(int glfw_key_num);
+			ControlDown(int glfw_key_num, bool bKey);
 			virtual ~ControlDown() {};
 
 			virtual bool checkKeyInput(GLFWwindow* pWindow);

@@ -6,6 +6,7 @@
 
 #include "./ALSound.h"
 #include "./ALSource.h"
+#include "./ALListener.h"
 
 void ALManager::loadAllWaveFile() {
 	std::vector<std::pair<std::string, std::string>> listWaveFiles;
@@ -28,12 +29,12 @@ void ALManager::loadWaveFile(std::string soundName, std::string soundFileName) {
 ALSource * ALManager::getNewALSource(std::string & soundName, Transform * transform, float pitch, float gain)
 {
 	ALSound* targetALSound = getALSoundPtrWithName(soundName);
-	ALSource * newALSource = new ALSource(transform, pitch, gain);
 	if (targetALSound == nullptr)
 	{
 		printf_s("[LOG] : Fail to find ALSound has %s name in ALManager::getNewALSource\n", soundName.c_str());
 		return nullptr;
 	}
+	ALSource * newALSource = new ALSource(transform, pitch, gain);
 	newALSource->bindSourceToALSound(targetALSound);
 
 	_ALSourceContainer.push_back(newALSource);
@@ -67,17 +68,24 @@ void ALManager::updateALSource()
 		if ((*it)->_bDoPlay)
 		{
 			(*it)->sourcePlay();
+			(*it)->_bDoPlay = false;
 		}
 
 		if ((*it)->_bDoStop)
 		{
 			(*it)->sourceStop();
+			(*it)->_bDoStop = false;
 		}
 
 		++it;
 	}
-	printf_s("[LOG] : Fail remove alsource in ALManager::updateALSource\n");
+	//printf_s("[LOG] : Fail remove alsource in ALManager::updateALSource\n");
 	return;
+}
+
+void ALManager::updateALListenerWithWorldMat(const glm::mat4 & worldMat)
+{
+	alListener->updateWithWorldMat(worldMat);
 }
 
 //reference : https://www.gamedev.net/forums/topic/645923-loading-wav-file-with-openal-incorrect-audioformat/
@@ -209,11 +217,13 @@ ALSound * ALManager::loadWAVE(const char * filename) {
 }
 
 void ALManager::init() {
+	alListener = new ALListener();
 	alcDevice = alcOpenDevice(NULL);
 	if (alcDevice) {
 		alCcontext = alcCreateContext(alcDevice, NULL);
 		alcMakeContextCurrent(alCcontext);
 	}
+
 	//al mode
 	alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
 	loadAllWaveFile();
@@ -228,7 +238,6 @@ ALSound * ALManager::getALSoundPtrWithName(std::string& soundName) {
 		printf("error in getALSoundPtrWithName\n");
 		return nullptr;
 	}
-
 }
 
 ALManager::~ALManager() {

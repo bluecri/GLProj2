@@ -13,7 +13,7 @@ namespace CONTROL
 	class Control 
 	{
 		public:
-			Control();
+			Control(bool bKey);
 			virtual ~Control() {};
 
 			virtual bool checkKeyInput(GLFWwindow* pWindow) = 0;
@@ -21,11 +21,13 @@ namespace CONTROL
 
 		protected:
 			bool isBTriggerOn();
+			bool isBKey();
 			void doOn();
 			void doOff();
 			void setBTrigger(bool b);
 
 			int _glfwKeyNum;
+			bool _bKey;
 
 		private:
 			bool _bTriggered;

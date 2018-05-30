@@ -7,19 +7,7 @@ class SpecifiedNormalMissileInfo;
 class SpecifiedNormalMissileState : public ISpecifiedMissileState
 {
 public:
-	SpecifiedNormalMissileState()
-	{
-		_dmg = 10;
-		_hitCount = 1;
-		_hitInterval = 1.0f;
-		_firstSpeed = 4.0f;
-		_deltaSpeed = 0.8f;
-
-		_missileShotSoundStr = std::string("laser");
-		_missileHitSoundStr = std::string("hit");
-
-		_missileGenAddPos = glm::vec3(0.0f, 0.0f, 0.2f);
-	}
+	SpecifiedNormalMissileState();
 
 	// ISpecifiedMissileState을(를) 통해 상속됨
 	virtual int getType() override;
@@ -32,6 +20,8 @@ public:
 	float _firstSpeed;
 	float _deltaSpeed;
 	float _lifeTime;
+	float _mass;
+	float _maxSpeed;
 
 	int _curDmg;
 	int _curHitCount;
@@ -39,6 +29,8 @@ public:
 	float _curFirstSpeed;
 	float _curDeltaSpeed;
 	float _curLifeTime;
+	float _curMass;
+	float _curMaxSpeed;
 
 	std::string _missileShotSoundStr;
 	std::string _missileHitSoundStr;

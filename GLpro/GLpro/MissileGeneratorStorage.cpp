@@ -1,10 +1,31 @@
 #include "stdafx.h"
 #include "MissileGeneratorStorage.h"
 #include "IMissileGenerator.h"
+#include "EmptyMissileGenerator.h"
 
-void MissileGeneratorStorage::addMissileGenerator(IMissileGenerator * missileGenerator)
+MissileGeneratorStorage::MissileGeneratorStorage(int maxWeaponCount, Entity* bindedEntity)
+	:_maxWeaponCount(maxWeaponCount), _bindedEntity(bindedEntity)
 {
-	_missileGeneratorVec.push_back(missileGenerator);
+	_selectedWeaponIndex = 0;
+	for (int i = 0; i < maxWeaponCount; i++)
+	{
+		_missileGeneratorVec.push_back(new EmptyMissileGenerator(this, bindedEntity));
+	}
+}
+
+bool MissileGeneratorStorage::addMissileGenerator(IMissileGenerator * missileGenerator)
+{
+	for (int i = 0; i < _maxWeaponCount; i++)
+	{
+		if (_missileGeneratorVec[i]->getENUM_MISSILE_TYPE() == ENUM_MISSILE_TYPE::ENUM_MISSILE_TYPE_EMPTY)
+		{
+			delete _missileGeneratorVec[i];
+			_missileGeneratorVec[i] = missileGenerator;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void MissileGeneratorStorage::update(float deltaTime, float acc)
@@ -13,8 +34,15 @@ void MissileGeneratorStorage::update(float deltaTime, float acc)
 		_missileGeneratorVec[i]->updateTimer(deltaTime, acc);
 }
 
-void MissileGeneratorStorage::shotMissile(int missileIndex)
+void MissileGeneratorStorage::shotMissile()
 {
-	if(missileIndex >= 0 && missileIndex < _missileGeneratorVec.size())
-		_missileGeneratorVec[missileIndex]->genMissile();
+	_missileGeneratorVec[_selectedWeaponIndex]->genMissile();
+}
+
+inline void MissileGeneratorStorage::selectMissileIndex(int idx)
+{
+	if (0 <= idx && idx < _maxWeaponCount)
+	{
+		_selectedWeaponIndex = idx;
+	}
 }

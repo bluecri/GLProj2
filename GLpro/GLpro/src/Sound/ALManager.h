@@ -6,6 +6,7 @@
 
 class ALSound;
 class ALSource;
+class ALListener;
 class Transform;
 
 typedef struct ALCdevice_struct ALCdevice;
@@ -23,6 +24,7 @@ public:
 
 	ALSource* getNewALSource(std::string& soundName, Transform* transform, float pitch = 1.0f, float gain = 1.0f);	// create ALSource
 	void updateALSource();
+	void updateALListenerWithWorldMat(const glm::mat4 & worldMat);
 
 private:
 	ALSound* getALSoundPtrWithName(std::string& soundName);
@@ -31,6 +33,8 @@ private:
 
 	ALCdevice*	alcDevice;
 	ALCcontext*	alCcontext;
+	ALListener* alListener;
+
 	std::map<std::string, ALSound*> m_nameToALSound;	// sound file
 	std::list<ALSource*> _ALSourceContainer;				// AL source for game
 

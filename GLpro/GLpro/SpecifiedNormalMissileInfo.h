@@ -20,6 +20,8 @@ public:
 	float	_hitInterval;		// ¿¬¼Ó hit interval
 	float 	_firstSpeed;
 	float	_deltaSpeed;
+	float	_mass;
+	float	_maxSpeed;
 
 	std::string _missileShotSoundStr;
 	std::string _missileHitSoundStr;

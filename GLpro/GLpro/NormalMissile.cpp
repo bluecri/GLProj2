@@ -9,10 +9,15 @@
 #include "./src/Sound/ALSource.h"
 
 #include "./SpecifiedNormalMissileState.h"
+#include "CollisionComponentManager.h"
 
-NormalMissile::NormalMissile(Entity* fromEntity, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
-	: IMissile(ENUM_ENTITY_TYPE::ENUM_ENTITY_MISSILE_NORMAL, fromEntity, model, texture, shadermain)
+#include "CommonMissileState.h"
+
+NormalMissile::NormalMissile(Entity* fromEntity, GameSession* gSession, CommonMissileState* commonMissileState)
+	: IMissile(ENUM_ENTITY_TYPE::ENUM_ENTITY_MISSILE_NORMAL, gSession, fromEntity, commonMissileState->_missileModel, commonMissileState->_missileTexture, commonMissileState->_missileShaderMain)
 {
+	_collisionComp = GCollisionComponentManager->GetNewCollisionComp(_rigidbodyComponent, commonMissileState->collisionBoxMat, commonMissileState->missileCollisionBoxAxis);
+	_collisionComp->setCollisionVelocityUpdate(false);
 }
 
 NormalMissile::~NormalMissile() {}
@@ -22,19 +27,24 @@ void NormalMissile::init(const glm::mat4 & localMissileMat)
 	_dmg = 10;
 	_hitCount = 1;
 	_hitInterval = 1.0f;
-	_firstSpeed = 4.0f;
+	_firstSpeed = 1.0f;
 	_deltaSpeed = 0.8f;
 	_lifeTime = 3.0f;
 
 	_curLifeTime = 0.0f;
 	_curHitInterval = 0.0f;
 
+	
+	_rigidbodyComponent->_transform->setLocalMatWithWorldMat(localMissileMat);
+	//_rigidbodyComponent->_transform->translateModelMatrix(specifiedNormalMissileState->_missileGenAddPos);
+	_rigidbodyComponent->_transform->speedAdd(_firstSpeed);
+
+	_rigidbodyComponent->_transform->updateWorldMatrix(0.0f);		// update world matrix (not updated by component at first time..)
+	
 	_startSound = GALManager->getNewALSource(std::string("laser"), _rigidbodyComponent->_transform);
-	_startSound->play();
 	_hitSound = GALManager->getNewALSource(std::string("hit"), _rigidbodyComponent->_transform);
 
-	_rigidbodyComponent->_transform->setLocalMatWithWorldMat(localMissileMat);
-	_rigidbodyComponent->_transform->speedAdd(_firstSpeed);
+	//_startSound->play();		// sound play after worldMat update
 }
 
 void NormalMissile::init(const glm::mat4 & localMissileMat, SpecifiedNormalMissileState * specifiedNormalMissileState)
@@ -45,16 +55,21 @@ void NormalMissile::init(const glm::mat4 & localMissileMat, SpecifiedNormalMissi
 	_firstSpeed = specifiedNormalMissileState->_curFirstSpeed;
 	_deltaSpeed = specifiedNormalMissileState->_curDeltaSpeed;
 	_lifeTime = specifiedNormalMissileState->_curLifeTime;
+	_rigidbodyComponent->_transform->setMass(specifiedNormalMissileState->_mass);
+	_rigidbodyComponent->_transform->setMaxSpeed(specifiedNormalMissileState->_maxSpeed);
 
 	_curLifeTime = 0.0f;
 	_curHitInterval = 0.0f;
+	
+	_rigidbodyComponent->_transform->setLocalMatWithWorldMat(localMissileMat);
+	_rigidbodyComponent->_transform->translateModelMatrix(specifiedNormalMissileState->_missileGenAddPos);
+	_rigidbodyComponent->_transform->speedAdd(_firstSpeed);
+	_rigidbodyComponent->_transform->updateWorldMatrix(0.0f);		// update world matrix (not updated by component at first time..)
 
 	_startSound = GALManager->getNewALSource(specifiedNormalMissileState->_missileShotSoundStr, _rigidbodyComponent->_transform);
 	_hitSound = GALManager->getNewALSource(specifiedNormalMissileState->_missileHitSoundStr, _rigidbodyComponent->_transform);
 
-	_rigidbodyComponent->_transform->setLocalMatWithWorldMat(localMissileMat);
-	_rigidbodyComponent->_transform->accModelMatrix(specifiedNormalMissileState->_missileGenAddPos);
-	_rigidbodyComponent->_transform->speedAdd(_firstSpeed);
+	//_startSound->play();		// sound play after worldMat update
 }
 
 void NormalMissile::logicUpdate(float deltaTime, float acc)
@@ -116,6 +131,7 @@ void NormalMissile::collisionFunc(CollisionComponent * collisionComp)
 		break;
 	default:
 		// none
+		break;
 	}
 }
 

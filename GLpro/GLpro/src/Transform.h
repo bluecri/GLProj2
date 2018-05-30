@@ -56,23 +56,27 @@ public:
 	void speedAdd(float add);
 	void speedSet(float speed);
 	float getSpeed();
+
 	float getMaxSpeed();
 	void setMaxSpeed(float maxSpeed);
 
+	float getMass();
+	void setMass(float mass);
+
 	// rotate mat
-	const glm::mat4& getLocalRotationMatrixConstRef() const;
+	//const glm::mat4& getLocalRotationMatrixConstRef() const;
 	glm::mat4 getLocalRotationMatrix() const;
 	glm::quat getLocalQuarternion() const;
 
-	void setRotationMatrix(const glm::mat4 &rotateMat);
-	void setRotationMatrix(const glm::vec3 &rotateVec);
-	void setRotationMatrix(const glm::quat &quat);
+	void setQuaternion(const glm::mat4 &rotateMat);
+	void setQuaternion(const glm::vec3 &rotateVec);
+	void setQuaternion(const glm::quat &quat);
 	void setVMatrixLookat(const glm::vec3 & lookat, const glm::vec3 & up);
 	void setVMatrixLookat(const glm::vec3 & pos, const glm::vec3 & lookat, const glm::vec3 & up);
 
-	void accRotationMatrix(const glm::mat4 &localAccRotateMat);
-	void accRotationMatrix(const float &degree, glm::vec3 &rotateAxis);
-	void accRotationMatrix(const glm::quat &quat);
+	void accQuaternion(const glm::mat4 &localAccRotateMat);
+	void accQuaternion(const float &degree, glm::vec3 &rotateAxis);
+	void accQuaternion(const glm::quat &quat);
 
 	// scale mat
 	const glm::mat4& getLocalScaleMatrixConstRef() const;
@@ -97,8 +101,7 @@ public:
 	bool isDirty();
 	void setDirty();
 	void setMove(bool bMove);
-	void setMass(float mass);
-	float getMass();
+
 
 	void updateWorldMatrix(float deltaTime);
 
@@ -116,16 +119,20 @@ protected:
 private:
 	int _entityID;
 	glm::mat4 _localModelMatrix;
-	glm::mat4 _localRotateMatrix;
+	glm::quat _localQuaternion;
 	glm::mat4 _localScaleMatrix;
 
 	bool _bMove;		// update move or not
 	bool _bVelocity;	// update move with original glm::vec3 _velocity
 	glm::vec3 _velocity;
+
+	bool _bAngle;			// update rotation with angle (plane)
+	glm::vec3 _angleSpeed;	
+	glm::vec3 _targetAngle;
+
 	float _speed;
 	float _maxZSpeed;
 	float _mass;
-
 
 	glm::mat4 _worldTotalMatrix;
 	Transform* _parentTransformPtr;

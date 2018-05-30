@@ -21,7 +21,7 @@ void Canvas::transferKeyInputToFocusBox(long long inputKey)
 		double xPos, yPos;
 		glfwGetCursorPos(GWindow->_pWindow, &xPos, &yPos);
 
-		printf_s("[LOG] mouse click %lf %lf \n", xPos, yPos);
+		// printf_s("[LOG] mouse click %lf %lf \n", xPos, yPos);
 
 		refindFocusBoxWithClick(static_cast<int>(xPos), static_cast<int>(yPos));
 	}

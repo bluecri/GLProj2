@@ -10,7 +10,7 @@ namespace CONTROL
 	class ControlOnce : public Control
 	{
 	public:
-		ControlOnce(int glfw_key_num);
+		ControlOnce(int glfw_key_num, bool bKey);
 		virtual ~ControlOnce() {};
 
 		virtual bool checkKeyInput(GLFWwindow* pWindow);

@@ -9,6 +9,7 @@ class Transform;
 class ALSource;
 class GameSession;
 class Entity;
+class CommonNormalMissileInfo;
 
 class CommonMissileState
 {
@@ -19,6 +20,9 @@ public:
 	RESOURCE::Model* _missileModel;
 	RESOURCE::Texture* _missileTexture;
 	SHADER::ShaderMain* _missileShaderMain;
+
+	glm::mat4 collisionBoxMat;
+	glm::vec3 missileCollisionBoxAxis;
 
 	float _missileDelay;
 };

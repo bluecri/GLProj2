@@ -9,20 +9,23 @@ class Transform;
 class ALSource;
 class GameSession;
 class Entity;
+class IMissileGenerator;
+class EmptyMissileGenerator;
 
 class MissileGeneratorStorage
 {
 public:
-	MissileGeneratorStorage()
-	{
-	}
+	MissileGeneratorStorage(int maxWeaponCount, Entity* bindedEntity);
 
-	void addMissileGenerator(IMissileGenerator* missileGenerator);
+	bool addMissileGenerator(IMissileGenerator* missileGenerator);
 	void update(float deltaTime, float acc);
-	void shotMissile(int missileIndex);
+	void shotMissile();
+	void selectMissileIndex(int idx);
+
 private:
 	Entity*			_bindedEntity;
 	std::vector<IMissileGenerator*> _missileGeneratorVec;
 
-	
+	int _selectedWeaponIndex;
+	int _maxWeaponCount;
 };

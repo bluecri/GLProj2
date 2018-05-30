@@ -7,8 +7,8 @@
 #include "src/Shader/ShaderMain.h"
 #include "CollisionComponent.h"
 
-IPlane::IPlane(int type, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
-	: Entity(type)
+IPlane::IPlane(int type, GameSession* gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
+	: Entity(gSession, type)
 {
 	_rNormal = GRendermanager->getRRender<RENDER::RNormal, SHADER::ShaderMain>(shadermain);
 
@@ -30,7 +30,8 @@ void IPlane::setBRender(bool bRender)
 
 void IPlane::setCollisionTest(bool bCollision)
 {
-	_collisionComp->setCollisionTest(bCollision);
+	if(_collisionComp != nullptr)
+		_collisionComp->setCollisionTest(bCollision);
 }
 
 

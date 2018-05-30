@@ -20,6 +20,8 @@ public:
 		_bCollisionTest = true;
 		_bCollideVelocityUpdate = true;
 		_bAlreadyVelocityUpdated = false;
+
+		_collisionLogList = std::list<CollisionComponent*>();
 	};
 
 	void setDeleted(bool bDeleted);

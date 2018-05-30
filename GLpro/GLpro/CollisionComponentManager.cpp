@@ -44,6 +44,7 @@ void CollisionComponentManager::insertTestCompToOctaTree()
 
 		if (!((*it)->_bCollisionTest))
 		{
+			++it;
 			continue;
 		}
 
@@ -51,6 +52,8 @@ void CollisionComponentManager::insertTestCompToOctaTree()
 		// 순서 주의
 		(*it)->updateAABBForOctree();				// update aabb for _octree
 		_octree->insert(*it);						// insert
+
+		++it;
 	}
 }
 

@@ -18,5 +18,8 @@ public:
 	std::string _shaderVertexFileName;
 	std::string _shaderFragmentFileName;
 
+	glm::mat4 _collisionBoxMat;
+	glm::vec3 _missileCollisionBoxAxis;
+
 	float _shotDelay;
 };

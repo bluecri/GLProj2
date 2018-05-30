@@ -2,14 +2,24 @@
 
 namespace CONTROL
 {
-	ControlDown::ControlDown(int glfw_key_num)
+	ControlDown::ControlDown(int glfw_key_num, bool bKey)
+		: Control(bKey)
 	{
 		_glfwKeyNum = glfw_key_num;
 	}
 
 	bool ControlDown::checkKeyInput(GLFWwindow* pWindow)
 	{
-		if (glfwGetKey(pWindow, _glfwKeyNum) == GLFW_PRESS) {
+		if (_bKey)
+		{
+			if (glfwGetKey(pWindow, _glfwKeyNum) == GLFW_PRESS) {
+				setBTrigger(true);
+				return true;
+			}
+			return false;
+		}
+		
+		if (glfwGetMouseButton(pWindow, _glfwKeyNum) == GLFW_PRESS) {
 			setBTrigger(true);
 			return true;
 		}

@@ -23,8 +23,13 @@ ALListener::ALListener() {
 	alListenerfv(AL_VELOCITY, listenerVelocity);
 	alListenerfv(AL_ORIENTATION, listenerOrientationAtUp);
 }
+void ALListener::updateWithWorldMat(const glm::mat4& worldMat) {
+	modifyPos(worldMat[3][0], worldMat[3][1], worldMat[3][2]);
+	modifyOrientationWithRotationMatrix(worldMat);
+}
 
-void ALListener::modifyPos(float pos[3]) {
+
+void ALListener::modifyPos(const float pos[3]) {
 	for (int i = 0; i < 3; i++) {
 		listenerPos[i] = pos[i];
 	}
@@ -38,35 +43,35 @@ void ALListener::modifyPos(float x, float y, float z) {
 	alListenerfv(AL_POSITION, listenerPos);
 }
 
-void ALListener::modifyPos(glm::vec3 vec) {
+void ALListener::modifyPos(const glm::vec3& vec) {
 	listenerPos[0] = vec.x;
 	listenerPos[1] = vec.y;
 	listenerPos[2] = vec.z;
 	alListenerfv(AL_POSITION, listenerPos);
 }
 
-void ALListener::modifyVelocity(float vel[3]) {
+void ALListener::modifyVelocity(const float vel[3]) {
 	for (int i = 0; i < 3; i++) {
 		listenerVelocity[i] = vel[i];
 	}
 	alListenerfv(AL_VELOCITY, listenerVelocity);
 }
 
-void ALListener::modifyOrientationAt(float orientationAt[3]) {
+void ALListener::modifyOrientationAt(const float orientationAt[3]) {
 	for (int i = 0; i < 3; i++) {
 		listenerOrientationAt[i] = orientationAt[i];
 	}
 	alListenerfv(AL_ORIENTATION, listenerOrientationAtUp);
 }
 
-void ALListener::modifyOrientationUp(float orientationUp[3]) {
+void ALListener::modifyOrientationUp(const float orientationUp[3]) {
 	for (int i = 0; i < 3; i++) {
 		listenerOrientationUp[i] = orientationUp[i];
 	}
 	alListenerfv(AL_ORIENTATION, listenerOrientationAtUp);
 }
 
-void ALListener::modifyOrientationAtWithRotationMatrix(glm::mat4 rMaxtrix) {
+void ALListener::modifyOrientationAtWithRotationMatrix(const glm::mat4& rMaxtrix) {
 	glm::vec3 atVec = glm::vec3(rMaxtrix * glm::vec4(0.0f, 0.0f, 1.0f, 0.0f));
 	for (int i = 0; i < 3; i++) {
 		listenerOrientationAt[i] = atVec[i];
@@ -74,7 +79,7 @@ void ALListener::modifyOrientationAtWithRotationMatrix(glm::mat4 rMaxtrix) {
 	alListenerfv(AL_ORIENTATION, listenerOrientationAtUp);
 }
 
-void ALListener::modifyOrientationUpWithRotationMatrix(glm::mat4 rMaxtrix) {
+void ALListener::modifyOrientationUpWithRotationMatrix(const glm::mat4& rMaxtrix) {
 	glm::vec3 upVec = glm::vec3(rMaxtrix * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f));
 	for (int i = 0; i < 3; i++) {
 		listenerOrientationUp[i] = upVec[i];
@@ -82,7 +87,7 @@ void ALListener::modifyOrientationUpWithRotationMatrix(glm::mat4 rMaxtrix) {
 	alListenerfv(AL_ORIENTATION, listenerOrientationAtUp);
 }
 
-void ALListener::modifyOrientationWithRotationMatrix(glm::mat4 rMaxtrix) {
+void ALListener::modifyOrientationWithRotationMatrix(const glm::mat4& rMaxtrix) {
 	glm::vec3 atVec = glm::vec3(rMaxtrix * glm::vec4(0.0f, 0.0f, 1.0f, 0.0f));
 	for (int i = 0; i < 3; i++) {
 		listenerOrientationAt[i] = atVec[i];
