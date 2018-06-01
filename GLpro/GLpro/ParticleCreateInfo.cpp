@@ -7,7 +7,7 @@ ParticleCreateInfo::ParticleCreateInfo(bool _isOneParticlePerMultiFrame, int _fr
 {
 	_countFrame = 0;
 
-	_mainDir = glm::vec3(0.0f, 3.0f, 0.0f);
+	_mainDir = glm::vec3(0.0f, 0.0f, -1.0f);
 
 	m_colorStartRange[0] = 0;
 	m_colorStartRange[1] = 0;
@@ -30,6 +30,11 @@ ParticleCreateInfo::ParticleCreateInfo(int colorStartRange[4], int colorEndRange
 		m_colorStartRange[i] = colorStartRange[i];
 		m_colorEndRange[i] = colorEndRange[i];
 	}
+}
+
+void ParticleCreateInfo::init(Transform * bindedTransform)
+{
+	_bindedTransform = bindedTransform;
 }
 
 void ParticleCreateInfo::genNewParticles(RENDER_TARGET::PARTICLE::ParticleFObj *particleFObj)
@@ -67,7 +72,9 @@ void ParticleCreateInfo::crateNewParticleStructWithInfo(ParticleStruct & refP)
 		(rand() % 2000 - 1000.0f) / 1000.0f,
 		(rand() % 2000 - 1000.0f) / 1000.0f
 	);
-	refP._velocity = _mainDir + randomdir * _spread;
+
+	glm::mat3 worldRotMat = glm::mat3(_bindedTransform->getWorldMatRef());
+	refP._velocity = worldRotMat * _mainDir + randomdir * _spread;
 
 
 	for (int i = 0; i < 4; i++) {

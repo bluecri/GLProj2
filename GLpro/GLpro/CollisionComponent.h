@@ -28,6 +28,8 @@ public:
 	void setCollisionTest(bool bCollisionTest);
 	void setCollisionVelocityUpdate(bool bVelUpdate);
 
+	static bool sIsBoxCollisionCheck(glm::mat4 & wolrd1, glm::mat4 & wolrd2, glm::vec3 & axisLen1, glm::vec3 & axisLen2);
+
 protected:
 	virtual void updateWithRigidComp() = 0;		// collision local + rigidComp(world transform) -> collision world
 	virtual void updateAABBForOctree() = 0;		// collision world -> AABB for oct
@@ -37,7 +39,7 @@ public:
 	COLLISION_TYPE collisionType;
 	RigidbodyComponent* _rigidComp;
 
-	// for AABB
+	// for AABB in Octree
 	glm::vec3 _center;
 	glm::vec3 _halfAxisSize;
 

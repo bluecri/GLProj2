@@ -16,7 +16,7 @@
 NormalMissile::NormalMissile(Entity* fromEntity, GameSession* gSession, CommonMissileState* commonMissileState)
 	: IMissile(ENUM_ENTITY_TYPE::ENUM_ENTITY_MISSILE_NORMAL, gSession, fromEntity, commonMissileState->_missileModel, commonMissileState->_missileTexture, commonMissileState->_missileShaderMain)
 {
-	_collisionComp = GCollisionComponentManager->GetNewCollisionComp(_rigidbodyComponent, commonMissileState->collisionBoxMat, commonMissileState->missileCollisionBoxAxis);
+	_collisionComp = GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, commonMissileState->collisionBoxMat, commonMissileState->missileCollisionBoxAxis);
 	_collisionComp->setCollisionVelocityUpdate(false);
 }
 
@@ -137,7 +137,10 @@ void NormalMissile::collisionFunc(CollisionComponent * collisionComp)
 
 void NormalMissile::doJobWithBeDeleted()
 {
+	// sound remove
+	_startSound->unBind();
 	_startSound->setDoDelete();
+	_hitSound->unBind();
 	_hitSound->setDoDelete();
 }
 

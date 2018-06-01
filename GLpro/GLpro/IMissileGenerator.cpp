@@ -4,10 +4,28 @@
 #include "RigidbodyComponent.h"
 
 
-IMissileGenerator::IMissileGenerator(MissileGeneratorStorage * bindedMissileGeneratorStorage, Entity * bindedEntity)
-	: _bindedMissileGeneratorStorage(bindedMissileGeneratorStorage), _bindedEntity(bindedEntity)
+IMissileGenerator::IMissileGenerator()
 {
+	_bindedEntity = nullptr;
+	_entityTransform = nullptr;
+	_bindedMissileGeneratorStorage = nullptr;
+}
+
+void IMissileGenerator::setBindedEntity(Entity * entity)
+{
+	_bindedEntity = entity;
 	_entityTransform = _bindedEntity->_rigidbodyComponent->_transform;
+}
+
+void IMissileGenerator::setBindedMissileGenerator(MissileGeneratorStorage * bindedMissileGeneratorStorage)
+{
+	_bindedMissileGeneratorStorage = bindedMissileGeneratorStorage;
+}
+
+void IMissileGenerator::setBindedEntityAndMissileGenerator(Entity * entity, MissileGeneratorStorage * bindedMissileGeneratorStorage)
+{
+	setBindedEntity(entity);
+	setBindedMissileGenerator(bindedMissileGeneratorStorage);
 }
 
 CommonMissileState * IMissileGenerator::getCommonMissileState() { return _commonMissileState; }

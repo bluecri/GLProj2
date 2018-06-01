@@ -1,10 +1,14 @@
 #include "stdafx.h"
 #include "EmptyMissileGenerator.h"
 
-EmptyMissileGenerator::EmptyMissileGenerator(MissileGeneratorStorage * _missileGeneratorStorage, Entity * bindedEntity)
-	: IMissileGenerator(_missileGeneratorStorage, bindedEntity)
+EmptyMissileGenerator::EmptyMissileGenerator() : IMissileGenerator()
 {
 	_missileType = ENUM_MISSILE_TYPE::ENUM_MISSILE_TYPE_EMPTY;
+}
+
+void EmptyMissileGenerator::init(Entity * bindedEntity, MissileGeneratorStorage * missileGeneratorStorage)
+{
+	setBindedEntityAndMissileGenerator(bindedEntity, missileGeneratorStorage);
 }
 
 void EmptyMissileGenerator::genMissile()

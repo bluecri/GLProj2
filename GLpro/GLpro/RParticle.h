@@ -47,8 +47,6 @@ namespace RENDER
 
 		TYPE_SHADER * getShader() const;
 
-		void destructor(std::shared_ptr<DrawElement> shared);
-
 	private:
 		void beforeDraw(float deltaTime);
 

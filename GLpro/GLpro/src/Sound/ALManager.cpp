@@ -54,6 +54,7 @@ void ALManager::updateALSource()
 
 			if (state != AL_PLAYING)
 			{
+				delete	*it;
 				it = _ALSourceContainer.erase(it);
 				continue;
 			}

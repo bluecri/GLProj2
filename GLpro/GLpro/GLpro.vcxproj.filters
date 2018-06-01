@@ -133,6 +133,9 @@
     <Filter Include="소스 파일\GameScene\GameObjects\backup">
       <UniqueIdentifier>{a6600926-39a6-48d3-9eeb-f2bb667556c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\particle">
+      <UniqueIdentifier>{0d2fabd0-f9d9-46d3-8fbc-f97aa0e54875}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -377,6 +380,18 @@
     </ClCompile>
     <ClCompile Include="PlayerPlaneBackup.cpp">
       <Filter>소스 파일\GameScene\GameObjects\backup</Filter>
+    </ClCompile>
+    <ClCompile Include="AABBCollisionComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="quatExtension.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Octree.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEntity.cpp">
+      <Filter>소스 파일\GameScene\GameObjects\particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -685,6 +700,15 @@
     </ClInclude>
     <ClInclude Include="playerPlaneBackup.h">
       <Filter>소스 파일\GameScene\GameObjects\backup</Filter>
+    </ClInclude>
+    <ClInclude Include="AABBCollisionComp.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="quatExtension.h">
+      <Filter>소스 파일\3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEntity.h">
+      <Filter>소스 파일\GameScene\GameObjects\particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

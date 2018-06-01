@@ -2,8 +2,12 @@
 #define __PLAYER_H__
 
 #include "./IPlane.h"
+#include "./RText.h"
+#include "./RParticle.h"
 
 #define PLAYER_DEFAULT_WEAPON_MAX_NUM 6
+
+namespace SHADER { class ShaderMain; }
 
 class ALSource;
 class MissileGeneratorStorage;
@@ -19,11 +23,14 @@ public:
 	virtual void logicUpdate(float deltaTime, float acc) override;
 	virtual void collisionFunc(CollisionComponent* collisionComp) override;
 	virtual void doJobWithBeDeleted() override;		// done befoe setBeDeleted (resource bind remove)
+
 	bool isCanGetDmg();
 
-public:
-	MissileGeneratorStorage* _missileGeneratorStorage;
+private:
+	void tabKeyProgress(long long transferKeyInput);
+	void playerMovementProgress(long long transferKeyInput);
 
+public:
 	int _curHp;
 	int _maxHp;
 	int _curArmor;
@@ -35,10 +42,16 @@ public:
 	float 	_curDmgedTime;
 
 	float _deltaSpeed;
-	glm::vec3 _angleSpeedVec;
 
 	ALSource* _explosionSound;
 
+protected:
+	RENDER::RText* _rText;
+	std::shared_ptr<RENDER::RText::DrawElement> _rElemInTextAim;
+
+	RENDER::RParticle* _rParticle;
+	std::shared_ptr<RENDER::RParticle::DrawElement> _rElemInParticleBack;
+	std::shared_ptr<RENDER::RParticle::DrawElement> _rElemInParticleFront;
 private:
 	bool _bShotKeyDown;
 };

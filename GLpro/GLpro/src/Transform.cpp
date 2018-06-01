@@ -49,6 +49,8 @@ glm::vec3 Transform::getModelVec() const
 
 void Transform::setLocalMatWithWorldMat(const glm::mat4 & worldMat)
 {
+	_bDirty = true;
+
 	// do matrix decomposition (Model -> scale, rotate, transition
 
 	for (int i = 0; i < 3; i++)
@@ -79,6 +81,16 @@ glm::mat4 Transform::getLocalRotationMatrix() const
 	return glm::toMat4(_localQuaternion);
 }
 
+glm::quat Transform::getLocalQuarternion() const
+{
+	return _localQuaternion;
+}
+
+const glm::quat & Transform::getLocalQuarternionRef() const
+{
+	return _localQuaternion;
+}
+
 const glm::mat4 & Transform::getLocalScaleMatrixConstRef() const
 {
 	return _localScaleMatrix;
@@ -96,41 +108,49 @@ glm::quat Transform::getLocalQuarternion() const
 
 void Transform::setModelMatrix(const glm::mat4 &localModelMatrix)
 {
+	_bDirty = true;
 	_localModelMatrix = localModelMatrix;
 }
 
 void Transform::setQuaternion(const glm::mat4 &rotateMat)
 {
+	_bDirty = true;
 	_localQuaternion = glm::toQuat(rotateMat);
 }
 
 void Transform::setScaleMatrix(const glm::mat4 &localScaleMat)
 {
+	_bDirty = true;
 	_localScaleMatrix = localScaleMat;
 }
 
 void Transform::setModelMatrix(const glm::vec3 &localModelVec)
 {
+	_bDirty = true;
 	_localModelMatrix = glm::translate(glm::mat4(), localModelVec);
 }
 
 void Transform::setQuaternion(const glm::vec3 &rotateVec)
 {
+	_bDirty = true;
 	_localQuaternion =  glm::quat(rotateVec);
 }
 
 void Transform::setScaleMatrix(const glm::vec3 &localScaleVec)
 {
+	_bDirty = true;
 	_localScaleMatrix = glm::scale(glm::mat4(), localScaleVec);
 }
 
 void Transform::setQuaternion(const glm::quat &quat)
 {
+	_bDirty = true;
 	_localQuaternion = quat;
 }
 
 void Transform::setVMatrixLookat(const glm::vec3 & lookat, const glm::vec3 & up)
 {
+	_bDirty = true;
 	glm::vec3 modelVec = _localModelMatrix[3];
 	glm::mat4 localRotateMatrix = glm::lookAt(modelVec, modelVec + lookat, up);
 	
@@ -139,6 +159,7 @@ void Transform::setVMatrixLookat(const glm::vec3 & lookat, const glm::vec3 & up)
 
 void Transform::setVMatrixLookat(const glm::vec3 & pos, const glm::vec3 & lookat, const glm::vec3 & up)
 {
+	_bDirty = true;
 	glm::mat4 localRotateMatrix = glm::lookAt(pos, pos + lookat, up);
 	
 	_localQuaternion = glm::toQuat(localRotateMatrix);
@@ -146,6 +167,7 @@ void Transform::setVMatrixLookat(const glm::vec3 & pos, const glm::vec3 & lookat
 
 void Transform::accModelMatrix(const glm::mat4 &localAccModelMatrix)
 {
+	_bDirty = true;
 	_localModelMatrix[3][0] += localAccModelMatrix[3][0];
 	_localModelMatrix[3][1] += localAccModelMatrix[3][1];
 	_localModelMatrix[3][2] += localAccModelMatrix[3][2];
@@ -153,11 +175,13 @@ void Transform::accModelMatrix(const glm::mat4 &localAccModelMatrix)
 
 void Transform::accQuaternion(const glm::mat4 &localAccRotateMat)
 {
+	_bDirty = true;
 	_localQuaternion = glm::toQuat(localAccRotateMat) * _localQuaternion;
 }
 
 void Transform::accScaleMatrix(const glm::mat4 &scaleMat)
 {
+	_bDirty = true;
 	_localScaleMatrix[0][0] *= scaleMat[0][0];
 	_localScaleMatrix[1][1] *= scaleMat[1][1];
 	_localScaleMatrix[2][2] *= scaleMat[2][2];
@@ -165,13 +189,17 @@ void Transform::accScaleMatrix(const glm::mat4 &scaleMat)
 
 void Transform::accModelMatrix(const glm::vec3 &modelVec)
 {
+	_bDirty = true;
 	for(int i=0; i<3; i++)
 		_localModelMatrix[3][i] += modelVec[i];
 }
 
 void Transform::translateModelMatrix(const glm::vec3 &modelVec)
 {
-	_localModelMatrix = glm::translate(_localModelMatrix, modelVec);
+	_bDirty = true;
+	glm::vec3 moveVec = _localQuaternion * modelVec;
+	_localModelMatrix = glm::translate(_localModelMatrix, moveVec);
+	//_localModelMatrix = glm::translate(_localModelMatrix, modelVec);
 }
 
 void Transform::setVelocity(const glm::vec3 & velocity)
@@ -212,21 +240,87 @@ void Transform::setMaxSpeed(float maxSpeed)
 	_maxZSpeed = maxSpeed;
 }
 
+// rotate axis == model rotation axis
 void Transform::accQuaternion(const float &degree, glm::vec3 &rotateAxis)
 {
+	_bDirty = true;
 	_localQuaternion = glm::rotate(_localQuaternion, glm::radians(degree), rotateAxis);
 }
 
 void Transform::accScaleMatrix(const glm::vec3 &scaleVec)
 {
+	_bDirty = true;
 	_localScaleMatrix = glm::scale(_localScaleMatrix, scaleVec);
 }
 
 void Transform::accQuaternion(const glm::quat &quat)
 {
+	_bDirty = true;
 	_localQuaternion = quat * _localQuaternion;
 }
 
+void Transform::accQuaternionYaw(const float & degree)
+{
+	glm::vec3 axis =  glm::vec3(0.0f, 1.0f, 0.0f);
+	accQuaternion(degree, axis);
+}
+
+void Transform::accQuaternionPitch(const float & degree)
+{
+	glm::vec3 axis = glm::vec3(1.0f, 0.0f, 0.0f);
+	accQuaternion(degree, axis);
+}
+
+void Transform::accQuaternionRoll(const float & degree)
+{
+	glm::vec3 axis =  glm::vec3(0.0f, 0.0f, 1.0f);
+	accQuaternion(degree, axis);
+}
+
+// rotate to targetQuat with maxAngle
+// reference : http://www.opengl-tutorial.org/kr/intermediate-tutorials/tutorial-17-quaternions/
+void Transform::accQuaternionMix(Transform* targetTransform, float maxAngle, float deltaSpeed)
+{
+	glm::quat& targetQuat = targetTransform->_localQuaternion;
+	if (maxAngle < 0.001f) {
+		// No rotation allowed. Prevent dividing by 0 later.
+		return;
+	}
+
+	float cosTheta = dot(_localQuaternion, targetQuat);
+
+	// q1 and targetQuat are already equal.
+	// Force targetQuat just to be sure
+	if (cosTheta > 0.9999f) {
+		_localQuaternion = targetQuat;
+		return;
+	}
+
+	// Avoid taking the long path around the sphere
+	glm::quat testLocalQuat = _localQuaternion;
+	if (cosTheta < 0) {
+		testLocalQuat = testLocalQuat*-1.0f;
+		cosTheta *= -1.0f;
+	}
+
+	float angle = acos(cosTheta);
+
+	// If there is only a 2&deg; difference, and we are allowed 5&deg;,
+	// then we arrived.
+	if (angle < maxAngle) {
+		_localQuaternion = targetQuat;
+		return;
+	}
+
+	float fT = maxAngle / angle * deltaSpeed;
+	angle = maxAngle;
+
+	quat res = (sin((1.0f - fT) * angle) * testLocalQuat + sin(fT * angle) * targetQuat) / sin(angle);
+	res = normalize(res);
+	_localQuaternion = res;
+
+	return;
+}
 
 Transform * Transform::getParentTransformPtr()
 {
@@ -417,8 +511,8 @@ bool Transform::bUpdateLocalWithVelocityOrSpeed(float deltaTime)
 	// use speed
 	//_velocity = glm::vec3(0.0f, 0.0f, 1.0f) * _speed;
 	_velocity = _localQuaternion * glm::vec3(0.0f, 0.0f, _speed);
-	printf_s("quat : %f %f %f %f, _velo : %f %f %f\n", _localQuaternion.x, _localQuaternion.y, _localQuaternion.z, _localQuaternion.w,
-		_velocity.x, _velocity.y, _velocity.z);
+	/*printf_s("quat : %f %f %f %f, _velo : %f %f %f\n", _localQuaternion.x, _localQuaternion.y, _localQuaternion.z, _localQuaternion.w,
+		_velocity.x, _velocity.y, _velocity.z);*/
 	for (int i = 0; i < 3; i++)
 	{
 		_localModelMatrix[3][i] += _velocity[i] * deltaTime;

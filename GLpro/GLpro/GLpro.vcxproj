@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AABBCollisionComp.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="CommonMissileState.cpp" />
     <ClCompile Include="CommonNormalMissileInfo.cpp" />
     <ClCompile Include="EmptyMissileGenerator.cpp" />
+    <ClInclude Include="AABBCollisionComp.h" />
     <ClInclude Include="EmptyMissileGenerator.h" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameSession.cpp" />
@@ -159,6 +161,7 @@
     <ClCompile Include="NormalMissileGenInfo.cpp" />
     <ClCompile Include="NormalMissileState.cpp" />
     <ClCompile Include="OBBCollisionComp.cpp" />
+    <ClCompile Include="Octree.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="ParticleBuffer.cpp" />
     <ClCompile Include="origin\CircularBuffer.cpp" />
@@ -168,10 +171,12 @@
     <ClCompile Include="origin\MemoryPool.cpp" />
     <ClCompile Include="origin\ThreadLocal.cpp" />
     <ClCompile Include="ParticleCreateInfo.cpp" />
+    <ClCompile Include="ParticleEntity.cpp" />
     <ClCompile Include="ParticleFObj.cpp" />
     <ClCompile Include="ParticleStruct.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerPlaneBackup.cpp" />
+    <ClCompile Include="quatExtension.cpp" />
     <ClCompile Include="RBox.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="RigidbodyComponent.cpp" />
@@ -250,7 +255,9 @@
     <ClInclude Include="NormalMissile.h" />
     <ClInclude Include="NormalMissileGenerator.h" />
     <ClInclude Include="NormalMissileGenInfo.h" />
+    <ClInclude Include="ParticleEntity.h" />
     <ClInclude Include="playerPlaneBackup.h" />
+    <ClInclude Include="quatExtension.h" />
     <ClInclude Include="SpecifiedNormalMissileInfo.h" />
     <ClInclude Include="SpecifiedNormalMissileState.h" />
     <ClInclude Include="OBBCollisionComp.h" />

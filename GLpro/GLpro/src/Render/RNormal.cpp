@@ -20,13 +20,11 @@
 
 namespace RENDER
 {
-
 	RNormal::RNormal(SHADER::ShaderMain * shaderObj)
 	{
 		_shaderObj = shaderObj;
 		_targetCamera = GCameraManager->GetMainCamera();
 	}
-
 
 	void RNormal::draw(float deltaTime)
 	{
@@ -53,7 +51,6 @@ namespace RENDER
 
 				normalRenderTarget->_model->unbind();
 			}
-			
 
 			GShadowBufferTexture->unbindShader();
 			GShadowBufferTexture->unbindFBO();
@@ -64,7 +61,6 @@ namespace RENDER
 
 			//glm::mat4 modelMatrix = _targetCamera->getCamModelMatRef;
 			//glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
-
 			
 			_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cam->getRecentViewMat());
 			_shaderObj->loadMatrix4(_shaderObj->m_depthBiasID, depthBiasMVP);
@@ -76,7 +72,6 @@ namespace RENDER
 			glActiveTexture(GL_TEXTURE1);
 			GShadowBufferTexture->bindTexture();
 			_shaderObj->loadInt(_shaderObj->m_shadowMapID, 1);
-
 
 			for (auto elem : _normalDrawElemContainer) {
 				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = elem->first;
@@ -108,7 +103,12 @@ namespace RENDER
 
 	std::shared_ptr<RNormal::DrawElement> RNormal::addDrawElem(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent * rigidComponent)
 	{
-		auto elem = std::make_shared<DrawElement>(normalFObj, rigidComponent);
+		//auto elem = std::make_shared<DrawElement>(normalFObj, rigidComponent);
+		auto elem = std::shared_ptr<RENDER::RNormal::DrawElement>(new RENDER::RNormal::DrawElement(normalFObj, rigidComponent), [](auto ptr)
+		{
+			delete ptr->first;
+			delete ptr;
+		});
 		_normalDrawElemContainer.push_back(elem);
 		return elem;
 	}

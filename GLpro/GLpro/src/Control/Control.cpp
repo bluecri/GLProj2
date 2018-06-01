@@ -1,5 +1,7 @@
 #include "Control.h"
 
+#include "../../stdafx.h"
+
 namespace CONTROL {
 
 	Control::Control(bool bKey)

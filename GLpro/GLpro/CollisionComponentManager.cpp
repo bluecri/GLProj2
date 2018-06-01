@@ -4,6 +4,7 @@
 #include "./src/Transform.h"
 #include "RigidbodyComponent.h"
 #include "OBBCollisionComp.h"
+#include "AABBCollisionComp.h"
 #include "Octree.h"
 
 CollisionComponentManager::CollisionComponentManager(int height, int halfAxisSize)
@@ -11,10 +12,17 @@ CollisionComponentManager::CollisionComponentManager(int height, int halfAxisSiz
 	_octree = new Octree(height, halfAxisSize, glm::vec3());
 }
 
-CollisionComponent * CollisionComponentManager::GetNewCollisionComp(RigidbodyComponent * rigidComp, glm::mat4 & localMat, glm::vec3 & axisLen)
+CollisionComponent * CollisionComponentManager::GetNewOBBCollisionComp(RigidbodyComponent * rigidComp, glm::mat4 & localMat, glm::vec3 & axisLen)
 {
 	CollisionComponent* retComp = new OBBCollisionComp(rigidComp, localMat, axisLen);
-	_collisionComponentContainer.push_back(retComp);
+	_collisionComponentContainerOBB.push_back(retComp);
+	return retComp;
+}
+
+CollisionComponent * CollisionComponentManager::GetNewAABBCollisionComp(RigidbodyComponent * rigidComp, glm::vec3 & localVec, glm::vec3 & axisLen)
+{
+	CollisionComponent* retComp = new AABBCollisionComp(rigidComp, localVec, axisLen);
+	_collisionComponentContainerAABB.push_back(retComp);
 	return retComp;
 }
 
@@ -26,19 +34,25 @@ void CollisionComponentManager::eraseCollisionComponent(CollisionComponent * del
 void CollisionComponentManager::doCollisionTest()
 {
 	insertTestCompToOctaTree();
-	collisionTest();
+	actualCollisionTest();
 	clearOctree();
 }
 
 void CollisionComponentManager::insertTestCompToOctaTree() 
 {
-	for (auto it = _collisionComponentContainer.begin(); it != _collisionComponentContainer.end();	)
+	insertTestCompToOctaTreeWithContainer(_collisionComponentContainerOBB);
+	insertTestCompToOctaTreeWithContainer(_collisionComponentContainerAABB);
+}
+
+void CollisionComponentManager::insertTestCompToOctaTreeWithContainer(std::list<CollisionComponent*>& collisionComponentContainer)
+{
+	for (auto it = collisionComponentContainer.begin(); it != collisionComponentContainer.end(); )
 	{
 		// erase before test collision(insert octTree)
 		if ((*it)->_bDeleted)
 		{
 			delete *it;
-			it = _collisionComponentContainer.erase(it);
+			it = collisionComponentContainer.erase(it);
 			continue;
 		}
 
@@ -49,7 +63,7 @@ void CollisionComponentManager::insertTestCompToOctaTree()
 		}
 
 		(*it)->_bAlreadyVelocityUpdated = false;	// init for velocity update
-		// 순서 주의
+													// 순서 주의
 		(*it)->updateAABBForOctree();				// update aabb for _octree
 		_octree->insert(*it);						// insert
 
@@ -57,10 +71,16 @@ void CollisionComponentManager::insertTestCompToOctaTree()
 	}
 }
 
-void CollisionComponentManager::collisionTest()
+void CollisionComponentManager::actualCollisionTest()
+{
+	collisionTestWithContainer(_collisionComponentContainerAABB);
+	collisionTestWithContainer(_collisionComponentContainerOBB);
+}
+
+void CollisionComponentManager::collisionTestWithContainer(std::list<CollisionComponent*>& collisionComponentContainer)
 {
 	// O(k^2) : 각 component의 가능한 충돌 component list 가져오기
-	for (auto elem : _collisionComponentContainer)
+	for (auto elem : collisionComponentContainer)
 	{
 		std::list<CollisionComponent*> potentialCollisionList;
 		_octree->getCollisionPotentialList(potentialCollisionList, elem);
@@ -93,6 +113,7 @@ void CollisionComponentManager::collisionTest()
 		}
 	}
 }
+
 
 void CollisionComponentManager::clearOctree()
 {

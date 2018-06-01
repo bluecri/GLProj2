@@ -7,10 +7,7 @@ class RigidbodyComponent
 {
 public:
 	RigidbodyComponent(Entity * bindedEntity);
-	virtual ~RigidbodyComponent()
-	{
-		// todo : delete _bindedentity in gameobject
-	}
+	virtual ~RigidbodyComponent();
 
 public:
 	Entity* _bindedEntity;

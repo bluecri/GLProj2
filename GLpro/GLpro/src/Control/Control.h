@@ -1,15 +1,10 @@
 #ifndef __CONTROL_H__
 #define __CONTROL_H__
 
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
-
-#include <vector>
+typedef struct GLFWwindow GLFWwindow;
 
 namespace CONTROL
 {
-	
-
 	class Control 
 	{
 		public:

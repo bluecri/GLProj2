@@ -95,7 +95,7 @@ int WINDOW::Window::init()
 
 	GShaderManager = new SHADER::ShaderManager();
 	GRendermanager = new RENDER::RenderManager();
-	GCollisionComponentManager = new CollisionComponentManager(3, 128);
+	GCollisionComponentManager = new CollisionComponentManager(3, 64);
 	GOption = new Option();
 	GScene = new Scene();
 	//
@@ -188,6 +188,11 @@ void WINDOW::Window::renderAll(float usedDeltaTime, float acc)
 
 void WINDOW::Window::exitWindow()
 {
+}
+
+void WINDOW::Window::mouseToCenter()
+{
+	glfwSetCursorPos(_pWindow, _windowWidth / 2, _windowHeight / 2);
 }
 
 WINDOW::Window* GWindow = nullptr;

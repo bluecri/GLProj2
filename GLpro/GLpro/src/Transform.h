@@ -67,6 +67,7 @@ public:
 	//const glm::mat4& getLocalRotationMatrixConstRef() const;
 	glm::mat4 getLocalRotationMatrix() const;
 	glm::quat getLocalQuarternion() const;
+	const glm::quat& getLocalQuarternionRef() const;
 
 	void setQuaternion(const glm::mat4 &rotateMat);
 	void setQuaternion(const glm::vec3 &rotateVec);
@@ -77,6 +78,11 @@ public:
 	void accQuaternion(const glm::mat4 &localAccRotateMat);
 	void accQuaternion(const float &degree, glm::vec3 &rotateAxis);
 	void accQuaternion(const glm::quat &quat);
+	void accQuaternionYaw(const float &degree);
+	void accQuaternionPitch(const float &degree);
+	void accQuaternionRoll(const float &degree);
+
+	void accQuaternionMix(Transform* targetTransform, float maxAngle, float deltaSpeed);
 
 	// scale mat
 	const glm::mat4& getLocalScaleMatrixConstRef() const;
@@ -125,10 +131,6 @@ private:
 	bool _bMove;		// update move or not
 	bool _bVelocity;	// update move with original glm::vec3 _velocity
 	glm::vec3 _velocity;
-
-	bool _bAngle;			// update rotation with angle (plane)
-	glm::vec3 _angleSpeed;	
-	glm::vec3 _targetAngle;
 
 	float _speed;
 	float _maxZSpeed;

@@ -1,7 +1,12 @@
 #include "./InputManager.h"
+#include "../../stdafx.h"
 
 #include "../window.h"
 #include "../../Scene.h"
+
+#include "./Control.h"
+#include "./ControlDown.h"
+#include "./ControlOnce.h"
 
 long long int CONTROL::InputManager::_bitKeyState = 0;	//global key state
 /*
@@ -17,6 +22,9 @@ namespace CONTROL {
 
 	void InputManager::keyUpdate()
 	{
+		// mouse point update
+		glfwGetCursorPos(GWindow->_pWindow, &_mouseXPos, &_mouseYPos);
+
 		switch (_mode)
 		{
 		case ENUM_INPUT_MODE::ENUM_INPUT_CHAT :
@@ -73,6 +81,14 @@ namespace CONTROL {
 		return false;
 	}
 
+	float InputManager::getMouseXPos() {
+		return _mouseXPos;
+	}
+
+	float InputManager::getMouseYPos() {
+		return _mouseYPos;
+	}
+
 	void InputManager::init()
 	{
 		// Init key or mouse down check
@@ -87,10 +103,22 @@ namespace CONTROL {
 		updateControlVec[ENUM_BEHAVIOR::CLICK_L_DOWN] = new ControlDown(GLFW_MOUSE_BUTTON_LEFT, false);
 		updateControlVec[ENUM_BEHAVIOR::CLICK_R_DOWN] = new ControlDown(GLFW_MOUSE_BUTTON_RIGHT, false);
 
+		updateControlVec[ENUM_BEHAVIOR::KEY_1_DOWN] = new ControlDown(GLFW_KEY_1, false);
+		updateControlVec[ENUM_BEHAVIOR::KEY_2_DOWN] = new ControlDown(GLFW_KEY_2, false);
+		updateControlVec[ENUM_BEHAVIOR::KEY_3_DOWN] = new ControlDown(GLFW_KEY_3, false);
+		updateControlVec[ENUM_BEHAVIOR::KEY_4_DOWN] = new ControlDown(GLFW_KEY_4, false);
+		updateControlVec[ENUM_BEHAVIOR::KEY_5_DOWN] = new ControlDown(GLFW_KEY_5, false);
+		updateControlVec[ENUM_BEHAVIOR::KEY_6_DOWN] = new ControlDown(GLFW_KEY_6, false);
+		updateControlVec[ENUM_BEHAVIOR::KEY_7_DOWN] = new ControlDown(GLFW_KEY_7, false);
+		updateControlVec[ENUM_BEHAVIOR::KEY_8_DOWN] = new ControlDown(GLFW_KEY_8, false);
+		updateControlVec[ENUM_BEHAVIOR::KEY_9_DOWN] = new ControlDown(GLFW_KEY_9, false);
+		updateControlVec[ENUM_BEHAVIOR::KEY_0_DOWN] = new ControlDown(GLFW_KEY_0, false);
+		updateControlVec[ENUM_BEHAVIOR::KEY_SPACE_DOWN] = new ControlDown(GLFW_KEY_SPACE, false);
+		updateControlVec[ENUM_BEHAVIOR::TAB_DOWN] = new ControlDown(GLFW_KEY_TAB, false);
+
 		// Init key or mouse down ONCE check
 		updateControlVec[ENUM_BEHAVIOR::CLICK_L_ONCE] = new ControlOnce(GLFW_MOUSE_BUTTON_LEFT, false);
 		updateControlVec[ENUM_BEHAVIOR::CLICK_R_ONCE] = new ControlOnce(GLFW_MOUSE_BUTTON_RIGHT, false);
-		
 	}
 }
 

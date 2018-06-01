@@ -13,6 +13,12 @@
 
 #include "src/Sound/ALSource.h"
 
+NormalMissileGenerator::NormalMissileGenerator()
+	: IMissileGenerator()
+{
+	_missileType = ENUM_MISSILE_TYPE::ENUM_MISSILE_TYPE_NORMAL;
+}
+
 void NormalMissileGenerator::genMissile()
 {
 	if (_curMissileDelay < _commonMissileState->_missileDelay)
@@ -33,8 +39,10 @@ void NormalMissileGenerator::updateTimer(float deltaTime, float acc)
 	_curMissileDelay += deltaTime;
 }
 
-void NormalMissileGenerator::init()
+void NormalMissileGenerator::init(Entity* bindedEntity, MissileGeneratorStorage* missileGeneratorStorage)
 {
+	setBindedEntityAndMissileGenerator(bindedEntity, missileGeneratorStorage);
+
 	// init common missile state with common info
 	_commonMissileState = new CommonMissileState();
 
@@ -52,8 +60,10 @@ void NormalMissileGenerator::init()
 	_specifiedMissileState = tempSpecifiedNormalMissileState;
 }
 
-void NormalMissileGenerator::init(std::string & commonMissileInfoFile, std::string & specifiedMissileInfo)
+void NormalMissileGenerator::init(Entity* bindedEntity, MissileGeneratorStorage* missileGeneratorStorage, std::string & commonMissileInfoFile, std::string & specifiedMissileInfo)
 {
+	setBindedEntityAndMissileGenerator(bindedEntity, missileGeneratorStorage);
+
 	// common state
 	_commonMissileState = new CommonMissileState();
 

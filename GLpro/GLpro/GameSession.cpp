@@ -33,6 +33,7 @@ std::vector<GameSession*> GameSession::preMadeGameSession;
 GameSession::GameSession()
 {
 	_menuCanvas = Canvas::preMadeCanvasVec[PREMADE_CANVAS_INGAMEMENU];
+	_bMouseOn = false;
 }
 
 void GameSession::pauseGame()
@@ -116,6 +117,12 @@ void GameSession::update(float deltaTime, float acc)
 			elem.second->logicUpdate(deltaTime, acc);
 		}
 
+		//mouse pos to center
+		if (!_bMouseOn)
+		{
+			GWindow->mouseToCenter();
+		}
+
 		removeEntityProcess();
 		return;
 	}
@@ -138,11 +145,11 @@ void GameSession::preMade()
 	//newPlayer->_rigidbodyComponent->_transform->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	newPlayer->_rigidbodyComponent->_transform->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
 	newPlayer->_rigidbodyComponent->_transform->setDirty();
-	newPlayer->_normalFObj->setBRender(true);
+	newPlayer->setBRender(true);
 	newPlayer->init();
-	NormalMissileGenerator * normalMissileGenerator = new NormalMissileGenerator(newPlayer->_missileGeneratorStorage, newPlayer);
-	normalMissileGenerator->init();
-	newPlayer->_missileGeneratorStorage->addMissileGenerator(normalMissileGenerator);
+	NormalMissileGenerator * normalMissileGenerator = new NormalMissileGenerator();
+	normalMissileGenerator->init(newPlayer, newPlayer->getMissileGeneratorStorage());
+	newPlayer->addMissileGenerator(normalMissileGenerator);
 	
 	CAMERA::Camera** mainCam = GCameraManager->GetMainCamera();
 	//(*mainCam)->_rigidbodyComponent->_transform->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));

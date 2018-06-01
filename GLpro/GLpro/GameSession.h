@@ -46,4 +46,5 @@ public:
 	SkyboxGObject* _spaceSkybox;
 
 	bool _bMenuOn;
+	bool _bMouseOn;
 };

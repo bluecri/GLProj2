@@ -2,14 +2,16 @@
 #include "stdafx.h"
 #include "CollisionComponent.h"
 
-class OBBCollisionComp : public CollisionComponent
+class AABBCollisionComp : public CollisionComponent
 {
 public:
-	OBBCollisionComp(RigidbodyComponent* rigidComp, glm::mat4& localMat, glm::vec3& axisLen)
-		: CollisionComponent(rigidComp), _localMat(localMat), _axisLen(_axisLen)
+	AABBCollisionComp(RigidbodyComponent* rigidComp, glm::vec3& localVec, glm::vec3& axisLen)
+		: CollisionComponent(rigidComp),_axisLen(_axisLen)
 	{
-		collisionType = COLLISION_TYPE::COLLISION_OBB;
-		_axisTotalLen = glm::length(_axisLen);
+		collisionType = COLLISION_TYPE::COLLISION_AABB;
+
+		_localMat = glm::mat4();
+		glm::translate(localVec);
 	}
 
 	// CollisionComponent을(를) 통해 상속됨
@@ -20,11 +22,10 @@ public:
 public:
 	glm::mat4 _localMat;	//used for axis vec : mat[0]. mat[1], mat[2]	// pos : mat[3]
 	glm::vec3 _axisLen;
-	float _axisTotalLen;	//for aabb
 
 	glm::mat4 _worldlMat;	// update by updateWithRigidComp()
 
-	// CollisionComponent을(를) 통해 상속됨 (for AABB - octree)
-	//glm::vec3 _center;
-	//glm::vec3 _halfAxisSize;
+							// CollisionComponent을(를) 통해 상속됨 (for AABB - octree)
+							//glm::vec3 _center;
+							//glm::vec3 _halfAxisSize;
 };

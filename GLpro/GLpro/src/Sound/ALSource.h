@@ -17,20 +17,12 @@ public:
 	void bindSourceToBuffer(ALuint soundBufferID);
 	void bindSourceToALSound(ALSound *alSound);
 
-	void updateTransformPtr(Transform * transform)
-	{
-		_transform = transform;
-	}
-	void play()
-	{
-		_bDoPlay = true;
-	}
-	void stop()
-	{
-		_bDoStop = true;
-	}
+	void updateTransformPtr(Transform * transform);
+	void play();
+	void stop();
 
 	void setDoDelete() { _bDoDeleted = true;}
+	void unBind();
 	~ALSource();
 
 private:

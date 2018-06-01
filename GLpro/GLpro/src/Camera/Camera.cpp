@@ -4,11 +4,12 @@ namespace CAMERA {
 
 	;
 	
-	Camera::Camera(std::string name, int type, float fov, float speed, float mouseSpeed, float horizontalFovValue, float verticalFovValue, float frontFrustrumValue, float backFrustrumValue)
+	Camera::Camera(std::string name, int type, float fov, float speed, float keySpeed, float mouseSpeed, float horizontalFovValue, float verticalFovValue, float frontFrustrumValue, float backFrustrumValue)
 		: Entity(name, nullptr, type)
 	{
 		_speed = speed;
 		_mouseSpeed = mouseSpeed;
+		_keySpeed = keySpeed;
 		_fov = fov;
 		_horizontalFovValue = horizontalFovValue;
 		_verticalFovValue = verticalFovValue;
@@ -56,6 +57,21 @@ namespace CAMERA {
 	void Camera::SetWithLookAt(const glm::vec3 & lookat, const glm::vec3 & up)
 	{
 		_rigidbodyComponent->_transform->setVMatrixLookat(lookat, up);
+	}
+
+	void Camera::camAccQuaternionYaw(const float & degree)
+	{
+		_rigidbodyComponent->_transform->accQuaternionYaw(degree * _mouseSpeed);
+	}
+
+	void Camera::camAccQuaternionPitch(const float & degree)
+	{
+		_rigidbodyComponent->_transform->accQuaternionPitch(degree * _mouseSpeed);
+	}
+
+	void Camera::camAccQuaternionRoll(const float & degree)
+	{
+		_rigidbodyComponent->_transform->accQuaternionRoll(degree * _keySpeed);
 	}
 
 	glm::mat4 & Camera::getRecentVPMat()

@@ -17,6 +17,7 @@ namespace WINDOW
 		void renderAll(float usedDeltaTime, float acc);
 		void exitWindow();
 
+		void mouseToCenter();
 	public:
 		GLFWwindow* _pWindow;
 		int _windowWidth;		// window size

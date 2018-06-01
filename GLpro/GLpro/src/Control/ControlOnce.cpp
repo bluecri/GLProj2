@@ -1,4 +1,5 @@
 #include "ControlOnce.h"
+#include "../../stdafx.h"
 
 namespace CONTROL 
 {

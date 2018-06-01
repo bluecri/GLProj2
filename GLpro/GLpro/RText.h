@@ -28,7 +28,7 @@ namespace RENDER
 		RText(SHADER::ShaderText* shaderObj);
 		virtual ~RText() {};
 
-		// use this with weak_ptr
+		// rigidbody can be nullptr
 		std::shared_ptr<DrawElement> addToDrawList(RENDER_TARGET::TEXT::TextFObj* _textFObj, RigidbodyComponent* rigidbodyComponent);
 				
 		virtual void update(CAMERA::Camera** cam);	//shader target camera update

@@ -1,4 +1,5 @@
 #include "./ControlDown.h"
+#include "../../stdafx.h"
 
 namespace CONTROL
 {

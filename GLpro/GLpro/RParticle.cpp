@@ -22,9 +22,13 @@ namespace RENDER
 	std::shared_ptr<RParticle::DrawElement> RParticle::addToDrawList(FObjElem* particleFObj, RigidbodyComponent * rigidbodyComponent)
 	{
 		ParticleCreateInfo* particleCreateInfo = new ParticleCreateInfo();
-		particleCreateInfo->_bindedTransform = rigidbodyComponent->_transform;
+		particleCreateInfo->init(rigidbodyComponent->_transform);
 
-		auto elem = std::make_shared<DrawElement>(particleFObj, particleCreateInfo);
+		auto elem = std::shared_ptr<RParticle::DrawElement>(new RParticle::DrawElement(particleFObj, particleCreateInfo), [](auto ptr) {
+			delete ptr->first;
+			delete ptr->second;
+			delete ptr;
+		});
 		_particleDrawElemContainer.push_back(elem);
 		return elem;
 	}
@@ -84,21 +88,11 @@ namespace RENDER
 		return _shaderObj;
 	}
 
-	void RParticle::destructor(std::shared_ptr<DrawElement> shared)
-	{
-		DrawElement* ptr = shared.get();
-		for (auto it = _particleDrawElemContainer.begin(); it != _particleDrawElemContainer.end();)
-		{
-			if ((*it).get() == ptr)
-			{
-				delete it->get()->second;		//remove particleCreateInfo
-				_particleDrawElemContainer.erase(it);
-				return;
-			}
-			++it;
-		}
-	}
 
+	/*
+	*	particle Fobj에서 빈 particle을 particle info를 통해 particle generate.
+	*
+	*/
 	void RParticle::beforeDraw(float deltaTime)
 	{
 		glm::vec3 camPosVec = (*_targetCamera)->_rigidbodyComponent->_transform->getWorldPosVec();
@@ -107,14 +101,32 @@ namespace RENDER
 			RENDER_TARGET::PARTICLE::ParticleFObj* particleFObj = (*it)->first;
 			ParticleCreateInfo* particleCreateInfo = (*it)->second;
 
+			// check delete & remain time
+			if (particleFObj->bDeleted())
+			{
+				float& remainDelTime = particleFObj->getDeleteRemainTimeRef();
+				if (remainDelTime < 0.0f)
+				{
+					// do delete
+					it = _particleDrawElemContainer.erase(it);
+					continue;
+				}
+				remainDelTime -= deltaTime;
+			}
+
 			// update exist particles
 			for (auto elem : particleFObj->_particleContainer)
 			{
-				// campos
+				// cam distance update
 				elem->update(deltaTime, camPosVec);
 			}
-			// create new particles [ get new particle & modify info with particleCreateInfo ]
-			particleCreateInfo->genNewParticles(particleFObj);
+			
+			// not generate if deleted
+			if (!particleFObj->bDeleted())
+			{
+				// create new particles [ get new particle & modify info with particleCreateInfo ]
+				particleCreateInfo->genNewParticles(particleFObj);
+			}
 
 			// sort with distance
 

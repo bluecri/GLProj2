@@ -12,15 +12,21 @@ class Transform;
 class IMissileGenerator
 {
 public:
-	IMissileGenerator(MissileGeneratorStorage* bindedMissileGeneratorStorage, Entity* bindedEntity);
+	IMissileGenerator();
 	virtual void genMissile() = 0;
 	virtual void updateTimer(float deltaTime, float acc) = 0;
+
+	void setBindedEntityAndMissileGenerator(Entity* entity, MissileGeneratorStorage* bindedMissileGeneratorStorage);
 
 	CommonMissileState*		getCommonMissileState();
 	ENUM_MISSILE_TYPE		getENUM_MISSILE_TYPE();
 	ISpecifiedMissileState* getISpecifiedMissileState();
 	Entity*					getBindedEntity();
 	
+private:
+	void setBindedEntity(Entity* entity);
+	void setBindedMissileGenerator(MissileGeneratorStorage* bindedMissileGeneratorStorage);
+
 public:
 	float _curMissileDelay;
 

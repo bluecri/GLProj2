@@ -70,6 +70,10 @@ using namespace google;
 // origin
 #include "./origin/FastSpinlock.h"
 #include "./origin/Exception.h"
+
+// extension
+#include "./quatExtension.h"
+
 /*
 
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <list>
+#include "stdafx.h"
 
 class RigidbodyComponent;
 class CollisionComponent;
@@ -16,7 +16,8 @@ class CollisionComponentManager
 public:
 	CollisionComponentManager(int height, int halfAxisSize);
 
-	CollisionComponent* GetNewCollisionComp(RigidbodyComponent* rigidComp, glm::mat4& localMat, glm::vec3& axisLen);
+	CollisionComponent* GetNewOBBCollisionComp(RigidbodyComponent* rigidComp, glm::mat4& localMat, glm::vec3& axisLen);
+	CollisionComponent* GetNewAABBCollisionComp(RigidbodyComponent* rigidComp, glm::vec3& localVec, glm::vec3& axisLen);
 
 	void eraseCollisionComponent(CollisionComponent* delTargetComp);
 
@@ -25,11 +26,14 @@ public:
 private:
 
 	void insertTestCompToOctaTree();
-	void collisionTest();
+	void insertTestCompToOctaTreeWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
+	void actualCollisionTest();
+	void collisionTestWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
 	void clearOctree();
 
 private:
-	std::list<CollisionComponent*> _collisionComponentContainer;
+	std::list<CollisionComponent*> _collisionComponentContainerOBB;
+	std::list<CollisionComponent*> _collisionComponentContainerAABB;
 	Octree* _octree;
 };
 

@@ -12,8 +12,6 @@ namespace CAMERA
 		return *this;
 	}
 
-
-
 	CameraBuilder& CameraBuilder::setFrustrum(float frontFrustrum, float backFrustrum)
 	{
 		_frontFrustrumValue = frontFrustrum;
@@ -34,8 +32,6 @@ namespace CAMERA
 		return *this;
 	}
 
-
-
 	CameraBuilder::CameraBuilder(std::string & name, int type) : _name(name)
 	{
 		_type = type;
@@ -43,7 +39,8 @@ namespace CAMERA
 		_bProjection = true;
 
 		_speed = 0.1f; // 3.0f == 3 units / second
-		_mouseSpeed = 0.005f; // default 0.005f
+		_mouseSpeed = 0.01f; // default 0.005f
+		_keySpeed = 0.8f;
 
 		_fov = 45.0f;	//default 45.0f degree
 		_horizontalFovValue = 4.0f;	//4:3 window ratio
@@ -54,6 +51,6 @@ namespace CAMERA
 
 	Camera* CameraBuilder::constructPtr()
 	{
-		return new Camera(_name, _type, _fov, _speed, _mouseSpeed, _horizontalFovValue, _verticalFovValue, _frontFrustrumValue, _backFrustrumValue);
+		return new Camera(_name, _type, _fov, _speed, _keySpeed, _mouseSpeed, _horizontalFovValue, _verticalFovValue, _frontFrustrumValue, _backFrustrumValue);
 	}
 }

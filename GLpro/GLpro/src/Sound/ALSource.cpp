@@ -47,8 +47,24 @@ void ALSource::bindSourceToALSound(ALSound * alSound) {
 	alSourcei(m_sourceID, AL_BUFFER, alSound->soundBufferID);
 }
 
+void ALSource::updateTransformPtr(Transform * transform)
+{
+	_transform = transform;
+}
+
+void ALSource::play()
+{
+	_bDoPlay = true;
+}
+
+void ALSource::stop()
+{
+	_bDoStop = true;
+}
+
 void ALSource::updatePos() {
-	
+	if (_transform == nullptr)
+		return;
 	const glm::vec3& posVec = _transform->getWorldPosVec();
 	m_sourcePos[0] = posVec[0];
 	m_sourcePos[1] = posVec[1];
@@ -64,6 +80,10 @@ void ALSource::sourcePlay() {
 
 void ALSource::sourceStop() {
 	alSourceStop(m_sourceID);
+}
+
+void ALSource::unBind() {
+	_transform = nullptr;
 }
 
 ALSource::~ALSource() {

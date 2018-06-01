@@ -9,7 +9,6 @@
 *	component의 경우 부모, 자식 관계가 존재하지 않는다.
 *******************************************************/
 class GameSession;
-class CollisionInfo;
 
 enum ENUM_ENTITY_TYPE
 {
@@ -17,6 +16,7 @@ enum ENUM_ENTITY_TYPE
 	ENUM_ENTITY_PLANE_PLAYER,
 	ENUM_ENTITY_ENEMY,
 	ENUM_ENTITY_MISSILE_NORMAL,
+	ENUM_ENTITY_PARTICLE,
 	ENUM_ENTITY_NUM
 };
 

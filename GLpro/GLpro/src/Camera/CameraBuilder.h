@@ -26,6 +26,7 @@ namespace CAMERA
 
 		float _speed; // 3.0f == 3 units / second
 		float _mouseSpeed; // default 0.005f
+		float _keySpeed;
 
 		float _fov;	//default 45.0f degree
 		float _horizontalFovValue;	//4:3 window ratio

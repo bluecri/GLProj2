@@ -3,9 +3,39 @@
 #include "src/Resource/TextureManager.h"
 #include "ParticleBuffer.h"
 
+#include "configs.h"
+
+
+RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName, const char * textureType, int particleContainerSize)
+{
+	_bDeleted = false;
+	_deleteRemainTime = -1.0f;
+
+	std::vector<glm::vec3> g_default_particle_buffer;
+	for (int i = 0; i < 4; i++)
+	{
+		g_default_particle_buffer.push_back(glm::vec3(g_vertex_buffer_data[i * 4 + 0], g_vertex_buffer_data[i * 4 + 1], g_vertex_buffer_data[i * 4 + 2]));
+	}
+
+	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
+	_particleBuffer = new RESOURCE::ParticleBuffer(g_default_particle_buffer);
+
+	_particleContainerSize = particleContainerSize;
+	_particleContainer = std::vector<ParticleStruct*>();
+	_particleContainer.reserve(_particleContainerSize);
+
+	for (int i = 0; i < _particleContainerSize; i++)
+	{
+		_particleContainer.push_back(new ParticleStruct());
+	}
+}
+
 RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName, const char * textureType, std::vector<glm::vec3>& vertices, int particleContainerSize)
 	: FObj()
 {
+	_bDeleted = false;
+	_deleteRemainTime = -1.0f;
+
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
 	_particleBuffer = new RESOURCE::ParticleBuffer(vertices);
 
@@ -29,14 +59,13 @@ RENDER_TARGET::PARTICLE::ParticleFObj::~ParticleFObj()
 
 void RENDER_TARGET::PARTICLE::ParticleFObj::sortContainerByDist()
 {
-	// TODO
-	/*
+	// needCheck
 	std::sort(_particleContainer.begin(), _particleContainer.end(),
-	[](const ParticleStruct* &lhs, const ParticleStruct* &rhs) -> bool
+	[](const ParticleStruct* lhs, const ParticleStruct* rhs) -> bool
 	{
-	return lhs->_cameradistance > rhs->_cameradistance;
-	} );
-	*/
+		return lhs->_cameradistance > rhs->_cameradistance;
+	});
+	
 }
 
 void RENDER_TARGET::PARTICLE::ParticleFObj::orderFillParticleBuffer()
@@ -85,5 +114,22 @@ ParticleStruct & RENDER_TARGET::PARTICLE::ParticleFObj::GetUnusedParticle()
 	}
 
 	return *_particleContainer[0]; // All particles are taken, override the first one
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::setBDeleted() {
+	_bDeleted = true;
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::setDeleteRemainTime(float remainTime)
+{
+	_deleteRemainTime = remainTime;
+}
+
+bool RENDER_TARGET::PARTICLE::ParticleFObj::bDeleted() {
+	return _bDeleted;
+}
+
+float & RENDER_TARGET::PARTICLE::ParticleFObj::getDeleteRemainTimeRef() {
+	return _deleteRemainTime;
 }
 

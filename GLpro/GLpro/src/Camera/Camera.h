@@ -9,12 +9,16 @@ namespace CAMERA
 	class Camera : public Entity
 	{
 	public:
-		Camera(std::string name, int type, float fov, float speed = 0.1f, float mouseSpeed = 0.005f,
+		Camera(std::string name, int type, float fov, float speed = 0.1f, float keySpeed = 0.5f, float mouseSpeed = 0.005f,
 			float horizontalFovValue = 4.0f, float verticalFovValue = 3.0f, float frontFrustrumValue = 0.1f, float backFrustrumValue = 100.0f);
 		virtual ~Camera() {}
 
 		void SetWithLookAt(const glm::vec3 &pos, const glm::vec3 &lookat, const glm::vec3 &up);
 		void SetWithLookAt(const glm::vec3 &lookat, const glm::vec3 &up);
+
+		void camAccQuaternionYaw(const float &degree);
+		void camAccQuaternionPitch(const float &degree);
+		void camAccQuaternionRoll(const float &degree);
 
 		glm::mat4& getRecentVPMat();
 		glm::mat4& getRecentViewMat();
@@ -37,6 +41,7 @@ namespace CAMERA
 
 		float		_speed;				// 3.0f == 3 units / second
 		float		_mouseSpeed;			// default 0.005f
+		float		_keySpeed;				// 0.5
 
 		float		_fov;					//default 45.0f degree
 		float		_horizontalFovValue;	//4:3 window ratio

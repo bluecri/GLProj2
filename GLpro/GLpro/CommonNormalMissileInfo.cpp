@@ -11,7 +11,7 @@ void CommonNormalMissileInfo::init()
 	_shaderVertexFileName = std::string("data/Shader/ShadowMapping.vertexshader");
 	_shaderFragmentFileName = std::string("data/Shader/ShadowMapping.fragmentshader");
 
-	_shotDelay = 0.5f;
+	_shotDelay = 0.1f;
 
 	_collisionBoxMat = glm::mat4();
 	_missileCollisionBoxAxis = glm::vec3(0.1f, 0.1f, 1.0f);

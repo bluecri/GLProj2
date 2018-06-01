@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 enum ENUM_COLLISION_TYPE
 {
 	ENUM_COLLISION_PLAYER,
@@ -20,3 +20,4 @@ public:
 private:
 	ENUM_COLLISION_TYPE _type;
 };
+*/

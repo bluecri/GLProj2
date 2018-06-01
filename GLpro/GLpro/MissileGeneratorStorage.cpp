@@ -9,7 +9,9 @@ MissileGeneratorStorage::MissileGeneratorStorage(int maxWeaponCount, Entity* bin
 	_selectedWeaponIndex = 0;
 	for (int i = 0; i < maxWeaponCount; i++)
 	{
-		_missileGeneratorVec.push_back(new EmptyMissileGenerator(this, bindedEntity));
+		EmptyMissileGenerator* emptyGenerator = new EmptyMissileGenerator();
+		emptyGenerator->init(bindedEntity, this);
+		_missileGeneratorVec.push_back(emptyGenerator);
 	}
 }
 

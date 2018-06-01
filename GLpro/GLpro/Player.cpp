@@ -3,7 +3,9 @@
 #include "src/Resource/Model.h"
 #include "src/Resource/Texture.h"
 #include "src/Render/RNormal.h"
+#include "RText.h"
 #include "src/RenderTarget/Normal/NormalFObj.h"
+#include "TextFObj.h"
 #include "src/Shader/ShaderMain.h"
 #include "RenderManager.h"
 #include "CollisionComponent.h"
@@ -17,64 +19,51 @@
 #include "./src/Sound/ALSource.h"
 #include "CollisionComponentManager.h"
 #include "NormalMissile.h"
+#include "src/Resource/TextureManager.h"
+#include "src/Shader/ShaderManager.h"
+#include "src/Shader/ShaderText.h"
+#include "ParticleFObj.h"
 
 #include "MissileGeneratorStorage.h"
 
 #include "GameSession.h"
+#include "./src/window.h"
+#include "./src/Transform.h"
 
 Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IPlane(ENUM_ENTITY_TYPE::ENUM_ENTITY_PLANE_PLAYER, gSession, model, texture, shadermain)
 {
-	
+	// aim text
+	SHADER::ShaderText* shaderText = GShaderManager->m_addShader<SHADER::ShaderText>(ENUM_SHADER_TYPE::SHADER_TYPE_TEXT, "data/Shader/TextVertexShader.vertexshader", "data/Shader/TextVertexShader.fragmentshader");
+	_rText = GRendermanager->getRRender<RENDER::RText, SHADER::ShaderText>(shaderText);
+	_rElemInTextAim = _rText->addToDrawList(new RENDER_TARGET::TEXT::TextFObj("data/Texture/Holstein.DDS", "dds", 1, 1, glm::vec2(300, 400), 30) , _rigidbodyComponent);
+
 }
 
 void Player::inputProgress(long long inputKey)
 {
 	_bShotKeyDown = false;
-	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::MOVE_LEFT))
+
+	// tab key on progress
+	if (_gameSession->_bMouseOn)
 	{
-		_rigidbodyComponent->_transform->accQuaternion(1.0f,  glm::vec3(1.0f, 0.0f, 0.0f));
-		//_rigidbodyComponent->_transform->accQuaternion(_angleSpeedVec[0], glm::vec3(1.0f, 0.0f, 0.0f));
+		tabKeyProgress(inputKey);
+		return;
 	}
 
-	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::MOVE_RIGHT))
+	// not tab key on progress
+	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::TAB_DOWN))
 	{
-		// ttest 
-		CAMERA::Camera *maincam = *(GCameraManager->GetMainCamera());
-		RigidbodyComponent* testComp = this->_rigidbodyComponent;
-		//maincam->_rigidbodyComponent->_transform->setMove(false);
-
-		std::cout << "cam local" << std::endl;
-		maincam->_rigidbodyComponent->_transform->printLocalModel();
-		maincam->_rigidbodyComponent->_transform->printLocalRotMat();
-
-		std::cout << "transform local" << std::endl;
-		testComp->_transform->printLocalModel();
-		testComp->_transform->printLocalRotMat();
-
-		std::cout << "cam wolrd" << std::endl;
-		maincam->_rigidbodyComponent->_transform->printWorldMat();
-
-		std::cout << "transform world" << std::endl;
-		testComp->_transform->printWorldMat();
+		_gameSession->_bMouseOn = true;
+		return;
 	}
 
-	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::MOVE_UP))
-	{
-		_rigidbodyComponent->_transform->speedAdd(_deltaSpeed);
-	}
-
-	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::MOVE_DOWN))
-	{
-		_rigidbodyComponent->_transform->speedAdd(-_deltaSpeed);
-	}
+	playerMovementProgress(inputKey);
 
 	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::CLICK_L_DOWN))
 	{
 		// mouse click
-		double xPos, yPos;
-		glfwGetCursorPos(GWindow->_pWindow, &xPos, &yPos);
-		// printf_s("[LOG] mouse click %lf %lf \n", xPos, yPos);
+		//GInputManager->_mouseXPos
 
 		_bShotKeyDown = true;
 	}
@@ -104,7 +93,7 @@ void Player::init()
 	glm::mat4 collisionBoxMat = glm::mat4();
 	collisionBoxMat[3][2] += 0.2f;	//collision box pos º¸Á¤
 	glm::vec3 missileCollisionBox = glm::vec3(0.02f, 0.02f, 0.2f);
-	_collisionComp = GCollisionComponentManager->GetNewCollisionComp(_rigidbodyComponent, collisionBoxMat, missileCollisionBox);
+	_collisionComp = GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, collisionBoxMat, missileCollisionBox);
 }
 
 void Player::logicUpdate(float deltaTime, float acc)
@@ -165,6 +154,8 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 
 void Player::doJobWithBeDeleted()
 {
+	// sound remove
+	_explosionSound->unBind();
 	_explosionSound->setDoDelete();
 }
 
@@ -172,4 +163,48 @@ bool Player::isCanGetDmg()
 {
 	return !_bNotDmged;
 
+}
+
+void Player::tabKeyProgress(long long transferKeyInput)
+{
+	// tab key on progress
+	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::TAB_DOWN))
+	{
+		_gameSession->_bMouseOn = false;
+	}
+}
+
+void Player::playerMovementProgress(long long transferKeyInput)
+{
+	// mouse movement process (not tab key on)
+	float horizontalAngle = float(GWindow->_windowWidth / 2 - GInputManager->getMouseXPos());
+	float verticalAngle = float(GWindow->_windowHeight / 2 - GInputManager->getMouseYPos());
+
+	// camera world rotation
+	CAMERA::Camera *maincam = *(GCameraManager->GetMainCamera());
+	maincam->camAccQuaternionYaw(horizontalAngle);
+	maincam->camAccQuaternionPitch(-verticalAngle);
+
+	int roll = 0;
+
+	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_LEFT))
+		roll -= 1;
+
+	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_RIGHT))
+		roll += 1;
+	
+	if (roll != 0)
+		maincam->camAccQuaternionRoll((float)roll);
+	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_UP))
+		_rigidbodyComponent->_transform->speedAdd(_deltaSpeed);
+
+	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_DOWN))
+		_rigidbodyComponent->_transform->speedAdd(-_deltaSpeed);
+
+	// set cam position (follow plane)
+	maincam->_rigidbodyComponent->_transform->setModelMatrix(_rigidbodyComponent->_transform->getModelVec());
+	maincam->_rigidbodyComponent->_transform->translateModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
+
+	// plane quaternion rotation to camera rotation
+	_rigidbodyComponent->_transform->accQuaternionMix(maincam->_rigidbodyComponent->_transform, _maxAngle, _angleSpeed);
 }
