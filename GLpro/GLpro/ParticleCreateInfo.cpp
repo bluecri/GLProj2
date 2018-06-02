@@ -2,9 +2,10 @@
 #include "./ParticleFObj.h"
 #include "./src/Transform.h"
 
-ParticleCreateInfo::ParticleCreateInfo(bool _isOneParticlePerMultiFrame, int _frameVsParticle, float life, float _spread, float _particleSizeStartRange, float _particleSizeEndRange)
-	: _isOneParticlePerMultiFrame(_isOneParticlePerMultiFrame), _frameVsParticle(_frameVsParticle), _particleLife(life), _spread(_spread)
+ParticleCreateInfo::ParticleCreateInfo(bool isOneParticlePerMultiFrame, int frameVsParticle, float life, float spread, float particleSizeStartRange, float particleSizeEndRange)
+	: _isOneParticlePerMultiFrame(isOneParticlePerMultiFrame), _frameVsParticle(frameVsParticle), _particleLife(life), _spread(spread), _particleSizeStartRange(particleSizeStartRange), _particleSizeEndRange(particleSizeEndRange)
 {
+	_isOneParticlePerMultiFrame = true;
 	_countFrame = 0;
 
 	_mainDir = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -12,15 +13,15 @@ ParticleCreateInfo::ParticleCreateInfo(bool _isOneParticlePerMultiFrame, int _fr
 	m_colorStartRange[0] = 0;
 	m_colorStartRange[1] = 0;
 	m_colorStartRange[2] = 0;
-	m_colorStartRange[3] = 40;
+	m_colorStartRange[3] = 100;
 
 	m_colorEndRange[0] = 255;
 	m_colorEndRange[1] = 255;
 	m_colorEndRange[2] = 255;
-	m_colorEndRange[3] = 160;
+	m_colorEndRange[3] = 200;
 }
 
-ParticleCreateInfo::ParticleCreateInfo(int colorStartRange[4], int colorEndRange[4], glm::vec3 _mainDir, bool _isOneParticlePerMultiFrame = true, int _frameVsParticle = 5, float life = 3.0f, float _spread = 0.5f, float _particleSizeStartRange = 0.05f, float _particleSizeEndRange = 0.1f)
+ParticleCreateInfo::ParticleCreateInfo(int colorStartRange[4], int colorEndRange[4], glm::vec3 _mainDir, bool _isOneParticlePerMultiFrame = true, int _frameVsParticle = 5, float life = 3.0f, float _spread = 0.5f, float _particleSizeStartRange, float _particleSizeEndRange)
 	: _isOneParticlePerMultiFrame(_isOneParticlePerMultiFrame), _frameVsParticle(_frameVsParticle), _particleLife(life), _spread(_spread), _mainDir(_mainDir), _particleSizeStartRange(_particleSizeStartRange), _particleSizeEndRange(_particleSizeEndRange) 
 {
 	_countFrame = 0;

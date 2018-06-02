@@ -14,7 +14,7 @@ namespace SHADER
 
 				m_cameraRight_worldspace_ID = glGetUniformLocation(m_shaderID, _NameCamRight);
 				m_cameraUp_worldspace_ID = glGetUniformLocation(m_shaderID, _NameCamUp);
-				m_viewProjMatrixID = glGetUniformLocation(m_shaderID, "_NameVP");
+				m_viewProjMatrixID = glGetUniformLocation(m_shaderID, _NameVP);
 
 			}
 		}

@@ -11,14 +11,14 @@ RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName
 	_bDeleted = false;
 	_deleteRemainTime = -1.0f;
 
-	std::vector<glm::vec3> g_default_particle_buffer;
+	std::vector<glm::vec3> default_particle_buffer;
 	for (int i = 0; i < 4; i++)
 	{
-		g_default_particle_buffer.push_back(glm::vec3(g_vertex_buffer_data[i * 4 + 0], g_vertex_buffer_data[i * 4 + 1], g_vertex_buffer_data[i * 4 + 2]));
+		default_particle_buffer.push_back(glm::vec3(g_vertex_buffer_data[i * 3 + 0], g_vertex_buffer_data[i * 3 + 1], g_vertex_buffer_data[i * 3 + 2]));
 	}
 
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
-	_particleBuffer = new RESOURCE::ParticleBuffer(g_default_particle_buffer);
+	_particleBuffer = new RESOURCE::ParticleBuffer(default_particle_buffer);
 
 	_particleContainerSize = particleContainerSize;
 	_particleContainer = std::vector<ParticleStruct*>();
@@ -51,6 +51,8 @@ RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName
 
 RENDER_TARGET::PARTICLE::ParticleFObj::~ParticleFObj()
 {
+	delete _particleBuffer;
+
 	for (auto elem : _particleContainer)
 	{
 		delete elem;
@@ -70,10 +72,11 @@ void RENDER_TARGET::PARTICLE::ParticleFObj::sortContainerByDist()
 
 void RENDER_TARGET::PARTICLE::ParticleFObj::orderFillParticleBuffer()
 {
-	int drawPCnt = 0;
+	int& drawPCnt = _particleBuffer->_particlePrintCnt;
+	// todo camera dist < 0.0, no push?
 	for (auto elem : _particleContainer)
 	{
-		if (elem->_life > 0.0f)
+		if (elem->_life > 0.0f && drawPCnt < MAX_PARTICLE_INBUFFER_DEFAULT_NUM)
 		{
 			// direct access
 
@@ -86,12 +89,10 @@ void RENDER_TARGET::PARTICLE::ParticleFObj::orderFillParticleBuffer()
 			_particleBuffer->_particule_color_data[4 * drawPCnt + 1] = elem->_color[1];
 			_particleBuffer->_particule_color_data[4 * drawPCnt + 2] = elem->_color[2];
 			_particleBuffer->_particule_color_data[4 * drawPCnt + 3] = elem->_color[3];
+			drawPCnt++;
 		}
-		drawPCnt++;
 	}
-
-	_particleBuffer->_particlePrintCnt += drawPCnt;
-
+	
 	return;
 }
 

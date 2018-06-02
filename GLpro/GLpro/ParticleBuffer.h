@@ -19,14 +19,11 @@ namespace RESOURCE
 		int getGLCount();
 
 		// CAREFUL!
-		GLfloat* _particule_position_data = new GLfloat[MAX_PARTICLE_INBUFFER_DEFAULT_NUM * 4];
-		GLubyte* _particule_color_data = new GLubyte[MAX_PARTICLE_INBUFFER_DEFAULT_NUM * 4];
+		GLfloat _particule_position_data[MAX_PARTICLE_INBUFFER_DEFAULT_NUM * 4];
+		GLubyte _particule_color_data[MAX_PARTICLE_INBUFFER_DEFAULT_NUM * 4];
 		int _particlePrintCnt;	//should be updated !
 	private:
 		void genVao();
-
-		std::vector<glm::vec3> _out_vertices;
-
 		void createBuffer();
 
 	private:
@@ -35,7 +32,6 @@ namespace RESOURCE
 							
 		GLuint	_particles_pos_vbo;		// vbo with position & size
 		GLuint	_particles_color_vbo;	// vbo with color(rgba)
-
 
 		std::vector<glm::vec3> _vertices;
 	};

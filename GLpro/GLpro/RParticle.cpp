@@ -21,7 +21,7 @@ namespace RENDER
 
 	std::shared_ptr<RParticle::DrawElement> RParticle::addToDrawList(FObjElem* particleFObj, RigidbodyComponent * rigidbodyComponent)
 	{
-		ParticleCreateInfo* particleCreateInfo = new ParticleCreateInfo();
+		ParticleCreateInfo* particleCreateInfo = new ParticleCreateInfo(true);
 		particleCreateInfo->init(rigidbodyComponent->_transform);
 
 		auto elem = std::shared_ptr<RParticle::DrawElement>(new RParticle::DrawElement(particleFObj, particleCreateInfo), [](auto ptr) {
@@ -44,6 +44,10 @@ namespace RENDER
 		CAMERA::Camera* cam = *_targetCamera;
 
 		_shaderObj->bind();
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		for (auto it = _particleDrawElemContainer.begin(); it != _particleDrawElemContainer.end(); )
 		{
 			RENDER_TARGET::PARTICLE::ParticleFObj* particleFObj = (*it)->first;
@@ -113,6 +117,12 @@ namespace RENDER
 				}
 				remainDelTime -= deltaTime;
 			}
+			else
+			{
+				// not generate if deleted
+				// create new particles [ get new particle & modify info with particleCreateInfo ]
+				particleCreateInfo->genNewParticles(particleFObj);
+			}
 
 			// update exist particles
 			for (auto elem : particleFObj->_particleContainer)
@@ -120,20 +130,14 @@ namespace RENDER
 				// cam distance update
 				elem->update(deltaTime, camPosVec);
 			}
-			
-			// not generate if deleted
-			if (!particleFObj->bDeleted())
-			{
-				// create new particles [ get new particle & modify info with particleCreateInfo ]
-				particleCreateInfo->genNewParticles(particleFObj);
-			}
 
 			// sort with distance
-
 			particleFObj->sortContainerByDist();
 
 			// fill ParticleBuffer (pos buffer & color buffer)
 			particleFObj->orderFillParticleBuffer();
+
+			++it;
 		}
 
 	}

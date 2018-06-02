@@ -11,6 +11,7 @@ namespace SHADER { class ShaderMain; }
 
 class ALSource;
 class MissileGeneratorStorage;
+class ParticleEntity;
 
 class Player : public IPlane
 {
@@ -49,9 +50,8 @@ protected:
 	RENDER::RText* _rText;
 	std::shared_ptr<RENDER::RText::DrawElement> _rElemInTextAim;
 
-	RENDER::RParticle* _rParticle;
-	std::shared_ptr<RENDER::RParticle::DrawElement> _rElemInParticleBack;
-	std::shared_ptr<RENDER::RParticle::DrawElement> _rElemInParticleFront;
+	ParticleEntity* _backParticle;
+	ParticleEntity* _frontParticle;
 private:
 	bool _bShotKeyDown;
 };

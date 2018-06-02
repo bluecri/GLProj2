@@ -17,7 +17,7 @@ ParticleEntity::~ParticleEntity()
 {
 }
 
-void ParticleEntity::init(glm::vec3& localPos, glm::quat& localQuat, glm::vec3 mainDir, bool bOneParticlePerMultiFrame, float& particleLife, float frameVsParticle)
+void ParticleEntity::init(glm::vec3& localPos, glm::quat& localQuat, glm::vec3 mainDir, bool bOneParticlePerMultiFrame, const float& particleLife, const float& frameVsParticle)
 {
 	_rigidbodyComponent->_transform->setModelMatrix(localPos);
 	_rigidbodyComponent->_transform->setQuaternion(localQuat);

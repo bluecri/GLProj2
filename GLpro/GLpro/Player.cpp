@@ -30,6 +30,8 @@
 #include "./src/window.h"
 #include "./src/Transform.h"
 
+#include "ParticleEntity.h"
+
 Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IPlane(ENUM_ENTITY_TYPE::ENUM_ENTITY_PLANE_PLAYER, gSession, model, texture, shadermain)
 {
@@ -38,6 +40,12 @@ Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture 
 	_rText = GRendermanager->getRRender<RENDER::RText, SHADER::ShaderText>(shaderText);
 	_rElemInTextAim = _rText->addToDrawList(new RENDER_TARGET::TEXT::TextFObj("data/Texture/Holstein.DDS", "dds", 1, 1, glm::vec2(300, 400), 30) , _rigidbodyComponent);
 
+	// particle
+	SHADER::ShaderParticle* shaderParticle = GShaderManager->m_addShader<SHADER::ShaderParticle>(ENUM_SHADER_TYPE::SHADER_TYPE_PARTICLE, "data/Shader/Particle.vertexshader", "data/Shader/Particle.fragmentshader");
+	_backParticle = new ParticleEntity(gSession, shaderParticle);
+	_backParticle->init(glm::vec3(0.0f, 0.0f, -1.0f), glm::quat(), glm::vec3(0.0f, 0.0f, -1.0f), true, 3.0f, 5);
+	//_frontParticle = new ParticleEntity(gSession, shaderParticle);
+	//_frontParticle->init(glm::vec3(0.0f, 0.0f, -1.0f), glm::quat(), glm::vec3(0.0f, 0.0f, -1.0f), true, 2.0f, 5);
 }
 
 void Player::inputProgress(long long inputKey)

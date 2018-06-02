@@ -3,7 +3,7 @@
 
 RESOURCE::ParticleBuffer::ParticleBuffer(std::vector<glm::vec3>& vertices)
 {
-	_out_vertices = vertices;
+	_vertices = vertices;
 
 	genVao();
 	bind();
@@ -16,6 +16,8 @@ RESOURCE::ParticleBuffer::ParticleBuffer(std::vector<glm::vec3>& vertices)
 RESOURCE::ParticleBuffer::~ParticleBuffer()
 {
 	glDeleteBuffers(1, &_vbo);
+	glDeleteBuffers(1, &_particles_pos_vbo);
+	glDeleteBuffers(1, &_particles_color_vbo);
 	glDeleteVertexArrays(1, &_vao);
 }
 
@@ -31,24 +33,20 @@ void RESOURCE::ParticleBuffer::unbind() const
 
 void RESOURCE::ParticleBuffer::render()
 {
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	
 	int printParticleCountOnBuffer = min(MAX_PARTICLE_INBUFFER_DEFAULT_NUM, _particlePrintCnt);
 
 	glBindBuffer(GL_ARRAY_BUFFER, _particles_pos_vbo);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLE_INBUFFER_DEFAULT_NUM * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);  // Buffer orphaning, to improve streaming
-	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLfloat) * 4, _particule_position_data);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLfloat) * 4, &_particule_position_data);
 
 	glBindBuffer(GL_ARRAY_BUFFER, _particles_color_vbo);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLE_INBUFFER_DEFAULT_NUM * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, to improve streaming
-	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLubyte) * 4, _particule_color_data);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLubyte) * 4, &_particule_color_data);
 
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, printParticleCountOnBuffer);
 
 	_particlePrintCnt = 0;	// init count
-
-	glDisable(GL_BLEND);
 }
 
 int RESOURCE::ParticleBuffer::getGLCount()
@@ -67,9 +65,6 @@ void RESOURCE::ParticleBuffer::createBuffer()
 	glGenBuffers(1, &_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(_vertices[0]), _vertices.data(), GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Struct_Vertex), (void*)(0));
 
 	// vbo with position & color
 	glGenBuffers(1, &_particles_pos_vbo);
@@ -125,6 +120,5 @@ void RESOURCE::ParticleBuffer::createBuffer()
 	glVertexAttribDivisor(1, 1); // positions : one per quad (its center)                 -> 1
 	glVertexAttribDivisor(2, 1); // color : one per quad                                  -> 1
 
-	// 다음 particle을 출력시 vertice는 buffer 이동하지 않는다.
-	glBindVertexArray(0);
+	// 다음 particle을 출력시 vertice는 buffer 이동하지 않는다. (render)
 }

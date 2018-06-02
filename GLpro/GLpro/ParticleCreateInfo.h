@@ -13,10 +13,15 @@ class Transform;
 class ParticleCreateInfo
 {
 public:
-	ParticleCreateInfo(bool _isOneParticlePerMultiFrame = true, int _frameVsParticle = 5, float life = 3.0f, float _spread = 0.5f, float _particleSizeStartRange = 0.05f, float _particleSizeEndRange = 0.1f);
-	ParticleCreateInfo(int colorStartRange[4], int colorEndRange[4], glm::vec3 _mainDir, bool _isOneParticlePerMultiFrame, int _frameVsParticle, float life, float _spread, float _particleSizeStartRange, float _particleSizeEndRange);
+	//ParticleCreateInfo(bool _isOneParticlePerMultiFrame = true, int _frameVsParticle = 5, float life = 3.0f, float _spread = 0.5f, float _particleSizeStartRange = 0.05f, float _particleSizeEndRange = 0.1f);
+	ParticleCreateInfo(bool _isOneParticlePerMultiFrame, int _frameVsParticle = 5, float life = 3.0f, float _spread = 0.5f, float _particleSizeStartRange = 0.05f, float _particleSizeEndRange = 0.1f);
+	ParticleCreateInfo(int colorStartRange[4], int colorEndRange[4], glm::vec3 _mainDir, bool _isOneParticlePerMultiFrame, int _frameVsParticle, float life, float _spread, float _particleSizeStartRange = 0.05f, float _particleSizeEndRange = 0.1f);
 	void init(Transform* bindedTransform);
 	void genNewParticles(RENDER_TARGET::PARTICLE::ParticleFObj *particleFObj);	// Generate multiple particles to FObj
+
+private:
+	ParticleCreateInfo() = delete;
+	void crateNewParticleStructWithInfo(ParticleStruct& refP);	// Create particleStruct with *this info.
 
 public:
 
@@ -33,6 +38,4 @@ private:
 	Transform* _bindedTransform;		// for create Particleinfo
 	int _countFrame;		//frame count
 
-private:
-	void crateNewParticleStructWithInfo(ParticleStruct& refP);	// Create particleStruct with *this info.
 };
