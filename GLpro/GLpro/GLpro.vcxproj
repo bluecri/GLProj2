@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -149,15 +149,19 @@
     <ClCompile Include="EmptyMissileGenerator.cpp" />
     <ClInclude Include="AABBCollisionComp.h" />
     <ClInclude Include="AimTextUIObj.h" />
+    <ClInclude Include="ItemAmmoRegen.h" />
+    <ClInclude Include="ItemSelfArmorRegen.h" />
     <ClInclude Include="BelowMissileStorageUIObj.h" />
     <ClInclude Include="EmptyMissileGenerator.h" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Fobj.cpp" />
     <ClCompile Include="GameSession.cpp" />
+    <ClCompile Include="IFieldItem.cpp" />
     <ClCompile Include="ImageBox.cpp" />
     <ClCompile Include="IMissile.cpp" />
     <ClCompile Include="IMissileGenerator.cpp" />
     <ClCompile Include="IPlane.cpp" />
+    <ClCompile Include="ItemSpeedBuff.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="MissileGeneratorStorage.cpp" />
     <ClCompile Include="NormalMissile.cpp" />
@@ -230,6 +234,7 @@
     <ClCompile Include="TextBuffer.cpp" />
     <ClCompile Include="TextFObj.cpp" />
     <ClCompile Include="UIEntity.cpp" />
+    <ClInclude Include="FieldItemGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.h" />
@@ -239,6 +244,8 @@
     <ClInclude Include="CollisionInfo.h" />
     <ClInclude Include="EnumMissileType.h" />
     <ClInclude Include="FpsUIObj.h" />
+    <ClInclude Include="ItemSelfDmgBuff.h" />
+    <ClInclude Include="ItemSelfHPRegen.h" />
     <ClInclude Include="ICommonMissileInfo.h" />
     <ClInclude Include="CommonMissileState.h" />
     <ClInclude Include="CommonNormalMissileInfo.h" />
@@ -247,6 +254,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fobj.h" />
     <ClInclude Include="GameSession.h" />
+    <ClInclude Include="IFieldItem.h" />
     <ClInclude Include="ImageBox.h" />
     <ClInclude Include="IMissile.h" />
     <ClInclude Include="IMissileGenerator.h" />
@@ -254,6 +262,14 @@
     <ClInclude Include="IPlane.h" />
     <ClInclude Include="ISpecifiedMissileInfo.h" />
     <ClInclude Include="ISpecifiedMissileState.h" />
+    <ClInclude Include="ItemOtherDisableShot.h" />
+    <ClInclude Include="ItemOtherRandomizeDirection.h" />
+    <ClInclude Include="ItemOtherSpeedSlow.h" />
+    <ClInclude Include="ItemSelfInvisible.h" />
+    <ClInclude Include="ItemSelfOverwhelimg.h" />
+    <ClInclude Include="ItemSelfShotDelayBuff.h" />
+    <ClInclude Include="ItemSelfShotSpeedBuff.h" />
+    <ClInclude Include="ItemTeamDmgBuff.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="MissileGeneratorStorage.h" />
@@ -264,6 +280,7 @@
     <ClInclude Include="playerPlaneBackup.h" />
     <ClInclude Include="PlayerStateUIObj.h" />
     <ClInclude Include="quatExtension.h" />
+    <ClInclude Include="ItemSelfRandomTeleport.h" />
     <ClInclude Include="SpecifiedNormalMissileInfo.h" />
     <ClInclude Include="SpecifiedNormalMissileState.h" />
     <ClInclude Include="OBBCollisionComp.h" />
@@ -294,6 +311,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShadowBufferTextureShader.h" />
     <ClInclude Include="SkyboxGObject.h" />
+    <ClInclude Include="ItemSpeedBuff.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\objectLoader.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\vboindexer.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\Vertex.h" />

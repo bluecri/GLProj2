@@ -139,6 +139,18 @@
     <Filter Include="소스 파일\GameScene\UIObjects">
       <UniqueIdentifier>{5a2bf96a-8b2d-4462-9c94-32a852d2d8d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem">
+      <UniqueIdentifier>{9897ef2b-a057-4421-a059-ec5a19ef46c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\otherTarget">
+      <UniqueIdentifier>{21b3b279-3460-4371-b172-079671e83a14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\selfTarget">
+      <UniqueIdentifier>{8349d3c3-8827-4985-bfbd-bd3c0fb1afe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\teamTarget">
+      <UniqueIdentifier>{82267b82-78d6-45ce-98fb-51c642f69352}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -400,6 +412,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Fobj.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IFieldItem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemSpeedBuff.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -730,6 +748,54 @@
     </ClInclude>
     <ClInclude Include="FpsUIObj.h">
       <Filter>소스 파일\GameScene\UIObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="IFieldItem.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemOtherSpeedSlow.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\otherTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemOtherRandomizeDirection.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\otherTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemOtherDisableShot.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\otherTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfInvisible.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfOverwhelimg.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfRandomTeleport.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemAmmoRegen.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfArmorRegen.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfHPRegen.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemTeamDmgBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\teamTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfDmgBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfShotDelayBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfShotSpeedBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSpeedBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldItemGenerator.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

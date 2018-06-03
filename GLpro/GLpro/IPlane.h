@@ -44,7 +44,7 @@ protected:
 	virtual void collisionFunc(CollisionComponent* collisionComp) = 0;		// collisionLogicUpdate에서 사용하는 collision 처리 함수
 
 	MissileGeneratorStorage* _missileGeneratorStorage;
-	float _maxAngle;		// plane angle (quat rotation speed)
+	float _maxAngle;		// plane angle (quat rotation speed) = 0.01
 	float _angleSpeed;		// plane angle speed (quat rotation speed)
 private:
 	std::shared_ptr<RENDER::RNormal::DrawElement> registeredElemInRenderer;
