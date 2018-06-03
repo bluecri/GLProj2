@@ -3,20 +3,13 @@
 class FObj
 {
 public:
-	FObj(bool bRender = true) : _bRender(bRender)
-	{
-	}
+	FObj(bool bRender = true);
+	void setBRender(bool bRender);
+	bool isRender();
 
-	void setBRender(bool bRender)
-	{
-		_bRender = bRender;
-	}
-
-	bool isRender()
-	{
-		return _bRender;
-	}
-
+	void setBDeleted();
+	bool isBDeleted();
 private:
 	bool _bRender;
+	bool _bDeleted;
 };

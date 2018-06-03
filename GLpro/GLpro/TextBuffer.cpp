@@ -6,6 +6,7 @@ RESOURCE::TextBuffer::TextBuffer(int lineN, int lengthN, int fontSize)
 	_prevVBOSize(0), _prevUVBOSize(0)
 {
 	_bBox = false;
+	
 	genVao();
 	bind();
 	createBuffer();
@@ -15,6 +16,7 @@ RESOURCE::TextBuffer::TextBuffer(int lineN, int lengthN, int fontSize)
 RESOURCE::TextBuffer::TextBuffer(int width, int height)
 {
 	_bBox = true;
+
 	genVao();
 	bind();
 	createBuffer();
@@ -96,7 +98,7 @@ void RESOURCE::TextBuffer::updateBoxVBO(int width, int height)
 		printf_s("[LOG] : :TextBuffer::updateBoxVBO is called in not bBox\n");
 		return;
 	}
-	privateSetBoxPosBuffer(width, height);
+	privateSetBoxSizeBuffer(width, height);
 	_bUpdateVBO = true;
 }
 
@@ -131,15 +133,15 @@ void RESOURCE::TextBuffer::createBuffer()
 		glm::vec2 uv_down_right = glm::vec2(1, 1);
 		glm::vec2 uv_down_left = glm::vec2(0, 1);
 
-		_preMadeUVs.push_back(uv_up_left);
-		_preMadeUVs.push_back(uv_down_left);
-		_preMadeUVs.push_back(uv_up_right);
+		_printUVs.push_back(uv_up_left);
+		_printUVs.push_back(uv_down_left);
+		_printUVs.push_back(uv_up_right);
 
-		_preMadeUVs.push_back(uv_down_right);
-		_preMadeUVs.push_back(uv_up_right);
-		_preMadeUVs.push_back(uv_down_left);
+		_printUVs.push_back(uv_down_right);
+		_printUVs.push_back(uv_up_right);
+		_printUVs.push_back(uv_down_left);
 
-		privateSetBoxPosBuffer(_width, _height);
+		privateSetBoxSizeBuffer(_width, _height);
 	}
 	else
 	{
@@ -168,20 +170,20 @@ void RESOURCE::TextBuffer::createBuffer()
 	glGenBuffers(1, &_vbo);
 	glGenBuffers(1, &_uvbo);
 
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+
 	_prevVBOSize = _vertexes.size() * sizeof(glm::vec2);		// save prev size for glBindBuffer(NULL)
 	_prevUVBOSize = _printUVs.size() * sizeof(glm::vec2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, _prevVBOSize, &_vertexes[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, _uvbo);
-	glBufferData(GL_ARRAY_BUFFER, _prevUVBOSize, static_cast<void*>(&_printUVs), GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glBufferData(GL_ARRAY_BUFFER, _prevVBOSize, &_vertexes[0], GL_STATIC_DRAW);
 
+	glBindBuffer(GL_ARRAY_BUFFER, _uvbo);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glBufferData(GL_ARRAY_BUFFER, _prevUVBOSize, _printUVs.data(), GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, _prevUVBOSize, static_cast<void*>(&_printUVs), GL_STATIC_DRAW);
 }
 
 
@@ -189,7 +191,7 @@ void RESOURCE::TextBuffer::updateVBO()
 {
 	// should be called when glBindVertexArray(_vao) is already called
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, _prevVBOSize, NULL, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, _prevVBOSize, NULL, GL_STATIC_DRAW);
 	_prevVBOSize = _vertexes.size() * sizeof(glm::vec2);
 	glBufferData(GL_ARRAY_BUFFER, _prevVBOSize, &_vertexes[0], GL_STATIC_DRAW);
 }
@@ -198,8 +200,8 @@ void RESOURCE::TextBuffer::updateUVVBO()
 {
 	// should be called when glBindVertexArray(_vao) is already called
 	glBindBuffer(GL_ARRAY_BUFFER, _uvbo);
-	glBufferData(GL_ARRAY_BUFFER, _prevUVBOSize, NULL, GL_STATIC_DRAW);
-	_prevUVBOSize = _vertexes.size() * sizeof(glm::vec2);
+	//glBufferData(GL_ARRAY_BUFFER, _prevUVBOSize, NULL, GL_STATIC_DRAW);
+	_prevUVBOSize = _printUVs.size() * sizeof(glm::vec2);
 	glBufferData(GL_ARRAY_BUFFER, _prevUVBOSize, &_printUVs[0], GL_STATIC_DRAW);
 }
 
@@ -226,7 +228,7 @@ void RESOURCE::TextBuffer::privateSetPosBuffer(int lineN, int lengthN, int fontS
 }
 
 // 1 box vertex create function with width and height
-void RESOURCE::TextBuffer::privateSetBoxPosBuffer(int width, int height)
+void RESOURCE::TextBuffer::privateSetBoxSizeBuffer(int width, int height)
 {
 	glm::vec2 vertex_up_left = glm::vec2(0, 0);
 	glm::vec2 vertex_up_right = glm::vec2(width, 0);

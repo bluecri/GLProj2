@@ -126,7 +126,7 @@ UIEntity * UIEntity::detachChildUIEntityWithName(const std::string & name)
 
 void UIEntity::attachParentUIEntity(UIEntity * parentUIEntity)
 {
-	_parentUIEntity->attachChildUIEntity(this);
+	parentUIEntity->attachChildUIEntity(this);
 }
 
 void UIEntity::attachChildUIEntity(UIEntity * childUIEntity)

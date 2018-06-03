@@ -14,7 +14,11 @@ RENDER::RText::RText(SHADER::ShaderText * shaderObj)
 // weak_ptr로 변환하여 사용.
 std::shared_ptr<RENDER::RText::DrawElement> RENDER::RText::addToDrawList(RENDER_TARGET::TEXT::TextFObj * _textFObj, RigidbodyComponent * rigidbodyComponent)
 {
-	auto elem = std::make_shared<DrawElement>(_textFObj, rigidbodyComponent);
+	auto elem = std::shared_ptr<DrawElement>(new DrawElement(_textFObj, rigidbodyComponent), [](auto ptr)
+	{
+		delete ptr->first;
+		delete ptr;
+	});
 	_textDrawElemContainer.push_back(elem);
 	return elem;
 }
@@ -36,14 +40,25 @@ void RENDER::RText::draw(float deltaTime)
 		RENDER_TARGET::TEXT::TextFObj* _textFObj = (*it)->first;
 		RigidbodyComponent* rigitComponent = (*it)->second;
 
-		if (!_textFObj->isRender()) continue;
+		// delete check
+		if (_textFObj->isBDeleted())
+		{
+			it = _textDrawElemContainer.erase(it);
+			continue;
+		}
+
+		if (!_textFObj->isRender())
+		{
+			++it;
+			continue;
+		}
 
 		// check text lifetime
 		if (_textFObj->_bTemporary)
 		{
 			if (_textFObj->_lifeTime < 0.0f)
 			{
-				// todo : remove this
+				_textFObj->setBDeleted();
 				it = _textDrawElemContainer.erase(it);
 				continue;
 			}
@@ -95,18 +110,4 @@ void RENDER::RText::chageShader(SHADER::ShaderText * other)
 SHADER::ShaderText * RENDER::RText::getShader() const
 {
 	return _shaderObj;
-}
-
-void RENDER::RText::destructor(std::shared_ptr<DrawElement> shared)
-{
-	DrawElement* ptr = shared.get();
-	for (auto it = _textDrawElemContainer.begin(); it != _textDrawElemContainer.end();)
-	{
-		if ((*it).get() == ptr)
-		{
-			_textDrawElemContainer.erase(it);
-			return;
-		}
-		++it;
-	}
 }

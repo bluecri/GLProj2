@@ -6,6 +6,8 @@
 #include "src/Shader/ShaderMain.h"
 #include "CollisionComponent.h"
 #include "MissileGeneratorStorage.h"
+#include "RigidbodyComponent.h"
+#include "src/Transform.h"
 
 IPlane::IPlane(int type, GameSession* gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: Entity(gSession, type)
@@ -13,21 +15,18 @@ IPlane::IPlane(int type, GameSession* gSession, RESOURCE::Model * model, RESOURC
 	_rNormal = GRendermanager->getRRender<RENDER::RNormal, SHADER::ShaderMain>(shadermain);
 	registeredElemInRenderer = _rNormal->addDrawElem(new RENDER_TARGET::NORMAL::NormalFObj(model, texture), _rigidbodyComponent);
 
-	_maxAngle = 0.08f;
-	_angleSpeed = 0.1f;
+	_maxAngle = 0.01f;
+	_angleSpeed = 0.8f;
 }
 
 IPlane::~IPlane()
 {
-	_rNormal->removeDrawElem(registeredElemInRenderer);
-	//delete _normalFObj;
 	_collisionComp->setDeleted(true);
 }
 
 void IPlane::setBRender(bool bRender)
 {
 	registeredElemInRenderer->first->setBRender(bRender);
-	//_normalFObj->setBRender(bRender);
 }
 
 void IPlane::setCollisionTest(bool bCollision)
@@ -56,6 +55,31 @@ float IPlane::getAngleSpeed() {
 MissileGeneratorStorage * IPlane::getMissileGeneratorStorage()
 {
 	return _missileGeneratorStorage;
+}
+
+void IPlane::setSpeed(float speed)
+{
+	_rigidbodyComponent->_transform->speedSet(speed);
+}
+
+void IPlane::setMaxSpeed(float speed)
+{
+	_rigidbodyComponent->_transform->setMaxSpeed(speed);
+}
+
+float IPlane::getMaxSpeed()
+{
+	return _rigidbodyComponent->_transform->getMaxSpeed();
+}
+
+float IPlane::getSpeed()
+{
+	return _rigidbodyComponent->_transform->getSpeed();
+}
+
+float IPlane::getSpeedPerMaxSpeedRatio()
+{
+	return getSpeed() / getMaxSpeed();
 }
 
 void IPlane::collisionLogicUpdate() {

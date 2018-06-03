@@ -54,7 +54,11 @@ namespace RENDER
 			// ParticleCreateInfo* particleCreateInfo = (*it)->second;
 			// RParticle에서는 particle 생성시에만 bind된 rigidbody position을 사용한다.
 
-			if (!particleFObj->isRender()) continue;
+			if (!particleFObj->isRender())
+			{
+				++it;
+				continue;
+			}
 
 			particleFObj->_particleBuffer->bind();
 
@@ -92,7 +96,6 @@ namespace RENDER
 		return _shaderObj;
 	}
 
-
 	/*
 	*	particle Fobj에서 빈 particle을 particle info를 통해 particle generate.
 	*
@@ -106,7 +109,7 @@ namespace RENDER
 			ParticleCreateInfo* particleCreateInfo = (*it)->second;
 
 			// check delete & remain time
-			if (particleFObj->bDeleted())
+			if (particleFObj->isBDeleted())
 			{
 				float& remainDelTime = particleFObj->getDeleteRemainTimeRef();
 				if (remainDelTime < 0.0f)
@@ -116,6 +119,11 @@ namespace RENDER
 					continue;
 				}
 				remainDelTime -= deltaTime;
+			}
+			else if (!particleFObj->isRender())
+			{
+				++it;
+				continue;
 			}
 			else
 			{

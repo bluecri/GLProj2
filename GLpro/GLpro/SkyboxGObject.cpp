@@ -11,20 +11,17 @@ std::vector<SkyboxGObject*> SkyboxGObject::_preMadeSpaceSkybox;
 SkyboxGObject::SkyboxGObject(GameSession* gameSession, SHADER::ShaderSkybox * shader, RENDER_TARGET::SKYBOX::SkyboxFObj * skyboxFObj)
 	:Entity(gameSession)
 {
-	_skyboxFObj = skyboxFObj;
 	rSkybox = GRendermanager->getRRender<RENDER::RSkybox, SHADER::ShaderSkybox>(shader);
 	registeredElemInRenderer = rSkybox->addToDrawList(skyboxFObj, _rigidbodyComponent);
 }
 
 SkyboxGObject::~SkyboxGObject()
 {
-	rSkybox->destructor(registeredElemInRenderer);
-	delete _skyboxFObj;
 }
 
 void SkyboxGObject::setBRender(bool bRender)
 {
-	_skyboxFObj->setBRender(bRender);
+	registeredElemInRenderer->first->setBRender(bRender);
 }
 
 void SkyboxGObject::preMade()

@@ -36,7 +36,7 @@ namespace RESOURCE
 		void updateUVVBO();
 		void privateSetPosBuffer(int lineN, int lengthN, int fontSize);
 
-		void privateSetBoxPosBuffer(int width, int height);	//box
+		void privateSetBoxSizeBuffer(int width, int height);	//box
 
 	private:
 		GLuint	_vao;		//vertex array

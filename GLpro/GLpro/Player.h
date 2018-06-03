@@ -6,12 +6,15 @@
 #include "./RParticle.h"
 
 #define PLAYER_DEFAULT_WEAPON_MAX_NUM 6
+#define PLAYER_MAX_FRAME_PER_PARTICLE 20
+#define PLAYER_MIN_FRAME_PER_PARTICLE 1
 
 namespace SHADER { class ShaderMain; }
 
 class ALSource;
 class MissileGeneratorStorage;
 class ParticleEntity;
+class AimTextUIObj;
 
 class Player : public IPlane
 {
@@ -52,6 +55,8 @@ protected:
 
 	ParticleEntity* _backParticle;
 	ParticleEntity* _frontParticle;
+
+	AimTextUIObj* _aimTextUIObj;
 private:
 	bool _bShotKeyDown;
 };

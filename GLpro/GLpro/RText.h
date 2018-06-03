@@ -39,8 +39,6 @@ namespace RENDER
 
 		SHADER::ShaderText* getShader() const;
 
-		void destructor(std::shared_ptr<DrawElement> shared);
-
 	private:
 		SHADER::ShaderText* _shaderObj;
 

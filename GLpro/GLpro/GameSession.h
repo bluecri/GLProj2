@@ -39,7 +39,9 @@ public:
 
 public:
 	static std::vector<GameSession*> preMadeGameSession;
+	// draw game->gameUI->menu
 	Canvas* _menuCanvas;
+	Canvas* _gameUICanvas;
 	Player* _player;
 
 	std::map<int, Entity*> _allEntityMap;

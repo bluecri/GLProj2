@@ -13,8 +13,8 @@ ImageBox::ImageBox(int width, int height, int widthLT, int heightLT, const std::
 {
 	_rBox = GRendermanager->getRRender<RENDER::RBox, SHADER::ShaderText>(shaderText);
 
-	_textFObj = new RENDER_TARGET::TEXT::TextFObj(textureFileName.c_str(), type.c_str(), width, height, widthLT, heightLT);
-	_rBox->addToDrawList(_textFObj);
+	RENDER_TARGET::TEXT::TextFObj* tempTextFObj = new RENDER_TARGET::TEXT::TextFObj(textureFileName.c_str(), type.c_str(), width, height, widthLT, heightLT);
+	drawElem = _rBox->addToDrawList(tempTextFObj);
 }
 
 ImageBox::ImageBox(int width, int height, int widthLT, int heightLT, RESOURCE::Texture * texture, SHADER::ShaderText * shaderText)
@@ -22,8 +22,8 @@ ImageBox::ImageBox(int width, int height, int widthLT, int heightLT, RESOURCE::T
 {
 	_rBox = GRendermanager->getRRender<RENDER::RBox, SHADER::ShaderText>(shaderText);
 
-	_textFObj = new RENDER_TARGET::TEXT::TextFObj(texture, width, height, widthLT, heightLT);
-	_rBox->addToDrawList(_textFObj);
+	RENDER_TARGET::TEXT::TextFObj* tempTextFObj = new RENDER_TARGET::TEXT::TextFObj(texture, width, height, widthLT, heightLT);
+	drawElem = _rBox->addToDrawList(tempTextFObj);
 }
 
 // UIEntity 부모자식관계 및 event 함수 바인딩 제외 Copy
@@ -31,19 +31,18 @@ ImageBox::ImageBox(int width, int height, int widthLT, int heightLT, RESOURCE::T
 ImageBox::ImageBox(const ImageBox & copy) : Box(copy._width, copy._height, copy._widthLT, copy._heightLT)
 {
 	_rBox = copy._rBox;
-	_textFObj = new RENDER_TARGET::TEXT::TextFObj(copy._textFObj->_texture, copy._width, copy._height, copy._widthLT, copy._heightLT);
-	_rBox->addToDrawList(_textFObj);
+	RENDER_TARGET::TEXT::TextFObj* tempTextFObj = new RENDER_TARGET::TEXT::TextFObj(copy.drawElem->_texture, copy._width, copy._height, copy._widthLT, copy._heightLT);
+	drawElem = _rBox->addToDrawList(tempTextFObj);
 }
 
 ImageBox::~ImageBox()
 {
-	_rBox->destructor(_textFObj);		//destroy render Target in Renderer's container
-	delete _textFObj;
+
 }
 
 void ImageBox::setBRender(bool bRender)
 {
-	_textFObj->setBRender(bRender);		// render flag(bool) modify
+	drawElem->setBRender(bRender);		// render flag(bool) modify
 }
 
 void ImageBox::modifyEmptySize(int width, int height)
@@ -53,12 +52,12 @@ void ImageBox::modifyEmptySize(int width, int height)
 
 void ImageBox::modifyImageBoxSize(int width, int height)
 {
-	_textFObj->changeBoxSize(height, width);
+	drawElem->changeBoxSize(height, width);
 }
 
 void ImageBox::moveLTPosition(int widthLT, int heightLT)
 {
-	_textFObj->setPos(glm::vec2(_widthLT, _heightLT));
+	drawElem->setPos(glm::vec2(_widthLT, _heightLT));
 }
 
 void ImageBox::initPreMade()
@@ -70,10 +69,24 @@ void ImageBox::initPreMade()
 	RESOURCE::Texture* paperTexture = GTextureManager->getTextureWithFileName("data/Texture/block.dds", "dds");
 	RESOURCE::Texture* waterTexture = GTextureManager->getTextureWithFileName("data/Texture/block.dds", "dds");
 
-	preMadeImageBoxesVec.push_back(new ImageBox(100, 40, 40, 40, blockTexture, shaderText));
-	preMadeImageBoxesVec.push_back(new ImageBox(100, 40, 40, 40, bluegreyTexture, shaderText));
-	preMadeImageBoxesVec.push_back(new ImageBox(100, 40, 40, 40, ironTexture, shaderText));
-	preMadeImageBoxesVec.push_back(new ImageBox(100, 40, 40, 40, paperTexture, shaderText));
-	preMadeImageBoxesVec.push_back(new ImageBox(100, 40, 40, 40, waterTexture, shaderText));
+	ImageBox* tempImageBox = new ImageBox(100, 40, 40, 40, blockTexture, shaderText);
+	tempImageBox->setBRender(false);
+	preMadeImageBoxesVec.push_back(tempImageBox);
+
+	tempImageBox = new ImageBox(100, 40, 40, 40, bluegreyTexture, shaderText);
+	tempImageBox->setBRender(false);
+	preMadeImageBoxesVec.push_back(tempImageBox);
+
+	tempImageBox = new ImageBox(100, 40, 40, 40, ironTexture, shaderText);
+	tempImageBox->setBRender(false);
+	preMadeImageBoxesVec.push_back(tempImageBox);
+
+	tempImageBox = new ImageBox(100, 40, 40, 40, paperTexture, shaderText);
+	tempImageBox->setBRender(false);
+	preMadeImageBoxesVec.push_back(tempImageBox);
+
+	tempImageBox = new ImageBox(100, 40, 40, 40, waterTexture, shaderText);
+	tempImageBox->setBRender(false);
+	preMadeImageBoxesVec.push_back(tempImageBox);
 }
 

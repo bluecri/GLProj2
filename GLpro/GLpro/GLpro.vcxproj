@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AABBCollisionComp.cpp" />
+    <ClCompile Include="AimTextUIObj.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
@@ -147,8 +148,11 @@
     <ClCompile Include="CommonNormalMissileInfo.cpp" />
     <ClCompile Include="EmptyMissileGenerator.cpp" />
     <ClInclude Include="AABBCollisionComp.h" />
+    <ClInclude Include="AimTextUIObj.h" />
+    <ClInclude Include="BelowMissileStorageUIObj.h" />
     <ClInclude Include="EmptyMissileGenerator.h" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Fobj.cpp" />
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="ImageBox.cpp" />
     <ClCompile Include="IMissile.cpp" />
@@ -234,6 +238,7 @@
     <ClInclude Include="CollisionComponentManager.h" />
     <ClInclude Include="CollisionInfo.h" />
     <ClInclude Include="EnumMissileType.h" />
+    <ClInclude Include="FpsUIObj.h" />
     <ClInclude Include="ICommonMissileInfo.h" />
     <ClInclude Include="CommonMissileState.h" />
     <ClInclude Include="CommonNormalMissileInfo.h" />
@@ -257,6 +262,7 @@
     <ClInclude Include="NormalMissileGenInfo.h" />
     <ClInclude Include="ParticleEntity.h" />
     <ClInclude Include="playerPlaneBackup.h" />
+    <ClInclude Include="PlayerStateUIObj.h" />
     <ClInclude Include="quatExtension.h" />
     <ClInclude Include="SpecifiedNormalMissileInfo.h" />
     <ClInclude Include="SpecifiedNormalMissileState.h" />

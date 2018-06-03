@@ -41,7 +41,6 @@ namespace RENDER
 
 		SHADER::ShaderObj* getShader() const;
 
-		void destructor(std::shared_ptr<DrawElement> shared);
 	private:
 		SHADER::ShaderSkybox* _shaderObj;
 		CAMERA::Camera **_targetCamera;

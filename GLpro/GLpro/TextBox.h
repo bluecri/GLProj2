@@ -45,7 +45,6 @@ public:
 public:
 	static std::vector<TextBox*> preMadeTextBoxesVec;
 
-	std::weak_ptr<RENDER::RText::DrawElement> drawElement;		// draw elem from renderer ( send to renderer for remove )
-	RENDER_TARGET::TEXT::TextFObj * _textFObj;						// fobj
+	std::shared_ptr<RENDER::RText::DrawElement> _drawElement;		// draw elem from renderer
 	RENDER::RText* _rText;									// which renderer is used
 };

@@ -6,6 +6,10 @@
 
 namespace CAMERA 
 {
+	/*
+	*	camera class
+	*	기본 quaternion을 사용하며, view matrix는 draw 전에 worldMat->lookat으로 변환생성하여 사용
+	*/
 	class Camera : public Entity
 	{
 	public:

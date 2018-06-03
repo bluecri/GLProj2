@@ -136,6 +136,9 @@
     <Filter Include="소스 파일\GameScene\GameObjects\particle">
       <UniqueIdentifier>{0d2fabd0-f9d9-46d3-8fbc-f97aa0e54875}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GameScene\UIObjects">
+      <UniqueIdentifier>{5a2bf96a-8b2d-4462-9c94-32a852d2d8d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -392,6 +395,12 @@
     </ClCompile>
     <ClCompile Include="ParticleEntity.cpp">
       <Filter>소스 파일\GameScene\GameObjects\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="AimTextUIObj.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Fobj.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -709,6 +718,18 @@
     </ClInclude>
     <ClInclude Include="ParticleEntity.h">
       <Filter>소스 파일\GameScene\GameObjects\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerStateUIObj.h">
+      <Filter>소스 파일\GameScene\UIObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="AimTextUIObj.h">
+      <Filter>소스 파일\GameScene\UIObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="BelowMissileStorageUIObj.h">
+      <Filter>소스 파일\GameScene\UIObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="FpsUIObj.h">
+      <Filter>소스 파일\GameScene\UIObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

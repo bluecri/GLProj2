@@ -36,7 +36,6 @@ namespace RENDER
 		RParticle(TYPE_SHADER* shaderObj);
 		virtual ~RParticle() {};
 
-		// use this with weak_ptr
 		std::shared_ptr<DrawElement> addToDrawList(FObjElem* particleFObj, RigidbodyComponent* rigidbodyComponent);
 
 		virtual void update(CAMERA::Camera** cam);	//shader target camera update

@@ -173,13 +173,16 @@ Entity * Entity::detachChildEntityWithName(const std::string & name)
 
 void Entity::attachParentEntity(Entity * parentEntity)
 {
-	_parentEntity->attachChildEntity(this);
+	parentEntity->attachChildEntity(this);
 }
 
 void Entity::attachChildEntity(Entity * childEntity)
 {
+	//  check attaching child that has already parent
+	if (childEntity->_parentEntity != nullptr)
+		childEntity->detachParentEntity();
+
 	_rigidbodyComponent->_transform->attachChildTransform(childEntity->_rigidbodyComponent->_transform);
-	//childEntity->_rigidbodyComponent->_transform->attachParentTransform(_rigidbodyComponent->_transform);
 	
 	_childEntityList.push_back(childEntity);
 	childEntity->_parentEntity = this;
@@ -212,4 +215,3 @@ void Entity::doAllJobWithBeDeleted()
 		elem->doAllJobWithBeDeleted();
 	}
 }
-

@@ -104,7 +104,9 @@ void Box::moveLTPosition(int widthLT, int heightLT)
 
 void Box::initPreMade()
 {
-	preMadeBoxesVec.push_back(new Box(10, 10, 10, 10));
+	Box* tempBox = new Box(10, 10, 10, 10);
+	tempBox->setBRender(false);
+	preMadeBoxesVec.push_back(tempBox);
 }
 
 void Box::setBRender(bool bRender)

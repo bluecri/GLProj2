@@ -33,9 +33,7 @@ namespace RENDER_TARGET
 			void orderFillParticleBuffer();	// fill live particle pos, color buffer with _particleContainer
 			ParticleStruct& GetUnusedParticle();
 
-			void setBDeleted();
 			void setDeleteRemainTime(float remainTime);
-			bool bDeleted();
 			float& getDeleteRemainTimeRef();
 			
 		private:
@@ -48,10 +46,8 @@ namespace RENDER_TARGET
 			std::vector<ParticleStruct*> _particleContainer;
 			int _lastUsedParticleIndex;
 			int _particleContainerSize;		// °³º° particle container size
-
 			
 		private:
-			bool _bDeleted;
 			float _deleteRemainTime;
 		};
 		

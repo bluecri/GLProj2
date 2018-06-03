@@ -39,7 +39,7 @@ namespace CAMERA
 		_bProjection = true;
 
 		_speed = 0.1f; // 3.0f == 3 units / second
-		_mouseSpeed = 0.01f; // default 0.005f
+		_mouseSpeed = 0.02f; // default 0.005f
 		_keySpeed = 0.8f;
 
 		_fov = 45.0f;	//default 45.0f degree

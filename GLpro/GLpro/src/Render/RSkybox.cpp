@@ -20,7 +20,11 @@ namespace RENDER
 
 	std::shared_ptr<RENDER::RSkybox::DrawElement> RSkybox::addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj * skyboxFObj, RigidbodyComponent * rigidComponent)
 	{
-		auto elem = std::make_shared<DrawElement>(skyboxFObj, rigidComponent);
+		auto elem = std::shared_ptr<DrawElement>(new DrawElement(skyboxFObj, rigidComponent), [](auto ptr)
+		{
+			delete ptr->first;
+			delete ptr;
+		});
 		_skyboxDrawElemContainer.push_back(elem);
 		return elem;
 	}
@@ -45,11 +49,21 @@ namespace RENDER
 
 		glDepthMask(GL_FALSE);
 
-		for (auto elem : _skyboxDrawElemContainer) {
-			RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxRenderTarget = elem->first;
-			Transform* targetTransform = elem->second->_transform;
+		for (auto it = _skyboxDrawElemContainer.begin(); it != _skyboxDrawElemContainer.end(); ) {
+			RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxRenderTarget = (*it)->first;
+			Transform* targetTransform = (*it)->second->_transform;
 
-			if (!skyboxRenderTarget->isRender()) continue;
+			if (skyboxRenderTarget->isBDeleted())
+			{
+				_skyboxDrawElemContainer.erase(it);
+				continue;
+			}
+
+			if (!skyboxRenderTarget->isRender())
+			{
+				++it;
+				continue;
+			}
 
 			glm::mat4 totalModelMat = targetTransform->getWorldMat();
 
@@ -68,6 +82,8 @@ namespace RENDER
 				skyboxRenderTarget->_skbTexture->unbind(i);
 			}
 			skyboxRenderTarget->_skbModel->unbind();
+
+			++it;
 		}
 		glDepthMask(GL_TRUE);
 		_shaderObj->unbind();
@@ -84,18 +100,4 @@ namespace RENDER
 		return _shaderObj;
 	}
 
-	void RSkybox::destructor(std::shared_ptr<DrawElement> shared)
-	{
-		DrawElement* ptr = shared.get();
-		for (auto it = _skyboxDrawElemContainer.begin(); it != _skyboxDrawElemContainer.end();)
-		{
-			if ((*it).get() == ptr)
-			{
-				_skyboxDrawElemContainer.erase(it);
-				return;
-			}
-			++it;
-		}
-	}
-	
 }

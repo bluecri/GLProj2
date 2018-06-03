@@ -41,6 +41,6 @@ public:
 public:
 	static std::vector<ImageBox*> preMadeImageBoxesVec;
 
-	RENDER_TARGET::TEXT::TextFObj * _textFObj;
+	std::shared_ptr<RENDER_TARGET::TEXT::TextFObj> drawElem;
 	RENDER::RBox* _rBox;		//which rbox get(which shader? use same rbox)
 };

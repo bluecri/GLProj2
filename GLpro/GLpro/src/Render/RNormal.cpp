@@ -37,11 +37,21 @@ namespace RENDER
 			
 			glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
 
-			for (auto elem : _normalDrawElemContainer) {
-				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = elem->first;
-				Transform* targetTransform = elem->second->_transform;
+			for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end();		) {
+				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
+				Transform* targetTransform = (*it)->second->_transform;
 
-				if (!normalRenderTarget->isRender()) continue;
+				if (normalRenderTarget->isBDeleted())
+				{
+					it = _normalDrawElemContainer.erase(it);
+					continue;
+				}
+
+				if (!normalRenderTarget->isRender())
+				{
+					++it;
+					continue;
+				}
 
 				normalRenderTarget->_model->bind();		// Model buffer bind
 
@@ -50,6 +60,8 @@ namespace RENDER
 				normalRenderTarget->_model->render();
 
 				normalRenderTarget->_model->unbind();
+
+				++it;
 			}
 
 			GShadowBufferTexture->unbindShader();
@@ -73,11 +85,21 @@ namespace RENDER
 			GShadowBufferTexture->bindTexture();
 			_shaderObj->loadInt(_shaderObj->m_shadowMapID, 1);
 
-			for (auto elem : _normalDrawElemContainer) {
-				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = elem->first;
-				Transform* targetTransform = elem->second->_transform;
+			for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end(); ) {
+				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
+				Transform* targetTransform = (*it)->second->_transform;
 
-				if (!normalRenderTarget->isRender()) continue;
+				if (normalRenderTarget->isBDeleted())
+				{
+					it = _normalDrawElemContainer.erase(it);
+					continue;
+				}
+
+				if (!normalRenderTarget->isRender())
+				{
+					++it;
+					continue;
+				}
 
 				normalRenderTarget->_model->bind();		// Model buffer bind
 
@@ -94,6 +116,8 @@ namespace RENDER
 
 				normalRenderTarget->_texture->unbind();
 				normalRenderTarget->_model->unbind();
+
+				++it;
 			}
 			
 			_shaderObj->unbind();
@@ -121,21 +145,5 @@ namespace RENDER
 	SHADER::ShaderMain * RNormal::getShader() const
 	{
 		return _shaderObj;
-	}
-
-	
-	void RNormal::removeDrawElem(std::shared_ptr<DrawElement> shared)
-	{
-		DrawElement* ptr = shared.get();
-		for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end();)
-		{
-			if ((*it).get() == ptr)
-			{
-				_normalDrawElemContainer.erase(it);
-				return;
-			}
-			++it;
-		}
-	}
-	
+	}	
 }

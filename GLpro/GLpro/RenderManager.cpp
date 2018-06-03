@@ -17,11 +17,16 @@ void RENDER::RenderManager::renderAll(float deltaTime, float acc)
 	// particle draw
 	_particleContainer.render(deltaTime);
 
+	//todo gameui box
+	// gameui text
+
 	// box(ui) draw
 	_boxContainer.render(deltaTime);
 
 	// text draw
 	_textContainer.render(deltaTime);
+
+
 }
 
 void RENDER::RenderManager::swapRenderBuffer()

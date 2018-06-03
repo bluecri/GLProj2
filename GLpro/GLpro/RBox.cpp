@@ -10,9 +10,13 @@ RENDER::RBox::RBox(SHADER::ShaderText * shaderObj)
 	_shaderObj = shaderObj;
 }
 
-RENDER::RBox::DrawElement RENDER::RBox::addToDrawList(DrawElement textFObjBOX)
+std::shared_ptr<RENDER::RBox::DrawElement> RENDER::RBox::addToDrawList(RENDER_TARGET::TEXT::TextFObj* textFObjBOX)
 {
-	auto elem = textFObjBOX;
+	auto elem = std::shared_ptr<RENDER::RBox::DrawElement>(textFObjBOX, [](auto ptr)
+	{
+		delete ptr;
+	});
+
 	_boxDrawElemContainer.push_back(elem);
 	return elem;
 }
@@ -32,10 +36,20 @@ void RENDER::RBox::draw(float deltaTime)
 	_shaderObj->bind();
 	for (auto it = _boxDrawElemContainer.begin(); it != _boxDrawElemContainer.end(); )
 	{
-		
-		DrawElement _textFObj = (*it);
+		//std::shared_ptr<RENDER::RBox::DrawElement> _textFObj = (*it);
+		RENDER::RBox::DrawElement* _textFObj = (*it).get();
 
-		if (!_textFObj->isRender())	continue;
+		if (_textFObj->isBDeleted())
+		{
+			it = _boxDrawElemContainer.erase(it);
+			continue;
+		}
+
+		if (!_textFObj->isRender())
+		{
+			++it;
+			continue;
+		}
 
 		_textFObj->_textBuffer->bind();
 		glActiveTexture(GL_TEXTURE4);
@@ -67,18 +81,4 @@ void RENDER::RBox::chageShader(SHADER::ShaderText * other)
 SHADER::ShaderText * RENDER::RBox::getShader() const
 {
 	return _shaderObj;
-}
-
-void RENDER::RBox::destructor(DrawElement delElem)
-{
-	DrawElement ptr = delElem;
-	for (auto it = _boxDrawElemContainer.begin(); it != _boxDrawElemContainer.end();)
-	{
-		if ((*it) == ptr)
-		{
-			_boxDrawElemContainer.erase(it);
-			return;
-		}
-		++it;
-	}
 }

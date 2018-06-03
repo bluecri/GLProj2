@@ -70,6 +70,8 @@ RENDER_TARGET::TEXT::TextFObj::TextFObj(RESOURCE::Texture * texture, int width, 
 	}
 }
 
+RENDER_TARGET::TEXT::TextFObj::~TextFObj() {	}
+
 void RENDER_TARGET::TEXT::TextFObj::changePrintStr(std::string & inStr)
 {
 	printStr = inStr;

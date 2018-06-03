@@ -31,21 +31,33 @@
 #include "./src/Transform.h"
 
 #include "ParticleEntity.h"
+#include "AimTextUIObj.h"
 
 Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IPlane(ENUM_ENTITY_TYPE::ENUM_ENTITY_PLANE_PLAYER, gSession, model, texture, shadermain)
 {
 	// aim text
+
+	/*
 	SHADER::ShaderText* shaderText = GShaderManager->m_addShader<SHADER::ShaderText>(ENUM_SHADER_TYPE::SHADER_TYPE_TEXT, "data/Shader/TextVertexShader.vertexshader", "data/Shader/TextVertexShader.fragmentshader");
 	_rText = GRendermanager->getRRender<RENDER::RText, SHADER::ShaderText>(shaderText);
 	_rElemInTextAim = _rText->addToDrawList(new RENDER_TARGET::TEXT::TextFObj("data/Texture/Holstein.DDS", "dds", 1, 1, glm::vec2(300, 400), 30) , _rigidbodyComponent);
+	*/
+
 
 	// particle
 	SHADER::ShaderParticle* shaderParticle = GShaderManager->m_addShader<SHADER::ShaderParticle>(ENUM_SHADER_TYPE::SHADER_TYPE_PARTICLE, "data/Shader/Particle.vertexshader", "data/Shader/Particle.fragmentshader");
 	_backParticle = new ParticleEntity(gSession, shaderParticle);
-	_backParticle->init(glm::vec3(0.0f, 0.0f, -1.0f), glm::quat(), glm::vec3(0.0f, 0.0f, -1.0f), true, 3.0f, 5);
+	_backParticle->init(glm::vec3(0.0f, 0.0f, -1.0f), glm::quat(), glm::vec3(0.0f, 0.0f, -1.0f), true, 3.0f, 60);
+	
+	_frontParticle = new ParticleEntity(gSession, shaderParticle);
+	_frontParticle->init(glm::vec3(0.0f, 0.0f, 2.0f), glm::quat(), glm::vec3(0.0f, 0.0f, 2.0f), true, 3.0f, 1000);
+
+	//	_backParticle->attachParentEntity(this);	cannot do this : before player entity is created. Do this in init().
 	//_frontParticle = new ParticleEntity(gSession, shaderParticle);
 	//_frontParticle->init(glm::vec3(0.0f, 0.0f, -1.0f), glm::quat(), glm::vec3(0.0f, 0.0f, -1.0f), true, 2.0f, 5);
+
+	_aimTextUIObj = new AimTextUIObj();
 }
 
 void Player::inputProgress(long long inputKey)
@@ -94,6 +106,8 @@ void Player::init()
 	_bNotDmged = false;
 	_curDmgedTime = 0.0f;
 
+	setMaxSpeed(10.0f);
+
 	_missileGeneratorStorage = new MissileGeneratorStorage(PLAYER_DEFAULT_WEAPON_MAX_NUM, this);
 
 	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent->_transform);
@@ -102,6 +116,10 @@ void Player::init()
 	collisionBoxMat[3][2] += 0.2f;	//collision box pos º¸Á¤
 	glm::vec3 missileCollisionBox = glm::vec3(0.02f, 0.02f, 0.2f);
 	_collisionComp = GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, collisionBoxMat, missileCollisionBox);
+
+	// particle entity attach parnet
+	_backParticle->attachParentEntity(this);
+	_frontParticle->attachParentEntity(this);
 }
 
 void Player::logicUpdate(float deltaTime, float acc)
@@ -112,8 +130,9 @@ void Player::logicUpdate(float deltaTime, float acc)
 	if(_curHp < 0)
 	{
 		_explosionSound->play();
-		setBRender(false);
-		setCollisionTest(false);
+		//setBRender(false);
+		//setCollisionTest(false);
+		setBeDeleted();
 	}
 
 	// shot
@@ -135,6 +154,11 @@ void Player::logicUpdate(float deltaTime, float acc)
 
 		}
 	}
+
+	// back particle logic
+	int particleNum = PLAYER_MAX_FRAME_PER_PARTICLE + fabsf(getSpeedPerMaxSpeedRatio()) *  (PLAYER_MIN_FRAME_PER_PARTICLE - PLAYER_MAX_FRAME_PER_PARTICLE);
+	_backParticle->setFrameVsParticle(particleNum);
+
 }
 
 void Player::collisionFunc(CollisionComponent * collisionComp)
@@ -215,4 +239,8 @@ void Player::playerMovementProgress(long long transferKeyInput)
 
 	// plane quaternion rotation to camera rotation
 	_rigidbodyComponent->_transform->accQuaternionMix(maincam->_rigidbodyComponent->_transform, _maxAngle, _angleSpeed);
+
+	// aim text update logic
+	_aimTextUIObj->setAimPositionWithQuat(_rigidbodyComponent->_transform->getLocalQuarternionRef(), maincam->_rigidbodyComponent->_transform->getLocalQuarternionRef());
+
 }

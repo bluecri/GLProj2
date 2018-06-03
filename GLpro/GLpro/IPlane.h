@@ -28,6 +28,12 @@ public:
 	float getAngleSpeed();
 	MissileGeneratorStorage* getMissileGeneratorStorage();
 
+	void setSpeed(float speed);
+	void setMaxSpeed(float speed);
+	float getMaxSpeed();
+	float getSpeed();
+	float getSpeedPerMaxSpeedRatio();
+
 public:
 	RENDER::RNormal* _rNormal;		//which rbox get(which shader? use same rbox)
 	//RENDER_TARGET::NORMAL::NormalFObj * _normalFObj;

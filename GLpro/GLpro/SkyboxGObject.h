@@ -19,7 +19,6 @@ public:
 
 public:
 	RENDER::RSkybox* rSkybox;
-	RENDER_TARGET::SKYBOX::SkyboxFObj* _skyboxFObj;
 	static std::vector<SkyboxGObject*> _preMadeSpaceSkybox;
 
 	virtual void setBRender(bool bRender);

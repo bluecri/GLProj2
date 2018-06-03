@@ -14,7 +14,7 @@ public:
 	ParticleEntity(GameSession* gSession, SHADER::ShaderParticle * shaderParticle);
 	virtual ~ParticleEntity();
 	void init(glm::vec3& localPos, glm::quat& localQuat, glm::vec3 mainDir, bool bOneParticlePerMultiFrame, const float& particleLife, const float&  frameVsParticle);
-	void setFrameVsParticle(float setFrameVsParticle);
+	void setFrameVsParticle(int setFrameVsParticle);
 
 protected:
 	RENDER::RParticle* _rParticle;

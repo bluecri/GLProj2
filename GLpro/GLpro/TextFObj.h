@@ -25,7 +25,7 @@ namespace RENDER_TARGET
 			// for box(RBox)
 			TextFObj(const char* textureFileName, const char* textureType, int width, int height, int widthLT, int heightLT);
 			TextFObj(RESOURCE::Texture * texture, int width, int height, int widthLT, int heightLT);
-			~TextFObj() {	};
+			~TextFObj();
 
 			void changePrintStr(std::string& inStr);
 			void changeFrame(int lineN, int lengthN, int fontSize);
@@ -51,7 +51,6 @@ namespace RENDER_TARGET
 
 			std::string printStr;
 			bool _bBox;
-			bool _bRender;
 		};
 
 	}

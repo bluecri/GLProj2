@@ -23,13 +23,13 @@ namespace RENDER
 	{
 	public:
 		using TYPE_SHADER = SHADER::ShaderText;
-		using DrawElement = RENDER_TARGET::TEXT::TextFObj*;
-		using DrawElemContainer = std::list<DrawElement>;
+		using DrawElement = RENDER_TARGET::TEXT::TextFObj;
+		using DrawElemContainer = std::list<std::shared_ptr<DrawElement>>;
 
 		RBox(SHADER::ShaderText* shaderObj);
 		virtual ~RBox() {};
 
-		DrawElement addToDrawList(DrawElement textFObjBOX);
+		std::shared_ptr<DrawElement> addToDrawList(RENDER_TARGET::TEXT::TextFObj* textFObjBOX);
 
 		virtual void update(CAMERA::Camera** cam) override;	//shader target camera update
 
@@ -38,8 +38,6 @@ namespace RENDER
 		void chageShader(SHADER::ShaderText* other);
 
 		SHADER::ShaderText* getShader() const;
-
-		void destructor(DrawElement delElem);
 
 	private:
 		SHADER::ShaderText* _shaderObj;

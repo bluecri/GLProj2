@@ -8,7 +8,6 @@
 
 RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName, const char * textureType, int particleContainerSize)
 {
-	_bDeleted = false;
 	_deleteRemainTime = -1.0f;
 
 	std::vector<glm::vec3> default_particle_buffer;
@@ -33,7 +32,6 @@ RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName
 RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName, const char * textureType, std::vector<glm::vec3>& vertices, int particleContainerSize)
 	: FObj()
 {
-	_bDeleted = false;
 	_deleteRemainTime = -1.0f;
 
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
@@ -117,17 +115,9 @@ ParticleStruct & RENDER_TARGET::PARTICLE::ParticleFObj::GetUnusedParticle()
 	return *_particleContainer[0]; // All particles are taken, override the first one
 }
 
-void RENDER_TARGET::PARTICLE::ParticleFObj::setBDeleted() {
-	_bDeleted = true;
-}
-
 void RENDER_TARGET::PARTICLE::ParticleFObj::setDeleteRemainTime(float remainTime)
 {
 	_deleteRemainTime = remainTime;
-}
-
-bool RENDER_TARGET::PARTICLE::ParticleFObj::bDeleted() {
-	return _bDeleted;
 }
 
 float & RENDER_TARGET::PARTICLE::ParticleFObj::getDeleteRemainTimeRef() {

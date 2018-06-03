@@ -4,10 +4,10 @@
 layout(location = 0) in vec2 vertexPosition_screenspace;
 layout(location = 1) in vec2 vertexUV;
 
-uniform vec2 movedPosition;
-
 // Output data ; will be interpolated for each fragment.
 out vec2 UV;
+
+uniform vec2 movedPosition;
 
 void main(){
 
@@ -16,7 +16,7 @@ void main(){
 
 	vec2 vertexPosition_homoneneousspace = vertexPosition_screenspace - vec2(400,300); // [0..800][0..600] -> [-400..400][-300..300]
 	vertexPosition_homoneneousspace += movedPosition;
-	
+
 	vertexPosition_homoneneousspace /= vec2(400,300);
 	gl_Position =  vec4(vertexPosition_homoneneousspace,0,1);
 	

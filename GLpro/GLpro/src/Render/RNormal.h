@@ -39,7 +39,6 @@ namespace RENDER
 
 			SHADER::ShaderMain* getShader() const;
 
-			void removeDrawElem(std::shared_ptr<DrawElement> shared);		
 	private:
 			SHADER::ShaderMain* _shaderObj;
 			CAMERA::Camera **_targetCamera;

@@ -27,7 +27,7 @@ void ParticleEntity::init(glm::vec3& localPos, glm::quat& localQuat, glm::vec3 m
 	_rElemInParticle->second->_particleLife = particleLife;
 	_rElemInParticle->second->_frameVsParticle = frameVsParticle;
 }
-void ParticleEntity::setFrameVsParticle(float frameVsParticle)
+void ParticleEntity::setFrameVsParticle(int frameVsParticle)
 {
 	_rElemInParticle->second->_frameVsParticle = frameVsParticle;
 }
