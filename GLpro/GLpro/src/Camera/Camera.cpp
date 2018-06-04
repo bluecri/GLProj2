@@ -13,6 +13,7 @@ namespace CAMERA {
 		_fov = fov;
 		_horizontalFovValue = horizontalFovValue;
 		_verticalFovValue = verticalFovValue;
+		_fovyRatio = _horizontalFovValue / _verticalFovValue;
 		_frontFrustrumValue = frontFrustrumValue;
 		_backFrustrumValue = backFrustrumValue;
 
@@ -21,7 +22,17 @@ namespace CAMERA {
 
 	void Camera::updateProjectionMatrix()
 	{
-		_camProjMat = glm::perspective(glm::radians(_fov), _horizontalFovValue / _verticalFovValue, _frontFrustrumValue, _backFrustrumValue);
+		_fovyRatio = _horizontalFovValue / _verticalFovValue;
+		_camProjMat = glm::perspective(glm::radians(_fov), _fovyRatio, _frontFrustrumValue, _backFrustrumValue);
+	}
+
+	float Camera::getFov() {
+		return _fov;
+	}
+
+	float Camera::getFovyRatio()
+	{
+		return _fovyRatio;
 	}
 
 	void Camera::setBRender(bool bRender)

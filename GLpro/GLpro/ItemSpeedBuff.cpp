@@ -2,14 +2,21 @@
 #include "ItemSpeedBuff.h"
 #include "CollisionComponent.h"
 #include "src/Transform.h"
+#include "src/Resource/ModelManager.h"
+#include "src/Resource/TextureManager.h"
+#include "src/Shader/ShaderManager.h"
 
 ItemSpeedBuff::ItemSpeedBuff(GameSession * gSession, glm::vec3& genPos)
-	: IFieldItem(ENUM_ENTITY_TYPE::ENUM_ENTITY_ITEM_SPEEDBUFF, ENUM_ENTITY_TYPE::ENUM_ENTITY_ITEM_SPEEDBUFF, gSession, m, t, sha)
+	: IFieldItem(ENUM_ENTITY_TYPE::ENUM_ENTITY_ITEM_SPEEDBUFF, gSession,
+		GModelManager->getModelWithFileName("data/Model/diamond.obj"),
+		GTextureManager->getTextureWithFileName("data/Texture/uvmap.DDS", "dds"),
+		GShaderManager->m_addShader<SHADER::ShaderMain>(ENUM_SHADER_TYPE::SHADER_TYPE_MAIN, "data/Shader/ShadowMapping.vertexshader", "data/Shader/ShadowMapping.fragmentshader")
+	)
 {
 	_rigidbodyComponent->_transform->setModelMatrix(genPos);
 }
 
-void ItemSpeedBuff::doJobWithBeDeleted()
+void ItemSpeedBuff::itemInit()
 {
 }
 
@@ -18,6 +25,11 @@ void ItemSpeedBuff::logicUpdate(float deltaTime, float acc)
 	collisionLogicUpdate();
 	moveLogicUpdate(deltaTime);
 
+	if (_buffCount <= 0)
+	{
+		_bDeleted = true;
+		return;
+	}
 }
 
 void ItemSpeedBuff::collisionFunc(CollisionComponent * collisionComp)
@@ -26,6 +38,7 @@ void ItemSpeedBuff::collisionFunc(CollisionComponent * collisionComp)
 	Entity* entity = collisionComp->_rigidComp->_bindedEntity;
 	int entityType = entity->getType();
 
+	_buffCount = 1;
 	// missile collision logic은 모두 missile에서.
 	switch (entityType)
 	{
@@ -37,4 +50,8 @@ void ItemSpeedBuff::collisionFunc(CollisionComponent * collisionComp)
 		// none
 		break;
 	}
+}
+
+void ItemSpeedBuff::doJobWithBeDeleted()
+{
 }

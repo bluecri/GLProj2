@@ -220,6 +220,7 @@
     <ClCompile Include="src\Resource\TextureManager.cpp" />
     <ClCompile Include="src\Shader\ShaderManager.cpp" />
     <ClCompile Include="src\Shader\ShaderObj.cpp" />
+    <ClCompile Include="src\Shader\ShaderText.cpp" />
     <ClCompile Include="src\Sound\ALListener.cpp" />
     <ClCompile Include="src\Sound\ALManager.cpp" />
     <ClCompile Include="src\Sound\ALSound.cpp" />

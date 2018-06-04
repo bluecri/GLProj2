@@ -13,7 +13,8 @@ RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char
 	_pos = pos;
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
 	_textBuffer = new RESOURCE::TextBuffer(lineN, lengthN, fontSize);
-	
+	_color = glm::vec3(1.0f, 1.0f, 1.0f);
+
 	if (_texture == nullptr || _textBuffer == nullptr)
 	{
 		_texture = nullptr;
@@ -28,6 +29,7 @@ RENDER_TARGET::TEXT::TextFObj::TextFObj(RESOURCE::Texture * texture, int lineN, 
 	_pos = pos;
 	_texture = texture;
 	_textBuffer = new RESOURCE::TextBuffer(lineN, lengthN, fontSize);
+	_color = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	if (_texture == nullptr || _textBuffer == nullptr)
 	{
@@ -41,6 +43,7 @@ RENDER_TARGET::TEXT::TextFObj::TextFObj(const char * textureFileName, const char
 	_bBox = true;		// ´ÜÀÏ box
 	_pos.x = widthLT;
 	_pos.y = heightLT;
+	_color = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
 	_textBuffer = new RESOURCE::TextBuffer(width, height);
@@ -61,6 +64,7 @@ RENDER_TARGET::TEXT::TextFObj::TextFObj(RESOURCE::Texture * texture, int width, 
 
 	_texture = texture;
 	_textBuffer = new RESOURCE::TextBuffer(width, height);
+	_color = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	if (_texture == nullptr || _textBuffer == nullptr)
 	{
@@ -109,4 +113,9 @@ void RENDER_TARGET::TEXT::TextFObj::setPos(glm::vec2 & pos)
 void RENDER_TARGET::TEXT::TextFObj::setDeltaPos(glm::vec2 & deltaPos)
 {
 	_deltaPos = deltaPos;
+}
+
+void RENDER_TARGET::TEXT::TextFObj::setColor(glm::vec3 & color)
+{
+	_color = color;
 }

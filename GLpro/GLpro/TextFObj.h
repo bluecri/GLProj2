@@ -34,6 +34,7 @@ namespace RENDER_TARGET
 			void setBindToScreen(glm::vec2& pos, glm::vec2& deltaPos);
 			void setPos(glm::vec2& pos);
 			void setDeltaPos(glm::vec2& deltaPos);
+			void setColor(glm::vec3& color);
 
 			// for box
 			void changeBoxSize(int height, int width);
@@ -45,6 +46,7 @@ namespace RENDER_TARGET
 			bool _bBindToScreen;
 			glm::vec2 _pos;			// print position
 			glm::vec2 _deltaPos;
+			glm::vec3 _color;
 
 		private:
 			TextFObj() {};

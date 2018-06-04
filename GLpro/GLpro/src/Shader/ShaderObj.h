@@ -20,6 +20,7 @@ namespace SHADER
 		void loadFloat(GLuint location, float value);
 		void loadVector2(GLuint location, const glm::vec2& vector);
 		void loadVector3(GLuint location, const glm::vec3& vector);
+		void loadVector3i(GLuint location, const glm::vec3 & vector);
 		void loadVector3(GLuint location, const float& x, const float& y, const float& z);
 		void loadMatrix4(GLuint location, const glm::mat4& matrix);
 

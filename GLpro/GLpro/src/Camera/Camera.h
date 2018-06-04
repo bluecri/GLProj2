@@ -32,6 +32,9 @@ namespace CAMERA
 		const glm::mat4& getCamProjMatRef() const;
 		void updateProjectionMatrix();
 
+		float getFov();
+		float getFovyRatio();
+
 	private:
 		// Entity을(를) 통해 상속됨
 		virtual void setBRender(bool bRender) override;
@@ -39,15 +42,16 @@ namespace CAMERA
 		virtual void doJobWithBeDeleted() override;
 		virtual void logicUpdate(float deltaTime, float acc) override;
 
-	public:
-		glm::mat4	_camProjMat;
-		bool		_bProjection = true;
-
+	private:
 		float		_speed;				// 3.0f == 3 units / second
 		float		_mouseSpeed;			// default 0.005f
 		float		_keySpeed;				// 0.5
 
+		glm::mat4	_camProjMat;
+		bool		_bProjection = true;
 		float		_fov;					//default 45.0f degree
+		float		_fovyRatio;
+
 		float		_horizontalFovValue;	//4:3 window ratio
 		float		_verticalFovValue;
 		float		_frontFrustrumValue;	//0.1f

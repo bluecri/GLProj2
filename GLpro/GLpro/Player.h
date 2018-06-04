@@ -56,6 +56,7 @@ protected:
 	ParticleEntity* _backParticle;
 	ParticleEntity* _frontParticle;
 
+	AimTextUIObj* _aimMainTextUIObj;
 	AimTextUIObj* _aimTextUIObj;
 private:
 	bool _bShotKeyDown;

@@ -35,6 +35,12 @@ void SHADER::ShaderObj::loadVector3(GLuint location, const glm::vec3 & vector)
 	glUniform3f(location, vector.x, vector.y, vector.z);
 }
 
+void SHADER::ShaderObj::loadVector3i(GLuint location, const glm::vec3 & vector)
+{
+	glUniform3i(location, vector.x, vector.y, vector.z);
+}
+
+
 void SHADER::ShaderObj::loadVector3(GLuint location, const float& x, const float& y, const float& z)
 {
 	glUniform3f(location, x, y, z);

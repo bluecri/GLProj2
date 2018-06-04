@@ -57,7 +57,8 @@ Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture 
 	//_frontParticle = new ParticleEntity(gSession, shaderParticle);
 	//_frontParticle->init(glm::vec3(0.0f, 0.0f, -1.0f), glm::quat(), glm::vec3(0.0f, 0.0f, -1.0f), true, 2.0f, 5);
 
-	_aimTextUIObj = new AimTextUIObj();
+	_aimTextUIObj = new AimTextUIObj(40);
+	_aimMainTextUIObj = new AimTextUIObj(34);
 }
 
 void Player::inputProgress(long long inputKey)
