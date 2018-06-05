@@ -4,7 +4,7 @@
 
 class RigidbodyComponent;
 class CollisionComponent;
-class Octree;
+class OctreeForCollision;
 
 enum COLLISION_COMP_TYPE
 {
@@ -34,7 +34,7 @@ private:
 private:
 	std::list<CollisionComponent*> _collisionComponentContainerOBB;
 	std::list<CollisionComponent*> _collisionComponentContainerAABB;
-	Octree* _octree;
+	OctreeForCollision* _octree;
 };
 
 extern CollisionComponentManager* GCollisionComponentManager;

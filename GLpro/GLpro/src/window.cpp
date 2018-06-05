@@ -26,6 +26,8 @@
 #include "../SkyboxGObject.h"
 #include "../GameSession.h"
 
+#include "../OctreeForFrustum.h"
+
 
 WINDOW::Window::Window(int windowWidth, int windowHeight)
 {
@@ -90,6 +92,7 @@ int WINDOW::Window::init()
 	GLightManager = new LightManager();
 	GALManager = new ALManager();
 	GALManager->init();
+	GOctreeForFrustum = new OctreeForFrustum(3, 32, glm::vec3());
 	// ttest
 	GLightManager->AddDirectinalLight(DirectionalLight(glm::vec3(1.0f, 1.0f, 1.0f)));
 
@@ -182,6 +185,7 @@ void WINDOW::Window::renderAll(float usedDeltaTime, float acc)
 {
 	// RRenrder all with acc
 	GCameraManager->updateAllRecentMatrix();			// camera matrix update
+
 	GRendermanager->renderAll(usedDeltaTime, acc);		//render
 	GRendermanager->swapRenderBuffer();					// swap render buffer
 }

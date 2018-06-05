@@ -30,9 +30,12 @@ namespace RENDER
 			virtual ~RNormal() {};	// Render 삭제시 DrawElemContainer이 shared_ptr 이므로 자동 해제.
 
 			std::shared_ptr<RNormal::DrawElement> addDrawElem(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent* rigidComponent);
+			DrawElemContainer& getDrawElemList();
 
 			void update(CAMERA::Camera** cam) override;	//shader target camera update
 
+			void shadowBufferPreDraw(float deltaTime);
+			void shadowBufferDraw(float deltaTime);
 			virtual void draw(float deltaTime);
 
 			//	virtual void chageShader(SHADER::ShaderMain* other);	-> make fixed.

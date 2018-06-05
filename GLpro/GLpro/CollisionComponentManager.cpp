@@ -9,7 +9,7 @@
 
 CollisionComponentManager::CollisionComponentManager(int height, int halfAxisSize)
 {
-	_octree = new Octree(height, halfAxisSize, glm::vec3());
+	_octree = new OctreeForCollision(height, halfAxisSize, glm::vec3());
 }
 
 CollisionComponent * CollisionComponentManager::GetNewOBBCollisionComp(RigidbodyComponent * rigidComp, glm::mat4 & localMat, glm::vec3 & axisLen)
@@ -61,9 +61,11 @@ void CollisionComponentManager::insertTestCompToOctaTreeWithContainer(std::list<
 			++it;
 			continue;
 		}
-
 		(*it)->_bAlreadyVelocityUpdated = false;	// init for velocity update
-													// 순서 주의
+
+		// 순서 주의
+		
+		(*it)->updateWithRigidComp();				// update local collision box -> world collision box
 		(*it)->updateAABBForOctree();				// update aabb for _octree
 		_octree->insert(*it);						// insert
 

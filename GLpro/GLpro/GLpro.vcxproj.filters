@@ -151,6 +151,9 @@
     <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\teamTarget">
       <UniqueIdentifier>{82267b82-78d6-45ce-98fb-51c642f69352}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\components\frustum">
+      <UniqueIdentifier>{04448d8f-3396-43f1-892b-cfc1b2a86718}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -421,6 +424,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Shader\ShaderText.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="OctreeForFrustum.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -799,6 +805,9 @@
     </ClInclude>
     <ClInclude Include="FieldItemGenerator.h">
       <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeForFrustum.h">
+      <Filter>소스 파일\components\frustum</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

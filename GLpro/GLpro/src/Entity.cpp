@@ -45,6 +45,7 @@ Entity::Entity(std::string name, GameSession * gSession, int type)
 
 Entity::~Entity() {
 	_rigidbodyComponent->_bdoDelete = true;
+	
 	detachParentEntity();
 }
 
@@ -78,7 +79,7 @@ void Entity::setBeDeleted()
 	}
 	setAllChildBRender(false);
 	setAllChildCollisionComp(false);
-	doAllJobWithBeDeleted();
+	//doAllJobWithBeDeleted();
 }
 
 void Entity::setName(std::string& name) {

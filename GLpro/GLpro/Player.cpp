@@ -92,6 +92,9 @@ void Player::inputProgress(long long inputKey)
 
 Player::~Player()
 {
+	// sound remove
+	_explosionSound->unBind();
+	_explosionSound->setDoDelete();
 }
 
 void Player::init()
@@ -115,8 +118,8 @@ void Player::init()
 	
 	glm::mat4 collisionBoxMat = glm::mat4();
 	collisionBoxMat[3][2] += 0.2f;	//collision box pos º¸Á¤
-	glm::vec3 missileCollisionBox = glm::vec3(0.02f, 0.02f, 0.2f);
-	_collisionComp = GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, collisionBoxMat, missileCollisionBox);
+	glm::vec3 planeCollisionBox = glm::vec3(0.2f, 0.2f, 0.2f);
+	_collisionComp = GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, collisionBoxMat, planeCollisionBox);
 
 	// particle entity attach parnet
 	_backParticle->attachParentEntity(this);
@@ -187,9 +190,7 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 
 void Player::doJobWithBeDeleted()
 {
-	// sound remove
-	_explosionSound->unBind();
-	_explosionSound->setDoDelete();
+	
 }
 
 bool Player::isCanGetDmg()

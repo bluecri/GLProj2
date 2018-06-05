@@ -28,6 +28,8 @@ namespace CAMERA
 		glm::mat4& getRecentViewMat();
 		void updateRecentVPAndViewMat();
 
+		int sphereInFrustum(glm::vec3 & center, float & radius);
+
 		glm::mat4 getCamProjMat() const;
 		const glm::mat4& getCamProjMatRef() const;
 		void updateProjectionMatrix();
@@ -59,6 +61,8 @@ namespace CAMERA
 
 		glm::mat4	_vpMatRecentUsed;
 		glm::mat4	_viewMatRecentUsed;
+		glm::vec4	_frustum[6];
+		glm::mat4	_tempClip;
 	};
 }
 

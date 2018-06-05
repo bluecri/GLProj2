@@ -20,7 +20,14 @@ NormalMissile::NormalMissile(Entity* fromEntity, GameSession* gSession, CommonMi
 	_collisionComp->setCollisionVelocityUpdate(false);
 }
 
-NormalMissile::~NormalMissile() {}
+NormalMissile::~NormalMissile()
+{
+	// sound remove
+	_startSound->unBind();
+	_startSound->setDoDelete();
+	_hitSound->unBind();
+	_hitSound->setDoDelete();
+}
 
 void NormalMissile::init(const glm::mat4 & localMissileMat)
 {
@@ -137,11 +144,7 @@ void NormalMissile::collisionFunc(CollisionComponent * collisionComp)
 
 void NormalMissile::doJobWithBeDeleted()
 {
-	// sound remove
-	_startSound->unBind();
-	_startSound->setDoDelete();
-	_hitSound->unBind();
-	_hitSound->setDoDelete();
+	
 }
 
 

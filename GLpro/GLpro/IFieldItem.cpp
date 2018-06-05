@@ -1,9 +1,7 @@
-#include "stdafx.h"
 #include "IFieldItem.h"
 
-#include "src/RenderTarget/Normal/NormalFObj.h"
 #include "RenderManager.h"
-#include "src/Render/RNormal.h"
+#include "src/RenderTarget/Normal/NormalFObj.h"
 #include "src/Shader/ShaderMain.h"
 #include "CollisionComponent.h"
 #include "RigidbodyComponent.h"

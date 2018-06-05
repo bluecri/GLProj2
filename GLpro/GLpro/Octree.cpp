@@ -3,7 +3,7 @@
 
 #include "CollisionComponent.h"
 
-Octree::Octree(int height, int halfAxisSize, glm::vec3 center)
+OctreeForCollision::OctreeForCollision(int height, int halfAxisSize, glm::vec3 center)
 {
 	_center = center;
 	_halfAxisSize = halfAxisSize;
@@ -27,7 +27,7 @@ Octree::Octree(int height, int halfAxisSize, glm::vec3 center)
 						childCenter.x += ((LR * 2) - 1) * _halfAxisSize / 2;	// (-1, 1) * half_half size
 						childCenter.y += ((TB * 2) - 1) * _halfAxisSize / 2;
 						childCenter.z += ((FB * 2) - 1) * _halfAxisSize / 2;
-						_childTree[childIdx] = new Octree(height - 1, _halfAxisSize / 2, childCenter);
+						_childTree[childIdx] = new OctreeForCollision(height - 1, _halfAxisSize / 2, childCenter);
 					}
 				}
 			}
@@ -35,7 +35,7 @@ Octree::Octree(int height, int halfAxisSize, glm::vec3 center)
 	}
 }
 
-void Octree::insert(CollisionComponent * comp)
+void OctreeForCollision::insert(CollisionComponent * comp)
 {
 	int targetIdx = -1;
 	// doopt : _potentialComponents 개수가 적으면 stop. 일정 수가 넘어가면 recursion.
@@ -52,7 +52,7 @@ void Octree::insert(CollisionComponent * comp)
 
 // 충돌 가능한 모든 CollisionComponent들을 potentialList에 등록
 
-void Octree::getCollisionPotentialList(std::list<CollisionComponent*>& potentialList, CollisionComponent * comp)
+void OctreeForCollision::getCollisionPotentialList(std::list<CollisionComponent*>& potentialList, CollisionComponent * comp)
 {
 	for (auto elem : _potentialComponents)
 	{
@@ -79,7 +79,7 @@ void Octree::getCollisionPotentialList(std::list<CollisionComponent*>& potential
 
 // 등록해놓은 모든 CollisionComponent refresh.
 
-void Octree::clearPotentialCompPropa()
+void OctreeForCollision::clearPotentialCompPropa()
 {
 	_potentialComponents.clear();
 	if (_height == 0)
@@ -95,7 +95,7 @@ void Octree::clearPotentialCompPropa()
 
 // insert 가능한 child box index return
 
-int Octree::getFitChildBoxIndex(CollisionComponent * comp)
+int OctreeForCollision::getFitChildBoxIndex(CollisionComponent * comp)
 {
 	if (_height == 0)
 	{
@@ -111,7 +111,7 @@ int Octree::getFitChildBoxIndex(CollisionComponent * comp)
 	return -1;	// 일치하는 하위 child box가 존재하지 않음.
 }
 
-bool Octree::IsInBoxTest(CollisionComponent * comp)
+bool OctreeForCollision::IsInBoxTest(CollisionComponent * comp)
 {
 	/* AABB test
 	for (int i = 0; i < 3; i++)

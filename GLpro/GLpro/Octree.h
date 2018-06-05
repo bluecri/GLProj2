@@ -16,10 +16,10 @@ enum OCT_POS
 	OCT_NUM
 };
 
-class Octree
+class OctreeForCollision
 {
 public:
-	Octree(int height, int halfAxisSize, glm::vec3 center);
+	OctreeForCollision(int height, int halfAxisSize, glm::vec3 center);
 	void insert(CollisionComponent* comp);
 
 	// 충돌 가능한 모든 CollisionComponent들을 potentialList에 등록
@@ -38,6 +38,6 @@ public:
 	int _height;
 	int _halfAxisSize;
 	glm::vec3 _center;
-	Octree* _childTree[OCT_POS::OCT_NUM];
+	OctreeForCollision* _childTree[OCT_POS::OCT_NUM];
 	std::list<CollisionComponent*> _potentialComponents;
 };

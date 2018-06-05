@@ -39,7 +39,7 @@ public:
 	COLLISION_TYPE collisionType;
 	RigidbodyComponent* _rigidComp;
 
-	// for AABB in Octree
+	// for AABB in OctreeForCollision
 	glm::vec3 _center;
 	glm::vec3 _halfAxisSize;
 

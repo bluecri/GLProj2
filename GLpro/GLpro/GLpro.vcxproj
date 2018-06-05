@@ -170,6 +170,7 @@
     <ClCompile Include="NormalMissileState.cpp" />
     <ClCompile Include="OBBCollisionComp.cpp" />
     <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="OctreeForFrustum.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="ParticleBuffer.cpp" />
     <ClCompile Include="origin\CircularBuffer.cpp" />
@@ -277,6 +278,7 @@
     <ClInclude Include="NormalMissile.h" />
     <ClInclude Include="NormalMissileGenerator.h" />
     <ClInclude Include="NormalMissileGenInfo.h" />
+    <ClInclude Include="OctreeForFrustum.h" />
     <ClInclude Include="ParticleEntity.h" />
     <ClInclude Include="playerPlaneBackup.h" />
     <ClInclude Include="PlayerStateUIObj.h" />

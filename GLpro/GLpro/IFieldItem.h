@@ -7,8 +7,6 @@
 class CollisionComponent;
 class GameSession;
 
-namespace RENDER_TARGET { namespace NORMAL { class NormalFObj; } }
-namespace SHADER { class ShaderMain; }
 namespace RESOURCE { class Model;  class Texture; }
 
 enum ENUM_ITEM_MOVE_TYPE

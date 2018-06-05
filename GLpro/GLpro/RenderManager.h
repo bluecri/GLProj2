@@ -11,6 +11,7 @@
 #include "src/Render/RSkybox.h"
 #include "RText.h"
 #include "RParticle.h"
+#include "Option.h"
 
 
 namespace SHADER
@@ -33,7 +34,6 @@ enum RRENDER_TYPE
 
 namespace RENDER
 {
-
 	// TODO : RRenerer is base of T (type check)
 	template<class T, class K>	// T = R*****(renderer class), K== shaderObj(child)
 	class RRenderContainerClass
@@ -153,6 +153,9 @@ namespace RENDER
 			elem.second->draw(deltaTime);
 		}
 	}
+
+	template<>
+	void RRenderContainerClass<RNormal, SHADER::ShaderMain>::render(float deltaTime);
 	
 }
 

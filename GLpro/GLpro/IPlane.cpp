@@ -22,6 +22,7 @@ IPlane::IPlane(int type, GameSession* gSession, RESOURCE::Model * model, RESOURC
 IPlane::~IPlane()
 {
 	_collisionComp->setDeleted(true);
+	registeredElemInRenderer->first->setBDeleted();
 }
 
 void IPlane::setBRender(bool bRender)
