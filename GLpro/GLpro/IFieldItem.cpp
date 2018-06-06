@@ -21,6 +21,7 @@ IFieldItem::IFieldItem(int type, GameSession * gSession, RESOURCE::Model * model
 	_curRandomInterval = 0.0f;
 	_curLIfeTime = 30.0f;
 	_buffCount = 1;
+	_maxSpeed = 3;
 }
 
 IFieldItem::~IFieldItem()
@@ -98,7 +99,7 @@ bool IFieldItem::moveLogicUpdate(float deltaTime)
 		if (_curRandomInterval > _randomInterval)
 		{
 			_rigidbodyComponent->setQuaternion(glm::vec3(glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f)));
-			_rigidbodyComponent->speedSet(glm::linearRand(0.0f, _rigidbodyComponent->getMaxSpeed()));
+			_rigidbodyComponent->speedSet(glm::linearRand(0.0f, _maxSpeed));
 		}
 		break;
 	case ENUM_ITEM_MOVE_TYPE::ENUM_ITEM_MOVE_RAND_QUAT:
@@ -106,7 +107,7 @@ bool IFieldItem::moveLogicUpdate(float deltaTime)
 		if (_curRandomInterval > _randomInterval)
 		{
 			// set target quat
-			_rigidbodyComponent->speedSet(glm::linearRand(0.0f, _rigidbodyComponent->getMaxSpeed()));
+			_rigidbodyComponent->speedSet(glm::linearRand(0.0f, _maxSpeed));
 		}
 		//mix cur quat -> target quat
 		break;

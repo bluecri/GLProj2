@@ -149,7 +149,9 @@
     <ClCompile Include="EmptyMissileGenerator.cpp" />
     <ClInclude Include="AABBCollisionComp.h" />
     <ClInclude Include="AimTextUIObj.h" />
+    <ClInclude Include="BuffInfo.h" />
     <ClInclude Include="IBuff.h" />
+    <ClInclude Include="IGameObject.h" />
     <ClInclude Include="ItemAmmoRegen.h" />
     <ClInclude Include="ItemSelfArmorRegen.h" />
     <ClInclude Include="BelowMissileStorageUIObj.h" />
@@ -158,17 +160,19 @@
     <ClCompile Include="Fobj.cpp" />
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="IFieldItem.cpp" />
+    <ClCompile Include="IGameObject.cpp" />
     <ClCompile Include="ImageBox.cpp" />
     <ClCompile Include="IMissile.cpp" />
     <ClCompile Include="IMissileGenerator.cpp" />
     <ClCompile Include="IPlane.cpp" />
+    <ClCompile Include="ISpecifiedMissileInfo.cpp" />
     <ClCompile Include="ItemSpeedBuff.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="MissileGeneratorStorage.cpp" />
     <ClCompile Include="NormalMissile.cpp" />
     <ClCompile Include="NormalMissileGenerator.cpp" />
-    <ClCompile Include="NormalMissileGenInfo.cpp" />
-    <ClCompile Include="NormalMissileState.cpp" />
+    <ClCompile Include="PlaneInfo.cpp" />
+    <ClCompile Include="SpecifiedNormalMissileState.cpp" />
     <ClCompile Include="OBBCollisionComp.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="OctreeForFrustum.cpp" />
@@ -236,6 +240,8 @@
     <ClCompile Include="TextFObj.cpp" />
     <ClCompile Include="UIEntity.cpp" />
     <ClInclude Include="FieldItemGenerator.h" />
+    <ClInclude Include="PlaneInfo.h" />
+    <ClInclude Include="UserInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.h" />
@@ -276,7 +282,6 @@
     <ClInclude Include="MissileGeneratorStorage.h" />
     <ClInclude Include="NormalMissile.h" />
     <ClInclude Include="NormalMissileGenerator.h" />
-    <ClInclude Include="NormalMissileGenInfo.h" />
     <ClInclude Include="OctreeForFrustum.h" />
     <ClInclude Include="ParticleEntity.h" />
     <ClInclude Include="playerPlaneBackup.h" />

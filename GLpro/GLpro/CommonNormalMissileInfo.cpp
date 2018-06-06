@@ -2,7 +2,7 @@
 #include "CommonNormalMissileInfo.h"
 #include "./src/Shader/ShaderManager.h"
 
-void CommonNormalMissileInfo::init()
+void CommonNormalMissileInfo::initICommonMissileInfo()
 {
 	_modelFileName = std::string("data/Model/missile.obj");
 	_textureFileName = std::string("data/Texture/uvmap.dds");
@@ -17,7 +17,7 @@ void CommonNormalMissileInfo::init()
 	_missileCollisionBoxAxis = glm::vec3(0.1f, 0.1f, 1.0f);
 }
 
-void CommonNormalMissileInfo::init(std::string & commonMissileInfoFile)
+void CommonNormalMissileInfo::initICommonMissileInfo(std::string & commonMissileInfoFile)
 {
 	// read file & get info
 }

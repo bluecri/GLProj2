@@ -12,7 +12,7 @@ class GameSession;
 
 enum ENUM_ENTITY_TYPE
 {
-	ENUM_ENTITY,
+	ENUM_ENTITY_NONE,
 	ENUM_ENTITY_PLANE_PLAYER,
 	ENUM_ENTITY_ENEMY,
 	ENUM_ENTITY_MISSILE_NORMAL,
@@ -40,53 +40,58 @@ class Entity
 public:
 	Entity(GameSession* gSession = nullptr, int type = 0);
 	Entity(std::string name, GameSession* gSession = nullptr, int type = 0);
-	virtual ~Entity();
+	virtual	~Entity();
 
-	int getType();
-	int getID();
-	int getType() const;
-	int getID() const;
-	bool isBeDeleted();
-	void setBeDeleted();
+	int				getType();
+	int				getID();
+	int				getType() const;
+	int				getID() const;
+	bool			isBeDeleted();
+	void			setBeDeleted();
 
-	void setName(std::string& name);
-	std::string getName();
-	const std::string& getNameRef() const;
+	void				setName(std::string& name);
+	std::string			getName();
+	const std::string&	getNameRef() const;
 
-	Entity* getParentEntityPtr();
-	Entity* getChildEntityWithID(int id);
-	Entity* getChildEntityWithName(const std::string & name);
+	void			setGameSession(GameSession* gSession);
+	GameSession*	getGameSession();
+	RigidbodyComponent*	getRigidbodyComponent();
 
-	Entity* detachParentEntity();
-	Entity* detachChildEntityWithID(int id);
-	Entity* detachChildEntityWithName(const std::string& name);
+	Entity*			getParentEntityPtr();
+	Entity*			getChildEntityWithID(int id);
+	Entity*			getChildEntityWithName(const std::string & name);
 
-	void attachParentEntity(Entity* parentEntity);
-	void attachChildEntity(Entity* childEntity);
+	Entity*			detachParentEntity();
+	Entity*			detachChildEntityWithID(int id);
+	Entity*			detachChildEntityWithName(const std::string& name);
 
-	virtual void setAllChildBRender(bool bRender);
-	virtual void setBRender(bool bRender) = 0;		// many class use diverse renderer
+	void			attachParentEntity(Entity* parentEntity);
+	void			attachChildEntity(Entity* childEntity);
 
-	virtual void setAllChildCollisionComp(bool bCollision);
-	virtual void setCollisionTest(bool bCollision) = 0;
+	virtual void	setAllChildBRender(bool bRender);
+	virtual void	setBRender(bool bRender) = 0;		// many class use diverse renderer
 
-	virtual void doAllJobWithBeDeleted();
-	virtual void doJobWithBeDeleted() = 0;		// done befoe setBeDeleted (resource bind remove)
+	virtual void	setAllChildCollisionComp(bool bCollision);
+	virtual void	setCollisionTest(bool bCollision) = 0;
 
-	virtual void logicUpdate(float deltaTime, float acc) = 0;
+	virtual void	doAllJobWithBeDeleted();
+	virtual void	doJobWithBeDeleted() = 0;		// done befoe setBeDeleted (resource bind remove)
+
+	virtual void	logicUpdate(float deltaTime, float acc) = 0;
 
 public:
-	static int _sMaxID;		//object 고유 ID(0 ~ ). 자동 생성.
-	std::string _name;
-	GameSession* _gameSession;		//registered gamesession
+	static int			 _sMaxID;		//object 고유 ID(0 ~ ). 자동 생성.
 
-	Entity* _parentEntity;
-	std::list<Entity*> _childEntityList;
+protected:
+	Entity*				_parentEntity;
+	std::list<Entity*>	_childEntityList;
+
+	GameSession*		_gameSession;		//registered gamesession
 	RigidbodyComponent* _rigidbodyComponent;
 
 private:
-	int _type = 0;
-	int _ID;
-	bool _bDeleted;
-
+	int					_ID;
+	int					_type;
+	std::string			_name;
+	bool				_bDeleted;
 };

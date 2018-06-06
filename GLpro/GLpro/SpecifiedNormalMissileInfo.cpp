@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "SpecifiedNormalMissileInfo.h"
+#include "SpecifiedNormalMissileState.h"
 
-void SpecifiedNormalMissileInfo::init()
+void SpecifiedNormalMissileInfo::initISpecifiedMissileInfo()
 {
 	_dmg = 10;
 	_hitCount = 1;
@@ -20,7 +21,22 @@ void SpecifiedNormalMissileInfo::init()
 	_missileGenAddPos = glm::vec3(0.0f, 0.0f, 0.2f);
 }
 
-void SpecifiedNormalMissileInfo::init(std::string & specifiedMissileInfo)
+void SpecifiedNormalMissileInfo::initISpecifiedMissileInfo(std::string & specifiedMissileInfo)
 {
 	// read file & get info
+}
+
+void SpecifiedNormalMissileInfo::doubleDispatchInit(SpecifiedNormalMissileState * normaState)
+{
+	normaState->_dmg			= _dmg;
+	normaState->_hitCount		= _hitCount;
+	normaState->_hitInterval	= _hitInterval;
+	normaState->_firstSpeed		= _firstSpeed;
+	normaState->_deltaSpeed		= _deltaSpeed;
+	normaState->_lifeTime		= _lifeTime;
+	normaState->_mass			= _mass;
+	normaState->_maxSpeed		= _maxSpeed;
+	normaState->_missileShotSoundStr	= _missileShotSoundStr;
+	normaState->_missileHitSoundStr		= _missileHitSoundStr;
+	normaState->_missileGenAddPos		= _missileGenAddPos;
 }

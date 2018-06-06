@@ -12,8 +12,8 @@ class NormalMissile : public IMissile
 public:
 	NormalMissile(Entity* fromEntity, GameSession* gSession, CommonMissileState* commonMissileState);
 	virtual ~NormalMissile();
-	void init(const glm::mat4& localMissileMat);
-	void init(const glm::mat4 & localMissileMat, SpecifiedNormalMissileState* specifiedNormalMissileState);
+	void initNormalMissile(const glm::mat4& localMissileMat);
+	void initNormalMissile(const glm::mat4 & localMissileMat, SpecifiedNormalMissileState* specifiedNormalMissileState);
 
 	// Entity을(를) 통해 상속됨
 	virtual void logicUpdate(float deltaTime, float acc) override;
@@ -24,20 +24,13 @@ protected:
 	void afterDmgOther();	// dmg 준 뒤 후처리
 
 public:
-	int		_dmg;
-	int		_hitCount;			// hit count
-	float	_hitInterval;		// 연속 hit interval
+	SpecifiedNormalMissileState* _missileState;		// can exist 2 state (origin / cur)
+
 	float	_curHitInterval;
-
-	float 	_firstSpeed;
-	float	_deltaSpeed;
-
-	float	_lifeTime;
 	float	_curLifeTime;
 
 	ALSource* _startSound;
 	ALSource* _hitSound;
-
 
 	// IMissile을(를) 통해 상속됨
 	virtual bool isDmgValid() override;

@@ -103,33 +103,6 @@
     <Filter Include="소스 파일\components\collision\collisionInfo">
       <UniqueIdentifier>{49ce33ad-128b-496e-952f-b4a23d861e74}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile">
-      <UniqueIdentifier>{aa8c4c2f-eead-435e-95b3-5f45e2646c63}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\user">
-      <UniqueIdentifier>{6524fd5a-a959-4b88-a01b-28fa87ce978a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\generator">
-      <UniqueIdentifier>{04d226d9-89cc-4d77-a4ff-2e6826a2adc5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\missileObjs">
-      <UniqueIdentifier>{92ad1392-87df-4179-8526-6ebdb17ad325}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\infos">
-      <UniqueIdentifier>{9b6279b3-e237-4063-b5d6-f08a308faa1f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\infos\normal">
-      <UniqueIdentifier>{db37b262-bdfc-456a-8dd6-e6ea4b08c110}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\state">
-      <UniqueIdentifier>{a0e58c33-b6ae-44e0-948e-10fa54ba41b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\state\specifiedStates">
-      <UniqueIdentifier>{0e1eafee-3355-4397-bb0d-9ee73aa95060}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\generator\gen">
-      <UniqueIdentifier>{9c879573-a8db-4e0a-89e8-29cdb7a24be6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\GameScene\GameObjects\backup">
       <UniqueIdentifier>{a6600926-39a6-48d3-9eeb-f2bb667556c2}</UniqueIdentifier>
     </Filter>
@@ -138,6 +111,39 @@
     </Filter>
     <Filter Include="소스 파일\GameScene\UIObjects">
       <UniqueIdentifier>{5a2bf96a-8b2d-4462-9c94-32a852d2d8d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\components\frustum">
+      <UniqueIdentifier>{04448d8f-3396-43f1-892b-cfc1b2a86718}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane">
+      <UniqueIdentifier>{b8807291-eec8-4c55-909e-58532b5fe29a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\user">
+      <UniqueIdentifier>{6524fd5a-a959-4b88-a01b-28fa87ce978a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile">
+      <UniqueIdentifier>{aa8c4c2f-eead-435e-95b3-5f45e2646c63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\generator">
+      <UniqueIdentifier>{04d226d9-89cc-4d77-a4ff-2e6826a2adc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\generator\gen">
+      <UniqueIdentifier>{9c879573-a8db-4e0a-89e8-29cdb7a24be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\missileObjs">
+      <UniqueIdentifier>{92ad1392-87df-4179-8526-6ebdb17ad325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\infos">
+      <UniqueIdentifier>{9b6279b3-e237-4063-b5d6-f08a308faa1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\infos\normal">
+      <UniqueIdentifier>{db37b262-bdfc-456a-8dd6-e6ea4b08c110}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\state">
+      <UniqueIdentifier>{a0e58c33-b6ae-44e0-948e-10fa54ba41b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\state\specifiedStates">
+      <UniqueIdentifier>{0e1eafee-3355-4397-bb0d-9ee73aa95060}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\GameScene\GameObjects\fieldItem">
       <UniqueIdentifier>{9897ef2b-a057-4421-a059-ec5a19ef46c5}</UniqueIdentifier>
@@ -148,14 +154,11 @@
     <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\selfTarget">
       <UniqueIdentifier>{8349d3c3-8827-4985-bfbd-bd3c0fb1afe4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\teamTarget">
-      <UniqueIdentifier>{82267b82-78d6-45ce-98fb-51c642f69352}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\components\frustum">
-      <UniqueIdentifier>{04448d8f-3396-43f1-892b-cfc1b2a86718}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\selfTarget\BuffList">
       <UniqueIdentifier>{b1f222f2-3a7c-4e99-a40d-9be3dbdee699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\teamTarget">
+      <UniqueIdentifier>{82267b82-78d6-45ce-98fb-51c642f69352}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -355,10 +358,10 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\user</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
-      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\user</Filter>
     </ClCompile>
     <ClCompile Include="NormalMissile.cpp">
       <Filter>소스 파일</Filter>
@@ -369,13 +372,7 @@
     <ClCompile Include="CommonNormalMissileInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="NormalMissileGenInfo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SpecifiedNormalMissileInfo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="NormalMissileState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="NormalMissileGenerator.cpp">
@@ -424,6 +421,18 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="OctreeForFrustum.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IGameObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpecifiedNormalMissileState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ISpecifiedMissileInfo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaneInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -668,59 +677,53 @@
     <ClInclude Include="CollisionInfo.h">
       <Filter>소스 파일\components\collision\collisionInfo</Filter>
     </ClInclude>
-    <ClInclude Include="IPlane.h">
-      <Filter>소스 파일\GameScene\GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\user</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
-      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\user</Filter>
     </ClInclude>
     <ClInclude Include="NormalMissile.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\missileObjs</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\missileObjs</Filter>
     </ClInclude>
     <ClInclude Include="IMissile.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\missileObjs</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\missileObjs</Filter>
     </ClInclude>
     <ClInclude Include="IMissileGenInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\infos</Filter>
     </ClInclude>
     <ClInclude Include="ISpecifiedMissileInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\infos</Filter>
     </ClInclude>
     <ClInclude Include="CommonNormalMissileInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos\normal</Filter>
-    </ClInclude>
-    <ClInclude Include="NormalMissileGenInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos\normal</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\infos\normal</Filter>
     </ClInclude>
     <ClInclude Include="SpecifiedNormalMissileInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos\normal</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\infos\normal</Filter>
     </ClInclude>
     <ClInclude Include="ICommonMissileInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\infos</Filter>
     </ClInclude>
     <ClInclude Include="CommonMissileState.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\state</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\state</Filter>
     </ClInclude>
     <ClInclude Include="IMissileGenerator.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\generator</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\generator</Filter>
     </ClInclude>
     <ClInclude Include="ISpecifiedMissileState.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\state</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\state</Filter>
     </ClInclude>
     <ClInclude Include="MissileGeneratorStorage.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\generator</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\generator</Filter>
     </ClInclude>
     <ClInclude Include="NormalMissileGenerator.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\generator\gen</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\generator\gen</Filter>
     </ClInclude>
     <ClInclude Include="EnumMissileType.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile</Filter>
     </ClInclude>
     <ClInclude Include="SpecifiedNormalMissileState.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\state\specifiedStates</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\state\specifiedStates</Filter>
     </ClInclude>
     <ClInclude Include="EmptyMissileGenerator.h">
       <Filter>헤더 파일</Filter>
@@ -804,6 +807,21 @@
       <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget\BuffList</Filter>
     </ClInclude>
     <ClInclude Include="IBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameObject.h">
+      <Filter>소스 파일\GameScene\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="IPlane.h">
+      <Filter>소스 파일\GameScene\GameObjects\plane</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInfo.h">
+      <Filter>소스 파일\GameScene\GameObjects\plane\user</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaneInfo.h">
+      <Filter>소스 파일\GameScene\GameObjects\plane</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffInfo.h">
       <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
     </ClInclude>
   </ItemGroup>

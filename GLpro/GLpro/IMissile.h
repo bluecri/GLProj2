@@ -2,6 +2,7 @@
 
 #include "IPlane.h"
 
+// todo : change to gameobj
 class IMissile : public IPlane
 {
 public:

@@ -15,7 +15,7 @@ RigidbodyComponent::RigidbodyComponent(Entity * bindedEntity, const glm::mat4 &m
 	_parentRigidbodyComponentPtr = nullptr;
 	_childRigidbodyComponentPtrList = std::list<RigidbodyComponent*>();
 	_bDirty = true;		// update local -> world	:: 없으면 child로 신규 생성시 world update X
-	_maxZSpeed = 100.0f;	// 100 velocity
+	//_maxZSpeed = 100.0f;	// 100 velocity
 	_mass = 1.0f;
 }
 
@@ -227,25 +227,16 @@ glm::vec3 & RigidbodyComponent::getVelocityRef()
 
 void RigidbodyComponent::speedAdd(float add)
 {
-	_speed = max(-_maxZSpeed, min(_maxZSpeed, _speed + add));
+	_speed += add;
 }
 
 void RigidbodyComponent::speedSet(float speed)
 {
-	_speed = max(-_maxZSpeed, min(speed, speed));
+	_speed = speed;
 }
 
 float RigidbodyComponent::getSpeed() {
 	return _speed;
-}
-
-float RigidbodyComponent::getMaxSpeed() {
-	return _maxZSpeed;
-}
-
-void RigidbodyComponent::setMaxSpeed(float maxSpeed)
-{
-	_maxZSpeed = maxSpeed;
 }
 
 // rotate axis == model rotation axis

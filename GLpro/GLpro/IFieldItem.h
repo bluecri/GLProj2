@@ -51,6 +51,8 @@ protected:
 	float	_curLIfeTime;
 	ENUM_ITEM_MOVE_TYPE _moveType;
 
+	float _maxSpeed;
+
 	bool _bDeleted;
 	//	int _itemType;		// to preserve from overlaping identical buff	=> use entity type
 

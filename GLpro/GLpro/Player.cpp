@@ -98,18 +98,7 @@ Player::~Player()
 void Player::init()
 {
 	// basic info
-	_curHp = 100;
-	_maxHp = 100;
-	_curArmor = 0;
-	_maxArmor = 100;
-	_deltaSpeed = 0.1f;
-
-	_notDmgedTime = 3.0f;
-	_bNotDmged = false;
-	_curDmgedTime = 0.0f;
-
-	setMaxSpeed(10.0f);
-
+	
 	_missileGeneratorStorage = new MissileGeneratorStorage(PLAYER_DEFAULT_WEAPON_MAX_NUM, this);
 
 	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent);
@@ -129,7 +118,7 @@ void Player::logicUpdate(float deltaTime, float acc)
 	collisionLogicUpdate();		// update collision event & clear collision info
 	GALManager->updateALListenerWithWorldMat(_rigidbodyComponent->getWorldMatRef());	 // listener pos update
 	
-	if(_curHp < 0)
+	if(_curPlaneInfo->_hp < 0)
 	{
 		_explosionSound->play();
 		//setBRender(false);
@@ -142,19 +131,6 @@ void Player::logicUpdate(float deltaTime, float acc)
 	if(_bShotKeyDown)
 	{
 		_missileGeneratorStorage->shotMissile();
-	}
-
-	// overwhelimg
-	if(_bNotDmged)
-	{
-		_curDmgedTime += deltaTime;
-		if(_curDmgedTime > _notDmgedTime)
-		{
-			_bNotDmged = false;		// end overwhelming time
-			_curDmgedTime = 0.0f;
-			// todo : make plane opacity => 1.0
-
-		}
 	}
 
 	// back particle logic
@@ -177,8 +153,6 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 	case ENUM_ENTITY_MISSILE_NORMAL:
 		break;
 	case ENUM_ENTITY_ENEMY:
-		_bNotDmged = true;
-		// todo : make plane opacity => 0.5
 		break;
 	default:
 		// none
@@ -189,12 +163,6 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 void Player::doJobWithBeDeleted()
 {
 	
-}
-
-bool Player::isCanGetDmg()
-{
-	return !_bNotDmged;
-
 }
 
 void Player::tabKeyProgress(long long transferKeyInput)
@@ -228,19 +196,19 @@ void Player::playerMovementProgress(long long transferKeyInput)
 	if (roll != 0)
 		maincam->camAccQuaternionRoll((float)roll);
 	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_UP))
-		_rigidbodyComponent->speedAdd(_deltaSpeed);
+		_rigidbodyComponent->speedAdd(_curPlaneInfo->_deltaSpeed);
 
 	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_DOWN))
-		_rigidbodyComponent->speedAdd(-_deltaSpeed);
+		_rigidbodyComponent->speedAdd(-(_curPlaneInfo->_deltaSpeed));
 
 	// set cam position (follow plane)
-	maincam->_rigidbodyComponent->setModelMatrix(_rigidbodyComponent->getModelVec());
-	maincam->_rigidbodyComponent->translateModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
+	maincam->getRigidbodyComponent()->setModelMatrix(_rigidbodyComponent->getModelVec());
+	maincam->getRigidbodyComponent()->translateModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
 
 	// plane quaternion rotation to camera rotation
-	_rigidbodyComponent->accQuaternionMix(maincam->_rigidbodyComponent, _maxAngle, _angleSpeed);
+	_rigidbodyComponent->accQuaternionMix(maincam->getRigidbodyComponent(), getAngle(), getAngleSpeed());
 
 	// aim text update logic
-	_aimTextUIObj->setAimPositionWithQuat(_rigidbodyComponent->getLocalQuarternionRef(), maincam->_rigidbodyComponent->getLocalQuarternionRef());
+	_aimTextUIObj->setAimPositionWithQuat(_rigidbodyComponent->getLocalQuarternionRef(), maincam->getRigidbodyComponent()->getLocalQuarternionRef());
 
 }

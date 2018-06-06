@@ -13,23 +13,22 @@
 #include "src/Sound/ALSource.h"
 
 NormalMissileGenerator::NormalMissileGenerator()
-	: IMissileGenerator()
+	: IMissileGenerator(new SpecifiedNormalMissileState(), new SpecifiedNormalMissileState())
 {
 	_missileType = ENUM_MISSILE_TYPE::ENUM_MISSILE_TYPE_NORMAL;
 }
 
 void NormalMissileGenerator::genMissile()
 {
-	if (_curMissileDelay < _commonMissileState->_missileDelay)
+	if (_curMissileDelay < _curCommonMissileState->_shotDelay)
 	{
 		return;
 	}
 
-	NormalMissile* normalMissile = new NormalMissile(_bindedEntity, _bindedEntity->_gameSession, _commonMissileState);
-	normalMissile->init(_entityRigidbodyComponent->getWorldMatRef(), static_cast<SpecifiedNormalMissileState*>(_specifiedMissileState));
+	NormalMissile* normalMissile = new NormalMissile(_bindedEntity, _bindedEntity->getGameSession(), _curCommonMissileState);
+	normalMissile->initNormalMissile(_entityRigidbodyComponent->getWorldMatRef(), static_cast<SpecifiedNormalMissileState*>(_curSpecifiedMissileState));
 
 	normalMissile->_startSound->play();		// gen sound play
-	printf_s("[Log] : missile gened\n");
 	_curMissileDelay = 0.0f;
 }
 
@@ -38,45 +37,33 @@ void NormalMissileGenerator::updateTimer(float deltaTime, float acc)
 	_curMissileDelay += deltaTime;
 }
 
-void NormalMissileGenerator::init(Entity* bindedEntity, MissileGeneratorStorage* missileGeneratorStorage)
+void NormalMissileGenerator::initNormalMissileGenerator(Entity* bindedEntity, MissileGeneratorStorage* missileGeneratorStorage)
 {
-	setBindedEntityAndMissileGenerator(bindedEntity, missileGeneratorStorage);
-
-	// init common missile state with common info
-	_commonMissileState = new CommonMissileState();
+	initBindedEntityAndMissileGenerator(bindedEntity, missileGeneratorStorage);
 
 	CommonNormalMissileInfo* commonNormalMissileInfo = new CommonNormalMissileInfo();
-	commonNormalMissileInfo->init();		// or filename
-	_commonMissileState->init(commonNormalMissileInfo);
-
-	// normal state
-	SpecifiedNormalMissileState* tempSpecifiedNormalMissileState = new SpecifiedNormalMissileState();
+	commonNormalMissileInfo->initICommonMissileInfo();		// or filename
 
 	SpecifiedNormalMissileInfo* specifiedNormalMissileInfo = new SpecifiedNormalMissileInfo();
-	specifiedNormalMissileInfo->init();		// or filename
-	tempSpecifiedNormalMissileState->init(specifiedNormalMissileInfo);
+	specifiedNormalMissileInfo->initISpecifiedMissileInfo();		// or filename
 
-	_specifiedMissileState = tempSpecifiedNormalMissileState;
+	initState(commonNormalMissileInfo, specifiedNormalMissileInfo);
 }
 
-void NormalMissileGenerator::init(Entity* bindedEntity, MissileGeneratorStorage* missileGeneratorStorage, std::string & commonMissileInfoFile, std::string & specifiedMissileInfo)
+void NormalMissileGenerator::initNormalMissileGenerator(Entity* bindedEntity, MissileGeneratorStorage* missileGeneratorStorage, std::string & commonMissileInfoFile, std::string & specifiedMissileInfo)
 {
-	setBindedEntityAndMissileGenerator(bindedEntity, missileGeneratorStorage);
-
-	// common state
-	_commonMissileState = new CommonMissileState();
+	initBindedEntityAndMissileGenerator(bindedEntity, missileGeneratorStorage);
 
 	CommonNormalMissileInfo* commonNormalMissileInfo = new CommonNormalMissileInfo();
-	commonNormalMissileInfo->init(commonMissileInfoFile);		// or filename
-	_commonMissileState->init(commonNormalMissileInfo);
+	commonNormalMissileInfo->initICommonMissileInfo(commonMissileInfoFile);		// or filename
 
-	// normal state
-	SpecifiedNormalMissileState* tempSpecifiedNormalMissileState = new SpecifiedNormalMissileState();
-	
 	SpecifiedNormalMissileInfo* specifiedNormalMissileInfo = new SpecifiedNormalMissileInfo();
-	specifiedNormalMissileInfo->init(specifiedMissileInfo);		// or filename
-	tempSpecifiedNormalMissileState->init(specifiedNormalMissileInfo);
-	
-	_specifiedMissileState = tempSpecifiedNormalMissileState;
+	specifiedNormalMissileInfo->initISpecifiedMissileInfo(specifiedMissileInfo);		// or filename
+
+	initState(commonNormalMissileInfo, specifiedNormalMissileInfo);
+}
+
+void NormalMissileGenerator::modifyCurMissileStateWithBuffInfo(BuffInfo * buffInfo)
+{
 }
 

@@ -53,8 +53,8 @@ public:
 	void speedSet(float speed);
 	float getSpeed();
 
-	float getMaxSpeed();
-	void setMaxSpeed(float maxSpeed);
+	//float getMaxSpeed();
+	//void setMaxSpeed(float maxSpeed);
 
 	float getMass();
 	void setMass(float mass);
@@ -133,7 +133,7 @@ private:
 	glm::vec3 _velocity;
 
 	float _speed;
-	float _maxZSpeed;
+	//float _maxZSpeed;
 	float _mass;
 
 	glm::mat4 _worldTotalMatrix;

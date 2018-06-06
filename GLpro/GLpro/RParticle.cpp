@@ -102,7 +102,7 @@ namespace RENDER
 	*/
 	void RParticle::beforeDraw(float deltaTime)
 	{
-		glm::vec3 camPosVec = (*_targetCamera)->_rigidbodyComponent->getWorldPosVec();
+		glm::vec3 camPosVec = (*_targetCamera)->getRigidbodyComponent()->getWorldPosVec();
 		for (auto it = _particleDrawElemContainer.begin(); it != _particleDrawElemContainer.end(); )
 		{
 			RENDER_TARGET::PARTICLE::ParticleFObj* particleFObj = (*it)->first;

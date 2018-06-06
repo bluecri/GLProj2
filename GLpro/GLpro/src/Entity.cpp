@@ -93,6 +93,27 @@ const std::string& Entity::getNameRef() const {
 	return _name;
 }
 
+void Entity::setGameSession(GameSession * gSession)
+{
+	if (_gameSession != nullptr)
+	{
+		// 기존 gamesession에서의 gSession 해제
+		_gameSession->_allEntityMap.erase(_ID);
+		printf_s("setGameSession(GameSession* gSession) : change entity gamesession to another\n");
+	}
+	_gameSession = gSession;
+	_gameSession->_allEntityMap.insert(std::make_pair(_ID, this));
+}
+
+GameSession * Entity::getGameSession()
+{
+	return _gameSession;
+}
+
+RigidbodyComponent * Entity::getRigidbodyComponent() {
+	return _rigidbodyComponent;
+}
+
 Entity * Entity::getParentEntityPtr()
 {
 	return _parentEntity;

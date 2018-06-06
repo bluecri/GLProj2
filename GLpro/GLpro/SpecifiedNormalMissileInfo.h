@@ -11,9 +11,9 @@ public:
 	}
 
 	// ISpecifiedMissileInfo을(를) 통해 상속됨
-	virtual void init() override;
-	virtual void init(std::string & specifiedMissileInfo) override;
-
+	virtual void initISpecifiedMissileInfo() override;
+	virtual void initISpecifiedMissileInfo(std::string & specifiedMissileInfo) override;
+	virtual void doubleDispatchInit(SpecifiedNormalMissileState* normalInfo) override;
 public:
 	int		_dmg;
 	int		_hitCount;			// hit count

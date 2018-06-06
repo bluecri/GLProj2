@@ -41,7 +41,7 @@ namespace RENDER
 		_shaderObj->bind();
 
 		// set camera view matrix(camera rotate mat * camera position mat)
-		RigidbodyComponent* cameraRigidbodyComponent = cam->_rigidbodyComponent;
+		RigidbodyComponent* cameraRigidbodyComponent = cam->getRigidbodyComponent();
 		glm::mat4 cameraViewMatrix = cam->getRecentViewMat();
 
 		// todo : use _div

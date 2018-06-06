@@ -28,25 +28,11 @@ public:
 	virtual void collisionFunc(CollisionComponent* collisionComp) override;
 	virtual void doJobWithBeDeleted() override;		// done befoe setBeDeleted (resource bind remove)
 
-	bool isCanGetDmg();
-
 private:
 	void tabKeyProgress(long long transferKeyInput);
 	void playerMovementProgress(long long transferKeyInput);
 
 public:
-	int _curHp;
-	int _maxHp;
-	int _curArmor;
-	int _maxArmor;
-
-	// overwhelming
-	float 	_notDmgedTime;
-	bool	_bNotDmged;
-	float 	_curDmgedTime;
-
-	float _deltaSpeed;
-
 	ALSource* _explosionSound;
 
 protected:

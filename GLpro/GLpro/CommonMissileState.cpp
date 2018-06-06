@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CommonMissileState.h"
-#include "CommonNormalMissileInfo.h"
-
+#include "ICommonMissileInfo.h"
 
 #include "./src/Resource/Model.h"
 #include "./src/Resource/ModelManager.h"
@@ -16,15 +15,15 @@ CommonMissileState::CommonMissileState()
 	_missileTexture = nullptr;
 	_missileShaderMain = nullptr;
 
-	_missileDelay = 0.0f;
+	_shotDelay = 0.0f;
 
 }
 
-void CommonMissileState::init(CommonNormalMissileInfo * commonNormalMissileInfo)
+void CommonMissileState::initCommonState(ICommonMissileInfo * commonMissileInfo)
 {
-	_missileModel = GModelManager->getModelWithFileName(commonNormalMissileInfo->_modelFileName);
-	_missileTexture = GTextureManager->getTextureWithFileName(commonNormalMissileInfo->_textureFileName, commonNormalMissileInfo->_textureTypeName);
-	_missileShaderMain = GShaderManager->m_addShader<SHADER::ShaderMain>(commonNormalMissileInfo->_shaderType, commonNormalMissileInfo->_shaderVertexFileName.c_str(), commonNormalMissileInfo->_shaderFragmentFileName.c_str());
+	_missileModel = GModelManager->getModelWithFileName(commonMissileInfo->_modelFileName);
+	_missileTexture = GTextureManager->getTextureWithFileName(commonMissileInfo->_textureFileName, commonMissileInfo->_textureTypeName);
+	_missileShaderMain = GShaderManager->m_addShader<SHADER::ShaderMain>(ENUM_SHADER_TYPE::SHADER_TYPE_MAIN, commonMissileInfo->_shaderVertexFileName.c_str(), commonMissileInfo->_shaderFragmentFileName.c_str());
 
-	_missileDelay = commonNormalMissileInfo->_shotDelay;
+	_shotDelay = commonMissileInfo->_shotDelay;
 }

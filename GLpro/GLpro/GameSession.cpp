@@ -142,18 +142,18 @@ void GameSession::preMade()
 	// player & camera attach
 	Player * newPlayer = new Player(premadeSession, planeModel, planeTexture, shaderMain);
 	//newPlayer->_rigidbodyComponent->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	newPlayer->_rigidbodyComponent->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
-	newPlayer->_rigidbodyComponent->setDirty();
+	newPlayer->getRigidbodyComponent()->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
+	newPlayer->getRigidbodyComponent()->setDirty();
 	newPlayer->setBRender(true);
 	newPlayer->init();
 	NormalMissileGenerator * normalMissileGenerator = new NormalMissileGenerator();
-	normalMissileGenerator->init(newPlayer, newPlayer->getMissileGeneratorStorage());
+	normalMissileGenerator->initNormalMissileGenerator(newPlayer, newPlayer->getMissileGeneratorStorage());
 	newPlayer->addMissileGenerator(normalMissileGenerator);
 	
 	CAMERA::Camera** mainCam = GCameraManager->GetMainCamera();
 	//(*mainCam)->_rigidbodyComponent->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	(*mainCam)->_rigidbodyComponent->accModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
-	(*mainCam)->_rigidbodyComponent->setDirty();
+	(*mainCam)->getRigidbodyComponent()->accModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
+	(*mainCam)->getRigidbodyComponent()->setDirty();
 	//newPlayer->attachChildEntity(*mainCam);
 	
 	//ttest
