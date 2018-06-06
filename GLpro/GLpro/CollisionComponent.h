@@ -31,7 +31,7 @@ public:
 	static bool sIsBoxCollisionCheck(glm::mat4 & wolrd1, glm::mat4 & wolrd2, glm::vec3 & axisLen1, glm::vec3 & axisLen2);
 
 protected:
-	virtual void updateWithRigidComp() = 0;		// collision local + rigidComp(world transform) -> collision world
+	virtual void updateWithRigidComp() = 0;		// collision local + rigidComp(world RigidbodyComponent) -> collision world
 	virtual void updateAABBForOctree() = 0;		// collision world -> AABB for oct
 	virtual bool collideTestToOther(CollisionComponent* comp) = 0;
 	

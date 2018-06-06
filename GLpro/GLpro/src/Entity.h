@@ -5,7 +5,7 @@
 /******************************************************
 *  Document   :	Entity.h
 *  Description: 최상위 object. 생성시 rigidbodyComponent는 반드시 같이 생성된다.
-*	Entity의 부모, 자식을 붙일 때 rigidbodyComponent 안 transform의 부모, 자식이 연결되며,
+*	Entity의 부모, 자식을 붙일 때 rigidbodyComponent 부모, 자식이 연결되며,
 *	component의 경우 부모, 자식 관계가 존재하지 않는다.
 *******************************************************/
 class GameSession;

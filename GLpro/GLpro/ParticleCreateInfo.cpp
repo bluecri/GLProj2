@@ -1,6 +1,7 @@
 #include "./ParticleCreateInfo.h"
 #include "./ParticleFObj.h"
-#include "./src/Transform.h"
+
+#include "RigidbodyComponent.h"
 
 ParticleCreateInfo::ParticleCreateInfo(bool isOneParticlePerMultiFrame, int frameVsParticle, float life, float spread, float particleSizeStartRange, float particleSizeEndRange)
 	: _isOneParticlePerMultiFrame(isOneParticlePerMultiFrame), _frameVsParticle(frameVsParticle), _particleLife(life), _spread(spread), _particleSizeStartRange(particleSizeStartRange), _particleSizeEndRange(particleSizeEndRange)
@@ -33,9 +34,9 @@ ParticleCreateInfo::ParticleCreateInfo(int colorStartRange[4], int colorEndRange
 	}
 }
 
-void ParticleCreateInfo::init(Transform * bindedTransform)
+void ParticleCreateInfo::init(RigidbodyComponent * bindedRigidbodyComponent)
 {
-	_bindedTransform = bindedTransform;
+	_bindedRigidbodyComponent = bindedRigidbodyComponent;
 }
 
 void ParticleCreateInfo::genNewParticles(RENDER_TARGET::PARTICLE::ParticleFObj *particleFObj)
@@ -66,7 +67,7 @@ void ParticleCreateInfo::genNewParticles(RENDER_TARGET::PARTICLE::ParticleFObj *
 void ParticleCreateInfo::crateNewParticleStructWithInfo(ParticleStruct & refP)
 {
 	refP._life = _particleLife;
-	refP._pos = _bindedTransform->getWorldPosVec();
+	refP._pos = _bindedRigidbodyComponent->getWorldPosVec();
 
 	glm::vec3 randomdir = glm::vec3(
 		(rand() % 2000 - 1000.0f) / 1000.0f,
@@ -74,7 +75,7 @@ void ParticleCreateInfo::crateNewParticleStructWithInfo(ParticleStruct & refP)
 		(rand() % 2000 - 1000.0f) / 1000.0f
 	);
 
-	glm::mat3 worldRotMat = glm::mat3(_bindedTransform->getWorldMatRef());
+	glm::mat3 worldRotMat = glm::mat3(_bindedRigidbodyComponent->getWorldMatRef());
 	refP._velocity = worldRotMat * _mainDir + randomdir * _spread;
 
 

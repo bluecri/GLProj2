@@ -1,20 +1,19 @@
 #include "stdafx.h"
 #include "RigidbodyComponentManager.h"
 #include "RigidbodyComponent.h"
-#include "./src/Transform.h"
 
 void RigidbodyComponentManager::updateRigidbodyComps(float deltaTime)
 {
 	for (auto it = _rigidCompList.begin(); it != _rigidCompList.end(); )
 	{
-		if ((*it)->_bdoDelete)
+		if ((*it)->isBDeleted())
 		{
 			delete (*it);
 			it = _rigidCompList.erase(it);
 			continue;
 		}
 
-		(*it)->_transform->updateWorldMatrix(deltaTime);
+		(*it)->updateWorldMatrix(deltaTime);
 		++it;
 	}
 }
@@ -23,7 +22,7 @@ void RigidbodyComponentManager::resetRigidbodyCompsDirty()
 {
 	for (auto elem : _rigidCompList)
 	{
-		elem->_transform->resetDirty();
+		elem->resetDirty();
 	}
 }
 

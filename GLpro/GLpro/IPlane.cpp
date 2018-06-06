@@ -7,7 +7,6 @@
 #include "CollisionComponent.h"
 #include "MissileGeneratorStorage.h"
 #include "RigidbodyComponent.h"
-#include "src/Transform.h"
 
 IPlane::IPlane(int type, GameSession* gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: Entity(gSession, type)
@@ -60,22 +59,22 @@ MissileGeneratorStorage * IPlane::getMissileGeneratorStorage()
 
 void IPlane::setSpeed(float speed)
 {
-	_rigidbodyComponent->_transform->speedSet(speed);
+	_rigidbodyComponent->speedSet(speed);
 }
 
 void IPlane::setMaxSpeed(float speed)
 {
-	_rigidbodyComponent->_transform->setMaxSpeed(speed);
+	_rigidbodyComponent->setMaxSpeed(speed);
 }
 
 float IPlane::getMaxSpeed()
 {
-	return _rigidbodyComponent->_transform->getMaxSpeed();
+	return _rigidbodyComponent->getMaxSpeed();
 }
 
 float IPlane::getSpeed()
 {
-	return _rigidbodyComponent->_transform->getSpeed();
+	return _rigidbodyComponent->getSpeed();
 }
 
 float IPlane::getSpeedPerMaxSpeedRatio()

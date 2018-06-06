@@ -5,7 +5,7 @@
 #include "src/Shader/ShaderMain.h"
 #include "CollisionComponent.h"
 #include "RigidbodyComponent.h"
-#include "src/Transform.h"
+
 
 IFieldItem::IFieldItem(int type, GameSession * gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	:Entity(gSession, type)
@@ -54,7 +54,7 @@ void IFieldItem::setAngleSpeed(float speed)
 }
 
 void IFieldItem::setSpeed(float speed) {
-	_rigidbodyComponent->_transform->speedSet(speed);
+	_rigidbodyComponent->speedSet(speed);
 }
 
 void IFieldItem::setMoveType(ENUM_ITEM_MOVE_TYPE moveType) {
@@ -91,14 +91,14 @@ bool IFieldItem::moveLogicUpdate(float deltaTime)
 	case ENUM_ITEM_MOVE_TYPE::ENUM_ITEM_MOVE_STAY :
 		break;
 	case ENUM_ITEM_MOVE_TYPE::ENUM_ITEM_MOVE_STAY_ROT:
-		_rigidbodyComponent->_transform->accQuaternionPitch(10.0f * deltaTime);
+		_rigidbodyComponent->accQuaternionPitch(10.0f * deltaTime);
 		break;
 	case ENUM_ITEM_MOVE_TYPE::ENUM_ITEM_MOVE_RAND_LINE:
 		_curRandomInterval += deltaTime;
 		if (_curRandomInterval > _randomInterval)
 		{
-			_rigidbodyComponent->_transform->setQuaternion(glm::vec3(glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f)));
-			_rigidbodyComponent->_transform->speedSet(glm::linearRand(0.0f, _rigidbodyComponent->_transform->getMaxSpeed()));
+			_rigidbodyComponent->setQuaternion(glm::vec3(glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f)));
+			_rigidbodyComponent->speedSet(glm::linearRand(0.0f, _rigidbodyComponent->getMaxSpeed()));
 		}
 		break;
 	case ENUM_ITEM_MOVE_TYPE::ENUM_ITEM_MOVE_RAND_QUAT:
@@ -106,7 +106,7 @@ bool IFieldItem::moveLogicUpdate(float deltaTime)
 		if (_curRandomInterval > _randomInterval)
 		{
 			// set target quat
-			_rigidbodyComponent->_transform->speedSet(glm::linearRand(0.0f, _rigidbodyComponent->_transform->getMaxSpeed()));
+			_rigidbodyComponent->speedSet(glm::linearRand(0.0f, _rigidbodyComponent->getMaxSpeed()));
 		}
 		//mix cur quat -> target quat
 		break;

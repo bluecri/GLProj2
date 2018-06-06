@@ -7,7 +7,7 @@ class CommonMissileState;
 class ISpecifiedMissileState;
 
 class Entity;
-class Transform;
+class RigidbodyComponent;
 
 class IMissileGenerator
 {
@@ -38,5 +38,5 @@ protected:
 	ISpecifiedMissileState*	 _specifiedMissileState;
 
 	Entity* _bindedEntity;
-	Transform* _entityTransform;
+	RigidbodyComponent* _entityRigidbodyComponent;
 };

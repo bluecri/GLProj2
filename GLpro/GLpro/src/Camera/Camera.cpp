@@ -60,27 +60,27 @@ namespace CAMERA {
 
 	void Camera::SetWithLookAt(const glm::vec3 & pos, const glm::vec3 & lookat, const glm::vec3 & up)
 	{
-		_rigidbodyComponent->_transform->setVMatrixLookat(pos, lookat, up);
+		_rigidbodyComponent->setVMatrixLookat(pos, lookat, up);
 	}
 
 	void Camera::SetWithLookAt(const glm::vec3 & lookat, const glm::vec3 & up)
 	{
-		_rigidbodyComponent->_transform->setVMatrixLookat(lookat, up);
+		_rigidbodyComponent->setVMatrixLookat(lookat, up);
 	}
 
 	void Camera::camAccQuaternionYaw(const float & degree)
 	{
-		_rigidbodyComponent->_transform->accQuaternionYaw(degree * _mouseSpeed);
+		_rigidbodyComponent->accQuaternionYaw(degree * _mouseSpeed);
 	}
 
 	void Camera::camAccQuaternionPitch(const float & degree)
 	{
-		_rigidbodyComponent->_transform->accQuaternionPitch(degree * _mouseSpeed);
+		_rigidbodyComponent->accQuaternionPitch(degree * _mouseSpeed);
 	}
 
 	void Camera::camAccQuaternionRoll(const float & degree)
 	{
-		_rigidbodyComponent->_transform->accQuaternionRoll(degree * _keySpeed);
+		_rigidbodyComponent->accQuaternionRoll(degree * _keySpeed);
 	}
 
 	glm::mat4 & Camera::getRecentVPMat()
@@ -95,7 +95,7 @@ namespace CAMERA {
 
 	void Camera::updateRecentVPAndViewMat()
 	{
-		const glm::mat4& camWorldMat = _rigidbodyComponent->_transform->getWorldMatRef();
+		const glm::mat4& camWorldMat = _rigidbodyComponent->getWorldMatRef();
 
 		glm::vec3 tempEye = camWorldMat[3];
 		glm::vec3 fowardVec = camWorldMat[2];

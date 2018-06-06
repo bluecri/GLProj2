@@ -3,7 +3,6 @@
 #include "Resource\ModelManager.h"
 #include "Resource\TextureManager.h"
 
-#include "Transform.h"
 #include "../LightManager.h"
 #include "Camera\CameraManager.h"
 
@@ -146,13 +145,13 @@ void WINDOW::Window::mainLoop()
 		{
 			/*physics loop
 			*{
-			* rigidbody Comp에서 최상위 transform부터 dirty bit를 이용한 world matrix update 시작하며
-			*		delta 존재시 적용후 dirty on(O(n))	// transform 자식으로 collision을 넣어 collision update도 하면서 순회도중에 dirty init 하는 방법 존재.
+			* rigidbody Comp에서 최상위 RigidbodyComponent부터 dirty bit를 이용한 world matrix update 시작하며
+			*		delta 존재시 적용후 dirty on(O(n))
 			*		collision box update에 dirty & world matrix 사용
 			*		collision event push & collision message 남김
 			*		dirty bit init(O(n))
 			* }
-			* transform 개별 조작시(logic update) dirty,
+			* RigidbodyComponent 개별 조작시(logic update) dirty,
 			* collision message로 logic update
 			*/
 			GRigidbodyComponentManager->updateRigidbodyComps(dt);

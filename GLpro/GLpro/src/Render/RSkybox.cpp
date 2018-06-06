@@ -41,7 +41,7 @@ namespace RENDER
 		_shaderObj->bind();
 
 		// set camera view matrix(camera rotate mat * camera position mat)
-		Transform* cameraTransform = cam->_rigidbodyComponent->_transform;
+		RigidbodyComponent* cameraRigidbodyComponent = cam->_rigidbodyComponent;
 		glm::mat4 cameraViewMatrix = cam->getRecentViewMat();
 
 		// todo : use _div
@@ -51,7 +51,7 @@ namespace RENDER
 
 		for (auto it = _skyboxDrawElemContainer.begin(); it != _skyboxDrawElemContainer.end(); ) {
 			RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxRenderTarget = (*it)->first;
-			Transform* targetTransform = (*it)->second->_transform;
+			RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
 
 			if (skyboxRenderTarget->isBDeleted())
 			{
@@ -65,7 +65,7 @@ namespace RENDER
 				continue;
 			}
 
-			glm::mat4 totalModelMat = targetTransform->getWorldMat();
+			glm::mat4 totalModelMat = targetRigidbodyComponent->getWorldMat();
 
 			glm::mat4 tempMVP = cam->getCamProjMatRef() * cameraViewMatrix * totalModelMat;
 			_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, totalModelMat);

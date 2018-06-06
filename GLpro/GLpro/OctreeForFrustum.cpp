@@ -48,7 +48,7 @@ void OctreeForFrustum::insertSharedDrawElem(RENDER::RNormal::DrawElemContainer s
 			continue;
 
 		// update pos with world
-		sharedElem->first->setFrustumPos(sharedElem->second->_transform->getWorldPosVec());
+		sharedElem->first->setFrustumPos(sharedElem->second->getWorldPosVec());
 		sharedElem->first->onFrustumCull();		// default value = cull ON
 		insert(sharedElem->first);
 	}

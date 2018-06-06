@@ -7,7 +7,7 @@
 class ALSound;
 class ALSource;
 class ALListener;
-class Transform;
+class RigidbodyComponent;
 
 typedef struct ALCdevice_struct ALCdevice;
 typedef struct ALCcontext_struct ALCcontext;
@@ -22,7 +22,7 @@ public:
 
 	void loadWaveFile(std::string soundName, std::string soundFileName);	// create ALSound
 
-	ALSource* getNewALSource(std::string& soundName, Transform* transform, float pitch = 1.0f, float gain = 1.0f);	// create ALSource
+	ALSource* getNewALSource(std::string& soundName, RigidbodyComponent* rigidbodyComponent, float pitch = 1.0f, float gain = 1.0f);	// create ALSource
 	void updateALSource();
 	void updateALListenerWithWorldMat(const glm::mat4 & worldMat);
 

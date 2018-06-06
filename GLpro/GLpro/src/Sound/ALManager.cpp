@@ -26,7 +26,7 @@ void ALManager::loadWaveFile(std::string soundName, std::string soundFileName) {
 	m_nameToALSound.insert(std::make_pair(soundName, alSound));
 }
 
-ALSource * ALManager::getNewALSource(std::string & soundName, Transform * transform, float pitch, float gain)
+ALSource * ALManager::getNewALSource(std::string & soundName, RigidbodyComponent * rigidbodyComponent, float pitch, float gain)
 {
 	ALSound* targetALSound = getALSoundPtrWithName(soundName);
 	if (targetALSound == nullptr)
@@ -34,7 +34,7 @@ ALSource * ALManager::getNewALSource(std::string & soundName, Transform * transf
 		printf_s("[LOG] : Fail to find ALSound has %s name in ALManager::getNewALSource\n", soundName.c_str());
 		return nullptr;
 	}
-	ALSource * newALSource = new ALSource(transform, pitch, gain);
+	ALSource * newALSource = new ALSource(rigidbodyComponent, pitch, gain);
 	newALSource->bindSourceToALSound(targetALSound);
 
 	_ALSourceContainer.push_back(newALSource);
@@ -62,7 +62,7 @@ void ALManager::updateALSource()
 
 		// doopt : 재생중에만 update
 		if(!((*it)->_bDoDeleted))
-			(*it)->updatePos();		// _bDoDelete == true then transform is nullptr
+			(*it)->updatePos();		// _bDoDelete == true then RigidbodyComponent is nullptr
 
 		// check stop & play
 

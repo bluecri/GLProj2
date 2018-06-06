@@ -2,11 +2,11 @@
 #include "OBBCollisionComp.h"
 #include "AABBCollisionComp.h"
 #include "RigidbodyComponent.h"
-#include "./src/Transform.h"
+
 
 void OBBCollisionComp::updateWithRigidComp()
 {
-	_worldlMat = _rigidComp->_transform->getWorldMatRef() * _localMat;
+	_worldlMat = _rigidComp->getWorldMatRef() * _localMat;
 }
 
 void OBBCollisionComp::updateAABBForOctree()

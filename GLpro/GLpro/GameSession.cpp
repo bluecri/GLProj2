@@ -20,7 +20,6 @@
 #include "Fobj.h"
 
 #include "Canvas.h"
-#include "src/Transform.h"
 #include "RigidbodyComponent.h"
 #include "src/window.h"
 
@@ -142,9 +141,9 @@ void GameSession::preMade()
 
 	// player & camera attach
 	Player * newPlayer = new Player(premadeSession, planeModel, planeTexture, shaderMain);
-	//newPlayer->_rigidbodyComponent->_transform->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	newPlayer->_rigidbodyComponent->_transform->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
-	newPlayer->_rigidbodyComponent->_transform->setDirty();
+	//newPlayer->_rigidbodyComponent->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	newPlayer->_rigidbodyComponent->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
+	newPlayer->_rigidbodyComponent->setDirty();
 	newPlayer->setBRender(true);
 	newPlayer->init();
 	NormalMissileGenerator * normalMissileGenerator = new NormalMissileGenerator();
@@ -152,15 +151,15 @@ void GameSession::preMade()
 	newPlayer->addMissileGenerator(normalMissileGenerator);
 	
 	CAMERA::Camera** mainCam = GCameraManager->GetMainCamera();
-	//(*mainCam)->_rigidbodyComponent->_transform->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	(*mainCam)->_rigidbodyComponent->_transform->accModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
-	(*mainCam)->_rigidbodyComponent->_transform->setDirty();
+	//(*mainCam)->_rigidbodyComponent->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	(*mainCam)->_rigidbodyComponent->accModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
+	(*mainCam)->_rigidbodyComponent->setDirty();
 	//newPlayer->attachChildEntity(*mainCam);
 	
 	//ttest
 	//Player * testP = new Player(premadeSession, planeModel, planeTexture, shaderMain);
-	//testP->_rigidbodyComponent->_transform->accModelMatrix(glm::vec3(0.0f, 0.0f, 15.0f));
-	//testP->_rigidbodyComponent->_transform->setDirty();
+	//testP->_rigidbodyComponent->accModelMatrix(glm::vec3(0.0f, 0.0f, 15.0f));
+	//testP->_rigidbodyComponent->setDirty();
 	//testP->init();
 
 

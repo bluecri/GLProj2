@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CollisionComponent.h"
 #include "CollisionComponentManager.h"
-#include "./src/Transform.h"
 #include "RigidbodyComponent.h"
 #include "OBBCollisionComp.h"
 #include "AABBCollisionComp.h"
@@ -103,10 +102,10 @@ void CollisionComponentManager::collisionTestWithContainer(std::list<CollisionCo
 					elem->_bAlreadyVelocityUpdated = true;
 					potentialComp->_bAlreadyVelocityUpdated = true;
 
-					glm::vec3& v1 = elem->_rigidComp->_transform->getVelocityRef();
-					glm::vec3& v2 = potentialComp->_rigidComp->_transform->getVelocityRef();
-					float m1 = elem->_rigidComp->_transform->getMass();
-					float m2 = potentialComp->_rigidComp->_transform->getMass();
+					glm::vec3& v1 = elem->_rigidComp->getVelocityRef();
+					glm::vec3& v2 = potentialComp->_rigidComp->getVelocityRef();
+					float m1 = elem->_rigidComp->getMass();
+					float m2 = potentialComp->_rigidComp->getMass();
 
 					glm::vec3 v1Ret = v1 + m2*(v2 - v1) * 2.0f / (m1 + m2);
 					glm::vec3 v2Ret = v2 + m2*(v1 - v2) * 2.0f / (m1 + m2);

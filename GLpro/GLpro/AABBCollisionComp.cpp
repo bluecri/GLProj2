@@ -2,11 +2,10 @@
 #include "OBBCollisionComp.h"
 #include "AABBCollisionComp.h"
 #include "RigidbodyComponent.h"
-#include "./src/Transform.h"
 
 void AABBCollisionComp::updateWithRigidComp()
 {
-	const glm::mat4& worldMatRef = _rigidComp->_transform->getWorldMatRef();
+	const glm::mat4& worldMatRef = _rigidComp->getWorldMatRef();
 
 	// if this is AABB.. only update pos
 	for (int i = 0; i < 3; i++)

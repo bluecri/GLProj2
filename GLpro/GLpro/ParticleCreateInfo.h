@@ -8,7 +8,7 @@ namespace RENDER_TARGET {
 		class ParticleFObj;
 	}
 }
-class Transform;
+class RigidbodyComponent;
 
 class ParticleCreateInfo
 {
@@ -16,7 +16,7 @@ public:
 	//ParticleCreateInfo(bool _isOneParticlePerMultiFrame = true, int _frameVsParticle = 5, float life = 3.0f, float _spread = 0.5f, float _particleSizeStartRange = 0.05f, float _particleSizeEndRange = 0.1f);
 	ParticleCreateInfo(bool _isOneParticlePerMultiFrame, int _frameVsParticle = 5, float life = 3.0f, float _spread = 0.5f, float _particleSizeStartRange = 0.05f, float _particleSizeEndRange = 0.1f);
 	ParticleCreateInfo(int colorStartRange[4], int colorEndRange[4], glm::vec3 _mainDir, bool _isOneParticlePerMultiFrame, int _frameVsParticle, float life, float _spread, float _particleSizeStartRange = 0.05f, float _particleSizeEndRange = 0.1f);
-	void init(Transform* bindedTransform);
+	void init(RigidbodyComponent* bindedRigidbodyComponent);
 	void genNewParticles(RENDER_TARGET::PARTICLE::ParticleFObj *particleFObj);	// Generate multiple particles to FObj
 
 private:
@@ -35,7 +35,7 @@ public:
 	float	_particleSizeStartRange, _particleSizeEndRange;
 
 private:
-	Transform* _bindedTransform;		// for create Particleinfo
+	RigidbodyComponent* _bindedRigidbodyComponent;		// for create Particleinfo
 	int _countFrame;		//frame count
 
 };

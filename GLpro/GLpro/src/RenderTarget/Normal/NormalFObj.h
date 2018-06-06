@@ -19,7 +19,7 @@ namespace RESOURCE
 	class Texture;
 }
 
-class Transform;
+class RigidbodyComponent;
 
 namespace RENDER_TARGET
 {
@@ -51,7 +51,7 @@ namespace RENDER_TARGET
 			float getFrustumRadius();
 
 			void setFrustumPos(glm::vec3& pos);
-			void setFrustumPos(Transform * transform);
+			void setFrustumPos(RigidbodyComponent * rigidbodyComponent);
 
 			glm::vec3& getFrustumPosRef();
 			void setFrustumCompensationPos(glm::vec3& compen_pos);

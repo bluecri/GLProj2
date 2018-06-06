@@ -7,14 +7,14 @@
 IMissileGenerator::IMissileGenerator()
 {
 	_bindedEntity = nullptr;
-	_entityTransform = nullptr;
+	_entityRigidbodyComponent = nullptr;
 	_bindedMissileGeneratorStorage = nullptr;
 }
 
 void IMissileGenerator::setBindedEntity(Entity * entity)
 {
 	_bindedEntity = entity;
-	_entityTransform = _bindedEntity->_rigidbodyComponent->_transform;
+	_entityRigidbodyComponent = _bindedEntity->_rigidbodyComponent;
 }
 
 void IMissileGenerator::setBindedMissileGenerator(MissileGeneratorStorage * bindedMissileGeneratorStorage)

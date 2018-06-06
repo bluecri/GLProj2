@@ -5,7 +5,6 @@
 namespace RESOURCE { class Model;  class Texture; }
 namespace SHADER { class ShaderMain; }
 
-class Transform;
 class ALSource;
 class GameSession;
 class Entity;

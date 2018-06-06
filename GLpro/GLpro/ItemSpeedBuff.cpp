@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ItemSpeedBuff.h"
 #include "CollisionComponent.h"
-#include "src/Transform.h"
 #include "src/Resource/ModelManager.h"
 #include "src/Resource/TextureManager.h"
 #include "src/Shader/ShaderManager.h"
@@ -13,7 +12,7 @@ ItemSpeedBuff::ItemSpeedBuff(GameSession * gSession, glm::vec3& genPos)
 		GShaderManager->m_addShader<SHADER::ShaderMain>(ENUM_SHADER_TYPE::SHADER_TYPE_MAIN, "data/Shader/ShadowMapping.vertexshader", "data/Shader/ShadowMapping.fragmentshader")
 	)
 {
-	_rigidbodyComponent->_transform->setModelMatrix(genPos);
+	_rigidbodyComponent->setModelMatrix(genPos);
 }
 
 void ItemSpeedBuff::itemInit()
@@ -35,7 +34,7 @@ void ItemSpeedBuff::logicUpdate(float deltaTime, float acc)
 void ItemSpeedBuff::collisionFunc(CollisionComponent * collisionComp)
 {
 	// collision event 처리 memeber 함수
-	Entity* entity = collisionComp->_rigidComp->_bindedEntity;
+	Entity* entity = collisionComp->_rigidComp->getBindedEntity();
 	int entityType = entity->getType();
 
 	_buffCount = 1;

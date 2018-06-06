@@ -65,7 +65,7 @@ namespace RENDER
 
 		for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end(); ) {
 			RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
-			Transform* targetTransform = (*it)->second->_transform;
+			RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
 
 			if (normalRenderTarget->isBDeleted())
 			{
@@ -81,7 +81,7 @@ namespace RENDER
 
 			normalRenderTarget->_model->bind();		// Model buffer bind
 
-			mat4 targetTotalMat = depthBiasMVP * targetTransform->getWorldMat();
+			mat4 targetTotalMat = depthBiasMVP * targetRigidbodyComponent->getWorldMat();
 			GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->depthMatrixID, targetTotalMat);	// bind global old shader
 			normalRenderTarget->_model->render();
 
@@ -117,7 +117,7 @@ namespace RENDER
 
 		for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end(); ) {
 			RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
-			Transform* targetTransform = (*it)->second->_transform;
+			RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
 
 			if (normalRenderTarget->isBDeleted())
 			{
@@ -137,7 +137,7 @@ namespace RENDER
 			normalRenderTarget->_texture->bind();	// real texture bind to #
 			_shaderObj->loadInt(_shaderObj->m_textureID, 0);	// set shader use for # shader
 
-			mat4 targetModelMat = targetTransform->getWorldMat();
+			mat4 targetModelMat = targetRigidbodyComponent->getWorldMat();
 			mat4 mvpMat = cam->getRecentVPMat() * targetModelMat;
 			_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, targetModelMat);
 			_shaderObj->loadMatrix4(_shaderObj->m_MVPMatrixID, mvpMat);

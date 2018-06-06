@@ -165,9 +165,6 @@
     <ClCompile Include="src\Entity.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\Transform.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\Control\Control.cpp">
       <Filter>소스 파일\src\control</Filter>
     </ClCompile>
@@ -191,9 +188,6 @@
     </ClCompile>
     <ClCompile Include="src\Resource\TextureManager.cpp">
       <Filter>소스 파일\src\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TransformBuilder.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>소스 파일\src\camera</Filter>
@@ -440,9 +434,6 @@
     <ClInclude Include="src\Entity.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\Transform.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="src\Control\Control.h">
       <Filter>소스 파일\src\control</Filter>
     </ClInclude>
@@ -499,9 +490,6 @@
     </ClInclude>
     <ClInclude Include="src\RenderTarget\Skybox\SkyboxFObj.h">
       <Filter>소스 파일\src\renderTarget\skybox</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TransfromBuilder.h">
-      <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera\Camera.h">
       <Filter>소스 파일\src\camera</Filter>

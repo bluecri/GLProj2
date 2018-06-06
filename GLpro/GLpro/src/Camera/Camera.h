@@ -1,7 +1,6 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
-#include "../Transform.h"
 #include "../Entity.h"
 
 namespace CAMERA 

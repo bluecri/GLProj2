@@ -9,7 +9,6 @@
 #include "RenderManager.h"
 #include "CollisionComponent.h"
 #include "src/Control/InputManager.h"
-#include "src/Transform.h"
 
 #include "src/Camera/CameraManager.h"
 #include "src/Camera/Camera.h"
@@ -34,7 +33,7 @@ void Player::inputProgress(long long inputKey)
 	_bShotKeyDown = false;
 	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::MOVE_LEFT))
 	{
-		_rigidbodyComponent->_transform->accRotationMatrix(_angleSpeedVec[0], glm::vec3(1.0f, 0.0f, 0.0f));
+		_rigidbodyComponent->accRotationMatrix(_angleSpeedVec[0], glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 
 	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::MOVE_RIGHT))
@@ -42,31 +41,31 @@ void Player::inputProgress(long long inputKey)
 		// ttest 
 		CAMERA::Camera *maincam = *(GCameraManager->GetMainCamera());
 		RigidbodyComponent* testComp = this->_rigidbodyComponent;
-		//maincam->_rigidbodyComponent->_transform->setMove(false);
+		//maincam->_rigidbodyComponent->setMove(false);
 
 		std::cout << "cam local" << std::endl;
-		maincam->_rigidbodyComponent->_transform->printLocalModel();
-		maincam->_rigidbodyComponent->_transform->printLocalRotMat();
+		maincam->_rigidbodyComponent->printLocalModel();
+		maincam->_rigidbodyComponent->printLocalRotMat();
 
 		std::cout << "transform local" << std::endl;
-		testComp->_transform->printLocalModel();
-		testComp->_transform->printLocalRotMat();
+		testComp->printLocalModel();
+		testComp->printLocalRotMat();
 
 		std::cout << "cam wolrd" << std::endl;
-		maincam->_rigidbodyComponent->_transform->printWorldMat();
+		maincam->_rigidbodyComponent->printWorldMat();
 
 		std::cout << "transform world" << std::endl;
-		testComp->_transform->printWorldMat();
+		testComp->printWorldMat();
 	}
 
 	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::MOVE_UP))
 	{
-		_rigidbodyComponent->_transform->speedAdd(_deltaSpeed);
+		_rigidbodyComponent->speedAdd(_deltaSpeed);
 	}
 
 	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::MOVE_DOWN))
 	{
-		_rigidbodyComponent->_transform->speedAdd(-_deltaSpeed);
+		_rigidbodyComponent->speedAdd(-_deltaSpeed);
 	}
 
 	if (GInputManager->controlCheck(inputKey, ENUM_BEHAVIOR::CLICK_L_DOWN))
@@ -99,7 +98,7 @@ void Player::init()
 
 	_missileGeneratorStorage = new MissileGeneratorStorage(PLAYER_DEFAULT_WEAPON_MAX_NUM, this);
 
-	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent->_transform);
+	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent);
 
 	glm::mat4 collisionBoxMat = glm::mat4();
 	collisionBoxMat[3][2] += 0.2f;	//collision box pos º¸Á¤
@@ -110,7 +109,7 @@ void Player::init()
 void Player::logicUpdate(float deltaTime, float acc)
 {
 	collisionLogicUpdate();		// update collision event & clear collision info
-	GALManager->updateALListenerWithWorldMat(_rigidbodyComponent->_transform->getWorldMatRef());	 // listener pos update
+	GALManager->updateALListenerWithWorldMat(_rigidbodyComponent->getWorldMatRef());	 // listener pos update
 
 	if (_curHp < 0)
 	{

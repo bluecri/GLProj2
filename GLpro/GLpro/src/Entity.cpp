@@ -1,7 +1,6 @@
 #include "./Entity.h"
 #include "../RigidbodyComponentManager.h"
 #include "../RigidbodyComponent.h"
-#include "./Transform.h"
 
 #include "../GameSession.h"
 
@@ -44,7 +43,7 @@ Entity::Entity(std::string name, GameSession * gSession, int type)
 }
 
 Entity::~Entity() {
-	_rigidbodyComponent->_bdoDelete = true;
+	_rigidbodyComponent->setBDeleted();
 	
 	detachParentEntity();
 }
@@ -141,7 +140,7 @@ Entity * Entity::detachChildEntityWithID(int id)
 		if (elem->getID() == id)
 		{
 			// delete child -> parent(this)
-			elem->_rigidbodyComponent->_transform->detachParentTransform();
+			elem->_rigidbodyComponent->detachParentRigidbodyComponent();
 			elem->_parentEntity = nullptr;
 
 			// delete parant(this) -> child
@@ -160,7 +159,7 @@ Entity * Entity::detachChildEntityWithName(const std::string & name)
 		if (elem->getNameRef().compare(name) == 0)
 		{
 			// delete child -> parent(this)
-			elem->_rigidbodyComponent->_transform->detachParentTransform();
+			elem->_rigidbodyComponent->detachParentRigidbodyComponent();
 			elem->_parentEntity = nullptr;
 
 			// delete parant(this) -> child
@@ -183,7 +182,7 @@ void Entity::attachChildEntity(Entity * childEntity)
 	if (childEntity->_parentEntity != nullptr)
 		childEntity->detachParentEntity();
 
-	_rigidbodyComponent->_transform->attachChildTransform(childEntity->_rigidbodyComponent->_transform);
+	_rigidbodyComponent->attachChildRigidbodyComponent(childEntity->_rigidbodyComponent);
 	
 	_childEntityList.push_back(childEntity);
 	childEntity->_parentEntity = this;

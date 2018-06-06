@@ -22,7 +22,7 @@ namespace RENDER
 	std::shared_ptr<RParticle::DrawElement> RParticle::addToDrawList(FObjElem* particleFObj, RigidbodyComponent * rigidbodyComponent)
 	{
 		ParticleCreateInfo* particleCreateInfo = new ParticleCreateInfo(true);
-		particleCreateInfo->init(rigidbodyComponent->_transform);
+		particleCreateInfo->init(rigidbodyComponent);
 
 		auto elem = std::shared_ptr<RParticle::DrawElement>(new RParticle::DrawElement(particleFObj, particleCreateInfo), [](auto ptr) {
 			delete ptr->first;
@@ -102,7 +102,7 @@ namespace RENDER
 	*/
 	void RParticle::beforeDraw(float deltaTime)
 	{
-		glm::vec3 camPosVec = (*_targetCamera)->_rigidbodyComponent->_transform->getWorldPosVec();
+		glm::vec3 camPosVec = (*_targetCamera)->_rigidbodyComponent->getWorldPosVec();
 		for (auto it = _particleDrawElemContainer.begin(); it != _particleDrawElemContainer.end(); )
 		{
 			RENDER_TARGET::PARTICLE::ParticleFObj* particleFObj = (*it)->first;

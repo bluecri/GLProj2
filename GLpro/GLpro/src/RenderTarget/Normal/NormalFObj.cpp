@@ -6,7 +6,7 @@
 #include "../../Resource/ModelManager.h"
 #include "../../Resource/TextureManager.h"
 
-#include "../../Transform.h"
+#include "../../../RigidbodyComponent.h"
 namespace RENDER_TARGET
 {
 	namespace NORMAL
@@ -91,9 +91,9 @@ namespace RENDER_TARGET
 		{
 			_frustumPos = pos;
 		}
-		void NormalFObj::setFrustumPos(Transform * transform)
+		void NormalFObj::setFrustumPos(RigidbodyComponent * rigidbodyComponent)
 		{
-			_frustumPos = _frustumPosCompensation + transform->getWorldPosVec();
+			_frustumPos = _frustumPosCompensation + rigidbodyComponent->getWorldPosVec();
 		}
 		glm::vec3 & NormalFObj::getFrustumPosRef()
 		{

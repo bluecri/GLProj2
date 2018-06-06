@@ -10,7 +10,6 @@
 #include "RenderManager.h"
 #include "CollisionComponent.h"
 #include "src/Control/InputManager.h"
-#include "src/Transform.h"
 
 #include "src/Camera/CameraManager.h"
 #include "src/Camera/Camera.h"
@@ -28,7 +27,6 @@
 
 #include "GameSession.h"
 #include "./src/window.h"
-#include "./src/Transform.h"
 
 #include "ParticleEntity.h"
 #include "AimTextUIObj.h"
@@ -114,7 +112,7 @@ void Player::init()
 
 	_missileGeneratorStorage = new MissileGeneratorStorage(PLAYER_DEFAULT_WEAPON_MAX_NUM, this);
 
-	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent->_transform);
+	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent);
 	
 	glm::mat4 collisionBoxMat = glm::mat4();
 	collisionBoxMat[3][2] += 0.2f;	//collision box pos 보정
@@ -129,7 +127,7 @@ void Player::init()
 void Player::logicUpdate(float deltaTime, float acc)
 {
 	collisionLogicUpdate();		// update collision event & clear collision info
-	GALManager->updateALListenerWithWorldMat(_rigidbodyComponent->_transform->getWorldMatRef());	 // listener pos update
+	GALManager->updateALListenerWithWorldMat(_rigidbodyComponent->getWorldMatRef());	 // listener pos update
 	
 	if(_curHp < 0)
 	{
@@ -168,7 +166,7 @@ void Player::logicUpdate(float deltaTime, float acc)
 void Player::collisionFunc(CollisionComponent * collisionComp)
 {
 	// collision event 처리 memeber 함수
-	Entity* entity = collisionComp->_rigidComp->_bindedEntity;
+	Entity* entity = collisionComp->_rigidComp->getBindedEntity();
 	int entityType = entity->getType();
 
 	// missile collision logic은 모두 missile에서.
@@ -230,19 +228,19 @@ void Player::playerMovementProgress(long long transferKeyInput)
 	if (roll != 0)
 		maincam->camAccQuaternionRoll((float)roll);
 	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_UP))
-		_rigidbodyComponent->_transform->speedAdd(_deltaSpeed);
+		_rigidbodyComponent->speedAdd(_deltaSpeed);
 
 	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_DOWN))
-		_rigidbodyComponent->_transform->speedAdd(-_deltaSpeed);
+		_rigidbodyComponent->speedAdd(-_deltaSpeed);
 
 	// set cam position (follow plane)
-	maincam->_rigidbodyComponent->_transform->setModelMatrix(_rigidbodyComponent->_transform->getModelVec());
-	maincam->_rigidbodyComponent->_transform->translateModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
+	maincam->_rigidbodyComponent->setModelMatrix(_rigidbodyComponent->getModelVec());
+	maincam->_rigidbodyComponent->translateModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
 
 	// plane quaternion rotation to camera rotation
-	_rigidbodyComponent->_transform->accQuaternionMix(maincam->_rigidbodyComponent->_transform, _maxAngle, _angleSpeed);
+	_rigidbodyComponent->accQuaternionMix(maincam->_rigidbodyComponent, _maxAngle, _angleSpeed);
 
 	// aim text update logic
-	_aimTextUIObj->setAimPositionWithQuat(_rigidbodyComponent->_transform->getLocalQuarternionRef(), maincam->_rigidbodyComponent->_transform->getLocalQuarternionRef());
+	_aimTextUIObj->setAimPositionWithQuat(_rigidbodyComponent->getLocalQuarternionRef(), maincam->_rigidbodyComponent->getLocalQuarternionRef());
 
 }

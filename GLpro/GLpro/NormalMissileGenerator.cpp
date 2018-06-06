@@ -7,7 +7,6 @@
 #include "CommonNormalMissileInfo.h"
 #include "SpecifiedNormalMissileInfo.h"
 #include "NormalMissile.h"
-#include "./src/Transform.h"
 #include "MissileGeneratorStorage.h"
 #include "GameSession.h"
 
@@ -27,7 +26,7 @@ void NormalMissileGenerator::genMissile()
 	}
 
 	NormalMissile* normalMissile = new NormalMissile(_bindedEntity, _bindedEntity->_gameSession, _commonMissileState);
-	normalMissile->init(_entityTransform->getWorldMatRef(), static_cast<SpecifiedNormalMissileState*>(_specifiedMissileState));
+	normalMissile->init(_entityRigidbodyComponent->getWorldMatRef(), static_cast<SpecifiedNormalMissileState*>(_specifiedMissileState));
 
 	normalMissile->_startSound->play();		// gen sound play
 	printf_s("[Log] : missile gened\n");

@@ -1,7 +1,6 @@
 #include "ParticleEntity.h"
 
 #include "RenderManager.h"
-#include "src/Transform.h"
 #include "ParticleFObj.h"
 #include "ParticleCreateInfo.h"
 
@@ -19,8 +18,8 @@ ParticleEntity::~ParticleEntity()
 
 void ParticleEntity::init(glm::vec3& localPos, glm::quat& localQuat, glm::vec3 mainDir, bool bOneParticlePerMultiFrame, const float& particleLife, const float& frameVsParticle)
 {
-	_rigidbodyComponent->_transform->setModelMatrix(localPos);
-	_rigidbodyComponent->_transform->setQuaternion(localQuat);
+	_rigidbodyComponent->setModelMatrix(localPos);
+	_rigidbodyComponent->setQuaternion(localQuat);
 
 	_rElemInParticle->second->_mainDir = mainDir;
 	_rElemInParticle->second->_isOneParticlePerMultiFrame = bOneParticlePerMultiFrame;
