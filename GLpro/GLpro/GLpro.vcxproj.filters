@@ -154,6 +154,9 @@
     <Filter Include="소스 파일\components\frustum">
       <UniqueIdentifier>{04448d8f-3396-43f1-892b-cfc1b2a86718}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\selfTarget\BuffList">
+      <UniqueIdentifier>{b1f222f2-3a7c-4e99-a40d-9be3dbdee699}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -808,6 +811,12 @@
     </ClInclude>
     <ClInclude Include="OctreeForFrustum.h">
       <Filter>소스 파일\components\frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="SpeedBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget\BuffList</Filter>
+    </ClInclude>
+    <ClInclude Include="IBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

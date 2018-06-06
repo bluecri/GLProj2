@@ -149,6 +149,7 @@
     <ClCompile Include="EmptyMissileGenerator.cpp" />
     <ClInclude Include="AABBCollisionComp.h" />
     <ClInclude Include="AimTextUIObj.h" />
+    <ClInclude Include="IBuff.h" />
     <ClInclude Include="ItemAmmoRegen.h" />
     <ClInclude Include="ItemSelfArmorRegen.h" />
     <ClInclude Include="BelowMissileStorageUIObj.h" />
@@ -315,6 +316,7 @@
     <ClInclude Include="ShadowBufferTextureShader.h" />
     <ClInclude Include="SkyboxGObject.h" />
     <ClInclude Include="ItemSpeedBuff.h" />
+    <ClInclude Include="SpeedBuff.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\objectLoader.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\vboindexer.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\Vertex.h" />
