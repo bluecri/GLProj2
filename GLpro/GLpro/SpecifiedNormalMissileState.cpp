@@ -3,6 +3,7 @@
 
 #include "EnumMissileType.h"
 #include "SpecifiedNormalMissileInfo.h"
+#include "BuffSum.h"
 
 SpecifiedNormalMissileState::SpecifiedNormalMissileState()
 {
@@ -27,5 +28,52 @@ void SpecifiedNormalMissileState::initSpecifiedState(ISpecifiedMissileInfo * inf
 {
 	info->doubleDispatchInit(this);
 	return;
+}
+
+void SpecifiedNormalMissileState::transferBuffSum(BuffSum * buffSum, ISpecifiedMissileState * originState)
+{
+	SpecifiedNormalMissileState* specifiedOriginState = static_cast<SpecifiedNormalMissileState*>(originState);
+	
+	if (buffSum->bModify[ENUM_BUFFSUM_MODIFY_SHOT_DMG])
+	{
+		_dmg = specifiedOriginState->_dmg * buffSum->mult[ENUM_BUFFSUM_MODIFY_SHOT_DMG]
+			+ buffSum->acc[ENUM_BUFFSUM_MODIFY_SHOT_DMG];
+	}
+
+	if (buffSum->bModify[ENUM_BUFFSUM_MODIFY_SHOT_SPEED])
+	{
+		_firstSpeed = specifiedOriginState->_firstSpeed * buffSum->mult[ENUM_BUFFSUM_MODIFY_SHOT_SPEED]
+			+ buffSum->acc[ENUM_BUFFSUM_MODIFY_SHOT_SPEED];
+	}
+
+	if (buffSum->bModify[ENUM_BUFFSUM_MODIFY_SHOT_MAXSPEED])
+	{
+		_maxSpeed = specifiedOriginState->_maxSpeed * buffSum->mult[ENUM_BUFFSUM_MODIFY_SHOT_MAXSPEED]
+			+ buffSum->acc[ENUM_BUFFSUM_MODIFY_SHOT_MAXSPEED];
+	}
+
+	if (buffSum->bModify[ENUM_BUFFSUM_MODIFY_SHOT_HITCOUNT])
+	{
+		_hitCount = specifiedOriginState->_hitCount * buffSum->mult[ENUM_BUFFSUM_MODIFY_SHOT_HITCOUNT]
+			+ buffSum->acc[ENUM_BUFFSUM_MODIFY_SHOT_HITCOUNT];
+	}
+
+	if (buffSum->bModify[ENUM_BUFFSUM_MODIFY_SHOT_HITINTERVAL])
+	{
+		_hitInterval = specifiedOriginState->_hitInterval * buffSum->mult[ENUM_BUFFSUM_MODIFY_SHOT_HITINTERVAL]
+			+ buffSum->acc[ENUM_BUFFSUM_MODIFY_SHOT_HITINTERVAL];
+	}
+
+	if (buffSum->bModify[ENUM_BUFFSUM_MODIFY_SHOT_LIFETIME])
+	{
+		_lifeTime = specifiedOriginState->_lifeTime * buffSum->mult[ENUM_BUFFSUM_MODIFY_SHOT_LIFETIME]
+			+ buffSum->acc[ENUM_BUFFSUM_MODIFY_SHOT_LIFETIME];
+	}
+
+	if (buffSum->bModify[ENUM_BUFFSUM_MODIFY_SHOT_MASS])
+	{
+		_mass = specifiedOriginState->_mass * buffSum->mult[ENUM_BUFFSUM_MODIFY_SHOT_MASS]
+			+ buffSum->acc[ENUM_BUFFSUM_MODIFY_SHOT_MASS];
+	}
 }
 

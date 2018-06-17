@@ -8,6 +8,7 @@
 #include "CollisionComponent.h"
 
 IGameObject::IGameObject(int type, GameSession * gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
+	: Entity(gSession, type)
 {
 	_rNormal = GRendermanager->getRRender<RENDER::RNormal, SHADER::ShaderMain>(shadermain);
 	registeredElemInRenderer = _rNormal->addDrawElem(new RENDER_TARGET::NORMAL::NormalFObj(model, texture), _rigidbodyComponent);

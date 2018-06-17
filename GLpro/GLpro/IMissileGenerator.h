@@ -10,7 +10,7 @@ class ISpecifiedMissileInfo;
 
 class Entity;
 class RigidbodyComponent;
-class BuffInfo;
+class BuffSum;
 
 class IMissileGenerator
 {
@@ -18,7 +18,7 @@ public:
 	IMissileGenerator(ISpecifiedMissileState * allocedCurState, ISpecifiedMissileState * allocedOriginState);
 	virtual void genMissile() = 0;
 	virtual void updateTimer(float deltaTime, float acc) = 0;
-	virtual void modifyCurMissileStateWithBuffInfo(BuffInfo* buffInfo) = 0;
+	virtual void transferBuffSum(BuffSum* buffSum) = 0;
 
 
 	void initBindedEntityAndMissileGenerator(Entity* entity, MissileGeneratorStorage* bindedMissileGeneratorStorage);
@@ -31,7 +31,6 @@ public:
 	ISpecifiedMissileState* getCurISpecifiedMissileState();
 	Entity*					getBindedEntity();
 	
-private:
 
 protected:
 	MissileGeneratorStorage* _bindedMissileGeneratorStorage;
@@ -42,6 +41,8 @@ protected:
 	ISpecifiedMissileState*		_originSpecifiedMissileState;
 	ISpecifiedMissileState*		_curSpecifiedMissileState;
 
-	Entity* _bindedEntity;
-	RigidbodyComponent* _entityRigidbodyComponent;
+	Entity*						_bindedEntity;
+	RigidbodyComponent*			_entityRigidbodyComponent;
+
+	float						_timerMissileDelay;
 };

@@ -9,6 +9,8 @@
 #include "./src/Shader/ShaderManager.h"
 #include "./src/Shader/ShaderMain.h"
 
+#include "BuffSum.h"
+
 CommonMissileState::CommonMissileState()
 {
 	_missileModel = nullptr;
@@ -27,3 +29,13 @@ void CommonMissileState::initCommonState(ICommonMissileInfo * commonMissileInfo)
 
 	_shotDelay = commonMissileInfo->_shotDelay;
 }
+
+void CommonMissileState::transferBuffSum(BuffSum * buffSum, CommonMissileState * originState)
+{
+	if (buffSum->bModify[ENUM_BUFFSUM_MODIFY_PLANE_DELTASPEED])
+	{
+		_shotDelay = originState->_shotDelay * buffSum->mult[ENUM_BUFFSUM_MODIFY_SHOT_DELAY]
+			+ buffSum->acc[ENUM_BUFFSUM_MODIFY_SHOT_DELAY];
+	}
+}
+

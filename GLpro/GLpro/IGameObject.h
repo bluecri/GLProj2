@@ -21,12 +21,12 @@ public:
 	IGameObject(int type, GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
 	~IGameObject();
 
-	virtual void			setBRender(bool bRender) override;
-	virtual void			setCollisionTest(bool bCollision) override;
 	void					initCollisionComponent(CollisionComponent* collisionComp);
 
+	virtual void			setBRender(bool bRender) override;
+	virtual void			setCollisionTest(bool bCollision) override;
+
 	RENDER::RNormal*		_rNormal;		//which rbox get(which shader? use same rbox)
-	CollisionComponent*		_collisionComp;
 
 protected:
 	void					collisionLogicUpdate();									// collision events Ã³¸®
@@ -34,4 +34,5 @@ protected:
 
 private:
 	std::shared_ptr<RENDER::RNormal::DrawElement> registeredElemInRenderer;
+	CollisionComponent*		_collisionComp;
 };

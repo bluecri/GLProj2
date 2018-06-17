@@ -21,6 +21,6 @@ void EmptyMissileGenerator::updateTimer(float deltaTime, float acc)
 	return;
 }
 
-void EmptyMissileGenerator::modifyCurMissileStateWithBuffInfo(BuffInfo * buffInfo)
+void EmptyMissileGenerator::transferBuffSum(BuffSum * buffSum)
 {
 }

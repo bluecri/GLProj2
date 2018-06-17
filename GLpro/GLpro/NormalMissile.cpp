@@ -17,8 +17,9 @@
 NormalMissile::NormalMissile(Entity* fromEntity, GameSession* gSession, CommonMissileState* commonMissileState)
 	: IMissile(ENUM_ENTITY_TYPE::ENUM_ENTITY_MISSILE_NORMAL, gSession, fromEntity, commonMissileState->_missileModel, commonMissileState->_missileTexture, commonMissileState->_missileShaderMain)
 {
-	_collisionComp = GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, commonMissileState->_collisionBoxMat, commonMissileState->_missileCollisionBoxAxis);
-	_collisionComp->setCollisionVelocityUpdate(false);
+	CollisionComponent* newComp = GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, commonMissileState->_collisionBoxMat, commonMissileState->_missileCollisionBoxAxis);
+	newComp->setCollisionVelocityUpdate(false);
+	initCollisionComponent(newComp);
 }
 
 NormalMissile::~NormalMissile()
@@ -50,6 +51,7 @@ void NormalMissile::initNormalMissile(const glm::mat4 & localMissileMat)
 
 void NormalMissile::initNormalMissile(const glm::mat4 & localMissileMat, SpecifiedNormalMissileState * specifiedNormalMissileState)
 {
+	_missileState = new SpecifiedNormalMissileState();		// copy state (use default)
 	*_missileState = *specifiedNormalMissileState;		// copy state
 
 	_rigidbodyComponent->setMass(_missileState->_mass);
@@ -96,18 +98,16 @@ void NormalMissile::collisionFunc(CollisionComponent * collisionComp)
 		return;
 	}
 
-
 	// missile collision logic은 모두 missile에서.
-
 	switch (entityType)
 	{
 	case ENUM_ENTITY_PLANE_PLAYER:
 	case ENUM_ENTITY_ENEMY:
 		IPlane* iPlane;
 		iPlane = static_cast<IPlane*>(entity);
-		if (iPlane->getNotDmgedTime() > iPlane->getCurPlaneInfo()->_notDmgedTime)
+		if (iPlane->isCanBeDamaged())
 		{
-			iPlane->getCurPlaneInfo()->_hp -= getDmg();
+			iPlane->planeDamaged(_missileState->_dmg, false);
 			afterDmgOther();
 		}
 		break;

@@ -1,30 +1,38 @@
 #include "IPlane.h"
 
-#include "src/RenderTarget/Normal/NormalFObj.h"
 #include "RenderManager.h"
 #include "src/Render/RNormal.h"
+#include "src/RenderTarget/Normal/NormalFObj.h"
 #include "src/Shader/ShaderMain.h"
-#include "CollisionComponent.h"
-#include "MissileGeneratorStorage.h"
+
 #include "RigidbodyComponent.h"
+#include "CollisionComponent.h"
+
+#include "GameSession.h"
 #include "PlaneInfo.h"
+#include "MissileGeneratorStorage.h"
+
+#include "IBuff.h"
+#include "BuffSum.h"
+#include "BuffManager.h"
 
 IPlane::IPlane(int type, GameSession* gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IGameObject(type, gSession, model, texture, shadermain)
 {
 	_curPlaneInfo = nullptr;
 	_originPlaneInfo = nullptr;
+	_buffManager = new BuffManager();
+	_timeStampNotDmgedTime = -100.0f;
 }
 
 IPlane::~IPlane()
 {
-	_collisionComp->setDeleted(true);
 }
 
-void IPlane::initIPlane(PlaneInfo * planeInfo, int missileStorageNum)
+void IPlane::initIPlane(PlaneInfo * curPlaneInfo, PlaneInfo * originPlaneInfo, int missileStorageNum)
 {
-	_curPlaneInfo = planeInfo;
-	*_originPlaneInfo = *_curPlaneInfo;
+	_curPlaneInfo = curPlaneInfo;
+	_originPlaneInfo = originPlaneInfo;
 	_missileGeneratorStorage = new MissileGeneratorStorage(missileStorageNum, this);
 }
 
@@ -59,7 +67,7 @@ MissileGeneratorStorage * IPlane::getMissileGeneratorStorage()
 
 float IPlane::getMaxSpeed()
 {
-	return _curPlaneInfo->_speed;
+	return _originPlaneInfo->_maxSpeed;
 }
 
 float IPlane::getSpeed()
@@ -72,7 +80,48 @@ float IPlane::getSpeedPerMaxSpeedRatio()
 	return getSpeed() / getMaxSpeed();
 }
 
-float IPlane::getNotDmgedTime()
+bool IPlane::isCanBeDamaged()
 {
-	return _notDmgedTime;
+	if (_gameSession->getGSessionStartTimeStamp() - _timeStampNotDmgedTime > _curPlaneInfo->_notDmgedTime)
+		return true;
+	return false;
+}
+
+void IPlane::notDamagedTimeStampWrite()
+{
+	_timeStampNotDmgedTime = _gameSession->getGSessionStartTimeStamp();
+}
+
+void IPlane::planeDamaged(int dmg, bool turnOnNotDamaged)
+{
+	if (turnOnNotDamaged)
+	{
+		notDamagedTimeStampWrite();
+	}
+
+	if (_curPlaneInfo->_armor < dmg)
+	{
+		_curPlaneInfo->_hp -= dmg - _curPlaneInfo->_armor;
+		_curPlaneInfo->_armor = 0;
+	}
+	else
+	{
+		_curPlaneInfo->_armor -= dmg;
+	}
+}
+
+BuffManager * IPlane::getBuffManager()
+{
+	return _buffManager;
+}
+
+void IPlane::transferBuffSum(BuffSum* buffSum)
+{
+	// adjust buffSum
+	_bInvisible = buffSum->bOnce[ENUM_BUFFSUM_ONCE_PLANE_INVISIBLE];
+	_bOverwhelming = buffSum->bOnce[ENUM_BUFFSUM_ONCE_PLANE_OVERWHELMING];
+	_bRandomDirection = buffSum->bOnce[ENUM_BUFFSUM_ONCE_PLANE_RANDOM_DIRECTION];
+
+	_curPlaneInfo->transferBuffSum(buffSum, _originPlaneInfo);
+	_missileGeneratorStorage->transferBuffSum(buffSum);
 }

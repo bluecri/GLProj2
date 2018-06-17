@@ -12,15 +12,18 @@
 
 #include "src/Sound/ALSource.h"
 
+#include "BuffSum.h"
+
 NormalMissileGenerator::NormalMissileGenerator()
 	: IMissileGenerator(new SpecifiedNormalMissileState(), new SpecifiedNormalMissileState())
 {
 	_missileType = ENUM_MISSILE_TYPE::ENUM_MISSILE_TYPE_NORMAL;
+	_bShotDisable = false;
 }
 
 void NormalMissileGenerator::genMissile()
 {
-	if (_curMissileDelay < _curCommonMissileState->_shotDelay)
+	if (_timerMissileDelay < _curCommonMissileState->_shotDelay || _bShotDisable)
 	{
 		return;
 	}
@@ -29,12 +32,12 @@ void NormalMissileGenerator::genMissile()
 	normalMissile->initNormalMissile(_entityRigidbodyComponent->getWorldMatRef(), static_cast<SpecifiedNormalMissileState*>(_curSpecifiedMissileState));
 
 	normalMissile->_startSound->play();		// gen sound play
-	_curMissileDelay = 0.0f;
+	_timerMissileDelay = 0.0f;
 }
 
 void NormalMissileGenerator::updateTimer(float deltaTime, float acc)
 {
-	_curMissileDelay += deltaTime;
+	_timerMissileDelay += deltaTime;
 }
 
 void NormalMissileGenerator::initNormalMissileGenerator(Entity* bindedEntity, MissileGeneratorStorage* missileGeneratorStorage)
@@ -63,7 +66,11 @@ void NormalMissileGenerator::initNormalMissileGenerator(Entity* bindedEntity, Mi
 	initState(commonNormalMissileInfo, specifiedNormalMissileInfo);
 }
 
-void NormalMissileGenerator::modifyCurMissileStateWithBuffInfo(BuffInfo * buffInfo)
+void NormalMissileGenerator::transferBuffSum(BuffSum * buffSum)
 {
+	_curCommonMissileState->transferBuffSum(buffSum, _originCommonMissileState);
+	_curSpecifiedMissileState->transferBuffSum(buffSum, _originSpecifiedMissileState);
+	
+	_bShotDisable = buffSum->bOnce[ENUM_BUFFSUM_ONCE_SHOT_DISABLE];
 }
 

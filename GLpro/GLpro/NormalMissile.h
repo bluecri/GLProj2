@@ -20,6 +20,10 @@ public:
 	virtual void collisionFunc(CollisionComponent* collisionComp) override;
 	virtual void doJobWithBeDeleted() override;		// done befoe setBeDeleted (resource bind remove)
 
+	bool isDmgValid();
+	int getDmg();
+	int accHitCount(int acc);
+
 protected:
 	void afterDmgOther();	// dmg 준 뒤 후처리
 
@@ -32,8 +36,4 @@ public:
 	ALSource* _startSound;
 	ALSource* _hitSound;
 
-	// IMissile을(를) 통해 상속됨
-	virtual bool isDmgValid() override;
-	virtual int getDmg() override;
-	virtual int accHitCount(int acc) override;
 };

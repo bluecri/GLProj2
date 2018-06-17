@@ -30,6 +30,7 @@
 
 #include "ParticleEntity.h"
 #include "AimTextUIObj.h"
+#include "BuffManager.h"
 
 Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IPlane(ENUM_ENTITY_TYPE::ENUM_ENTITY_PLANE_PLAYER, gSession, model, texture, shadermain)
@@ -95,7 +96,7 @@ Player::~Player()
 	_explosionSound->setDoDelete();
 }
 
-void Player::init()
+void Player::initPlayer()
 {
 	// basic info
 	
@@ -106,7 +107,7 @@ void Player::init()
 	glm::mat4 collisionBoxMat = glm::mat4();
 	collisionBoxMat[3][2] += 0.2f;	//collision box pos 보정
 	glm::vec3 planeCollisionBox = glm::vec3(0.2f, 0.2f, 0.2f);
-	_collisionComp = GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, collisionBoxMat, planeCollisionBox);
+	initCollisionComponent(GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, collisionBoxMat, planeCollisionBox));
 
 	// particle entity attach parnet
 	_backParticle->attachParentEntity(this);
@@ -121,9 +122,14 @@ void Player::logicUpdate(float deltaTime, float acc)
 	if(_curPlaneInfo->_hp < 0)
 	{
 		_explosionSound->play();
-		//setBRender(false);
-		//setCollisionTest(false);
 		setBeDeleted();
+		return;
+	}
+
+	// buff check
+	if (_buffManager->isNeedToTransferBuffSum(deltaTime, acc))
+	{
+		transferBuffSum(_buffManager->getBuffSum());
 	}
 
 	// shot
@@ -134,7 +140,7 @@ void Player::logicUpdate(float deltaTime, float acc)
 	}
 
 	// back particle logic
-	int particleNum = PLAYER_MAX_FRAME_PER_PARTICLE + fabsf(getSpeedPerMaxSpeedRatio()) *  (PLAYER_MIN_FRAME_PER_PARTICLE - PLAYER_MAX_FRAME_PER_PARTICLE);
+	int particleNum = PLAYER_MIN_FRAME_PER_PARTICLE + (PLAYER_MAX_FRAME_PER_PARTICLE - PLAYER_MIN_FRAME_PER_PARTICLE) * (1.0f - fabsf(getSpeedPerMaxSpeedRatio()));
 	_backParticle->setFrameVsParticle(particleNum);
 
 }
@@ -145,7 +151,6 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 	Entity* entity = collisionComp->_rigidComp->getBindedEntity();
 	int entityType = entity->getType();
 
-	// missile collision logic은 모두 missile에서.
 	switch (entityType)
 	{
 	case ENUM_ENTITY_PLANE_PLAYER:
@@ -196,10 +201,18 @@ void Player::playerMovementProgress(long long transferKeyInput)
 	if (roll != 0)
 		maincam->camAccQuaternionRoll((float)roll);
 	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_UP))
-		_rigidbodyComponent->speedAdd(_curPlaneInfo->_deltaSpeed);
+	{
+		_curPlaneInfo->_maxSpeed += _curPlaneInfo->_deltaSpeed;
+		_curPlaneInfo->_maxSpeed = std::min(_curPlaneInfo->_maxSpeed, _originPlaneInfo->_maxSpeed);
+		_rigidbodyComponent->speedSet(_curPlaneInfo->_maxSpeed);
+	}
 
 	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_DOWN))
-		_rigidbodyComponent->speedAdd(-(_curPlaneInfo->_deltaSpeed));
+	{
+		_curPlaneInfo->_maxSpeed -= _curPlaneInfo->_deltaSpeed;
+		_curPlaneInfo->_maxSpeed = std::max(_curPlaneInfo->_maxSpeed, 0.0f);
+		_rigidbodyComponent->speedSet(_curPlaneInfo->_maxSpeed);
+	}
 
 	// set cam position (follow plane)
 	maincam->getRigidbodyComponent()->setModelMatrix(_rigidbodyComponent->getModelVec());

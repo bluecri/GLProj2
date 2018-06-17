@@ -9,7 +9,8 @@ public:
 
 	// ISpecifiedMissileState을(를) 통해 상속됨
 	virtual int getType() override;
-	virtual void initSpecifiedState(ISpecifiedMissileInfo* info);
+	virtual void initSpecifiedState(ISpecifiedMissileInfo* info) override;
+	virtual void transferBuffSum(BuffSum * buffSum, ISpecifiedMissileState * originState) override;
 
 public:
 	int _dmg;
@@ -25,4 +26,5 @@ public:
 	std::string _missileHitSoundStr;
 
 	glm::vec3	_missileGenAddPos;
+
 };

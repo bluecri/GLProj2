@@ -32,6 +32,7 @@ std::vector<GameSession*> GameSession::preMadeGameSession;
 GameSession::GameSession()
 {
 	_menuCanvas = Canvas::preMadeCanvasVec[PREMADE_CANVAS_INGAMEMENU];
+	_gSessionStartTimeStamp = glfwGetTime();
 	_bMouseOn = false;
 }
 
@@ -127,6 +128,11 @@ void GameSession::update(float deltaTime, float acc)
 	}
 }
 
+float GameSession::getGSessionStartTimeStamp()
+{
+	return _gSessionStartTimeStamp;
+}
+
 void GameSession::preMade()
 {
 	int TEST_ENEMY_NUM = 20;
@@ -145,7 +151,8 @@ void GameSession::preMade()
 	newPlayer->getRigidbodyComponent()->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
 	newPlayer->getRigidbodyComponent()->setDirty();
 	newPlayer->setBRender(true);
-	newPlayer->init();
+	newPlayer->initIPlane(new PlaneInfo(100, 00, 0.0f), new PlaneInfo(100, 100, 3.0f));
+	newPlayer->initPlayer();
 	NormalMissileGenerator * normalMissileGenerator = new NormalMissileGenerator();
 	normalMissileGenerator->initNormalMissileGenerator(newPlayer, newPlayer->getMissileGeneratorStorage());
 	newPlayer->addMissileGenerator(normalMissileGenerator);

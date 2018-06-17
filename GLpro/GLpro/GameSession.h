@@ -33,7 +33,10 @@ public:
 	void setAllEntityRRender(bool bRender);
 	void removeEntityProcess();
 	void update(float deltaTime, float acc);
-
+	float getGSessionStartTimeStamp()
+	{
+		return _gSessionStartTimeStamp;
+	}
 
 	static void preMade();
 
@@ -49,4 +52,7 @@ public:
 
 	bool _bMenuOn;
 	bool _bMouseOn;
+
+private:
+	float	_gSessionStartTimeStamp;
 };

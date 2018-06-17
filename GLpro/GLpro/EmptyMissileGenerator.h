@@ -12,6 +12,6 @@ public:
 	// IMissileGenerator을(를) 통해 상속됨
 	virtual void genMissile() override;
 	virtual void updateTimer(float deltaTime, float acc) override;
-	virtual void modifyCurMissileStateWithBuffInfo(BuffInfo * buffInfo) override;
+	virtual void transferBuffSum(BuffSum * buffSum) override;
 
 };

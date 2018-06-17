@@ -5,12 +5,14 @@ namespace RESOURCE { class Model;  class Texture; }
 namespace SHADER { class ShaderMain; }
 
 class ICommonMissileInfo;
+class BuffSum;
 
 class CommonMissileState
 {
 public:
 	CommonMissileState();
 	void initCommonState(ICommonMissileInfo* commonMissileInfo);
+	void transferBuffSum(BuffSum* buffSum, CommonMissileState* originState);
 
 	RESOURCE::Model*		_missileModel;
 	RESOURCE::Texture*		_missileTexture;
@@ -19,7 +21,7 @@ public:
 	glm::mat4				_collisionBoxMat;
 	glm::vec3				_missileCollisionBoxAxis;
 
-	float _shotDelay;
+	float					_shotDelay;
 };
 
 /*

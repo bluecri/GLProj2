@@ -32,13 +32,13 @@ void IMissileGenerator::initBindedEntityAndMissileGenerator(Entity * entity, Mis
 void IMissileGenerator::initState(ICommonMissileInfo * iCommonMissileInfo, ISpecifiedMissileInfo * iSpecifiedMissileInfo)
 {
 	_originCommonMissileState->initCommonState(iCommonMissileInfo);
-	*_curCommonMissileState = *_originCommonMissileState;
+	_curCommonMissileState->initCommonState(iCommonMissileInfo);
 
 	_originCommonMissileState = new CommonMissileState();
 	_originCommonMissileState = new CommonMissileState();
 
 	_originSpecifiedMissileState->initSpecifiedState(iSpecifiedMissileInfo);
-	*_curSpecifiedMissileState = *_originSpecifiedMissileState;
+	_curSpecifiedMissileState->initSpecifiedState(iSpecifiedMissileInfo);
 }
 
 

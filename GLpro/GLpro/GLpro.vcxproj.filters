@@ -148,17 +148,29 @@
     <Filter Include="소스 파일\GameScene\GameObjects\fieldItem">
       <UniqueIdentifier>{9897ef2b-a057-4421-a059-ec5a19ef46c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\otherTarget">
-      <UniqueIdentifier>{21b3b279-3460-4371-b172-079671e83a14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\selfTarget">
-      <UniqueIdentifier>{8349d3c3-8827-4985-bfbd-bd3c0fb1afe4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\selfTarget\BuffList">
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\BuffList">
       <UniqueIdentifier>{b1f222f2-3a7c-4e99-a40d-9be3dbdee699}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\teamTarget">
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\ItemList">
+      <UniqueIdentifier>{258c3565-09e5-43c8-b347-85956d08cbed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\ItemList\otherTarget">
+      <UniqueIdentifier>{21b3b279-3460-4371-b172-079671e83a14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget">
+      <UniqueIdentifier>{8349d3c3-8827-4985-bfbd-bd3c0fb1afe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\ItemList\teamTarget">
       <UniqueIdentifier>{82267b82-78d6-45ce-98fb-51c642f69352}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\BuffList\otherTarget">
+      <UniqueIdentifier>{da9f3a36-a1b6-45d6-b63f-50ff0bd400ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\BuffList\selfTarget">
+      <UniqueIdentifier>{dc024dde-ffa3-4bee-9ca4-8868d4cff96b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\BuffList\teamTarget">
+      <UniqueIdentifier>{a13302e2-70fc-4d40-bee7-29a31aaa941b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -414,9 +426,6 @@
     <ClCompile Include="IFieldItem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ItemSpeedBuff.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\Shader\ShaderText.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -433,6 +442,27 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="PlaneInfo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldItemGenerator.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemSpeed.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IFieldItemForBuff.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IBuff.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpeedBuff.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BuffSum.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BuffManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -756,58 +786,40 @@
       <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
     </ClInclude>
     <ClInclude Include="ItemOtherSpeedSlow.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\otherTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\otherTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemOtherRandomizeDirection.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\otherTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\otherTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemOtherDisableShot.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\otherTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\otherTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemSelfInvisible.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemSelfOverwhelimg.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemSelfRandomTeleport.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemAmmoRegen.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemSelfArmorRegen.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemSelfHPRegen.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemTeamDmgBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\teamTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemSelfDmgBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemSelfShotDelayBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemSelfShotSpeedBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemSpeedBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\teamTarget</Filter>
     </ClInclude>
     <ClInclude Include="FieldItemGenerator.h">
       <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
     </ClInclude>
     <ClInclude Include="OctreeForFrustum.h">
       <Filter>소스 파일\components\frustum</Filter>
-    </ClInclude>
-    <ClInclude Include="SpeedBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget\BuffList</Filter>
-    </ClInclude>
-    <ClInclude Include="IBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
     </ClInclude>
     <ClInclude Include="IGameObject.h">
       <Filter>소스 파일\GameScene\GameObjects</Filter>
@@ -821,8 +833,35 @@
     <ClInclude Include="PlaneInfo.h">
       <Filter>소스 파일\GameScene\GameObjects\plane</Filter>
     </ClInclude>
-    <ClInclude Include="BuffInfo.h">
+    <ClInclude Include="IBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\BuffList</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfShotSpeed.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfShotDelay.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="IFieldItemForBuff.h">
       <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfDmg.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSpeed.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffSum.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\BuffList</Filter>
+    </ClInclude>
+    <ClInclude Include="SpeedBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\BuffList\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="IFieldItemForStuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffManager.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\BuffList</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

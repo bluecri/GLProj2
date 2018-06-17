@@ -2,12 +2,14 @@
 #include "MissileGeneratorStorage.h"
 #include "IMissileGenerator.h"
 #include "EmptyMissileGenerator.h"
+#include "BuffSum.h"
 
 MissileGeneratorStorage::MissileGeneratorStorage(int maxWeaponCount, Entity* bindedEntity)
 	:_maxWeaponCount(maxWeaponCount), _bindedEntity(bindedEntity)
 {
 	_selectedWeaponIndex = 0;
-	for (int i = 0; i < maxWeaponCount; i++)
+	_bShotDisable = true;
+	for (int i = 0; i < _maxWeaponCount; i++)
 	{
 		EmptyMissileGenerator* emptyGenerator = new EmptyMissileGenerator();
 		emptyGenerator->init(bindedEntity, this);
@@ -41,10 +43,19 @@ void MissileGeneratorStorage::shotMissile()
 	_missileGeneratorVec[_selectedWeaponIndex]->genMissile();
 }
 
-inline void MissileGeneratorStorage::selectMissileIndex(int idx)
+void MissileGeneratorStorage::selectMissileIndex(int idx)
 {
 	if (0 <= idx && idx < _maxWeaponCount)
 	{
 		_selectedWeaponIndex = idx;
+	}
+}
+
+void MissileGeneratorStorage::transferBuffSum(BuffSum * buffSum)
+{
+	_bShotDisable = buffSum->bOnce[ENUM_BUFFSUM_ONCE_SHOT_DISABLE];
+	for (int i = 0; i < _maxWeaponCount; i++)
+	{
+		_missileGeneratorVec[_selectedWeaponIndex]->transferBuffSum(buffSum);
 	}
 }

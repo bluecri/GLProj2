@@ -16,15 +16,18 @@ class MissileGeneratorStorage
 public:
 	MissileGeneratorStorage(int maxWeaponCount, Entity* bindedEntity);
 
-	bool addMissileGenerator(IMissileGenerator* missileGenerator);
-	void update(float deltaTime, float acc);
-	void shotMissile();
-	void selectMissileIndex(int idx);
+	bool		addMissileGenerator(IMissileGenerator* missileGenerator);
+	void		update(float deltaTime, float acc);
+	void		shotMissile();
+	void		selectMissileIndex(int idx);
+	void		transferBuffSum(BuffSum * buffSum);
 
 private:
-	Entity*			_bindedEntity;
 	std::vector<IMissileGenerator*> _missileGeneratorVec;
 
-	int _selectedWeaponIndex;
-	int _maxWeaponCount;
+	Entity*		_bindedEntity;
+	int			_selectedWeaponIndex;
+	int			_maxWeaponCount;
+
+	bool		_bShotDisable;
 };
