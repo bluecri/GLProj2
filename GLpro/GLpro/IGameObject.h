@@ -18,7 +18,7 @@ class GameSession;
 class IGameObject : public Entity
 {
 public:
-	IGameObject(int type, GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
+	IGameObject(ENUM_ENTITY_TYPE type, GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
 	~IGameObject();
 
 	void					initCollisionComponent(CollisionComponent* collisionComp);

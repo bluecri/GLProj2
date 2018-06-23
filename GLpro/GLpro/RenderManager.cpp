@@ -56,5 +56,8 @@ void RENDER::RRenderContainerClass<RENDER::RNormal, SHADER::ShaderMain>::render(
 		for (auto elem : _rRenderContainer)
 			elem.second->shadowBufferDraw(deltaTime);
 	}
+	else
+	{
 
+	}
 }

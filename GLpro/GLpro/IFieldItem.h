@@ -19,7 +19,7 @@ enum ENUM_ITEM_MOVE_TYPE
 class IFieldItem : public IGameObject
 {
 public:
-	IFieldItem(int type, GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
+	IFieldItem(ENUM_ENTITY_TYPE type, GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
 	virtual ~IFieldItem();
 	void IFieldItemInit(float lifeTime, float activeTime, int buffCount, float randomInterval = 10.0f, ENUM_ITEM_MOVE_TYPE moveType = ENUM_ITEM_MOVE_STAY, float angleSpeed = 0.8f);
 

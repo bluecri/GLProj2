@@ -33,10 +33,7 @@ public:
 	void setAllEntityRRender(bool bRender);
 	void removeEntityProcess();
 	void update(float deltaTime, float acc);
-	float getGSessionStartTimeStamp()
-	{
-		return _gSessionStartTimeStamp;
-	}
+	float getGSessionStartTimeStamp();
 
 	static void preMade();
 

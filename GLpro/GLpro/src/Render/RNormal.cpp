@@ -61,7 +61,7 @@ namespace RENDER
 		GShadowBufferTexture->bindFBO();
 		GShadowBufferTexture->bindShader();
 
-		glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
+		glm::mat4 depthBiasMVP = GLightManager->_directionalLightVec[0].getBiasedModelMat();
 
 		for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end(); ) {
 			RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
@@ -102,13 +102,13 @@ namespace RENDER
 
 		_shaderObj->bind();
 
-		glm::mat4 depthBiasMVP = GLightManager->directionalLightVec[0].GetDepthBiasMVP();
+		glm::mat4 depthBiasMVP = GLightManager->_directionalLightVec[0].getBiasedModelMat();
 
 		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cam->getRecentViewMat());
 		_shaderObj->loadMatrix4(_shaderObj->m_depthBiasID, depthBiasMVP);
 
 		//_oldLightUse
-		_shaderObj->loadVector3(_shaderObj->m_lightInvDirID, GLightManager->directionalLightVec[0].GetLightVec3());	// 1 light
+		_shaderObj->loadVector3(_shaderObj->m_lightInvDirID, GLightManager->_directionalLightVec[0].getLightDirVec());	// 1 light
 
 																													// bind shadow texture
 		glActiveTexture(GL_TEXTURE1);

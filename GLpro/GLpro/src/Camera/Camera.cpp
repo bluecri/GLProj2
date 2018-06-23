@@ -2,7 +2,7 @@
 
 namespace CAMERA {
 	
-	Camera::Camera(std::string name, int type, float fov, float speed, float keySpeed, float mouseSpeed, float horizontalFovValue, float verticalFovValue, float frontFrustrumValue, float backFrustrumValue)
+	Camera::Camera(std::string name, ENUM_ENTITY_TYPE type, float fov, float speed, float keySpeed, float mouseSpeed, float horizontalFovValue, float verticalFovValue, float frontFrustrumValue, float backFrustrumValue)
 		: Entity(name, nullptr, type)
 	{
 		_speed = speed;

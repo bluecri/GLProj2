@@ -20,6 +20,7 @@
 
 class Entity;
 
+// todo : logic update에서 matrix modify시 child matrix modify가 1 frame 늦게 작동.
 class RigidbodyComponent
 {
 public:

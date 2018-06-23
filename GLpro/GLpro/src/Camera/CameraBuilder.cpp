@@ -32,9 +32,9 @@ namespace CAMERA
 		return *this;
 	}
 
-	CameraBuilder::CameraBuilder(std::string & name, int type) : _name(name)
+	CameraBuilder::CameraBuilder(std::string & name) : _name(name)
 	{
-		_type = type;
+		//_type = type;
 
 		_bProjection = true;
 
@@ -51,6 +51,6 @@ namespace CAMERA
 
 	Camera* CameraBuilder::constructPtr()
 	{
-		return new Camera(_name, _type, _fov, _speed, _keySpeed, _mouseSpeed, _horizontalFovValue, _verticalFovValue, _frontFrustrumValue, _backFrustrumValue);
+		return new Camera(_name, ENUM_ENTITY_CAMERA, _fov, _speed, _keySpeed, _mouseSpeed, _horizontalFovValue, _verticalFovValue, _frontFrustrumValue, _backFrustrumValue);
 	}
 }

@@ -6,7 +6,7 @@
 
 int Entity::_sMaxID = 0;
 
-Entity::Entity(GameSession * gSession, int type)
+Entity::Entity(GameSession * gSession, ENUM_ENTITY_TYPE type)
 {
 	_ID = _sMaxID;
 	_name = std::to_string(_sMaxID);
@@ -24,7 +24,7 @@ Entity::Entity(GameSession * gSession, int type)
 	}
 }
 
-Entity::Entity(std::string name, GameSession * gSession, int type)
+Entity::Entity(std::string name, GameSession * gSession, ENUM_ENTITY_TYPE type)
 {
 	_ID = _sMaxID;
 	_name = name;
@@ -48,7 +48,7 @@ Entity::~Entity() {
 	detachParentEntity();
 }
 
-int Entity::getType() {
+ENUM_ENTITY_TYPE Entity::getType() {
 	return _type;
 }
 
@@ -56,7 +56,7 @@ int Entity::getID() {
 	return _ID;
 }
 
-int Entity::getType() const{
+ENUM_ENTITY_TYPE Entity::getType() const{
 	return _type;
 }
 
@@ -235,4 +235,17 @@ void Entity::doAllJobWithBeDeleted()
 	{
 		elem->doAllJobWithBeDeleted();
 	}
+}
+
+void Entity::destroyCallBack()
+{
+	for (auto elem : _destroyCallBackFuncVec)
+	{
+		elem();
+	}
+}
+
+void Entity::registerDestroyCallBackFunc(const std::function<void(void)>& fn)
+{
+	_destroyCallBackFuncVec.push_back(fn);
 }

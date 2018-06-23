@@ -172,6 +172,24 @@
     <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\BuffList\teamTarget">
       <UniqueIdentifier>{a13302e2-70fc-4d40-bee7-29a31aaa941b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\src\lights\shaderBuffer">
+      <UniqueIdentifier>{1b36cbe8-b312-4bed-9dfe-bcc9cc0dbd83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights\manager">
+      <UniqueIdentifier>{ec67d4b0-1722-4e21-8683-66d5ae03c099}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights\lights">
+      <UniqueIdentifier>{a4c5452f-caf1-4a4a-b81c-291c643a9ea2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights\manager\interface">
+      <UniqueIdentifier>{3d6ff3d6-9bcc-4344-a980-1d94b5872392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights\manager\withEntity">
+      <UniqueIdentifier>{f37682fa-bd8d-422a-bc5b-4445d40c89a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights\manager\withNoEntity">
+      <UniqueIdentifier>{eeb4f3af-2801-4795-936f-2894e2596760}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -465,6 +483,48 @@
     <ClCompile Include="BuffManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLightManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderStructDirectionalLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderStructSpotLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderStructPointLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderStructDeferredPointLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredPointLightManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredPointLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="LightGameObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="LightWithEntity.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ILightWithEntityManager.cpp">
+      <Filter>소스 파일\src\lights\manager\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLightManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLightManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -557,12 +617,6 @@
     <ClInclude Include="src\Render\RNormal.h">
       <Filter>소스 파일\src\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="LightManager.h">
-      <Filter>소스 파일\src\lights</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectionalLight.h">
-      <Filter>소스 파일\src\lights</Filter>
-    </ClInclude>
     <ClInclude Include="src\RenderTarget\Normal\NormalFObj.h">
       <Filter>소스 파일\src\renderTarget</Filter>
     </ClInclude>
@@ -604,9 +658,6 @@
     </ClInclude>
     <ClInclude Include="origin\XTL.h">
       <Filter>소스 파일\origin</Filter>
-    </ClInclude>
-    <ClInclude Include="light.h">
-      <Filter>소스 파일\src\lights</Filter>
     </ClInclude>
     <ClInclude Include="ParticleBuffer.h">
       <Filter>소스 파일\src\Resource\Buffer</Filter>
@@ -862,6 +913,57 @@
     </ClInclude>
     <ClInclude Include="BuffManager.h">
       <Filter>소스 파일\GameScene\GameObjects\fieldItem\BuffList</Filter>
+    </ClInclude>
+    <ClInclude Include="configs_ubo.h">
+      <Filter>소스 파일\src\config</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStructDirectionalLight.h">
+      <Filter>소스 파일\src\lights\shaderBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="configs_light.h">
+      <Filter>소스 파일\src\config</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStructSpotLight.h">
+      <Filter>소스 파일\src\lights\shaderBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStructPointLight.h">
+      <Filter>소스 파일\src\lights\shaderBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStructDeferredPointLight.h">
+      <Filter>소스 파일\src\lights\shaderBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>소스 파일\src\lights\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredPointLight.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="LightGameObject.h">
+      <Filter>소스 파일\src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="LightWithEntity.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="ILightWithEntityManager.h">
+      <Filter>소스 파일\src\lights\manager\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLightManager.h">
+      <Filter>소스 파일\src\lights\manager\withEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLightManager.h">
+      <Filter>소스 파일\src\lights\manager\withEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredPointLightManager.h">
+      <Filter>소스 파일\src\lights\manager\withEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLightManager.h">
+      <Filter>소스 파일\src\lights\manager\withNoEntity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

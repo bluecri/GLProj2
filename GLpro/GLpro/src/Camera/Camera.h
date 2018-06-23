@@ -12,7 +12,7 @@ namespace CAMERA
 	class Camera : public Entity
 	{
 	public:
-		Camera(std::string name, int type, float fov, float speed = 0.1f, float keySpeed = 0.5f, float mouseSpeed = 0.005f,
+		Camera(std::string name, ENUM_ENTITY_TYPE type, float fov, float speed = 0.1f, float keySpeed = 0.5f, float mouseSpeed = 0.005f,
 			float horizontalFovValue = 4.0f, float verticalFovValue = 3.0f, float frontFrustrumValue = 0.1f, float backFrustrumValue = 100.0f);
 		virtual ~Camera() {}
 

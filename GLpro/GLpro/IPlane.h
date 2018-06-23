@@ -12,7 +12,7 @@ class BuffManager;
 class IPlane : public IGameObject
 {
 public:
-	IPlane(int type, GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
+	IPlane(ENUM_ENTITY_TYPE type, GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
 	virtual ~IPlane();
 	void initIPlane(PlaneInfo * curPlaneInfo, PlaneInfo * originPlaneInfo, int missileStorageNum = 4);
 
@@ -32,23 +32,7 @@ public:
 	bool			isCanBeDamaged();
 	void			notDamagedTimeStampWrite();
 
-	void			planeDamaged(int dmg, bool turnOnNotDamaged)
-	{
-		if (turnOnNotDamaged)
-		{
-			notDamagedTimeStampWrite();
-		}
-
-		if (_curPlaneInfo->_armor < dmg)
-		{
-			_curPlaneInfo->_hp -= dmg - _curPlaneInfo->_armor;
-			_curPlaneInfo->_armor = 0;
-		}
-		else
-		{
-			_curPlaneInfo->_armor -= dmg;
-		}
-	}
+	void			planeDamaged(int dmg, bool turnOnNotDamaged);
 
 	BuffManager*	getBuffManager();
 

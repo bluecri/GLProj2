@@ -21,6 +21,8 @@
 #include <deque>
 #include <queue>
 #include <map>
+#include <functional>
+
 
 #include <process.h>
 #include <assert.h>

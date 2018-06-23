@@ -5,7 +5,7 @@
 class IMissile : public IGameObject
 {
 public:
-	IMissile(int type, GameSession* gSession, Entity* fromEntity, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
+	IMissile(ENUM_ENTITY_TYPE type, GameSession* gSession, Entity* fromEntity, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain);
 	virtual ~IMissile();
 
 public:

@@ -93,6 +93,8 @@
       <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;C:\Program Files\MySQL\MySQL Server 8.0\include;E:\gitProjects\iocp_git\3rdParty\google_protobuf\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win64;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\x64;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;C:\Program Files\MySQL\MySQL Server 8.0\lib;E:\3rdParty\new-proto\protobuf-3.5.1\retBuild\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -148,15 +150,25 @@
     <ClCompile Include="CollisionInfo.cpp" />
     <ClCompile Include="CommonMissileState.cpp" />
     <ClCompile Include="CommonNormalMissileInfo.cpp" />
+    <ClCompile Include="DeferredPointLight.cpp" />
+    <ClCompile Include="DeferredPointLightManager.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="DirectionalLightManager.cpp" />
     <ClCompile Include="EmptyMissileGenerator.cpp" />
     <ClInclude Include="AABBCollisionComp.h" />
     <ClInclude Include="AimTextUIObj.h" />
     <ClInclude Include="BuffManager.h" />
     <ClInclude Include="BuffSum.h" />
+    <ClInclude Include="configs_light.h" />
+    <ClInclude Include="configs_ubo.h" />
+    <ClInclude Include="DeferredPointLight.h" />
+    <ClInclude Include="DeferredPointLightManager.h" />
+    <ClInclude Include="DirectionalLightManager.h" />
     <ClInclude Include="IFieldItemForBuff.h" />
     <ClInclude Include="IFieldItemForStuff.h" />
     <ClInclude Include="IBuff.h" />
     <ClInclude Include="IGameObject.h" />
+    <ClInclude Include="ILightWithEntityManager.h" />
     <ClInclude Include="ItemAmmoRegen.h" />
     <ClInclude Include="ItemSelfArmorRegen.h" />
     <ClInclude Include="BelowMissileStorageUIObj.h" />
@@ -169,17 +181,26 @@
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="IFieldItem.cpp" />
     <ClCompile Include="IGameObject.cpp" />
+    <ClCompile Include="LightWithEntity.cpp" />
+    <ClCompile Include="ILightWithEntityManager.cpp" />
     <ClCompile Include="ImageBox.cpp" />
     <ClCompile Include="IMissile.cpp" />
     <ClCompile Include="IMissileGenerator.cpp" />
     <ClCompile Include="IPlane.cpp" />
     <ClCompile Include="ISpecifiedMissileInfo.cpp" />
     <ClCompile Include="ItemSpeed.cpp" />
+    <ClCompile Include="light.cpp" />
+    <ClCompile Include="LightGameObject.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="MissileGeneratorStorage.cpp" />
     <ClCompile Include="NormalMissile.cpp" />
     <ClCompile Include="NormalMissileGenerator.cpp" />
     <ClCompile Include="PlaneInfo.cpp" />
+    <ClCompile Include="PointLightManager.cpp" />
+    <ClCompile Include="ShaderStructDeferredPointLight.cpp" />
+    <ClCompile Include="ShaderStructDirectionalLight.cpp" />
+    <ClCompile Include="ShaderStructPointLight.cpp" />
+    <ClCompile Include="ShaderStructSpotLight.cpp" />
     <ClCompile Include="SpecifiedNormalMissileState.cpp" />
     <ClCompile Include="OBBCollisionComp.cpp" />
     <ClCompile Include="Octree.cpp" />
@@ -210,6 +231,7 @@
     <ClCompile Include="SkyboxGObject.cpp" />
     <ClCompile Include="SpecifiedNormalMissileInfo.cpp" />
     <ClCompile Include="SpeedBuff.cpp" />
+    <ClCompile Include="SpotLightManager.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\objectLoader.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\vboindexer.cpp" />
     <ClCompile Include="src\3rdParty\ShaderLoader\shader.cpp" />
@@ -249,7 +271,15 @@
     <ClCompile Include="TextFObj.cpp" />
     <ClCompile Include="UIEntity.cpp" />
     <ClInclude Include="FieldItemGenerator.h" />
+    <ClInclude Include="LightGameObject.h" />
+    <ClInclude Include="LightWithEntity.h" />
     <ClInclude Include="PlaneInfo.h" />
+    <ClInclude Include="PointLightManager.h" />
+    <ClInclude Include="ShaderStructDeferredPointLight.h" />
+    <ClInclude Include="ShaderStructDirectionalLight.h" />
+    <ClInclude Include="ShaderStructPointLight.h" />
+    <ClInclude Include="ShaderStructSpotLight.h" />
+    <ClInclude Include="SpotLightManager.h" />
     <ClInclude Include="UserInfo.h" />
   </ItemGroup>
   <ItemGroup>

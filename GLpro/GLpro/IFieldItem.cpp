@@ -7,7 +7,7 @@
 #include "RigidbodyComponent.h"
 
 
-IFieldItem::IFieldItem(int type, GameSession * gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
+IFieldItem::IFieldItem(ENUM_ENTITY_TYPE type, GameSession * gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	:IGameObject(type, gSession, model, texture, shadermain)
 {
 	_rNormal = GRendermanager->getRRender<RENDER::RNormal, SHADER::ShaderMain>(shadermain);

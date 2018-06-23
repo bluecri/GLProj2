@@ -1,0 +1,6 @@
+#pragma once
+
+#define MAX_DIRECTIONAL_LIGHT_NUM		8
+#define MAX_SPOT_LIGHT_NUM				32
+#define MAX_POINTL_LIGHT_NUM			32
+#define MAX_DFFERED_POINTL_LIGHT_NUM	512

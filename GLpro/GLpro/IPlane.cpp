@@ -16,7 +16,7 @@
 #include "BuffSum.h"
 #include "BuffManager.h"
 
-IPlane::IPlane(int type, GameSession* gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
+IPlane::IPlane(ENUM_ENTITY_TYPE type, GameSession* gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IGameObject(type, gSession, model, texture, shadermain)
 {
 	_curPlaneInfo = nullptr;

@@ -13,10 +13,12 @@ class GameSession;
 enum ENUM_ENTITY_TYPE
 {
 	ENUM_ENTITY_NONE,
+	ENUM_ENTITY_CAMERA,
 	ENUM_ENTITY_PLANE_PLAYER,
 	ENUM_ENTITY_ENEMY,
 	ENUM_ENTITY_MISSILE_NORMAL,
 	ENUM_ENTITY_PARTICLE,
+	ENUM_ENTITY_LIGHT,
 
 	ENUM_ENTITY_FieldItemForBuff,
 
@@ -34,22 +36,24 @@ enum ENUM_ENTITY_TYPE
 	ENUM_ENTITY_ITEM_OTHER_RAND_DIRECTION,
 	ENUM_ENTITY_ITEM_OTHER_SPEEDSLOW,
 	ENUM_ENTITY_ITEM_TEAM_DMGBUFF,
+
+
 	ENUM_ENTITY_NUM
 };
 
 class Entity 
 {
 public:
-	Entity(GameSession* gSession = nullptr, int type = 0);
-	Entity(std::string name, GameSession* gSession = nullptr, int type = 0);
+	Entity(GameSession* gSession = nullptr, ENUM_ENTITY_TYPE type = ENUM_ENTITY_NONE);
+	Entity(std::string name, GameSession* gSession = nullptr, ENUM_ENTITY_TYPE type = ENUM_ENTITY_NONE);
 	virtual	~Entity();
 
-	int				getType();
-	int				getID();
-	int				getType() const;
-	int				getID() const;
-	bool			isBeDeleted();
-	void			setBeDeleted();
+	ENUM_ENTITY_TYPE	getType();
+	int					getID();
+	ENUM_ENTITY_TYPE	getType() const;
+	int					getID() const;
+	bool				isBeDeleted();
+	void				setBeDeleted();
 
 	void				setName(std::string& name);
 	std::string			getName();
@@ -81,6 +85,9 @@ public:
 
 	virtual void	logicUpdate(float deltaTime, float acc) = 0;
 
+	void			destroyCallBack();
+	void			registerDestroyCallBackFunc(const std::function<void(void)>& fn);
+
 public:
 	static int			 _sMaxID;		//object 고유 ID(0 ~ ). 자동 생성.
 
@@ -93,7 +100,9 @@ protected:
 
 private:
 	int					_ID;
-	int					_type;
+	ENUM_ENTITY_TYPE	_type;
 	std::string			_name;
 	bool				_bDeleted;
+
+	std::vector<std::function<void(void)>>	_destroyCallBackFuncVec;
 };

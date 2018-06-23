@@ -7,11 +7,14 @@
 #include "RigidbodyComponent.h"
 #include "CollisionComponent.h"
 
-IGameObject::IGameObject(int type, GameSession * gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
+IGameObject::IGameObject(ENUM_ENTITY_TYPE type, GameSession * gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: Entity(gSession, type)
 {
-	_rNormal = GRendermanager->getRRender<RENDER::RNormal, SHADER::ShaderMain>(shadermain);
-	registeredElemInRenderer = _rNormal->addDrawElem(new RENDER_TARGET::NORMAL::NormalFObj(model, texture), _rigidbodyComponent);
+	if(shadermain != nullptr)
+		_rNormal = GRendermanager->getRRender<RENDER::RNormal, SHADER::ShaderMain>(shadermain);
+	
+	if (model != nullptr && texture != nullptr && shadermain != nullptr)
+		registeredElemInRenderer = _rNormal->addDrawElem(new RENDER_TARGET::NORMAL::NormalFObj(model, texture), _rigidbodyComponent);
 }
 
 IGameObject::~IGameObject() {
