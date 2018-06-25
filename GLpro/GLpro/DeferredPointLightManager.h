@@ -1,6 +1,6 @@
 #include "ILightWithEntityManager.h"
 
-class ShaderStructDeferredPointLight;
+struct ShaderStructDeferredPointLight;
 
 class DeferredPointLightManager : public ILightWithEntityManager
 {
@@ -12,6 +12,6 @@ public :
 	virtual void initBuffer() override;
 	virtual void updateLightsToBufferData() override;
 	virtual void updateBufferToVGA() override;
-	virtual std::shared_ptr<LightWithEntity> addNewLight(GameSession * gSession, glm::vec3 & dir, glm::vec3 & pos, glm::vec4 & color, float lightPower) override;
-
+	std::shared_ptr<LightWithEntity> addNewLight(GameSession * gSession, glm::vec3 & pos, glm::vec4 & color, float lightPower);
+	struct ShaderStructDeferredPointLight*	getLightStruct();
 };

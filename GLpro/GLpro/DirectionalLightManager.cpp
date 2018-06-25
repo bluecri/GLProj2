@@ -12,9 +12,10 @@ void DirectionalLightManager::initBuffer()
 {
 	glGenBuffers(1, &_ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, _ubo);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(_lightUniformBufferData), _lightUniformBufferData, GL_DYNAMIC_DRAW);
-	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_INDEX_DIRECTIONAL_LIGHT, _ubo);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(struct ShaderStructDirectionalLight), _lightUniformBufferData, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_INDEX_DIRECTIONAL_LIGHT, _ubo);
 }
 
 void DirectionalLightManager::updateLightsToBufferData()
@@ -25,7 +26,8 @@ void DirectionalLightManager::updateLightsToBufferData()
 void DirectionalLightManager::updateBufferToVGA()
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, _ubo);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(_lightUniformBufferData), _lightUniformBufferData);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(struct ShaderStructDirectionalLight), _lightUniformBufferData);
+	int temp = sizeof(struct ShaderStructDirectionalLight);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -56,6 +58,11 @@ void DirectionalLightManager::removeDirectionalLight(DirectionalLight * dLight)
 GLuint DirectionalLightManager::getUBO()
 {
 	return _ubo;
+}
+
+ShaderStructDirectionalLight * DirectionalLightManager::getLightStruct()
+{
+	return _lightUniformBufferData;
 }
 
 void DirectionalLightManager::removeDirectionalLightWithNoDelete(DirectionalLight * dLight)

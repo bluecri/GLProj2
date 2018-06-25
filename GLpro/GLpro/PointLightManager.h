@@ -1,7 +1,7 @@
 #pragma once
 #include "ILightWithEntityManager.h"
 
-class ShaderStructPointLight;
+struct ShaderStructPointLight;
 
 class PointLightManager : public ILightWithEntityManager
 {
@@ -14,5 +14,6 @@ public:
 	virtual void updateLightsToBufferData() override;
 	virtual void updateBufferToVGA() override;
 
-	virtual std::shared_ptr<LightWithEntity> addNewLight(GameSession * gSession, glm::vec3 & dir, glm::vec3 & pos, glm::vec4 & color, float lightPower) override;
+	std::shared_ptr<LightWithEntity> addNewLight(GameSession * gSession, glm::vec3 & pos, glm::vec4 & color, float lightPower);
+	struct ShaderStructPointLight*	getLightStruct();
 };

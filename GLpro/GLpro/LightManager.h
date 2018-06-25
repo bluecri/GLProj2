@@ -12,14 +12,15 @@ class DeferredPointLightManager;
 class LightManager
 {
 public:
-	LightManager() {};
+	LightManager();
 	~LightManager() {};
 
 	void AddDirectinalLight(glm::vec3 & dir, glm::vec4 & color);
-	void AddSpotLightManager(glm::vec3 & dir, glm::vec3 & pos, glm::vec4 & color, float lightPower);
+	void AddSpotLightManager(glm::mat4 & rotMat, glm::vec3 & pos, glm::vec4 & color, float lightPower, float fovy = 15.0f, float aspcect = 1.0f, float persNear = 0.1f, float persFar = 20.0f);
 	void AddPointLightManager(glm::vec3 & pos, glm::vec4 & color, float lightPower);
 	void AddDeferredPointLight(glm::vec3 & pos, glm::vec4 & color, float lightPower);
 
+	void updateAllLIghts();
 public:
 	DirectionalLightManager*	_directionalLightManager;
 	SpotLightManager*			_spotLightManager;

@@ -22,7 +22,9 @@ namespace SHADER
 		void loadVector3(GLuint location, const glm::vec3& vector);
 		void loadVector3i(GLuint location, const glm::vec3 & vector);
 		void loadVector3(GLuint location, const float& x, const float& y, const float& z);
-		void loadMatrix4(GLuint location, const glm::mat4& matrix);
+		void loadMatrix4(GLuint location, const glm::mat4& matrix, int count = 1);
+
+		void uniformBlockBind(GLuint location, int uniformIndex);
 
 		std::string& getKeyStr();
 

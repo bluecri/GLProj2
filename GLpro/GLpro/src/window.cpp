@@ -93,7 +93,7 @@ int WINDOW::Window::init()
 	GALManager->init();
 	GOctreeForFrustum = new OctreeForFrustum(3, 32, glm::vec3());
 	// ttest
-	GLightManager->AddDirectinalLight(DirectionalLight(glm::vec3(1.0f, 1.0f, 1.0f)));
+	GLightManager->AddDirectinalLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	GShaderManager = new SHADER::ShaderManager();
 	GRendermanager = new RENDER::RenderManager();
@@ -157,6 +157,9 @@ void WINDOW::Window::mainLoop()
 			GRigidbodyComponentManager->updateRigidbodyComps(dt);
 			GCollisionComponentManager->doCollisionTest();
 			GRigidbodyComponentManager->resetRigidbodyCompsDirty();
+
+			// light update
+			GLightManager->updateAllLIghts();
 
 			// logic loop
 			GScene->update(dt, acc);

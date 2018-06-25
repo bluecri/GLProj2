@@ -1,31 +1,79 @@
 #version 330 core
 
+// from configs_light.h
 
-struct Light
-{
-  vec3 eyePosOrDir;
-  bool isDirectional;
-  vec3 intensity;
-  float attenuation;
-};
+#define MAX_DIRECTIONAL_LIGHT_NUM		8
+#define MAX_SPOT_LIGHT_NUM				32
+#define MAX_POINTL_LIGHT_NUM			32
+#define MAX_DFFERED_POINTL_LIGHT_NUM	256
+
+#define TEXTURE_SHADOW_WIDTH				8192
+#define TEXTURE_SHADOW_HEIGHT				6144
+
+#define TEXTURE_DIRECTIONAL_LIGHT_WIDTH		1024
+#define TEXTURE_SPOT_LIGHT_WIDTH			512
+#define TEXTURE_POINT_LIGHT_WIDTH			128
+#define TEXTURE_POINT_CUBE_NUM				6
+
+#define TEXTURE_DIRECTIONAL_LIGHT_HEIGHT_START	0
+#define TEXTURE_SPOT_LIGHT_HEIGHT_START		2048
+#define TEXTURE_POINT_LIGHT_HEIGHT_START		4096
 
 // Interpolated values from the vertex shaders
 in vec2 UV;
-in vec3 Position_worldspace;
+in vec4 Position_worldspace;
 in vec3 Normal_cameraspace;
 in vec3 EyeDirection_cameraspace;
-in vec3 LightDirection_cameraspace;
-in vec4 ShadowCoord;
 
 // Ouput data
 layout(location = 0) out vec3 color;
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
-uniform mat4 MV;
-uniform vec3 LightPosition_worldspace;
-uniform sampler2DShadow shadowMap;
+uniform sampler2D shadowMap;
 
+// uniform sampler2DShadow
+
+uniform mat4 ViewV;		// camera v
+uniform mat4 M;		// model
+
+layout (std140) uniform DirectionalLIghtBlock
+{
+	int		_dLightNum;
+	vec4	_dLightColorVec[MAX_DIRECTIONAL_LIGHT_NUM];
+	mat4	_dLightVMat[MAX_DIRECTIONAL_LIGHT_NUM];
+	mat4	_dLightPMat[MAX_DIRECTIONAL_LIGHT_NUM];
+};  
+
+layout (std140) uniform SpotLIghtBlock
+{
+	int		_sLightNum;
+	float	_sLlightPower[MAX_SPOT_LIGHT_NUM];
+	vec4	_sLlightColorVec[MAX_SPOT_LIGHT_NUM];
+	vec3	_sLlightPosVec[MAX_SPOT_LIGHT_NUM];
+	mat4	_sLlightVMat[MAX_SPOT_LIGHT_NUM];
+	mat4	_sLlightPMat[MAX_SPOT_LIGHT_NUM];
+};  
+
+layout (std140) uniform PointLIghtBlock
+{
+	int		_pLightNum;
+	float	_pLightPower[MAX_POINTL_LIGHT_NUM];
+	vec4	_pLightColorVec[MAX_POINTL_LIGHT_NUM];
+	vec3	_pLightPosVec[MAX_POINTL_LIGHT_NUM];
+	mat4	_pLightVPMat[MAX_POINTL_LIGHT_NUM];
+};  
+
+layout (std140) uniform DeferredPointLIghtBlock
+{
+	int		_dfLightNum;
+	float	_dfLightPower[MAX_DFFERED_POINTL_LIGHT_NUM];
+	vec4	_dfLightColorVec[MAX_DFFERED_POINTL_LIGHT_NUM];
+	vec3	_dfLightPosVec[MAX_DFFERED_POINTL_LIGHT_NUM];
+	mat4	_dfLightVMat[MAX_DFFERED_POINTL_LIGHT_NUM];
+	mat4	_dfLightVPMat[MAX_DFFERED_POINTL_LIGHT_NUM];
+};  
+/*
 vec2 poissonDisk[16] = vec2[]( 
    vec2( -0.94201624, -0.39906216 ), 
    vec2( 0.94558609, -0.76890725 ), 
@@ -44,7 +92,20 @@ vec2 poissonDisk[16] = vec2[](
    vec2( 0.19984126, 0.78641367 ), 
    vec2( 0.14383161, -0.14100790 ) 
 );
+*/
+vec2 poissonDisk[4] = vec2[](
+  vec2( -0.94201624, -0.39906216 ),
+  vec2( 0.94558609, -0.76890725 ),
+  vec2( -0.094184101, -0.92938870 ),
+  vec2( 0.34495938, 0.29387760 )
+);
 
+mat4 biasMatrix = mat4(
+	0.5, 0.0, 0.0, 0.0,
+	0.0, 0.5, 0.0, 0.0,
+	0.0, 0.0, 0.5, 0.0,
+	0.5, 0.5, 0.5, 1.0
+);
 
 // Returns a random number based on a vec3 and an int.
 float random(vec3 seed, int i){
@@ -54,78 +115,108 @@ float random(vec3 seed, int i){
 }
 
 void main(){
-
-	// Light emission properties
-	vec3 LightColor = vec3(1,1,1);
-	float LightPower = 1.0f;
 	
 	// Material properties
 	vec3 MaterialDiffuseColor = texture( myTextureSampler, UV ).rgb;
 	vec3 MaterialAmbientColor = vec3(0.2, 0.2, 0.2) * MaterialDiffuseColor;
 	vec3 MaterialSpecularColor = vec3(0.3, 0.3, 0.3);
 
-	// Distance to the light
-	//float distance = length( LightPosition_worldspace - Position_worldspace );
+	vec3 MaterialAmbientColorFactor = vec3(0.0, 0.0, 0.0);
+	vec3 MaterialSpecularColorFactor = vec3(0.0, 0.0, 0.0);
 
-	// Normal of the computed fragment, in camera space
+	//vec3 MaterialAmbientColorFactor = vec3(1.0, 1.0, 1.0);
+	//vec3 MaterialSpecularColorFactor = vec3(1.0, 1.0, 1.0);
+
 	vec3 n = normalize( Normal_cameraspace );
-	// Direction of the light (from the fragment to the light)
-	vec3 l = normalize( LightDirection_cameraspace );
-	// Cosine of the angle between the normal and the light direction, 
-	// clamped above 0
-	//  - light is at the vertical of the triangle -> 1
-	//  - light is perpendiular to the triangle -> 0
-	//  - light is behind the triangle -> 0
-	float cosTheta = clamp( dot( n,l ), 0,1 );
-	
+
 	// Eye vector (towards the camera)
 	vec3 E = normalize(EyeDirection_cameraspace);
-	// Direction in which the triangle reflects the light
-	vec3 R = reflect(-l,n);
-	// Cosine of the angle between the Eye vector and the Reflect vector,
-	// clamped to 0
-	//  - Looking into the reflection -> 1
-	//  - Looking elsewhere -> < 1
-	float cosAlpha = clamp( dot( E,R ), 0,1 );
 	
-	float visibility=1.0;
+	// ====== light loop =========
+	for (int loop = 0; loop < _dLightNum; loop++)
+	{
+		// Light emission properties
+		vec3 LightColor = _dLightColorVec[loop].xyz;
+		float LightPower = 1.0f;
 
-	// Fixed bias, or...
-	float bias = 0.005;
+		//float distance = length( LightPosition_worldspace - Position_worldspace.xyz );
 
-	// ...variable bias
-	// float bias = 0.005*tan(acos(cosTheta));
-	// bias = clamp(bias, 0,0.01);
-
-	// Sample the shadow map 4 times
-	for (int i=0;i<4;i++){
-		// use either :
-		//  - Always the same samples.
-		//    Gives a fixed pattern in the shadow, but no noise
-		int index = i;
-		//  - A random sample, based on the pixel's screen location. 
-		//    No banding, but the shadow moves with the camera, which looks weird.
-		// int index = int(16.0*random(gl_FragCoord.xyy, i))%16;
-		//  - A random sample, based on the pixel's position in world space.
-		//    The position is rounded to the millimeter to avoid too much aliasing
-		// int index = int(16.0*random(floor(Position_worldspace.xyz*1000.0), i))%16;
+		vec4 ShadowCoord = biasMatrix * _dLightPMat[loop] * _dLightVMat[loop] * Position_worldspace;
 		
-		// being fully in the shadow will eat up 4*0.2 = 0.8
-		// 0.2 potentially remain, which is quite dark.
-		visibility -= 0.05*(1.0-texture( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/700.0,  (ShadowCoord.z-bias)/ShadowCoord.w) ));
+		// Vector that goes from the vertex to the light, in camera space
+		//vec3 LightDirection_cameraspace = (ViewV * vec4(LightInvDirection_worldspace,0)).xyz;
+		vec3 LightInvDirection_worldspace = transpose(_dLightVMat[loop])[2].xyz;
+		vec3 LightDirection_cameraspace = ( ViewV * vec4(LightInvDirection_worldspace,0)).xyz;
+		vec3 l = normalize( LightDirection_cameraspace );
+
+
+		// Direction of the light (from the fragment to the light)
+		// Cosine of the angle between the normal and the light direction, 
+		// clamped above 0
+		//  - light is at the vertical of the triangle -> 1
+		//  - light is perpendiular to the triangle -> 0
+		//  - light is behind the triangle -> 0
+		float cosTheta = clamp( dot( n,l ), 0,1 );
+
+		vec3 R = reflect(-l,n);
+
+		// Direction in which the triangle reflects the light
+		// Cosine of the angle between the Eye vector and the Reflect vector,
+		// clamped to 0
+		//  - Looking into the reflection -> 1
+		//  - Looking elsewhere -> < 1
+		float cosAlpha = clamp( dot( E,R ), 0,1 );
+
+		float visibility=1.0;
+
+		// Fixed bias, or...
+		float bias = 0.005;
+
+		// ...variable bias
+		// float bias = 0.005*tan(acos(cosTheta));
+		// bias = clamp(bias, 0,0.01);
+
+		// viewport
+		ShadowCoord.x = ShadowCoord.x / TEXTURE_DIRECTIONAL_LIGHT_WIDTH;
+		ShadowCoord.y = ShadowCoord.y / TEXTURE_DIRECTIONAL_LIGHT_WIDTH;
+		int shadowTextureWidthNum = TEXTURE_SHADOW_WIDTH/TEXTURE_DIRECTIONAL_LIGHT_WIDTH;
+
+		vec2 startShadowCoord = vec2(
+			(_dLightNum % shadowTextureWidthNum) * TEXTURE_DIRECTIONAL_LIGHT_WIDTH,
+			(_dLightNum / shadowTextureWidthNum) * TEXTURE_DIRECTIONAL_LIGHT_WIDTH + TEXTURE_DIRECTIONAL_LIGHT_HEIGHT_START
+		);
+		startShadowCoord.x /= TEXTURE_SHADOW_WIDTH;
+		startShadowCoord.y /= TEXTURE_SHADOW_HEIGHT;
+
+		ShadowCoord.xy += startShadowCoord;
+
+		for (int i=0;i<4;i++){
+			// (  texture(xy).z == some object min dist from light ) < (ShadowCoord.z == shadow space vertex dist)
+			if ( texture( shadowMap, ShadowCoord.xy + poissonDisk[i]/700.0 ).z  <  ShadowCoord.z-bias )
+			{
+				//visibility-=0.2;
+			}
+		}
+
+		MaterialAmbientColorFactor	+= visibility * LightColor * LightPower * cosTheta;
+		MaterialSpecularColorFactor	+= visibility * LightColor * LightPower * pow(cosAlpha,5);
 	}
 
+	for (int loop = 0; loop < _sLightNum; loop++)
+	{
+	}
+
+	for (int loop = 0; loop < _pLightNum; loop++)
+	{
+	}
 
 	// For spot lights, use either one of these lines instead.
 	// if ( texture( shadowMap, (ShadowCoord.xy/ShadowCoord.w) ).z  <  (ShadowCoord.z-bias)/ShadowCoord.w )
 	// if ( textureProj( shadowMap, ShadowCoord.xyw ).z  <  (ShadowCoord.z-bias)/ShadowCoord.w )
-	
+
 	color = 
-		// Ambient : simulates indirect lighting
-		MaterialAmbientColor +
-		// Diffuse : "color" of the object
-		visibility * MaterialDiffuseColor * LightColor * LightPower * cosTheta+
-		// Specular : reflective highlight, like a mirror
-		visibility * MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5);
+		MaterialAmbientColor
+		+ MaterialDiffuseColor * MaterialAmbientColorFactor
+		+ MaterialSpecularColor * MaterialSpecularColorFactor;
 
 }

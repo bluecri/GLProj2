@@ -42,6 +42,5 @@ void ShaderStructDeferredPointLight::loadLightsDataToBuffer(std::vector<std::sha
 		_lightPower[cnt]		= elem->getLightPower();
 		_lightColorVec4Vec[cnt] = elem->getColor();
 		_lightPosVec3Vec[cnt]	= elem->getWorldPos();
-		_biasMatrixVec[cnt]		= elem->getBiasMat();
 	}
 }

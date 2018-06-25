@@ -46,9 +46,14 @@ void SHADER::ShaderObj::loadVector3(GLuint location, const float& x, const float
 	glUniform3f(location, x, y, z);
 }
 
-void SHADER::ShaderObj::loadMatrix4(GLuint location, const glm::mat4 & matrix)
+void SHADER::ShaderObj::loadMatrix4(GLuint location, const glm::mat4 & matrix, int count)
 {
-	glUniformMatrix4fv(location, 1, GL_FALSE, (GLfloat*)&matrix);
+	glUniformMatrix4fv(location, count, GL_FALSE, (GLfloat*)&matrix);
+}
+
+void SHADER::ShaderObj::uniformBlockBind(GLuint location, int uniformIndex)
+{
+	glUniformBlockBinding(m_shaderID, location, uniformIndex);
 }
 
 std::string & SHADER::ShaderObj::getKeyStr()

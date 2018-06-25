@@ -39,8 +39,8 @@ void ShaderStructDirectionalLight::loadLightsDataToBuffer(std::vector<Directiona
 		}
 
 		_lightNum++;
-		_lightLookVec3Vec[cnt]		= elem->getLightDirVec();
-		_biasedModelMatrixVec[cnt]	= elem->getBiasedModelMat();
+		_lightVMat[cnt]				= elem->GetViewMat();
+		_lightPMat[cnt]				= elem->GetProjMat();
 		_lightColorVec4Vec[cnt]		= elem->getColor();
 	}
 }

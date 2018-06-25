@@ -196,6 +196,7 @@
     <ClCompile Include="NormalMissile.cpp" />
     <ClCompile Include="NormalMissileGenerator.cpp" />
     <ClCompile Include="PlaneInfo.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PointLightManager.cpp" />
     <ClCompile Include="ShaderStructDeferredPointLight.cpp" />
     <ClCompile Include="ShaderStructDirectionalLight.cpp" />
@@ -231,6 +232,7 @@
     <ClCompile Include="SkyboxGObject.cpp" />
     <ClCompile Include="SpecifiedNormalMissileInfo.cpp" />
     <ClCompile Include="SpeedBuff.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="SpotLightManager.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\objectLoader.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\vboindexer.cpp" />
@@ -255,6 +257,7 @@
     <ClCompile Include="src\Resource\ModelManager.cpp" />
     <ClCompile Include="src\Resource\Texture.cpp" />
     <ClCompile Include="src\Resource\TextureManager.cpp" />
+    <ClCompile Include="src\Shader\ShaderMain.cpp" />
     <ClCompile Include="src\Shader\ShaderManager.cpp" />
     <ClCompile Include="src\Shader\ShaderObj.cpp" />
     <ClCompile Include="src\Shader\ShaderText.cpp" />
@@ -274,11 +277,13 @@
     <ClInclude Include="LightGameObject.h" />
     <ClInclude Include="LightWithEntity.h" />
     <ClInclude Include="PlaneInfo.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="PointLightManager.h" />
     <ClInclude Include="ShaderStructDeferredPointLight.h" />
     <ClInclude Include="ShaderStructDirectionalLight.h" />
     <ClInclude Include="ShaderStructPointLight.h" />
     <ClInclude Include="ShaderStructSpotLight.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="SpotLightManager.h" />
     <ClInclude Include="UserInfo.h" />
   </ItemGroup>

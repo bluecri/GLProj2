@@ -4,10 +4,12 @@
 #include "src/Shader/ShaderShadow.h"
 #include "src/window.h"
 
-RESOURCE::ShadowBufferTextureShader::ShadowBufferTextureShader(int fboX, int fboY)
+#include "configs_light.h"
+
+RESOURCE::ShadowBufferTextureShader::ShadowBufferTextureShader()
 {
-	_fboX = fboX;
-	_fboY = fboY;
+	_fboX = TEXTURE_SHADOW_WIDTH;
+	_fboY = TEXTURE_SHADOW_HEIGHT;
 	_shadowShader = GShaderManager->m_addShader<SHADER::ShaderShadow>(ENUM_SHADER_TYPE::SHADER_TYPE_SHADOW, "data/Shader/DepthRTT.vertexshader", "data/Shader/DepthRTT.fragmentshader");
 }
 

@@ -18,7 +18,7 @@ public:
 	void	removeDirectionalLight(DirectionalLight* dLight);
 
 	GLuint	getUBO();
-
+	struct ShaderStructDirectionalLight*	getLightStruct();
 private:
 	void	removeDirectionalLightWithNoDelete(DirectionalLight* dLight);
 

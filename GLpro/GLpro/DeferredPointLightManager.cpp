@@ -2,7 +2,7 @@
 
 #include "ShaderStructDeferredPointLight.h"
 #include "configs_ubo.h"
-#include "LightWithEntity.h"
+#include "PointLIght.h"
 
 /*
 #include "DeferredPointLightManager.h"
@@ -76,7 +76,7 @@ void DeferredPointLightManager::initBuffer()
 {
 	glGenBuffers(1, &_ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, _ubo);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(_lightUniformBufferData), _lightUniformBufferData, GL_DYNAMIC_DRAW);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(struct ShaderStructDeferredPointLight), _lightUniformBufferData, GL_DYNAMIC_DRAW);
 	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_INDEX_DEFERRED_POINT_LIGHT, _ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
@@ -89,16 +89,21 @@ void DeferredPointLightManager::updateLightsToBufferData()
 void DeferredPointLightManager::updateBufferToVGA()
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, _ubo);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(_lightUniformBufferData), _lightUniformBufferData);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(struct ShaderStructDeferredPointLight), _lightUniformBufferData);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-std::shared_ptr<LightWithEntity> DeferredPointLightManager::addNewLight(GameSession * gSession, glm::vec3 & dir, glm::vec3 & pos, glm::vec4 & color, float lightPower)
+std::shared_ptr<LightWithEntity> DeferredPointLightManager::addNewLight(GameSession * gSession, glm::vec3 & pos, glm::vec4 & color, float lightPower)
 {
 	int newIdx = _lightSharedVec.size();
-	auto newSharedLight = std::shared_ptr<LightWithEntity>(new LightWithEntity(this, gSession, UBO_INDEX_DEFERRED_POINT_LIGHT, newIdx, glm::vec3(), pos, color, lightPower));
+	std::shared_ptr<LightWithEntity> newSharedLight = std::make_shared<PointLight>(this, gSession, UBO_INDEX_POINT_LIGHT, newIdx, pos, color, lightPower);
 	newSharedLight->lightInit();
 
 	_lightSharedVec.push_back(newSharedLight);
 	return newSharedLight;
+}
+
+ShaderStructDeferredPointLight * DeferredPointLightManager::getLightStruct()
+{
+	return _lightUniformBufferData;
 }

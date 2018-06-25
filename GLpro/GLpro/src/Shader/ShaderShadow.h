@@ -10,12 +10,12 @@ namespace SHADER {
 		{
 			if (m_shaderID != -1) 
 			{
-				depthMatrixID = glGetUniformLocation(m_shaderID, _NameDepthMVP);
+				MVPMatrixID = glGetUniformLocation(m_shaderID, _NameMVP);
 			}
 		}
-		GLuint depthMatrixID;
+		GLuint MVPMatrixID;
 
 	private:
-		const char * _NameDepthMVP = "depthMVP";
+		const char * _NameMVP = "MVP";
 	};
 }

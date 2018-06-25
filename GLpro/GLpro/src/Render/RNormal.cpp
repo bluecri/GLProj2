@@ -15,6 +15,14 @@
 #include "../../ShadowBufferTextureShader.h"
 #include "../Shader/ShaderManager.h"
 
+#include "../../ShaderStructDirectionalLight.h"
+#include "../../ShaderStructSpotLight.h"
+#include "../../ShaderStructPointLight.h"
+
+#include "../../LightManager.h"
+#include "../../DirectionalLightManager.h"
+#include "../../SpotLightManager.h"
+#include "../../PointLightManager.h"
 #include "../window.h"
 
 
@@ -61,33 +69,133 @@ namespace RENDER
 		GShadowBufferTexture->bindFBO();
 		GShadowBufferTexture->bindShader();
 
-		glm::mat4 depthBiasMVP = GLightManager->_directionalLightVec[0].getBiasedModelMat();
+		// glm::mat4 depthBiasMVP = GLightManager->_directionalLightVec[0].getBiasedModelMat();
 
-		for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end(); ) {
-			RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
-			RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
+		// directional light
+		ShaderStructDirectionalLight* directionalLightStruct = GLightManager->_directionalLightManager->getLightStruct();
+		int textureWidthNum = TEXTURE_SHADOW_WIDTH / TEXTURE_DIRECTIONAL_LIGHT_WIDTH;
 
-			if (normalRenderTarget->isBDeleted())
-			{
-				it = _normalDrawElemContainer.erase(it);
-				continue;
-			}
+		for (int i = 0; i < directionalLightStruct->_lightNum; i++)
+		{
+			int viewPortLeft = (i % textureWidthNum) * TEXTURE_DIRECTIONAL_LIGHT_WIDTH;
+			int viewPortTop = (i / textureWidthNum) * TEXTURE_DIRECTIONAL_LIGHT_WIDTH + TEXTURE_DIRECTIONAL_LIGHT_HEIGHT_START;
+			glViewport(viewPortLeft, viewPortTop, TEXTURE_DIRECTIONAL_LIGHT_WIDTH, TEXTURE_DIRECTIONAL_LIGHT_WIDTH);
+			
+			glm::mat4 VP = directionalLightStruct->_lightPMat[i] * directionalLightStruct->_lightVMat[i];
 
-			if (!normalRenderTarget->isRender())
-			{
+			// draw objects
+			for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end(); ) {
+				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
+				RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
+
+				if (normalRenderTarget->isBDeleted())
+				{
+					it = _normalDrawElemContainer.erase(it);
+					continue;
+				}
+
+				if (!normalRenderTarget->isRender())
+				{
+					++it;
+					continue;
+				}
+
+				glm::mat4 MVP = VP * targetRigidbodyComponent->getWorldMatRef();
+				GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+
+				normalRenderTarget->_model->bind();		// Model buffer bind
+				normalRenderTarget->_model->render();
+				normalRenderTarget->_model->unbind();
+
 				++it;
-				continue;
 			}
+		}
 
-			normalRenderTarget->_model->bind();		// Model buffer bind
+		// spot light
+		ShaderStructSpotLight* spotLightStruct = GLightManager->_spotLightManager->getLightStruct();
+		textureWidthNum = TEXTURE_SHADOW_WIDTH / TEXTURE_SPOT_LIGHT_WIDTH;
 
-			mat4 targetTotalMat = depthBiasMVP * targetRigidbodyComponent->getWorldMat();
-			GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->depthMatrixID, targetTotalMat);	// bind global old shader
-			normalRenderTarget->_model->render();
+		for (int i = 0; i < spotLightStruct->_lightNum; i++)
+		{
+			int viewPortLeft = (i % textureWidthNum) * TEXTURE_SPOT_LIGHT_WIDTH;
+			int viewPortTop = (i / textureWidthNum) * TEXTURE_SPOT_LIGHT_WIDTH + TEXTURE_SPOT_LIGHT_HEIGHT_START;
+			glViewport(viewPortLeft, viewPortTop, TEXTURE_SPOT_LIGHT_WIDTH, TEXTURE_SPOT_LIGHT_WIDTH);
+			glm::mat4 VP = spotLightStruct->_lightP[i] * spotLightStruct->_lightV[i];
 
-			normalRenderTarget->_model->unbind();
+			// draw objects
+			for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end(); ) {
+				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
+				RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
 
-			++it;
+				if (normalRenderTarget->isBDeleted())
+				{
+					it = _normalDrawElemContainer.erase(it);
+					continue;
+				}
+
+				if (!normalRenderTarget->isRender())
+				{
+					++it;
+					continue;
+				}
+
+				normalRenderTarget->_model->bind();		// Model buffer bind
+
+				mat4 targetTotalMat = VP * targetRigidbodyComponent->getWorldMat();
+				GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MVPMatrixID, targetTotalMat);	// bind global old shader
+				normalRenderTarget->_model->render();
+
+				normalRenderTarget->_model->unbind();
+
+				++it;
+			}
+		}
+		
+		// point light
+		ShaderStructPointLight* pointLightStruct = GLightManager->_pointLightManager->getLightStruct();
+		textureWidthNum = TEXTURE_SHADOW_WIDTH / TEXTURE_POINT_LIGHT_WIDTH / TEXTURE_POINT_CUBE_NUM;
+
+		for (int i = 0; i < pointLightStruct->_lightNum; i++)
+		{
+			//GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->VPMatrixID
+			glm::mat4 (&pointVPMatVec)[MAX_POINTL_LIGHT_NUM][6] = pointLightStruct->_lightVPMat;
+
+			for (int k = 0; k < TEXTURE_POINT_CUBE_NUM; k++)
+			{
+				int viewPortLeft = (i % textureWidthNum + k) * TEXTURE_POINT_LIGHT_WIDTH;
+				int viewPortTop =  (i / textureWidthNum) * TEXTURE_POINT_LIGHT_WIDTH + TEXTURE_POINT_LIGHT_HEIGHT_START;
+				glViewport(viewPortLeft, viewPortTop, TEXTURE_POINT_LIGHT_WIDTH, TEXTURE_POINT_LIGHT_WIDTH);
+				
+				glm::mat4 VPMat = pointVPMatVec[i][k];
+
+				// draw objects
+				for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end(); ) {
+					RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
+					RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
+
+					if (normalRenderTarget->isBDeleted())
+					{
+						it = _normalDrawElemContainer.erase(it);
+						continue;
+					}
+
+					if (!normalRenderTarget->isRender())
+					{
+						++it;
+						continue;
+					}
+
+					normalRenderTarget->_model->bind();		// Model buffer bind
+
+					mat4 MVP = VPMat * targetRigidbodyComponent->getWorldMat();
+					GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+					normalRenderTarget->_model->render();
+
+					normalRenderTarget->_model->unbind();
+
+					++it;
+				}
+			}
 		}
 
 		GShadowBufferTexture->unbindShader();
@@ -101,16 +209,12 @@ namespace RENDER
 		// ====================draw object on screen=====================
 
 		_shaderObj->bind();
-
-		glm::mat4 depthBiasMVP = GLightManager->_directionalLightVec[0].getBiasedModelMat();
+		//glm::mat4 depthBiasMVP = GLightManager->_directionalLightVec[0].getBiasedModelMat();
 
 		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cam->getRecentViewMat());
-		_shaderObj->loadMatrix4(_shaderObj->m_depthBiasID, depthBiasMVP);
+		_shaderObj->loadMatrix4(_shaderObj->m_viewVPMatrixID, cam->getRecentVPMat());
 
-		//_oldLightUse
-		_shaderObj->loadVector3(_shaderObj->m_lightInvDirID, GLightManager->_directionalLightVec[0].getLightDirVec());	// 1 light
-
-																													// bind shadow texture
+		// bind shadow texture
 		glActiveTexture(GL_TEXTURE1);
 		GShadowBufferTexture->bindTexture();
 		_shaderObj->loadInt(_shaderObj->m_shadowMapID, 1);
@@ -137,13 +241,10 @@ namespace RENDER
 			normalRenderTarget->_texture->bind();	// real texture bind to #
 			_shaderObj->loadInt(_shaderObj->m_textureID, 0);	// set shader use for # shader
 
-			mat4 targetModelMat = targetRigidbodyComponent->getWorldMat();
-			mat4 mvpMat = cam->getRecentVPMat() * targetModelMat;
+			mat4& targetModelMat = targetRigidbodyComponent->getWorldMat();
 			_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, targetModelMat);
-			_shaderObj->loadMatrix4(_shaderObj->m_MVPMatrixID, mvpMat);
 
 			normalRenderTarget->_model->render();
-
 			normalRenderTarget->_texture->unbind();
 			normalRenderTarget->_model->unbind();
 

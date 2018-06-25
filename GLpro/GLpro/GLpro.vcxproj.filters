@@ -525,6 +525,15 @@
     <ClCompile Include="SpotLightManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\ShaderMain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -964,6 +973,12 @@
     </ClInclude>
     <ClInclude Include="DirectionalLightManager.h">
       <Filter>소스 파일\src\lights\manager\withNoEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

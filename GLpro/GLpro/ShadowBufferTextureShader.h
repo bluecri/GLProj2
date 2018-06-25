@@ -12,7 +12,7 @@ namespace RESOURCE
 	class ShadowBufferTextureShader
 	{
 	public:
-		ShadowBufferTextureShader(int fboX = 1024, int fboY = 1024);
+		ShadowBufferTextureShader();
 		virtual ~ShadowBufferTextureShader();
 		void init();
 

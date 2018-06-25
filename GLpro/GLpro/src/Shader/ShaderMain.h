@@ -1,31 +1,24 @@
 #pragma once
 #include "./ShaderObj.h"
+#include "../../configs_ubo.h"
 
 namespace SHADER
 {
 	class ShaderMain : public ShaderObj 
 	{
 	public:
-		ShaderMain(const char * vertexShader, const char * fragmentShader) : ShaderObj(vertexShader, fragmentShader)
-		{
-			if (m_shaderID != -1)
-			{
-				m_MVPMatrixID = glGetUniformLocation(m_shaderID, "MVP");
-				m_cameraViewMatrixID = glGetUniformLocation(m_shaderID, "V");
-				m_modelMatrixID = glGetUniformLocation(m_shaderID, "M");
-				m_depthBiasID = glGetUniformLocation(m_shaderID, "DepthBiasMVP");
-				m_shadowMapID = glGetUniformLocation(m_shaderID, "shadowMap");
-				m_lightInvDirID = glGetUniformLocation(m_shaderID, "LightInvDirection_worldspace");
-				m_textureID = glGetUniformLocation(m_shaderID, "myTextureSampler");
-			}
-		}
+		ShaderMain(const char * vertexShader, const char * fragmentShader);
 
-		GLuint m_MVPMatrixID;
+		GLuint m_viewVPMatrixID;
 		GLuint m_cameraViewMatrixID;
 		GLuint m_modelMatrixID;
-		GLuint m_depthBiasID;
 		GLuint m_shadowMapID;
-		GLuint m_lightInvDirID;
 		GLuint m_textureID;
+
+		GLuint m_directionalLIghtBlockID;
+		GLuint m_spotLIghtBlockID;
+		GLuint m_pointLIghtBlockID;
+		GLuint m_deferredPointLIghtBlockID;
+
 	};
 }

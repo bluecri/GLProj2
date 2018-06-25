@@ -6,7 +6,7 @@
 
 CAMERA::CameraManager::CameraManager()
 {
-	CameraBuilder camBuild(std::string("mainCam"), 0);
+	CameraBuilder camBuild(std::string("mainCam"));
 	_mainCamera = camBuild.constructPtr();
 	AddCamera(_mainCamera);
 }
