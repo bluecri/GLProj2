@@ -15,6 +15,8 @@ class ALSource;
 class MissileGeneratorStorage;
 class ParticleEntity;
 class AimTextUIObj;
+class EntityBindee;
+
 
 class Player : public IPlane
 {
@@ -28,6 +30,8 @@ public:
 	virtual void collisionFunc(CollisionComponent* collisionComp) override;
 	virtual void doJobWithBeDeleted() override;		// done befoe setBeDeleted (resource bind remove)
 
+	EntityBindee*	getChaseBindee();
+
 private:
 	void tabKeyProgress(long long transferKeyInput);
 	void playerMovementProgress(long long transferKeyInput);
@@ -36,16 +40,16 @@ public:
 	ALSource* _explosionSound;
 
 protected:
-	RENDER::RText* _rText;
-	std::shared_ptr<RENDER::RText::DrawElement> _rElemInTextAim;
-
 	ParticleEntity* _backParticle;
 	ParticleEntity* _frontParticle;
 
 	AimTextUIObj* _aimMainTextUIObj;
 	AimTextUIObj* _aimTextUIObj;
+
 private:
 	bool _bShotKeyDown;
+
+	EntityBindee*	_chaseTargetBindee;
 };
 
 #endif

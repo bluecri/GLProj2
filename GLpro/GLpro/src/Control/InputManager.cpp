@@ -82,11 +82,11 @@ namespace CONTROL {
 	}
 
 	float InputManager::getMouseXPos() {
-		return _mouseXPos;
+		return static_cast<float>(_mouseXPos);
 	}
 
 	float InputManager::getMouseYPos() {
-		return _mouseYPos;
+		return static_cast<float>(_mouseYPos);
 	}
 
 	void InputManager::init()

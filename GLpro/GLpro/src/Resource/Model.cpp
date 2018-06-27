@@ -100,11 +100,11 @@ namespace RESOURCE
 	{
 		if (_bEbo)
 		{
-			return _elemVertices.size();
+			return static_cast<int>(_elemVertices.size());
 		}
 		else
 		{
-			return _vertices.size();
+			return static_cast<int>(_vertices.size());
 		}
 	}
 
@@ -137,7 +137,7 @@ namespace RESOURCE
 	{
 		bool res = loadOBJ(fileName.c_str(), _out_vertices, _out_uvs, _out_normals);
 		if (!res) {
-			printf("%s load obj fail\n", fileName);
+			printf("%s load obj fail\n", fileName.c_str());
 			return false;
 		}
 		return true;

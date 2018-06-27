@@ -21,7 +21,7 @@ bool CollisionComponent::sIsBoxCollisionCheck(glm::mat4 & wolrd1, glm::mat4 & wo
 	double absC[3][3];	//abs of c[][]
 	double d[3];
 	double r, r0, r1;	//r = 한 축을 기준으로 obBox 두 중심점의 거리
-	const float cutoff = 0.9999;
+	const float cutoff = 0.9999f;
 	bool existParallelPair = false;	//paralell 한가?
 
 	glm::vec3 axisVec[3];

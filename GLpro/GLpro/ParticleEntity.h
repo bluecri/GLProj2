@@ -11,7 +11,7 @@ class MissileGeneratorStorage;
 class ParticleEntity : public Entity
 {
 public:
-	ParticleEntity(GameSession* gSession, SHADER::ShaderParticle * shaderParticle);
+	ParticleEntity(GameSession* gSession, const char* textureFileName, const char* textureType, SHADER::ShaderParticle * shaderParticle);
 	virtual ~ParticleEntity();
 	void init(glm::vec3& localPos, glm::quat& localQuat, glm::vec3 mainDir, bool bOneParticlePerMultiFrame, const float& particleLife, const float&  frameVsParticle);
 	void setFrameVsParticle(int setFrameVsParticle);

@@ -17,6 +17,9 @@ RigidbodyComponent::RigidbodyComponent(Entity * bindedEntity, const glm::mat4 &m
 	_bDirty = true;		// update local -> world	:: 없으면 child로 신규 생성시 world update X
 	//_maxZSpeed = 100.0f;	// 100 velocity
 	_mass = 1.0f;
+
+	_bTargetQuat = false;
+	_targetQuat = glm::quat();
 }
 
 RigidbodyComponent::~RigidbodyComponent()
@@ -397,6 +400,16 @@ void RigidbodyComponent::setDirty()
 void RigidbodyComponent::setMove(bool bMove)
 {
 	_bMove = bMove;
+}
+
+void RigidbodyComponent::setBTargetQuat(bool bTargetQuat)
+{
+	_bTargetQuat = bTargetQuat;
+}
+
+void RigidbodyComponent::setTargetQuat(glm::quat & targetQuat)
+{
+	_targetQuat = targetQuat;
 }
 
 Entity * RigidbodyComponent::getBindedEntity()

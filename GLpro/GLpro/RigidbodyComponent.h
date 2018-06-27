@@ -103,8 +103,13 @@ public:
 	void resetDirty();
 	bool isDirty();
 	void setDirty();
+
 	void setMove(bool bMove);
+	void setBTargetQuat(bool bTargetQuat);
+	void setTargetQuat(glm::quat& targetQuat);
+
 	Entity* getBindedEntity();
+
 	void setBDeleted();
 	bool isBDeleted();
 
@@ -132,6 +137,9 @@ private:
 	bool _bMove;		// update move or not
 	bool _bVelocity;	// update move with original glm::vec3 _velocity
 	glm::vec3 _velocity;
+
+	bool _bTargetQuat;	// update with targetQuat or not
+	glm::quat _targetQuat;
 
 	float _speed;
 	//float _maxZSpeed;

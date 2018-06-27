@@ -164,6 +164,8 @@
     <ClInclude Include="DeferredPointLight.h" />
     <ClInclude Include="DeferredPointLightManager.h" />
     <ClInclude Include="DirectionalLightManager.h" />
+    <ClInclude Include="EntityBindee.h" />
+    <ClInclude Include="EntityBinder.h" />
     <ClInclude Include="IFieldItemForBuff.h" />
     <ClInclude Include="IFieldItemForStuff.h" />
     <ClInclude Include="IBuff.h" />
@@ -174,6 +176,8 @@
     <ClInclude Include="BelowMissileStorageUIObj.h" />
     <ClInclude Include="EmptyMissileGenerator.h" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EntityBindee.cpp" />
+    <ClCompile Include="EntityBinder.cpp" />
     <ClCompile Include="IBuff.cpp" />
     <ClCompile Include="IFieldItemForBuff.cpp" />
     <ClCompile Include="FieldItemGenerator.cpp" />
@@ -195,6 +199,7 @@
     <ClCompile Include="MissileGeneratorStorage.cpp" />
     <ClCompile Include="NormalMissile.cpp" />
     <ClCompile Include="NormalMissileGenerator.cpp" />
+    <ClCompile Include="ParticleFObjManager.cpp" />
     <ClCompile Include="PlaneInfo.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PointLightManager.cpp" />
@@ -276,6 +281,7 @@
     <ClInclude Include="FieldItemGenerator.h" />
     <ClInclude Include="LightGameObject.h" />
     <ClInclude Include="LightWithEntity.h" />
+    <ClInclude Include="ParticleFObjManager.h" />
     <ClInclude Include="PlaneInfo.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PointLightManager.h" />

@@ -34,7 +34,7 @@ void PointLightManager::updateBufferToVGA()
 
 std::shared_ptr<LightWithEntity> PointLightManager::addNewLight(GameSession * gSession, glm::vec3 & pos, glm::vec4 & color, float lightPower)
 {
-	int newIdx = _lightSharedVec.size();
+	int newIdx = static_cast<int>(_lightSharedVec.size());
 	std::shared_ptr<LightWithEntity>newSharedLight = std::make_shared<PointLight>(this, gSession, UBO_INDEX_POINT_LIGHT, newIdx, pos, color, lightPower);
 	newSharedLight->lightInit();
 

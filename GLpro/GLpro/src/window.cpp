@@ -26,6 +26,7 @@
 #include "../GameSession.h"
 
 #include "../OctreeForFrustum.h"
+#include "../ParticleFObjManager.h"
 
 
 WINDOW::Window::Window(int windowWidth, int windowHeight)
@@ -89,6 +90,8 @@ int WINDOW::Window::init()
 	GTextureManager = new RESOURCE::TextureManager();
 	GCameraManager = new CAMERA::CameraManager();
 	GLightManager = new LightManager();
+	GParticleFObjManager = new ParticleFObjManager();
+
 	GALManager = new ALManager();
 	GALManager->init();
 	GOctreeForFrustum = new OctreeForFrustum(3, 32, glm::vec3());
@@ -97,7 +100,7 @@ int WINDOW::Window::init()
 
 	GShaderManager = new SHADER::ShaderManager();
 	GRendermanager = new RENDER::RenderManager();
-	GCollisionComponentManager = new CollisionComponentManager(3, 64);
+	GCollisionComponentManager = new CollisionComponentManager(4, 128);
 	GOption = new Option();
 	GScene = new Scene();
 	//
@@ -124,17 +127,17 @@ int WINDOW::Window::init()
 
 void WINDOW::Window::mainLoop()
 {
-	float t = 0.0;
-	float usedT = 0.0;
-	const float dt = 0.02;
+	float t = 0.0f;
+	float usedT = 0.0f;
+	const float dt = 0.02f;
 
-	float currentTime = glfwGetTime();
+	float currentTime = static_cast<float>(glfwGetTime());
 	float acc = 0.0;
 
 	// Draw loop (ESC key or window was closed)
 	do {
 		// time update
-		float newTime = glfwGetTime();
+		float newTime = static_cast<float>(glfwGetTime());
 		float intervalTime = newTime - currentTime;
 		currentTime = newTime;
 
@@ -157,13 +160,9 @@ void WINDOW::Window::mainLoop()
 			GRigidbodyComponentManager->updateRigidbodyComps(dt);
 			GCollisionComponentManager->doCollisionTest();
 			GRigidbodyComponentManager->resetRigidbodyCompsDirty();
-
-			// light update
-			GLightManager->updateAllLIghts();
-
+			
 			// logic loop
 			GScene->update(dt, acc);
-			GALManager->updateALSource();
 
 			// todo : update
 			acc -= dt;
@@ -176,6 +175,14 @@ void WINDOW::Window::mainLoop()
 		// 2. acc만큼의 예상 이동 경로 그냥 그리기(acc가 dt에 가까울 수록 interpolation error 증가)
 		// 2번으로 시도.
 		// render lop
+
+		// light update
+		GLightManager->updateAllLIghts();
+
+		// sound update
+		GALManager->updateALSource();
+
+		// render
 		renderAll(usedT, acc);
 		usedT = 0.0;
 

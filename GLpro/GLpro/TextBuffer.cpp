@@ -115,7 +115,7 @@ void RESOURCE::TextBuffer::render()
 int RESOURCE::TextBuffer::getGLCount()
 {
 	// print가능한 모든 칸 수(_printUVs 초과시) vs print할 uv수
-	return min(_printUVs.size(), _vertexes.size());
+	return min(static_cast<int>(_printUVs.size()), static_cast<int>(_vertexes.size()));
 }
 
 void RESOURCE::TextBuffer::genVao()

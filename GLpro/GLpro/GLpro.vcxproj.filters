@@ -190,6 +190,12 @@
     <Filter Include="소스 파일\src\lights\manager\withNoEntity">
       <UniqueIdentifier>{eeb4f3af-2801-4795-936f-2894e2596760}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\GOComponent">
+      <UniqueIdentifier>{67c3c132-87ed-4226-9ba7-adcf3be6b003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\renderTarget\particle">
+      <UniqueIdentifier>{ead8e588-13ad-42e9-806e-60fc47f386d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -532,6 +538,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Shader\ShaderMain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityBinder.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityBindee.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleFObjManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -979,6 +994,15 @@
     </ClInclude>
     <ClInclude Include="PointLight.h">
       <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityBinder.h">
+      <Filter>소스 파일\GameScene\GameObjects\GOComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityBindee.h">
+      <Filter>소스 파일\GameScene\GameObjects\GOComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleFObjManager.h">
+      <Filter>소스 파일\src\renderTarget\particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

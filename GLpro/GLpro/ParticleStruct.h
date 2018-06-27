@@ -20,7 +20,7 @@ struct _ParticleStruct
 
 	void update(float deltaTime, const glm::vec3& cameraPos)
 	{
-		if (_life >= 0.0f)
+		if (_life > -std::numeric_limits<float>::epsilon())
 		{
 			_pos += _velocity * deltaTime;
 			_cameradistance = glm::length2(_pos - cameraPos);	// not use sqrt

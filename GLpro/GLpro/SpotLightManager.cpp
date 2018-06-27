@@ -32,7 +32,7 @@ void SpotLightManager::updateBufferToVGA()
 
 std::shared_ptr<LightWithEntity> SpotLightManager::addNewLight(GameSession * gSession, glm::mat4 & rotMat, glm::vec3 & pos, glm::vec4 & color, float lightPower, float fovy, float aspcect, float persNear, float persFar)
 {
-	int newIdx = _lightSharedVec.size();
+	int newIdx = static_cast<int>(_lightSharedVec.size());
 	std::shared_ptr<LightWithEntity>newSharedLight = std::make_shared<SpotLight>(this, gSession, UBO_INDEX_SPOT_LIGHT, newIdx, rotMat, pos, color, lightPower, fovy, aspcect, persNear, persFar);
 	newSharedLight->lightInit();
 

@@ -89,6 +89,9 @@ void CollisionComponentManager::collisionTestWithContainer(std::list<CollisionCo
 		// 충돌 가능한 list와 충돌 Check
 		for (auto potentialComp : potentialCollisionList)
 		{
+			if (elem == potentialComp)	// self
+				continue;
+
 			// OBB Test
 			if (elem->collideTestToOther(potentialComp))
 			{

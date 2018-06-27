@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ParticleFObj.h"
 #include "src/Resource/TextureManager.h"
+#include "src/Resource/Texture.h"
 #include "ParticleBuffer.h"
 
 #include "configs.h"
@@ -8,8 +9,6 @@
 
 RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName, const char * textureType, int particleContainerSize)
 {
-	_deleteRemainTime = -1.0f;
-
 	std::vector<glm::vec3> default_particle_buffer;
 	for (int i = 0; i < 4; i++)
 	{
@@ -17,7 +16,7 @@ RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName
 	}
 
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
-	_particleBuffer = new RESOURCE::ParticleBuffer(default_particle_buffer);
+	_particleBuffer = new RESOURCE::ParticleBuffer(default_particle_buffer, particleContainerSize);
 
 	_particleContainerSize = particleContainerSize;
 	_particleContainer = std::vector<ParticleStruct*>();
@@ -32,14 +31,13 @@ RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName
 RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName, const char * textureType, std::vector<glm::vec3>& vertices, int particleContainerSize)
 	: FObj()
 {
-	_deleteRemainTime = -1.0f;
-
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
-	_particleBuffer = new RESOURCE::ParticleBuffer(vertices);
+	_particleBuffer = new RESOURCE::ParticleBuffer(vertices, particleContainerSize);
 
 	_particleContainerSize = particleContainerSize;
 	_particleContainer = std::vector<ParticleStruct*>();
 	_particleContainer.reserve(_particleContainerSize);
+
 
 	for (int i = 0; i < _particleContainerSize; i++)
 	{
@@ -71,10 +69,12 @@ void RENDER_TARGET::PARTICLE::ParticleFObj::sortContainerByDist()
 void RENDER_TARGET::PARTICLE::ParticleFObj::orderFillParticleBuffer()
 {
 	int& drawPCnt = _particleBuffer->_particlePrintCnt;
+	drawPCnt = 0;	// init count
+
 	// todo camera dist < 0.0, no push?
 	for (auto elem : _particleContainer)
 	{
-		if (elem->_life > 0.0f && drawPCnt < MAX_PARTICLE_INBUFFER_DEFAULT_NUM)
+		if (elem->_life > 0.0f && drawPCnt < _particleBuffer->getBufferParticleCapacity())
 		{
 			// direct access
 
@@ -106,7 +106,7 @@ ParticleStruct & RENDER_TARGET::PARTICLE::ParticleFObj::GetUnusedParticle()
 
 	// find unUsed Particle [0 ~ lastUsedindex]
 	for (int i = 0; i<_lastUsedParticleIndex; i++) {
-		if (_particleContainer[i]->_life < 0) {
+		if (_particleContainer[i]->_life < 0.0f) {
 			_lastUsedParticleIndex = i;
 			return *_particleContainer[i];
 		}
@@ -115,12 +115,55 @@ ParticleStruct & RENDER_TARGET::PARTICLE::ParticleFObj::GetUnusedParticle()
 	return *_particleContainer[0]; // All particles are taken, override the first one
 }
 
-void RENDER_TARGET::PARTICLE::ParticleFObj::setDeleteRemainTime(float remainTime)
+void RENDER_TARGET::PARTICLE::ParticleFObj::accParticleContainderSize(int acc)
 {
-	_deleteRemainTime = remainTime;
+	// opt : vector resize does not modify capacity
+	_particleContainerSize += acc;
+	_particleBuffer->accParticleCapacity(acc);
+	if (acc < 0)
+	{
+		int lastIdx = static_cast<int>(_particleContainer.size() - 1);
+
+		for (int i = 0; i<acc; i++)
+			delete _particleContainer[lastIdx - i];
+
+		_particleContainer.resize(_particleContainerSize);
+	}
+	else if (acc > 0)
+	{
+		for (int i = 0; i<acc; i++)
+			_particleContainer.push_back(new ParticleStruct());
+	}
 }
 
-float & RENDER_TARGET::PARTICLE::ParticleFObj::getDeleteRemainTimeRef() {
-	return _deleteRemainTime;
+int RENDER_TARGET::PARTICLE::ParticleFObj::getPrevPrintedParticleNum()
+{
+	return _particleBuffer->_particlePrintCnt;
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::bind()
+{
+	_particleBuffer->bind();
+	_texture->bind();
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::unBind()
+{
+	_particleBuffer->unbind();
+	_texture->unbind();
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::renderBuffer()
+{
+	_particleBuffer->render();
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::updateParticleStructs(float deltaTime, glm::vec3 & camPosVec)
+{
+	for (auto elem : _particleContainer)
+	{
+		// cam distance update
+		elem->update(deltaTime, camPosVec);
+	}
 }
 

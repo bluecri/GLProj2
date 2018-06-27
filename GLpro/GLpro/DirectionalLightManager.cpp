@@ -34,7 +34,7 @@ void DirectionalLightManager::updateBufferToVGA()
 void DirectionalLightManager::addNewDirectionalLight(glm::vec4 & color, const glm::vec3 & lightLookVec3)
 {
 	
-	int newIdx = _directionalLightVec.size();
+	int newIdx = static_cast<int>(_directionalLightVec.size());
 	DirectionalLight* newLight = new DirectionalLight(this, newIdx, color, lightLookVec3);
 	_directionalLightVec.push_back(newLight);
 }
@@ -42,7 +42,7 @@ void DirectionalLightManager::addNewDirectionalLight(glm::vec4 & color, const gl
 void DirectionalLightManager::removeDirectionalLight(DirectionalLight * dLight)
 {
 	int delIdx = dLight->_idx;
-	int lastIdx = _directionalLightVec.size();
+	int lastIdx = static_cast<int>(_directionalLightVec.size());
 
 	// Move last light data to delete light Index
 	DirectionalLight* lastLight = _directionalLightVec[lastIdx];
@@ -68,7 +68,7 @@ ShaderStructDirectionalLight * DirectionalLightManager::getLightStruct()
 void DirectionalLightManager::removeDirectionalLightWithNoDelete(DirectionalLight * dLight)
 {
 	int delIdx = dLight->_idx;
-	int lastIdx = _directionalLightVec.size();
+	int lastIdx = static_cast<int>(_directionalLightVec.size());
 
 	// Move last light data to delete light Index
 	DirectionalLight* lastLight = _directionalLightVec[lastIdx];

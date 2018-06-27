@@ -10,7 +10,7 @@ ILightWithEntityManager::ILightWithEntityManager()
 void ILightWithEntityManager::removeLightWithEntity(std::shared_ptr<LightWithEntity> dLight)
 {
 	int delIdx = dLight->_idx;
-	int lastIdx = _lightSharedVec.size();
+	int lastIdx = static_cast<int>(_lightSharedVec.size());
 
 	// Move last light data to delete light Index
 	auto lastLight = _lightSharedVec[lastIdx];

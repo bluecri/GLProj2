@@ -1,9 +1,11 @@
 #include "GameSession.h"
 
+#include "stdafx.h"
+
 #include "Box.h"
 #include "Canvas.h"
-#include "src/Entity.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "src/Camera/CameraManager.h"
 #include "src/Camera/Camera.h"
 #include "src/Resource/Model.h"
@@ -156,6 +158,35 @@ void GameSession::preMade()
 	NormalMissileGenerator * normalMissileGenerator = new NormalMissileGenerator();
 	normalMissileGenerator->initNormalMissileGenerator(newPlayer, newPlayer->getMissileGeneratorStorage());
 	newPlayer->addMissileGenerator(normalMissileGenerator);
+
+	std::vector<glm::vec3> enemyVec;
+	for (int i = -3; i < 3; i++)
+	{
+		for (int k = -3; k < 3; k++)
+		{
+			for (int q = -3; q < 3; q++)
+			{
+				enemyVec.push_back(glm::vec3(i, k, q) * 30.0f);
+			}
+		}
+	}
+	Enemy * newEnemy = nullptr;
+	for (auto elem : enemyVec)
+	{
+		// player & camera attach
+		newEnemy = new Enemy(premadeSession, planeModel, planeTexture, shaderMain);
+		//newPlayer->_rigidbodyComponent->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		newEnemy->getRigidbodyComponent()->setDirty();
+		newEnemy->getRigidbodyComponent()->translateModelMatrix(elem);
+		newEnemy->setBRender(true);
+		newEnemy->initIPlane(new PlaneInfo(100, 00, 0.0f), new PlaneInfo(100, 100, 3.0f));
+		newEnemy->initEnemy();
+		normalMissileGenerator = new NormalMissileGenerator();
+		normalMissileGenerator->initNormalMissileGenerator(newEnemy, newEnemy->getMissileGeneratorStorage());
+		newEnemy->addMissileGenerator(normalMissileGenerator);
+	}
+
+
 	
 	CAMERA::Camera** mainCam = GCameraManager->GetMainCamera();
 	//(*mainCam)->_rigidbodyComponent->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));

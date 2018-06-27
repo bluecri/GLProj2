@@ -32,6 +32,8 @@
 #include "AimTextUIObj.h"
 #include "BuffManager.h"
 
+#include "EntityBindee.h"
+
 Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IPlane(ENUM_ENTITY_TYPE::ENUM_ENTITY_PLANE_PLAYER, gSession, model, texture, shadermain)
 {
@@ -46,11 +48,11 @@ Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture 
 
 	// particle
 	SHADER::ShaderParticle* shaderParticle = GShaderManager->m_addShader<SHADER::ShaderParticle>(ENUM_SHADER_TYPE::SHADER_TYPE_PARTICLE, "data/Shader/Particle.vertexshader", "data/Shader/Particle.fragmentshader");
-	_backParticle = new ParticleEntity(gSession, shaderParticle);
+	_backParticle = new ParticleEntity(gSession, "data/Texture/particle.DDS", "dds", shaderParticle);
 	_backParticle->init(glm::vec3(0.0f, 0.0f, -1.0f), glm::quat(), glm::vec3(0.0f, 0.0f, -1.0f), true, 3.0f, 60);
 	
-	_frontParticle = new ParticleEntity(gSession, shaderParticle);
-	_frontParticle->init(glm::vec3(0.0f, 0.0f, 2.0f), glm::quat(), glm::vec3(0.0f, 0.0f, 2.0f), true, 3.0f, 1000);
+	_frontParticle = new ParticleEntity(gSession, "data/Texture/particle.DDS", "dds", shaderParticle);
+	_frontParticle->init(glm::vec3(0.0f, 0.0f, 2.0f), glm::quat(), glm::vec3(0.0f, 0.0f, 2.0f), true, 3.0f, 60);
 
 	//	_backParticle->attachParentEntity(this);	cannot do this : before player entity is created. Do this in init().
 	//_frontParticle = new ParticleEntity(gSession, shaderParticle);
@@ -94,6 +96,8 @@ Player::~Player()
 	// sound remove
 	_explosionSound->unBind();
 	_explosionSound->setDoDelete();
+
+	delete _chaseTargetBindee;	// deleter call relaseAllBinder();
 }
 
 void Player::initPlayer()
@@ -140,7 +144,7 @@ void Player::logicUpdate(float deltaTime, float acc)
 	}
 
 	// back particle logic
-	int particleNum = PLAYER_MIN_FRAME_PER_PARTICLE + (PLAYER_MAX_FRAME_PER_PARTICLE - PLAYER_MIN_FRAME_PER_PARTICLE) * (1.0f - fabsf(getSpeedPerMaxSpeedRatio()));
+	int particleNum = static_cast<int>(PLAYER_MIN_FRAME_PER_PARTICLE + (PLAYER_MAX_FRAME_PER_PARTICLE - PLAYER_MIN_FRAME_PER_PARTICLE) * (1.0f - fabsf(getSpeedPerMaxSpeedRatio())));
 	_backParticle->setFrameVsParticle(particleNum);
 
 }
@@ -158,6 +162,10 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 	case ENUM_ENTITY_MISSILE_NORMAL:
 		break;
 	case ENUM_ENTITY_ENEMY:
+		if (isCanBeDamaged())
+		{
+			planeDamaged(20, true);
+		}
 		break;
 	default:
 		// none
@@ -168,6 +176,11 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 void Player::doJobWithBeDeleted()
 {
 	
+}
+
+EntityBindee * Player::getChaseBindee()
+{
+	return _chaseTargetBindee;
 }
 
 void Player::tabKeyProgress(long long transferKeyInput)
@@ -200,6 +213,7 @@ void Player::playerMovementProgress(long long transferKeyInput)
 	
 	if (roll != 0)
 		maincam->camAccQuaternionRoll((float)roll);
+
 	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_UP))
 	{
 		_curPlaneInfo->_maxSpeed += _curPlaneInfo->_deltaSpeed;
@@ -224,4 +238,5 @@ void Player::playerMovementProgress(long long transferKeyInput)
 	// aim text update logic
 	_aimTextUIObj->setAimPositionWithQuat(_rigidbodyComponent->getLocalQuarternionRef(), maincam->getRigidbodyComponent()->getLocalQuarternionRef());
 
+	_chaseTargetBindee = new EntityBindee(this);
 }
