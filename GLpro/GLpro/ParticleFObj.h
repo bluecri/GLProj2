@@ -40,6 +40,7 @@ namespace RENDER_TARGET
 			void				bind();
 			void				unBind();
 			void				renderBuffer();
+			void				resetOveruseParticle();
 
 			// update exist particles
 			void				updateParticleStructs(float deltaTime, glm::vec3& camPosVec);
@@ -55,11 +56,13 @@ namespace RENDER_TARGET
 
 			int		_lastUsedParticleIndex;
 			int		_particleContainerSize;		// 개별 particle container size
-			int		_curParticleNum;			// 현재 가지고 있는 particleNum
+
+			// int		_curParticleNum;			// 현재 가지고 있는 particleNum(for dynamic buffer size)
 
 		private:
+			bool	_bOverUseParticle;		// print particle num > _particleContainerSize
+
 			friend class ParticleFObjManager;
 		};
-		
 	}
 }

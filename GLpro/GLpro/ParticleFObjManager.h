@@ -28,7 +28,7 @@ public:
 	std::shared_ptr<PFobjElem>	getSharedParticleFObj(const char* textureFileName, const char* textureType);
 	std::shared_ptr<PFobjElem>	getSharedParticleFObj(const char* textureFileName, const char* textureType, std::vector<glm::vec3> &vertices);
 	void						removeSharedParticleFObj(std::shared_ptr<PFobjElem> delElem);
-	void						sortAndFillBufferAll();
+	void						doAllFobjBeforeDrawBehavior();
 	void						updateParticleStructsAll(float deltaTime, glm::vec3& camPosVec);
 
 	std::map<std::string, std::shared_ptr<PFobjElem>>&	getFobjContainerForDraw();

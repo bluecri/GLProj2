@@ -94,7 +94,6 @@ namespace RENDER
 
 	/*
 	*	particle Fobj에서 빈 particle을 particle info를 통해 particle generate.
-	*
 	*/
 	void RParticle::beforeDraw(float deltaTime)
 	{
@@ -133,7 +132,6 @@ namespace RENDER
 			++it;
 		}
 
-		// sort with distance & fill ParticleBuffer (pos buffer & color buffer)
-		GParticleFObjManager->sortAndFillBufferAll();
+		GParticleFObjManager->doAllFobjBeforeDrawBehavior();
 	}
 }

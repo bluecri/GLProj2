@@ -26,6 +26,8 @@ RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName
 	{
 		_particleContainer.push_back(new ParticleStruct());
 	}
+
+	_bOverUseParticle = false;
 }
 
 RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName, const char * textureType, std::vector<glm::vec3>& vertices, int particleContainerSize)
@@ -43,6 +45,8 @@ RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName
 	{
 		_particleContainer.push_back(new ParticleStruct());
 	}
+
+	_bOverUseParticle = false;
 }
 
 RENDER_TARGET::PARTICLE::ParticleFObj::~ParticleFObj()
@@ -96,6 +100,9 @@ void RENDER_TARGET::PARTICLE::ParticleFObj::orderFillParticleBuffer()
 
 ParticleStruct & RENDER_TARGET::PARTICLE::ParticleFObj::GetUnusedParticle()
 {
+	if (_bOverUseParticle)
+		return *_particleContainer[0];
+
 	// find unUsed Particle [lastUsedindex ~ last Index]
 	for (int i = _lastUsedParticleIndex; i<_particleContainerSize; i++) {
 		if (_particleContainer[i]->_life < 0.0f) {
@@ -111,6 +118,7 @@ ParticleStruct & RENDER_TARGET::PARTICLE::ParticleFObj::GetUnusedParticle()
 			return *_particleContainer[i];
 		}
 	}
+	_bOverUseParticle = true;
 
 	return *_particleContainer[0]; // All particles are taken, override the first one
 }
@@ -156,6 +164,11 @@ void RENDER_TARGET::PARTICLE::ParticleFObj::unBind()
 void RENDER_TARGET::PARTICLE::ParticleFObj::renderBuffer()
 {
 	_particleBuffer->render();
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::resetOveruseParticle()
+{
+	_bOverUseParticle = false;
 }
 
 void RENDER_TARGET::PARTICLE::ParticleFObj::updateParticleStructs(float deltaTime, glm::vec3 & camPosVec)

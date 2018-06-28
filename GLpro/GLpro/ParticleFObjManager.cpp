@@ -37,7 +37,8 @@ void ParticleFObjManager::removeSharedParticleFObj(std::shared_ptr<PFobjElem> de
 	}
 }
 
-void ParticleFObjManager::sortAndFillBufferAll()
+// sort with distance & fill ParticleBuffer & particle over use flag init (pos buffer & color buffer)
+void ParticleFObjManager::doAllFobjBeforeDrawBehavior()
 {
 	for (auto elem : _fObjContainer)
 	{
@@ -50,12 +51,13 @@ void ParticleFObjManager::sortAndFillBufferAll()
 		{
 			continue;
 		}
-
 		// sort with distance
 		elem.second->sortContainerByDist();
 
 		// fill ParticleBuffer (pos buffer & color buffer)
 		elem.second->orderFillParticleBuffer();
+
+		elem.second->resetOveruseParticle();
 	}
 }
 

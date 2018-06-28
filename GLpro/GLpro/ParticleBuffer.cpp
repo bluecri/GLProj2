@@ -40,7 +40,6 @@ void RESOURCE::ParticleBuffer::unbind() const
 
 void RESOURCE::ParticleBuffer::render()
 {
-	
 	int printParticleCountOnBuffer = min(_bufferParticleCapacity, _particlePrintCnt);
 
 	if (_bBufferParticleCapacityUpdated)
@@ -62,11 +61,11 @@ void RESOURCE::ParticleBuffer::render()
 
 	glBindBuffer(GL_ARRAY_BUFFER, _particles_pos_vbo);
 	glBufferData(GL_ARRAY_BUFFER, _bufferParticleCapacity * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);  // Buffer orphaning, to improve streaming
-	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLfloat) * 4, &_particule_position_data);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLfloat) * 4, &_particule_position_data[0]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, _particles_color_vbo);
 	glBufferData(GL_ARRAY_BUFFER, _bufferParticleCapacity * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, to improve streaming
-	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLubyte) * 4, &_particule_color_data);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLubyte) * 4, &_particule_color_data[0]);
 
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, printParticleCountOnBuffer);
 }

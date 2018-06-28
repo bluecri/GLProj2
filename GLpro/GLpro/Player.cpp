@@ -51,8 +51,8 @@ Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture 
 	_backParticle = new ParticleEntity(gSession, "data/Texture/particle.DDS", "dds", shaderParticle);
 	_backParticle->init(glm::vec3(0.0f, 0.0f, -1.0f), glm::quat(), glm::vec3(0.0f, 0.0f, -1.0f), true, 3.0f, 60);
 	
-	_frontParticle = new ParticleEntity(gSession, "data/Texture/particle.DDS", "dds", shaderParticle);
-	_frontParticle->init(glm::vec3(0.0f, 0.0f, 2.0f), glm::quat(), glm::vec3(0.0f, 0.0f, 2.0f), true, 3.0f, 60);
+	//_frontParticle = new ParticleEntity(gSession, "data/Texture/particle.DDS", "dds", shaderParticle);
+	//_frontParticle->init(glm::vec3(0.0f, 0.0f, 2.0f), glm::quat(), glm::vec3(0.0f, 0.0f, 2.0f), true, 3.0f, 60);
 
 	//	_backParticle->attachParentEntity(this);	cannot do this : before player entity is created. Do this in init().
 	//_frontParticle = new ParticleEntity(gSession, shaderParticle);
@@ -115,7 +115,7 @@ void Player::initPlayer()
 
 	// particle entity attach parnet
 	_backParticle->attachParentEntity(this);
-	_frontParticle->attachParentEntity(this);
+	//_frontParticle->attachParentEntity(this);
 }
 
 void Player::logicUpdate(float deltaTime, float acc)
