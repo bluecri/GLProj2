@@ -161,6 +161,7 @@
     <ClInclude Include="BuffSum.h" />
     <ClInclude Include="configs_light.h" />
     <ClInclude Include="configs_ubo.h" />
+    <ClInclude Include="config_default_vertex.h" />
     <ClInclude Include="DeferredPointLight.h" />
     <ClInclude Include="DeferredPointLightManager.h" />
     <ClInclude Include="DirectionalLightManager.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="LightGameObject.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="MissileGeneratorStorage.cpp" />
+    <ClCompile Include="ModelOnlyVertex.cpp" />
     <ClCompile Include="NormalMissile.cpp" />
     <ClCompile Include="NormalMissileGenerator.cpp" />
     <ClCompile Include="ParticleFObjManager.cpp" />
@@ -281,6 +283,7 @@
     <ClInclude Include="FieldItemGenerator.h" />
     <ClInclude Include="LightGameObject.h" />
     <ClInclude Include="LightWithEntity.h" />
+    <ClInclude Include="ModelOnlyVertex.h" />
     <ClInclude Include="ParticleFObjManager.h" />
     <ClInclude Include="PlaneInfo.h" />
     <ClInclude Include="PointLight.h" />
@@ -289,6 +292,7 @@
     <ClInclude Include="ShaderStructDirectionalLight.h" />
     <ClInclude Include="ShaderStructPointLight.h" />
     <ClInclude Include="ShaderStructSpotLight.h" />
+    <ClInclude Include="ShaderTextureSimple.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="SpotLightManager.h" />
     <ClInclude Include="UserInfo.h" />
@@ -413,6 +417,8 @@
     <ClInclude Include="UIEntity.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\Shader\TexturePrint.fragmentshader" />
+    <None Include="data\Shader\TexturePrint.vertexshader" />
     <None Include="data\Shader\DepthRTT.fragmentshader" />
     <None Include="data\Shader\DepthRTT.vertexshader" />
     <None Include="data\Shader\Particle.fragmentshader" />

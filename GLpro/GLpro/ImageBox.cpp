@@ -63,11 +63,11 @@ void ImageBox::moveLTPosition(int widthLT, int heightLT)
 void ImageBox::initPreMade()
 {
 	SHADER::ShaderText* shaderText = GShaderManager->m_addShader<SHADER::ShaderText>(ENUM_SHADER_TYPE::SHADER_TYPE_TEXT, "data/Shader/TextVertexShader.vertexshader", "data/Shader/TextVertexShader.fragmentshader");
-	RESOURCE::Texture* blockTexture = GTextureManager->getTextureWithFileName("data/Texture/block.dds", "dds");
-	RESOURCE::Texture* bluegreyTexture = GTextureManager->getTextureWithFileName("data/Texture/block.dds", "dds");
-	RESOURCE::Texture* ironTexture = GTextureManager->getTextureWithFileName("data/Texture/block.dds", "dds");
-	RESOURCE::Texture* paperTexture = GTextureManager->getTextureWithFileName("data/Texture/block.dds", "dds");
-	RESOURCE::Texture* waterTexture = GTextureManager->getTextureWithFileName("data/Texture/block.dds", "dds");
+	RESOURCE::Texture* blockTexture = GTextureManager->getTextureWithFileName("data/Texture/blockBit.bmp", "bmp");
+	RESOURCE::Texture* bluegreyTexture = GTextureManager->getTextureWithFileName("data/Texture/bluegrey.dds", "dds");
+	RESOURCE::Texture* ironTexture = GTextureManager->getTextureWithFileName("data/Texture/iron.dds", "dds");
+	RESOURCE::Texture* paperTexture = GTextureManager->getTextureWithFileName("data/Texture/paperBit.bmp", "bmp");
+	RESOURCE::Texture* waterTexture = GTextureManager->getTextureWithFileName("data/Texture/water.dds", "dds");
 
 	ImageBox* tempImageBox = new ImageBox(100, 40, 40, 40, blockTexture, shaderText);
 	tempImageBox->setBRender(false);

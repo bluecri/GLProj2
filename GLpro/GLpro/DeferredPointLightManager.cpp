@@ -81,6 +81,14 @@ void DeferredPointLightManager::initBuffer()
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
+void DeferredPointLightManager::updateLights()
+{
+	for (auto elem : _lightSharedVec)
+	{
+		elem->lightUpdate();
+	}
+}
+
 void DeferredPointLightManager::updateLightsToBufferData()
 {
 	_lightUniformBufferData->loadLightsDataToBuffer(_lightSharedVec);

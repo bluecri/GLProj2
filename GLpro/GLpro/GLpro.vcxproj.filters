@@ -549,6 +549,9 @@
     <ClCompile Include="ParticleFObjManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ModelOnlyVertex.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -1004,6 +1007,15 @@
     <ClInclude Include="ParticleFObjManager.h">
       <Filter>소스 파일\src\renderTarget\particle</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderTextureSimple.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelOnlyVertex.h">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="config_default_vertex.h">
+      <Filter>소스 파일\src\config</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\Shader\DepthRTT.fragmentshader">
@@ -1052,6 +1064,12 @@
       <Filter>리소스 파일\shaders</Filter>
     </None>
     <None Include="data\Shader\TextVertexShader.vertexshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\TexturePrint.fragmentshader">
+      <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\TexturePrint.vertexshader">
       <Filter>리소스 파일\shaders</Filter>
     </None>
   </ItemGroup>

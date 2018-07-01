@@ -11,6 +11,7 @@ class DirectionalLightManager
 public:
 	DirectionalLightManager();
 	void	initBuffer();
+	void	updateLights();
 	void	updateLightsToBufferData();
 	void	updateBufferToVGA();
 

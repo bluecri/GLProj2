@@ -87,6 +87,7 @@ int WINDOW::Window::init()
 	GInputManager = new CONTROL::InputManager();
 	GRigidbodyComponentManager = new RigidbodyComponentManager();
 	GModelManager = new RESOURCE::ModelManager();
+	GModelManager->createDefaultModelOnlyVertex();
 	GTextureManager = new RESOURCE::TextureManager();
 	GCameraManager = new CAMERA::CameraManager();
 	GLightManager = new LightManager();
@@ -96,7 +97,9 @@ int WINDOW::Window::init()
 	GALManager->init();
 	GOctreeForFrustum = new OctreeForFrustum(3, 32, glm::vec3());
 	// ttest
-	GLightManager->AddDirectinalLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	//GLightManager->AddDirectinalLight(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	//GLightManager->AddDirectinalLight(glm::vec3(-10.0f, -10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
 
 	GShaderManager = new SHADER::ShaderManager();
 	GRendermanager = new RENDER::RenderManager();

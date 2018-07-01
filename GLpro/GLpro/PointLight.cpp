@@ -7,10 +7,10 @@ PointLight::PointLight(ILightWithEntityManager * bindedLightManager, GameSession
 {
 	_perspectiveMat = glm::perspective(glm::radians(90.0f), 1.0f, _persNear, _persFar);
 	_cubeVPMatVec = std::vector<glm::mat4>(6, glm::mat4());
-	updateLIght();
+	lightUpdate();
 }
 
-void PointLight::updateLIght()
+void PointLight::lightUpdate()
 {
 	glm::vec3 lightPos = getWorldPos();
 	for (int i = 0; i < 6; i++)

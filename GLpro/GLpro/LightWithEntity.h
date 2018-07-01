@@ -16,9 +16,12 @@ public:
 
 	bool		isValid();
 
+	virtual void	lightUpdate() = 0;
+
 	glm::vec3	getWorldPos();
 	float		getLightPower();
 	int			getUboType();
+	LightGameObject*	getLightGameObject();
 
 	ILightWithEntityManager*	getBindedLightManager();
 

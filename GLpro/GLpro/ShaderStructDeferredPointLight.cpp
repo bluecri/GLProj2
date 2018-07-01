@@ -24,7 +24,6 @@ void ShaderStructDeferredPointLight::loadLightsDataToBuffer(std::vector<std::sha
 {
 	initShaderStruct();
 
-	int cnt = 0;
 	for (auto elem : lightsDataVec)
 	{
 		if (_lightNum >= MAX_DFFERED_POINTL_LIGHT_NUM)
@@ -38,9 +37,9 @@ void ShaderStructDeferredPointLight::loadLightsDataToBuffer(std::vector<std::sha
 			continue;
 		}
 
+		_lightPower[_lightNum]		= elem->getLightPower();
+		_lightColorVec4Vec[_lightNum] = elem->getColor();
+		_lightPosVec3Vec[_lightNum]	= elem->getWorldPos();
 		_lightNum++;
-		_lightPower[cnt]		= elem->getLightPower();
-		_lightColorVec4Vec[cnt] = elem->getColor();
-		_lightPosVec3Vec[cnt]	= elem->getWorldPos();
 	}
 }

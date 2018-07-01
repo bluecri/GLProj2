@@ -28,6 +28,10 @@
 #include "NormalMissileGenerator.h"
 #include "MissileGeneratorStorage.h"
 
+#include "LightManager.h"
+#include "SpotLight.h"
+#include "LightGameObject.h"
+
 std::vector<GameSession*> GameSession::preMadeGameSession;
 
 
@@ -159,6 +163,21 @@ void GameSession::preMade()
 	normalMissileGenerator->initNormalMissileGenerator(newPlayer, newPlayer->getMissileGeneratorStorage());
 	newPlayer->addMissileGenerator(normalMissileGenerator);
 
+	//spot light on player
+	LightGameObject* tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 0.0f, 6.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 5.0f, 1.0f, 0.01f, 10.0f)->getLightGameObject();
+	//tempSpotGameObj->getRigidbodyComponent()->accQuaternionRoll(45.0f);
+	//tempSpotGameObj->getRigidbodyComponent()->accQuaternionYaw(180.0f);
+	//tempSpotGameObj->getRigidbodyComponent()->accQuaternionPitch(45.0f);
+	newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
+	
+	//tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 4.0f, 4.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+	//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
+	//tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 4.0f, 4.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+	//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
+	//tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 4.0f, 4.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+	//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
+	
+
 	std::vector<glm::vec3> enemyVec;
 	for (int i = -3; i < 3; i++)
 	{
@@ -166,7 +185,7 @@ void GameSession::preMade()
 		{
 			for (int q = -3; q < 3; q++)
 			{
-				enemyVec.push_back(glm::vec3(i, k, q) * 30.0f);
+				enemyVec.push_back(glm::vec3(i * 10.0f, k * 5.0f, q * 10.0f) );
 			}
 		}
 	}

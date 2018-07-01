@@ -3,11 +3,14 @@
 #include "../Camera/Camera.h"
 
 #include "../RenderTarget/Normal/NormalFObj.h"
+#include "../../ShaderTextureSimple.h"
 #include "../Shader/ShaderMain.h"
 #include "../Shader/ShaderShadow.h"
 #include "../../LightManager.h"
 
+#include "../Resource/ModelManager.h"
 #include "../Resource/Model.h"
+#include "../../ModelOnlyVertex.h"
 #include "../Resource/Texture.h"
 #include "../../RigidbodyComponent.h"
 
@@ -25,6 +28,8 @@
 #include "../../PointLightManager.h"
 #include "../window.h"
 
+//temp
+#include "../Resource/TextureManager.h"
 
 namespace RENDER
 {
@@ -66,10 +71,12 @@ namespace RENDER
 		CAMERA::Camera* cam = *_targetCamera;
 
 		// ===============draw object on shadow buffer==============
-		GShadowBufferTexture->bindFBO();
-		GShadowBufferTexture->bindShader();
 
-		// glm::mat4 depthBiasMVP = GLightManager->_directionalLightVec[0].getBiasedModelMat();
+		
+		GShadowBufferTexture->bindFBO();		//bind texture
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		GShadowBufferTexture->bindShader();
 
 		// directional light
 		ShaderStructDirectionalLight* directionalLightStruct = GLightManager->_directionalLightManager->getLightStruct();
@@ -80,7 +87,7 @@ namespace RENDER
 			int viewPortLeft = (i % textureWidthNum) * TEXTURE_DIRECTIONAL_LIGHT_WIDTH;
 			int viewPortTop = (i / textureWidthNum) * TEXTURE_DIRECTIONAL_LIGHT_WIDTH + TEXTURE_DIRECTIONAL_LIGHT_HEIGHT_START;
 			glViewport(viewPortLeft, viewPortTop, TEXTURE_DIRECTIONAL_LIGHT_WIDTH, TEXTURE_DIRECTIONAL_LIGHT_WIDTH);
-			
+
 			glm::mat4 VP = directionalLightStruct->_lightPMat[i] * directionalLightStruct->_lightVMat[i];
 
 			// draw objects
@@ -100,7 +107,7 @@ namespace RENDER
 					continue;
 				}
 
-				glm::mat4 MVP = VP * targetRigidbodyComponent->getWorldMatRef();
+				glm::mat4 MVP = VP * targetRigidbodyComponent->getWorldMat();
 				GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MVPMatrixID, MVP);	// bind global old shader
 
 				normalRenderTarget->_model->bind();		// Model buffer bind
@@ -109,7 +116,19 @@ namespace RENDER
 
 				++it;
 			}
+
+
+			glm::mat4 MVP = VP;
+			GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+
+			RENDER_TARGET::NORMAL::NormalFObj* roomModel = new RENDER_TARGET::NORMAL::NormalFObj(
+				"data/Model/room.obj", true, "data/Texture/uvmap.DDS", "dds");
+			roomModel->_model->bind();
+			roomModel->_texture->bind();
+			roomModel->_model->render();
+			roomModel->_model->unbind();
 		}
+
 
 		// spot light
 		ShaderStructSpotLight* spotLightStruct = GLightManager->_spotLightManager->getLightStruct();
@@ -149,6 +168,16 @@ namespace RENDER
 
 				++it;
 			}
+
+			glm::mat4 MVP = VP;
+			GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+
+			RENDER_TARGET::NORMAL::NormalFObj* roomModel = new RENDER_TARGET::NORMAL::NormalFObj(
+				"data/Model/room.obj", true, "data/Texture/uvmap.DDS", "dds");
+			roomModel->_model->bind();
+			roomModel->_texture->bind();
+			roomModel->_model->render();
+			roomModel->_model->unbind();
 		}
 		
 		// point light
@@ -200,19 +229,51 @@ namespace RENDER
 
 		GShadowBufferTexture->unbindShader();
 		GShadowBufferTexture->unbindFBO();
+
+		glViewport(0, 0, GWindow->_windowWidth, GWindow->_windowHeight);
 	}
 
 	void RNormal::shadowBufferDraw(float deltaTime)
 	{
+		SHADER::ShaderTextureSimple* shaderTextureSimple = GShaderManager->m_addShader<SHADER::ShaderTextureSimple>(ENUM_SHADER_TYPE::SHADER_TYPE_TEXTURESIMPLE, "data/Shader/TexturePrint.vertexshader", "data/Shader/TexturePrint.fragmentshader");
+		shaderTextureSimple->bind();
+
+		glActiveTexture(GL_TEXTURE4);
+
+		// bind shadow texture
+		GShadowBufferTexture->bindTexture();
+		shaderTextureSimple->loadInt(shaderTextureSimple->TextureID, 4);
+
+		//RESOURCE::Texture* blockTexture = GTextureManager->getTextureWithFileName("data/Texture/yellowBit.bmp", "bmp");
+		//blockTexture->bind();
+		//shaderTextureSimple->loadInt(shaderTextureSimple->TextureID, 4);
+		
+		RESOURCE::ModelOnlyVertex* modelOnlyVertex = GModelManager->getModelOnlyVertexWIthName("defaultVertex_QuadScreeen");
+
+		if (modelOnlyVertex != nullptr)
+		{
+			modelOnlyVertex->bind();
+			modelOnlyVertex->render();
+			modelOnlyVertex->unbind();
+		}
+
+		shaderTextureSimple->unbind();
+	}
+
+	void RNormal::shadowMappingDraw(float deltaTime)
+	{
+
 		CAMERA::Camera* cam = *_targetCamera;
 
 		// ====================draw object on screen=====================
 
 		_shaderObj->bind();
-		//glm::mat4 depthBiasMVP = GLightManager->_directionalLightVec[0].getBiasedModelMat();
 
 		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cam->getRecentViewMat());
 		_shaderObj->loadMatrix4(_shaderObj->m_viewVPMatrixID, cam->getRecentVPMat());
+
+		ShaderStructDirectionalLight* directionalLightStruct = GLightManager->_directionalLightManager->getLightStruct();
+		glm::mat4 lightVP = directionalLightStruct->_lightPMat[0] * directionalLightStruct->_lightVMat[0];
 
 		// bind shadow texture
 		glActiveTexture(GL_TEXTURE1);
@@ -250,6 +311,16 @@ namespace RENDER
 
 			++it;
 		}
+
+		
+		_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, glm::mat4());
+
+		RENDER_TARGET::NORMAL::NormalFObj* roomModel = new RENDER_TARGET::NORMAL::NormalFObj(
+			"data/Model/room.obj", true, "data/Texture/uvmap.DDS", "dds");
+		roomModel->_model->bind();
+		roomModel->_texture->bind();
+		roomModel->_model->render();
+		roomModel->_model->unbind();
 
 		_shaderObj->unbind();
 	}

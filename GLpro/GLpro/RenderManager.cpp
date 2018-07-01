@@ -25,7 +25,7 @@ void RENDER::RenderManager::renderAll(float deltaTime, float acc)
 	_normalContainer.render(deltaTime);
 
 	// particle draw
-	_particleContainer.render(deltaTime);
+	//_particleContainer.render(deltaTime);
 
 	//todo gameui box
 	// gameui text
@@ -36,7 +36,14 @@ void RENDER::RenderManager::renderAll(float deltaTime, float acc)
 	// text draw
 	_textContainer.render(deltaTime);
 
+}
 
+void RENDER::RenderManager::renderBufferInit()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, GWindow->_windowWidth, GWindow->_windowHeight); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
 }
 
 void RENDER::RenderManager::swapRenderBuffer()
@@ -53,8 +60,11 @@ void RENDER::RRenderContainerClass<RENDER::RNormal, SHADER::ShaderMain>::render(
 		for (auto elem : _rRenderContainer)
 			elem.second->shadowBufferPreDraw(deltaTime);
 
+		//for (auto elem : _rRenderContainer)
+			//elem.second->shadowBufferDraw(deltaTime);
+
 		for (auto elem : _rRenderContainer)
-			elem.second->shadowBufferDraw(deltaTime);
+			elem.second->shadowMappingDraw(deltaTime);
 	}
 	else
 	{

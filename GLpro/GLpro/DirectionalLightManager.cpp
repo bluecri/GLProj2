@@ -18,6 +18,10 @@ void DirectionalLightManager::initBuffer()
 	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_INDEX_DIRECTIONAL_LIGHT, _ubo);
 }
 
+void DirectionalLightManager::updateLights()
+{
+}
+
 void DirectionalLightManager::updateLightsToBufferData()
 {
 	_lightUniformBufferData->loadLightsDataToBuffer(_directionalLightVec);

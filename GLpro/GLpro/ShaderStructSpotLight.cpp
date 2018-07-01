@@ -23,7 +23,6 @@ void ShaderStructSpotLight::loadLightsDataToBuffer(std::vector<std::shared_ptr<L
 {
 	initShaderStruct();
 
-	int cnt = 0;
 	for (auto elem : lightsDataVec)
 	{
 		SpotLight* lit = static_cast<SpotLight*>(elem.get());
@@ -38,12 +37,13 @@ void ShaderStructSpotLight::loadLightsDataToBuffer(std::vector<std::shared_ptr<L
 			continue;
 		}
 
-		_lightNum++;
 
-		_lightPower[cnt]		= lit->getLightPower();
-		_lightColorVec4Vec[cnt] = lit->getColor();
-		_lightPosVec3Vec[cnt]	= lit->getWorldPos();
-		_lightV[cnt]			= lit->GetViewMat();
-		_lightP[cnt]			= lit->GetProjMat();
+		//_lightPower[_lightNum]		= lit->getLightPower();
+		_lightColorVec4Vec[_lightNum] = lit->getColor();
+		_lightColorVec4Vec[_lightNum][3] = lit->getLightPower();
+		_lightPosVec3Vec[_lightNum]	= glm::vec4(lit->getWorldPos(), 0.0f);
+		_lightV[_lightNum]			= lit->GetViewMat();
+		_lightP[_lightNum]			= lit->GetProjMat();
+		_lightNum++;
 	}
 }

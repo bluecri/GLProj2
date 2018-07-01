@@ -11,7 +11,7 @@ LightWithEntity::LightWithEntity(ILightWithEntityManager * bindedLightManager, G
 
 	RigidbodyComponent* rgComp = _bindedLightGameObject->getRigidbodyComponent();
 	rgComp->setModelMatrix(pos);
-	rgComp->setModelMatrix(rotMat);
+	rgComp->setQuaternion(glm::toQuat(rotMat));
 }
 
 void LightWithEntity::lightInit()
@@ -60,6 +60,11 @@ float LightWithEntity::getLightPower()
 int LightWithEntity::getUboType()
 {
 	return _uboType;
+}
+
+LightGameObject * LightWithEntity::getLightGameObject()
+{
+	return _bindedLightGameObject;
 }
 
 ILightWithEntityManager * LightWithEntity::getBindedLightManager()

@@ -38,9 +38,10 @@ void ShaderStructDirectionalLight::loadLightsDataToBuffer(std::vector<Directiona
 			continue;
 		}
 
-		_lightNum++;
 		_lightVMat[cnt]				= elem->GetViewMat();
 		_lightPMat[cnt]				= elem->GetProjMat();
 		_lightColorVec4Vec[cnt]		= elem->getColor();
+		cnt++;
 	}
+	_lightNum = cnt;
 }

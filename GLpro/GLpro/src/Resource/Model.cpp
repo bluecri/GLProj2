@@ -118,10 +118,13 @@ namespace RESOURCE
 	{
 		Struct_Vertex tempVertexWithTexture;
 
+		_vertices.reserve(_out_vertices.size());
+
 		for (int i = 0; i < _out_vertices.size(); i++) {
 			tempVertexWithTexture.vertice = _out_vertices[i];
 			tempVertexWithTexture.uv = _out_uvs[i];
 			tempVertexWithTexture.normal = _out_normals[i];
+
 			_vertices.push_back(tempVertexWithTexture);
 		}
 	}

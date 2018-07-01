@@ -20,6 +20,14 @@ void PointLightManager::initBuffer()
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
+void PointLightManager::updateLights()
+{
+	for (auto elem : _lightSharedVec)
+	{
+		elem->lightUpdate();
+	}
+}
+
 void PointLightManager::updateLightsToBufferData()
 {
 	_lightUniformBufferData->loadLightsDataToBuffer(_lightSharedVec);

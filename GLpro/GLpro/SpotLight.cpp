@@ -6,7 +6,7 @@ SpotLight::SpotLight(ILightWithEntityManager * bindedLightManager, GameSession *
 	_perspectiveMat = glm::perspective(_fovy, _aspcect, _persNear, _persFar);
 }
 
-void SpotLight::updateLIght()
+void SpotLight::lightUpdate()
 {
 	// dir update
 	const glm::mat4& lightWorldMat = getWorldMat();

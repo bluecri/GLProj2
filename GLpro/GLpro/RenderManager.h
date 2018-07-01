@@ -66,13 +66,7 @@ namespace RENDER
 
 		// todo : acc Ã³¸®
 		void renderAll(float deltaTime, float acc);
-		void renderBufferInit()
-		{
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glViewport(0, 0, GWindow->_windowWidth, GWindow->_windowHeight); // Render on the whole framebuffer, complete from the lower left corner to the upper right
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
-		}
+		void renderBufferInit();
 
 		void swapRenderBuffer();
 

@@ -36,6 +36,7 @@ namespace RENDER
 
 			void shadowBufferPreDraw(float deltaTime);
 			void shadowBufferDraw(float deltaTime);
+			void shadowMappingDraw(float deltaTime);
 			virtual void draw(float deltaTime);
 
 			//	virtual void chageShader(SHADER::ShaderMain* other);	-> make fixed.

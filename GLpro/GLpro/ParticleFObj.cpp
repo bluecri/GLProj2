@@ -12,7 +12,7 @@ RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName
 	std::vector<glm::vec3> default_particle_buffer;
 	for (int i = 0; i < 4; i++)
 	{
-		default_particle_buffer.push_back(glm::vec3(g_vertex_buffer_data[i * 3 + 0], g_vertex_buffer_data[i * 3 + 1], g_vertex_buffer_data[i * 3 + 2]));
+		default_particle_buffer.push_back(glm::vec3(g_vertex_particle_default_buffer_data[i * 3 + 0], g_vertex_particle_default_buffer_data[i * 3 + 1], g_vertex_particle_default_buffer_data[i * 3 + 2]));
 	}
 
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);

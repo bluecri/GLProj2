@@ -11,6 +11,7 @@ class ILightWithEntityManager
 public:
 	ILightWithEntityManager();
 	virtual void	initBuffer() = 0;
+	virtual void	updateLights() = 0;
 	virtual void	updateLightsToBufferData() = 0;
 	virtual void	updateBufferToVGA() = 0;
 

@@ -17,5 +17,6 @@ namespace SHADER {
 
 	private:
 		const char * _NameMVP = "MVP";
+		
 	};
 }

@@ -5,7 +5,7 @@ SHADER::ShaderObj::ShaderObj(const char * vertexShader, const char * fragmentSha
 	: _keyStr(vertexShader)
 {
 	m_shaderID = LoadShaders(vertexShader, fragmentShader);
-	_keyStr.append(vertexShader);
+	_keyStr.append(fragmentShader);
 }
 
 SHADER::ShaderObj::~ShaderObj() { glDeleteProgram(m_shaderID); }

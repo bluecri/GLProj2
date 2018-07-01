@@ -17,12 +17,16 @@ void createVBOWithVertex(
 	std::vector<Struct_Vertex> &outStructVertexVec
 );
 
+void createVBOWithOnlyVertex(std::vector<glm::vec3>& in_vertices, std::vector<unsigned short>& out_indices, std::vector<Struct_OnlyVertex>& outVertexVithTextureVec);
+
 bool is_near(float v1, float v2);
 bool getSimilarVertexIndex_fast(
 	Struct_Vertex & packed,
 	std::map<Struct_Vertex, unsigned short> & VertexToOutIndex,
 	unsigned short & result
 );
+
+bool getSimilarOnlyWIthVertexIndex_fast(Struct_OnlyVertex & packed, std::map<Struct_OnlyVertex, unsigned short>& VertexToOutIndex, unsigned short & result);
 
 /*
 void indexVBO_TBN(

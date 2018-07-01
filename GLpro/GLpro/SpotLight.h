@@ -6,7 +6,10 @@ class SpotLight	: public LightWithEntity
 {
 public:
 	SpotLight(ILightWithEntityManager* bindedLightManager, GameSession* gSession, int uboType, int idx, glm::mat4 rotMat, glm::vec3& pos, glm::vec4& color, float lightPower, float fovy, float aspcect, float persNear, float persFar);
-	void		updateLIght();
+
+	// LightWithEntity을(를) 통해 상속됨
+	virtual void lightUpdate() override;
+
 	glm::mat4&	getVPMatRef();
 
 	glm::mat4&	GetViewMat();
@@ -19,4 +22,5 @@ private:
 
 	//result
 	glm::mat4	_vpMat;
+
 };

@@ -14,6 +14,7 @@ struct ShaderStructPointLight
 	void loadLightsDataToBuffer(std::vector<std::shared_ptr<LightWithEntity>>& lightsDataVec);
 
 	int			_lightNum;
+	glm::vec3	_padding;
 	float		_lightPower[MAX_POINTL_LIGHT_NUM];
 	glm::vec4	_lightColorVec4Vec[MAX_POINTL_LIGHT_NUM];
 	glm::vec3	_lightPosVec3Vec[MAX_POINTL_LIGHT_NUM];

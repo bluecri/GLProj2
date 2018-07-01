@@ -18,6 +18,14 @@ void SpotLightManager::initBuffer()
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
+void SpotLightManager::updateLights()
+{
+	for (auto elem : _lightSharedVec)
+	{
+		elem->lightUpdate();
+	}
+}
+
 void SpotLightManager::updateLightsToBufferData()
 {
 	_lightUniformBufferData->loadLightsDataToBuffer(_lightSharedVec);

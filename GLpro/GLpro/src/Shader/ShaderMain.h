@@ -16,6 +16,7 @@ namespace SHADER
 		GLuint m_textureID;
 
 		GLuint m_directionalLIghtBlockID;
+
 		GLuint m_spotLIghtBlockID;
 		GLuint m_pointLIghtBlockID;
 		GLuint m_deferredPointLIghtBlockID;
