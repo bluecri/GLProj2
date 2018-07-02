@@ -32,7 +32,6 @@ void RESOURCE::ShadowBufferTextureShader::bindFBO()
 	glBindFramebuffer(GL_FRAMEBUFFER, _shadowFBO);		// render to buffer -> texture
 
 	glViewport(0, 0, _fboX, _fboY); // Render on the whole framebuffer, complete from the lower left corner to the upper right
-	glCullFace(GL_FRONT);
 }
 
 void RESOURCE::ShadowBufferTextureShader::unbindFBO()

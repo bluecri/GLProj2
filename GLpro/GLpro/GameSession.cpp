@@ -164,10 +164,10 @@ void GameSession::preMade()
 	newPlayer->addMissileGenerator(normalMissileGenerator);
 
 	//spot light on player
-	LightGameObject* tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 0.0f, 6.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 5.0f, 1.0f, 0.01f, 10.0f)->getLightGameObject();
-	//tempSpotGameObj->getRigidbodyComponent()->accQuaternionRoll(45.0f);
-	//tempSpotGameObj->getRigidbodyComponent()->accQuaternionYaw(180.0f);
-	//tempSpotGameObj->getRigidbodyComponent()->accQuaternionPitch(45.0f);
+	GLightManager->AddDirectinalLight(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	//GLightManager->AddDirectinalLight(glm::vec3(-10.0f, -10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	LightGameObject* tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 45.0f, 1.0f, 0.01f, 15.0f)->getLightGameObject();
 	newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
 	
 	//tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 4.0f, 4.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();

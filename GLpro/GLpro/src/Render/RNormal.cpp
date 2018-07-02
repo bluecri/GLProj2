@@ -187,7 +187,7 @@ namespace RENDER
 		for (int i = 0; i < pointLightStruct->_lightNum; i++)
 		{
 			//GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->VPMatrixID
-			glm::mat4 (&pointVPMatVec)[MAX_POINTL_LIGHT_NUM][6] = pointLightStruct->_lightVPMat;
+			//glm::mat4 (&pointVPMatVec)[MAX_POINTL_LIGHT_NUM][6] = pointLightStruct->_lightVPMat;
 
 			for (int k = 0; k < TEXTURE_POINT_CUBE_NUM; k++)
 			{
@@ -195,7 +195,7 @@ namespace RENDER
 				int viewPortTop =  (i / textureWidthNum) * TEXTURE_POINT_LIGHT_WIDTH + TEXTURE_POINT_LIGHT_HEIGHT_START;
 				glViewport(viewPortLeft, viewPortTop, TEXTURE_POINT_LIGHT_WIDTH, TEXTURE_POINT_LIGHT_WIDTH);
 				
-				glm::mat4 VPMat = pointVPMatVec[i][k];
+				glm::mat4 VPMat = pointLightStruct->_lightVPMat[i * 6 + k];
 
 				// draw objects
 				for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end(); ) {
@@ -272,8 +272,6 @@ namespace RENDER
 		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cam->getRecentViewMat());
 		_shaderObj->loadMatrix4(_shaderObj->m_viewVPMatrixID, cam->getRecentVPMat());
 
-		ShaderStructDirectionalLight* directionalLightStruct = GLightManager->_directionalLightManager->getLightStruct();
-		glm::mat4 lightVP = directionalLightStruct->_lightPMat[0] * directionalLightStruct->_lightVMat[0];
 
 		// bind shadow texture
 		glActiveTexture(GL_TEXTURE1);
