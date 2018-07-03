@@ -9,7 +9,7 @@ namespace SHADER
 	public:
 		ShaderMain(const char * vertexShader, const char * fragmentShader);
 
-		GLuint m_viewVPMatrixID;
+		GLuint m_cameraVPMatrixID;
 		GLuint m_cameraViewMatrixID;
 		GLuint m_modelMatrixID;
 		GLuint m_shadowMapID;

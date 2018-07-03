@@ -79,9 +79,6 @@
     <Filter Include="소스 파일\src\config">
       <UniqueIdentifier>{534c46ff-7c05-45a6-86fd-e11f9a9672c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\src\Resource\ShadowOld">
-      <UniqueIdentifier>{28edb467-40ed-4808-9296-1f959aa95280}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\src\option">
       <UniqueIdentifier>{a0187a7c-252f-493a-ad08-431adad4b452}</UniqueIdentifier>
     </Filter>
@@ -195,6 +192,18 @@
     </Filter>
     <Filter Include="소스 파일\src\renderTarget\particle">
       <UniqueIdentifier>{ead8e588-13ad-42e9-806e-60fc47f386d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\Resource\ShadowAndLight">
+      <UniqueIdentifier>{28edb467-40ed-4808-9296-1f959aa95280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\shader\DeferredLight">
+      <UniqueIdentifier>{da2aff5e-2ad7-47b1-b530-84128a81fc74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\shaders\GBuffer">
+      <UniqueIdentifier>{fc7ca07d-2953-4216-bcee-fa6a7dfc018d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\Resource\GBuffer">
+      <UniqueIdentifier>{52ce19f5-58fe-44ff-a4a5-32524bf4d73d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -343,7 +352,7 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ShadowBufferTextureShader.cpp">
-      <Filter>소스 파일\src\Resource\ShadowOld</Filter>
+      <Filter>소스 파일\src\Resource\ShadowAndLight</Filter>
     </ClCompile>
     <ClCompile Include="RenderManager.cpp">
       <Filter>소스 파일</Filter>
@@ -552,6 +561,18 @@
     <ClCompile Include="ModelOnlyVertex.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderGBufferGeo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderGBufferLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderGBufferFinal.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredGFBO.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -738,7 +759,7 @@
       <Filter>소스 파일\src\renderer</Filter>
     </ClInclude>
     <ClInclude Include="ShadowBufferTextureShader.h">
-      <Filter>소스 파일\src\Resource\ShadowOld</Filter>
+      <Filter>소스 파일\src\Resource\ShadowAndLight</Filter>
     </ClInclude>
     <ClInclude Include="CollisionComponent.h">
       <Filter>소스 파일\components\collision</Filter>
@@ -1016,6 +1037,18 @@
     <ClInclude Include="config_default_vertex.h">
       <Filter>소스 파일\src\config</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderGBufferGeo.h">
+      <Filter>소스 파일\src\shader\DeferredLight</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderGBufferLight.h">
+      <Filter>소스 파일\src\shader\DeferredLight</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderGBufferFinal.h">
+      <Filter>소스 파일\src\shader\DeferredLight</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredGFBO.h">
+      <Filter>소스 파일\src\Resource\GBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\Shader\DepthRTT.fragmentshader">
@@ -1071,6 +1104,24 @@
     </None>
     <None Include="data\Shader\TexturePrint.vertexshader">
       <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\GbufferGeoPass.fragmentshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\GbufferGeoPass.vertexshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\GbufferLightPass.fragmentshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\GbufferLightPass.vertexshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\GbufferFinalPass.fragmentshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\GbufferFinalPass.vertexshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -1,0 +1,274 @@
+#version 330 core
+
+layout(location = 0) out vec3 color;
+
+// from configs_light.h
+
+#define MAX_DIRECTIONAL_LIGHT_NUM		8
+#define MAX_SPOT_LIGHT_NUM				32
+#define MAX_POINTL_LIGHT_NUM			32
+#define MAX_DFFERED_POINTL_LIGHT_NUM	256
+
+#define TEXTURE_SHADOW_WIDTH				8192
+#define TEXTURE_SHADOW_HEIGHT				6144
+
+#define TEXTURE_DIRECTIONAL_LIGHT_WIDTH		1024
+#define TEXTURE_SPOT_LIGHT_WIDTH			512
+#define TEXTURE_POINT_LIGHT_WIDTH			128
+#define TEXTURE_POINT_CUBE_NUM				6
+
+#define TEXTURE_DIRECTIONAL_LIGHT_HEIGHT_START	0
+#define TEXTURE_SPOT_LIGHT_HEIGHT_START		2048
+#define TEXTURE_POINT_LIGHT_HEIGHT_START		4096
+
+mat4 biasMatrix = mat4(
+	0.5, 0.0, 0.0, 0.0,
+	0.0, 0.5, 0.0, 0.0,
+	0.0, 0.0, 0.5, 0.0,
+	0.5, 0.5, 0.5, 1.0
+);
+
+uniform sampler2D gPositionMap;
+uniform sampler2D gColorMap;
+uniform sampler2D gNormalMap;
+
+uniform sampler2DShadow shadowMap;
+
+uniform mat4 ViewVP;	//camera vp
+uniform mat4 ViewV;		// camera v
+
+in vec2 TexCoord;
+
+layout (std140) uniform DirectionalLIghtBlock
+{
+	int		_dLightNum;
+	vec4	_dLightColorVec[MAX_DIRECTIONAL_LIGHT_NUM];
+	mat4	_dLightVMat[MAX_DIRECTIONAL_LIGHT_NUM];
+	mat4	_dLightPMat[MAX_DIRECTIONAL_LIGHT_NUM];
+};  
+
+layout (std140) uniform SpotLIghtBlock
+{
+	int		_sLightNum;
+	//float	_sLightPower[MAX_SPOT_LIGHT_NUM];
+	vec4	_sLightColorVec[MAX_SPOT_LIGHT_NUM];	// 3 color & 1 power
+	vec4	_sLightPosVec[MAX_SPOT_LIGHT_NUM];
+	mat4	_sLightVMat[MAX_SPOT_LIGHT_NUM];
+	mat4	_sLightPMat[MAX_SPOT_LIGHT_NUM];
+};  
+
+layout (std140) uniform PointLIghtBlock
+{
+	int		_pLightNum;
+	vec4	_pLightColorVec[MAX_POINTL_LIGHT_NUM];
+	vec4	_pLightPosVec[MAX_POINTL_LIGHT_NUM];
+	mat4	_pLightVPMat[MAX_POINTL_LIGHT_NUM * 6];
+};  
+
+layout (std140) uniform DeferredPointLIghtBlock
+{
+	int		_dfLightNum;
+	float	_dfLightPower[MAX_DFFERED_POINTL_LIGHT_NUM];
+	vec4	_dfLightColorVec[MAX_DFFERED_POINTL_LIGHT_NUM];
+	vec3	_dfLightPosVec[MAX_DFFERED_POINTL_LIGHT_NUM];
+	mat4	_dfLightVMat[MAX_DFFERED_POINTL_LIGHT_NUM];
+	mat4	_dfLightVPMat[MAX_DFFERED_POINTL_LIGHT_NUM];
+};  
+
+vec2 poissonDisk[4] = vec2[](
+  vec2( -0.94201624, -0.39906216 ),
+  vec2( 0.94558609, -0.76890725 ),
+  vec2( -0.094184101, -0.92938870 ),
+  vec2( 0.34495938, 0.29387760 )
+);
+
+void main()
+{
+	vec3 MaterialDiffuseColor = texture( gColorMap, TexCoord ).rgb;
+	vec3 MaterialAmbientColor = vec3(0.2, 0.2, 0.2) * MaterialDiffuseColor;
+	vec3 MaterialSpecularColor = vec3(0.3, 0.3, 0.3);
+
+	vec3 MaterialDiffuseColorFactor = vec3(0.0, 0.0, 0.0);
+	vec3 MaterialSpecularColorFactor = vec3(0.0, 0.0, 0.0);
+
+	vec4 Position_worldspace = vec4( texture( gPositionMap, TexCoord ).xyz, 1.0);
+	vec3 Normal_worldspace = texture( gNormalMap, TexCoord ).xyz;
+
+	vec3 Normal_cameraspace = ( ViewVP * vec4( Normal_worldspace, 0.0) ).xyz;
+	vec3 n = normalize( Normal_cameraspace );
+
+	// Eye vector (vertex towards the camera)
+	vec3 EyeDirection_cameraspace = vec3(0.0, 0.0, 0.0) - ( ViewVP * Position_worldspace ).xyz;
+	vec3 E = normalize(EyeDirection_cameraspace);
+
+	float spotLightAttenuation = 1000.0;
+	float pointLightAttenuation = 2000.0;
+	
+	// ====== light loop =========
+	for (int loop = 0; loop < _dLightNum; loop++)
+	{
+		// Light emission properties
+		vec3 LightColor = _dLightColorVec[loop].xyz;
+		float LightPower = 1.0f;
+
+		vec4 ShadowCoord = biasMatrix * _dLightPMat[loop] * _dLightVMat[loop] * Position_worldspace;
+
+		// shadowTextureWidthNum
+		int sNum = TEXTURE_SHADOW_WIDTH/TEXTURE_DIRECTIONAL_LIGHT_WIDTH;
+
+		vec2 startCoord = vec2( (loop % sNum) * TEXTURE_DIRECTIONAL_LIGHT_WIDTH,
+			(loop / sNum) * TEXTURE_DIRECTIONAL_LIGHT_WIDTH + TEXTURE_DIRECTIONAL_LIGHT_HEIGHT_START );
+
+		startCoord.x /= TEXTURE_SHADOW_WIDTH;
+		startCoord.y /= TEXTURE_SHADOW_HEIGHT;
+
+		ShadowCoord.x /= (TEXTURE_SHADOW_WIDTH / TEXTURE_DIRECTIONAL_LIGHT_WIDTH);
+		ShadowCoord.y /= (TEXTURE_SHADOW_HEIGHT / TEXTURE_DIRECTIONAL_LIGHT_WIDTH);
+
+		ShadowCoord.xy += startCoord;
+
+		// Vector that goes from the vertex to the light, in camera space
+		vec3 LightInvDirection_worldspace = transpose(_dLightVMat[loop])[2].xyz;
+		vec3 LightInvDirection_cameraspace = ( ViewV * vec4(LightInvDirection_worldspace,0)).xyz;
+		vec3 linv = normalize( LightInvDirection_cameraspace );
+
+		// Cosine of the angle between the normal and the light direction, 
+		float cosTheta = clamp( dot( n,linv ), 0,1 );
+
+		vec3 R = reflect(-linv,n);
+
+		// Cosine of the angle between the Eye vector and the Reflect vector,
+		float cosAlpha = clamp( dot( E,R ), 0,1 );
+
+		float visibility=1.0;
+
+		// Fixed bias, or...
+		float bias = 0.002;
+
+		for (int index = 0; index<4; index++) {
+			visibility -= 0.2*(1.0 - texture(shadowMap, vec3(ShadowCoord.xy + poissonDisk[index] / 5600.0, (ShadowCoord.z - bias) / ShadowCoord.w)));
+		}
+
+		MaterialDiffuseColorFactor	+= visibility * LightColor * LightPower * cosTheta;
+		MaterialSpecularColorFactor	+= visibility * LightColor * LightPower * pow(cosAlpha,5);
+	}
+
+	for (int loop = 0; loop < _sLightNum; loop++)
+	{
+		vec3	LightColor = _sLightColorVec[loop].xyz;
+		float	LightPower = _sLightColorVec[loop].w;
+
+		vec4 ShadowCoord = biasMatrix * _sLightPMat[loop] * _sLightVMat[loop] * Position_worldspace;
+		ShadowCoord.xyz /= ShadowCoord.w;		// spot light projection
+		
+		// spot light cliping
+		if(ShadowCoord.x < 0.0f || ShadowCoord.x > 1.0f || ShadowCoord.y < 0.0f || ShadowCoord.y > 1.0f || ShadowCoord.z < 0.0f || ShadowCoord.z > 1.0f)
+			continue;
+
+		// resize coord
+		ShadowCoord.x /= (TEXTURE_SHADOW_WIDTH / TEXTURE_SPOT_LIGHT_WIDTH);
+		ShadowCoord.y /= (TEXTURE_SHADOW_HEIGHT / TEXTURE_SPOT_LIGHT_WIDTH);
+
+		// shadow Texture Width Num
+		int sNum = TEXTURE_SHADOW_WIDTH/TEXTURE_SPOT_LIGHT_WIDTH;
+
+		vec2 startCoord = vec2( (loop % sNum) * TEXTURE_SPOT_LIGHT_WIDTH,
+			(loop / sNum) * TEXTURE_SPOT_LIGHT_WIDTH + TEXTURE_SPOT_LIGHT_HEIGHT_START );
+
+		startCoord.x /= TEXTURE_SHADOW_WIDTH;
+		startCoord.y /= TEXTURE_SHADOW_HEIGHT;
+
+		ShadowCoord.xy += startCoord;
+
+
+		// Vector that goes from the vertex to the light, in camera space
+		vec3 LightInvDirection_worldspace = _sLightPosVec[loop].xyz - Position_worldspace.xyz;
+		vec3 LightInvDirection_cameraspace = ( ViewV * vec4(LightInvDirection_worldspace,0)).xyz;
+		vec3 linv = normalize( LightInvDirection_cameraspace );
+
+		// Cosine of the angle : diffuse light
+		float cosTheta = clamp( dot( n,linv ), 0, 1 );
+
+		// Cosine of the angle : specular light
+		vec3 R = reflect(-linv,n);
+		float cosAlpha = clamp( dot( E,R ), 0, 1 );
+
+
+		float visibility = 1.0;
+		float bias = 0.0002;
+		vec3 distVec = LightInvDirection_worldspace;
+		float distance2 = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
+		
+		for (int i = 0; i<4; i++) {
+			int index = i;
+			visibility -= 0.2*(1.0 - texture(shadowMap, vec3(ShadowCoord.xy - poissonDisk[index] / 6000.0, ShadowCoord.z + bias / ShadowCoord.w) ) );
+		}
+		visibility *= 1.0 / (1.0 + distance2 / spotLightAttenuation);
+
+		MaterialDiffuseColorFactor	+= visibility * LightColor * LightPower * cosTheta;
+		MaterialSpecularColorFactor	+= visibility * LightColor * LightPower * pow(cosAlpha,5);
+	}
+
+	for (int loop = 0; loop < _pLightNum; loop++)
+	{
+		vec3	LightColor = _pLightColorVec[loop].xyz;
+		float	LightPower = _pLightColorVec[loop].w;
+		for(int cubeN = 0; cubeN < TEXTURE_POINT_CUBE_NUM; cubeN++)
+		{
+			vec4 ShadowCoord = biasMatrix * _pLightVPMat[loop] * Position_worldspace;
+			ShadowCoord.xyz /= ShadowCoord.w;		// spot light projection
+		
+			// spot light cliping
+			if(ShadowCoord.x < 0.0f || ShadowCoord.x > 1.0f || ShadowCoord.y < 0.0f || ShadowCoord.y > 1.0f || ShadowCoord.z < 0.0f || ShadowCoord.z > 1.0f)
+				continue;
+
+			// resize coord
+			ShadowCoord.x /= (TEXTURE_SHADOW_WIDTH / TEXTURE_POINT_LIGHT_WIDTH);
+			ShadowCoord.y /= (TEXTURE_SHADOW_HEIGHT / TEXTURE_POINT_LIGHT_WIDTH);
+
+			// shadow Texture Width Num
+			int sNum = TEXTURE_SHADOW_WIDTH/TEXTURE_POINT_LIGHT_WIDTH / TEXTURE_POINT_CUBE_NUM;
+
+			vec2 startCoord = vec2( (loop % sNum + cubeN) * TEXTURE_POINT_LIGHT_WIDTH,
+				(loop / sNum) * TEXTURE_POINT_LIGHT_WIDTH + TEXTURE_POINT_LIGHT_HEIGHT_START );
+
+			startCoord.x /= TEXTURE_SHADOW_WIDTH;
+			startCoord.y /= TEXTURE_SHADOW_HEIGHT;
+
+			ShadowCoord.xy += startCoord;
+
+
+			// Vector that goes from the vertex to the light, in camera space
+			vec3 LightInvDirection_worldspace = _pLightPosVec[loop].xyz - Position_worldspace.xyz;
+			vec3 LightInvDirection_cameraspace = ( ViewV * vec4(LightInvDirection_worldspace,0)).xyz;
+			vec3 linv = normalize( LightInvDirection_cameraspace );
+
+			// Cosine of the angle : diffuse light
+			float cosTheta = clamp( dot( n,linv ), 0, 1 );
+
+			// Cosine of the angle : specular light
+			vec3 R = reflect(-linv,n);
+			float cosAlpha = clamp( dot( E,R ), 0, 1 );
+
+
+			float visibility = 1.0;
+			float bias = 0.0002;
+			vec3 distVec = LightInvDirection_worldspace;
+			float distance2 = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
+		
+			for (int i = 0; i<4; i++) {
+				int index = i;
+				visibility -= 0.2*(1.0 - texture(shadowMap, vec3(ShadowCoord.xy - poissonDisk[index] / 6000.0, ShadowCoord.z + bias / ShadowCoord.w) ) );
+			}
+			visibility *= 1.0 / (1.0 + distance2 / pointLightAttenuation);
+
+			MaterialDiffuseColorFactor	+= visibility * LightColor * LightPower * cosTheta;
+			MaterialSpecularColorFactor	+= visibility * LightColor * LightPower * pow(cosAlpha,5);
+		}
+	}
+
+	color = 
+		MaterialAmbientColor
+		+ MaterialDiffuseColor * MaterialDiffuseColorFactor
+		+ MaterialSpecularColor * MaterialSpecularColorFactor;
+}

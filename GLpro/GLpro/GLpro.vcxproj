@@ -150,6 +150,7 @@
     <ClCompile Include="CollisionInfo.cpp" />
     <ClCompile Include="CommonMissileState.cpp" />
     <ClCompile Include="CommonNormalMissileInfo.cpp" />
+    <ClCompile Include="DeferredGFBO.cpp" />
     <ClCompile Include="DeferredPointLight.cpp" />
     <ClCompile Include="DeferredPointLightManager.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="configs_light.h" />
     <ClInclude Include="configs_ubo.h" />
     <ClInclude Include="config_default_vertex.h" />
+    <ClInclude Include="DeferredGFBO.h" />
     <ClInclude Include="DeferredPointLight.h" />
     <ClInclude Include="DeferredPointLightManager.h" />
     <ClInclude Include="DirectionalLightManager.h" />
@@ -205,6 +207,9 @@
     <ClCompile Include="PlaneInfo.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PointLightManager.cpp" />
+    <ClCompile Include="ShaderGBufferFinal.cpp" />
+    <ClCompile Include="ShaderGBufferGeo.cpp" />
+    <ClCompile Include="ShaderGBufferLight.cpp" />
     <ClCompile Include="ShaderStructDeferredPointLight.cpp" />
     <ClCompile Include="ShaderStructDirectionalLight.cpp" />
     <ClCompile Include="ShaderStructPointLight.cpp" />
@@ -288,6 +293,9 @@
     <ClInclude Include="PlaneInfo.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PointLightManager.h" />
+    <ClInclude Include="ShaderGBufferFinal.h" />
+    <ClInclude Include="ShaderGBufferGeo.h" />
+    <ClInclude Include="ShaderGBufferLight.h" />
     <ClInclude Include="ShaderStructDeferredPointLight.h" />
     <ClInclude Include="ShaderStructDirectionalLight.h" />
     <ClInclude Include="ShaderStructPointLight.h" />
@@ -417,6 +425,12 @@
     <ClInclude Include="UIEntity.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\Shader\GbufferFinalPass.fragmentshader" />
+    <None Include="data\Shader\GbufferFinalPass.vertexshader" />
+    <None Include="data\Shader\GbufferGeoPass.fragmentshader" />
+    <None Include="data\Shader\GbufferGeoPass.vertexshader" />
+    <None Include="data\Shader\GbufferLightPass.fragmentshader" />
+    <None Include="data\Shader\GbufferLightPass.vertexshader" />
     <None Include="data\Shader\TexturePrint.fragmentshader" />
     <None Include="data\Shader\TexturePrint.vertexshader" />
     <None Include="data\Shader\DepthRTT.fragmentshader" />

@@ -15,6 +15,7 @@
 #include "../../RigidbodyComponent.h"
 
 #include "../../Option.h"
+#include "../../DeferredGFBO.h"
 #include "../../ShadowBufferTextureShader.h"
 #include "../Shader/ShaderManager.h"
 
@@ -30,6 +31,7 @@
 
 //temp
 #include "../Resource/TextureManager.h"
+
 
 namespace RENDER
 {
@@ -68,8 +70,6 @@ namespace RENDER
 
 	void RNormal::shadowBufferPreDraw(float deltaTime)
 	{
-		CAMERA::Camera* cam = *_targetCamera;
-
 		// ===============draw object on shadow buffer==============
 
 		
@@ -270,7 +270,7 @@ namespace RENDER
 		_shaderObj->bind();
 
 		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cam->getRecentViewMat());
-		_shaderObj->loadMatrix4(_shaderObj->m_viewVPMatrixID, cam->getRecentVPMat());
+		_shaderObj->loadMatrix4(_shaderObj->m_cameraVPMatrixID, cam->getRecentVPMat());
 
 
 		// bind shadow texture
@@ -310,7 +310,6 @@ namespace RENDER
 			++it;
 		}
 
-		
 		_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, glm::mat4());
 
 		RENDER_TARGET::NORMAL::NormalFObj* roomModel = new RENDER_TARGET::NORMAL::NormalFObj(
@@ -321,6 +320,11 @@ namespace RENDER
 		roomModel->_model->unbind();
 
 		_shaderObj->unbind();
+	}
+
+	void RNormal::deferredDraw(float deltaTime)
+	{
+		GDeferredGFBO->deferredDraw(deltaTime, _normalDrawElemContainer);
 	}
 
 	SHADER::ShaderMain * RNormal::getShader() const

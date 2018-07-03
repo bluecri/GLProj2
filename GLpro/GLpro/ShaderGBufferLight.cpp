@@ -1,15 +1,19 @@
-#include "ShaderMain.h"
+#include "ShaderGBufferLight.h"
+#include "../../configs_ubo.h"
 
-SHADER::ShaderMain::ShaderMain(const char * vertexShader, const char * fragmentShader)
+SHADER::ShaderGBufferLight::ShaderGBufferLight(const char * vertexShader, const char * fragmentShader)
 	: ShaderObj(vertexShader, fragmentShader)
 {
 	if (m_shaderID != -1)
 	{
-		m_cameraVPMatrixID = glGetUniformLocation(m_shaderID, "ViewVP");
-		m_cameraViewMatrixID = glGetUniformLocation(m_shaderID, "ViewV");
-		m_modelMatrixID = glGetUniformLocation(m_shaderID, "M");
-		m_shadowMapID = glGetUniformLocation(m_shaderID, "shadowMap");
-		m_textureID = glGetUniformLocation(m_shaderID, "myTextureSampler");
+		m_texWorld = glGetUniformLocation(m_shaderID, "gPositionMap");
+		m_texColor = glGetUniformLocation(m_shaderID, "gColorMap");
+		m_texNormal = glGetUniformLocation(m_shaderID, "gNormalMap");
+		m_texShadow = glGetUniformLocation(m_shaderID, "shadowMap");
+
+
+		m_cameraViewMat = glGetUniformLocation(m_shaderID, "ViewV");
+		m_cameraVPMat = glGetUniformLocation(m_shaderID, "ViewVP");
 
 		m_directionalLIghtBlockID = glGetUniformBlockIndex(m_shaderID, "DirectionalLIghtBlock");
 		m_spotLIghtBlockID = glGetUniformBlockIndex(m_shaderID, "SpotLIghtBlock");

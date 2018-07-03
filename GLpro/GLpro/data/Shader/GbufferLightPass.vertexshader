@@ -1,0 +1,14 @@
+#version 330 core
+
+layout(location = 0) in vec3 vertexPosition_modelspace;	// draw box (-1.0 ~ 1.0)
+
+out vec2 TexCoord;
+
+void main(){
+
+	gl_Position =  vec4(vertexPosition_modelspace,1);
+
+	// uv : (-1, -1, 0) ~ (1, 1, 0) ==> (0, 0, 0) ~ (1, 1, 0)
+	TexCoord = (vertexPosition_modelspace.xy + vec2(1,1) ) / 2.0;
+}
+

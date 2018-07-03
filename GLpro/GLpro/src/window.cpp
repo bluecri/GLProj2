@@ -10,6 +10,8 @@
 
 #include "../Option.h"
 #include "../ShadowBufferTextureShader.h"
+#include "../DeferredGFBO.h"
+
 #include "../RenderManager.h"
 #include "../CollisionComponentManager.h"
 #include "../RigidbodyComponentManager.h"
@@ -106,9 +108,11 @@ int WINDOW::Window::init()
 	GCollisionComponentManager = new CollisionComponentManager(4, 128);
 	GOption = new Option();
 	GScene = new Scene();
-	//
+	
 	GShadowBufferTexture = new RESOURCE::ShadowBufferTextureShader();
 	GShadowBufferTexture->init();
+	GDeferredGFBO = new RESOURCE::DeferredGFBO(_windowWidth, _windowHeight);
+	GDeferredGFBO->init();
 
 	//load ttest
 	Box::initPreMade();

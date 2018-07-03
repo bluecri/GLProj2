@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ShadowBufferTextureShader.h"
 #include "src/Shader/ShaderManager.h"
 #include "src/Shader/ShaderShadow.h"

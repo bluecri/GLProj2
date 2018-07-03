@@ -1,6 +1,7 @@
 #include "RenderManager.h"
 
 #include "OctreeForFrustum.h"
+#include "DeferredGFBO.h"
 
 RENDER::RenderManager* GRendermanager = nullptr;;
 
@@ -55,19 +56,18 @@ void RENDER::RenderManager::swapRenderBuffer()
 template<>
 void RENDER::RRenderContainerClass<RENDER::RNormal, SHADER::ShaderMain>::render(float deltaTime)
 {
-	if (GOption->_oldLightUse)
+	if (!GOption->_oldLightUse)
 	{
 		for (auto elem : _rRenderContainer)
 			elem.second->shadowBufferPreDraw(deltaTime);
-
-		//for (auto elem : _rRenderContainer)
-			//elem.second->shadowBufferDraw(deltaTime);
 
 		for (auto elem : _rRenderContainer)
 			elem.second->shadowMappingDraw(deltaTime);
 	}
 	else
 	{
-
+		// deferred shading
+		for (auto elem : _rRenderContainer)
+			elem.second->deferredDraw(deltaTime);
 	}
 }
