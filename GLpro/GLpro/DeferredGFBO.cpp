@@ -171,6 +171,7 @@ void RESOURCE::DeferredGFBO::bndGFBO_FINAL()
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, _GFBO);
 	glReadBuffer(GL_COLOR_ATTACHMENT3);
+	//glReadBuffer(GL_COLOR_ATTACHMENT2);
 
 	// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // not clear screen
 }
@@ -230,8 +231,8 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_p
 				continue;
 			}
 
-			glm::mat4 MVP = VP * targetRigidbodyComponent->getWorldMat();
-			_shadowShader->loadMatrix4(_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+			_shadowShader->loadMatrix4(_shadowShader->MMatrixID, targetRigidbodyComponent->getWorldMatRef());	// bind global old shader
+			_shadowShader->loadMatrix4(_shadowShader->VPMatrixID, VP);	// bind global old shader
 
 			normalRenderTarget->_model->bind();		// Model buffer bind
 			normalRenderTarget->_model->render();
@@ -241,8 +242,8 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_p
 		}
 
 
-		glm::mat4 MVP = VP;
-		_shadowShader->loadMatrix4(_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+		_shadowShader->loadMatrix4(_shadowShader->MMatrixID, glm::mat4());	// bind global old shader
+		_shadowShader->loadMatrix4(_shadowShader->VPMatrixID, VP);	// bind global old shader
 
 		RENDER_TARGET::NORMAL::NormalFObj* roomModel = new RENDER_TARGET::NORMAL::NormalFObj(
 			"data/Model/room.obj", true, "data/Texture/uvmap.DDS", "dds");
@@ -282,8 +283,9 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_p
 
 			normalRenderTarget->_model->bind();		// Model buffer bind
 
-			mat4 targetTotalMat = VP * targetRigidbodyComponent->getWorldMat();
-			_shadowShader->loadMatrix4(_shadowShader->MVPMatrixID, targetTotalMat);	// bind global old shader
+			_shadowShader->loadMatrix4(_shadowShader->MMatrixID, targetRigidbodyComponent->getWorldMatRef());	// bind global old shader
+			_shadowShader->loadMatrix4(_shadowShader->VPMatrixID, VP);	// bind global old shader
+
 			normalRenderTarget->_model->render();
 
 			normalRenderTarget->_model->unbind();
@@ -292,7 +294,8 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_p
 		}
 
 		glm::mat4 MVP = VP;
-		_shadowShader->loadMatrix4(_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+		_shadowShader->loadMatrix4(_shadowShader->MMatrixID, glm::mat4());	// bind global old shader
+		_shadowShader->loadMatrix4(_shadowShader->VPMatrixID, VP);	// bind global old shader
 
 		RENDER_TARGET::NORMAL::NormalFObj* roomModel = new RENDER_TARGET::NORMAL::NormalFObj(
 			"data/Model/room.obj", true, "data/Texture/uvmap.DDS", "dds");
@@ -338,14 +341,26 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_p
 
 				normalRenderTarget->_model->bind();		// Model buffer bind
 
-				mat4 MVP = VPMat * targetRigidbodyComponent->getWorldMat();
-				_shadowShader->loadMatrix4(_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+				_shadowShader->loadMatrix4(_shadowShader->MMatrixID, targetRigidbodyComponent->getWorldMatRef());	// bind global old shader
+				_shadowShader->loadMatrix4(_shadowShader->VPMatrixID, VPMat);	// bind global old shader
+				
 				normalRenderTarget->_model->render();
 
 				normalRenderTarget->_model->unbind();
 
 				++it;
 			}
+
+
+			_shadowShader->loadMatrix4(_shadowShader->MMatrixID, glm::mat4());	// bind global old shader
+			_shadowShader->loadMatrix4(_shadowShader->VPMatrixID, VPMat);	// bind global old shader
+
+			RENDER_TARGET::NORMAL::NormalFObj* roomModel = new RENDER_TARGET::NORMAL::NormalFObj(
+				"data/Model/room.obj", true, "data/Texture/uvmap.DDS", "dds");
+			roomModel->_model->bind();
+			roomModel->_texture->bind();
+			roomModel->_model->render();
+			roomModel->_model->unbind();
 		}
 	}
 
@@ -383,7 +398,7 @@ void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, std::list<std::shared_ptr<
 		normalRenderTarget->_texture->bind();	// real texture bind to #
 		_geoShader->loadInt(_geoShader->m_textureID, 0);
 
-		mat4& targetModelMat = targetRigidbodyComponent->getWorldMat();
+		const mat4& targetModelMat = targetRigidbodyComponent->getWorldMatRef();
 		_geoShader->loadMatrix4(_geoShader->m_modelMatrixID, targetModelMat);
 
 		normalRenderTarget->_model->bind();		// Model buffer bind

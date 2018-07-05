@@ -1,37 +1,13 @@
 #pragma once
-/*
-#include "light.h"
-#include "configs_ubo.h"
 
-class DeferredPointLightManager;
-class GameSession;
-class LightGameObject;
+#include "LightWithEntity.h"
 
-class DeferredPointLight : public Light, public std::enable_shared_from_this<DeferredPointLight>
+class DeferredPointLight : public LightWithEntity
 {
 public:
-	mat4&	getBiasMat();
-	vec3&	getWorldPos();
-	float	getLightPower();
-	bool	isValid();
+	DeferredPointLight(ILightWithEntityManager* bindedLightManager, GameSession* gSession, int uboType, int idx, glm::vec3& pos, glm::vec4& color, float lightPower);
 
-private:
-	DeferredPointLight(DeferredPointLightManager* bindedLightManager, GameSession* gSession, int idx, glm::vec3& pos, glm::vec4& color, float lightPower);
-	void lightInit();
-	DeferredPointLightManager*	getBindedLightManager();
-	void destroyLight();
+	// LightWithEntity을(를) 통해 상속됨
+	virtual void lightUpdate() override;
 
-private:
-	LightGameObject*			_bindedLightGameObject;
-	DeferredPointLightManager*	_bindedLightManager;
-	int							_idx;
-	bool						_isValid;
-
-	float	_lightPower;
-	mat4	_biasMatrix;
-	int		_uboType;
-
-public:
-	friend class DeferredPointLightManager;
 };
-*/

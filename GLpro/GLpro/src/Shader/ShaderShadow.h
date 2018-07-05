@@ -5,18 +5,14 @@ namespace SHADER {
 	class ShaderShadow : public ShaderObj
 	{
 	public:
-		ShaderShadow(const char * vertexShader, const char * fragmentShader)
-			: ShaderObj(vertexShader, fragmentShader)
-		{
-			if (m_shaderID != -1) 
-			{
-				MVPMatrixID = glGetUniformLocation(m_shaderID, _NameMVP);
-			}
-		}
-		GLuint MVPMatrixID;
+		ShaderShadow(const char * vertexShader, const char * fragmentShader);
+
+		GLuint MMatrixID;
+		GLuint VPMatrixID;
 
 	private:
-		const char * _NameMVP = "MVP";
+		const char * _NameM = "M";
+		const char * _NameVP = "VP";
 		
 	};
 }

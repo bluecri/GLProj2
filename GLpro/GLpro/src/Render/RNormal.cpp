@@ -107,8 +107,8 @@ namespace RENDER
 					continue;
 				}
 
-				glm::mat4 MVP = VP * targetRigidbodyComponent->getWorldMat();
-				GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+				GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MMatrixID, targetRigidbodyComponent->getWorldMatRef());	// bind global old shader
+				GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->VPMatrixID, VP);	// bind global old shader
 
 				normalRenderTarget->_model->bind();		// Model buffer bind
 				normalRenderTarget->_model->render();
@@ -118,8 +118,8 @@ namespace RENDER
 			}
 
 
-			glm::mat4 MVP = VP;
-			GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+			GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MMatrixID, glm::mat4());	// bind global old shader
+			GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->VPMatrixID, VP);	// bind global old shader
 
 			RENDER_TARGET::NORMAL::NormalFObj* roomModel = new RENDER_TARGET::NORMAL::NormalFObj(
 				"data/Model/room.obj", true, "data/Texture/uvmap.DDS", "dds");
@@ -160,8 +160,9 @@ namespace RENDER
 
 				normalRenderTarget->_model->bind();		// Model buffer bind
 
-				mat4 targetTotalMat = VP * targetRigidbodyComponent->getWorldMat();
-				GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MVPMatrixID, targetTotalMat);	// bind global old shader
+				GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MMatrixID, targetRigidbodyComponent->getWorldMatRef());	// bind global old shader
+				GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->VPMatrixID, VP);	// bind global old shader
+
 				normalRenderTarget->_model->render();
 
 				normalRenderTarget->_model->unbind();
@@ -169,8 +170,8 @@ namespace RENDER
 				++it;
 			}
 
-			glm::mat4 MVP = VP;
-			GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+			GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MMatrixID, glm::mat4());	// bind global old shader
+			GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->VPMatrixID, VP);	// bind global old shader
 
 			RENDER_TARGET::NORMAL::NormalFObj* roomModel = new RENDER_TARGET::NORMAL::NormalFObj(
 				"data/Model/room.obj", true, "data/Texture/uvmap.DDS", "dds");
@@ -216,8 +217,9 @@ namespace RENDER
 
 					normalRenderTarget->_model->bind();		// Model buffer bind
 
-					mat4 MVP = VPMat * targetRigidbodyComponent->getWorldMat();
-					GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MVPMatrixID, MVP);	// bind global old shader
+					GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->MMatrixID, targetRigidbodyComponent->getWorldMatRef());	// bind global old shader
+					GShadowBufferTexture->_shadowShader->loadMatrix4(GShadowBufferTexture->_shadowShader->VPMatrixID, VPMat);	// bind global old shader
+
 					normalRenderTarget->_model->render();
 
 					normalRenderTarget->_model->unbind();

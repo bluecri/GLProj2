@@ -37,9 +37,14 @@ void ShaderStructDeferredPointLight::loadLightsDataToBuffer(std::vector<std::sha
 			continue;
 		}
 
-		_lightPower[_lightNum]		= elem->getLightPower();
 		_lightColorVec4Vec[_lightNum] = elem->getColor();
-		_lightPosVec3Vec[_lightNum]	= elem->getWorldPos();
+		_lightColorVec4Vec[_lightNum][3] = elem->getLightPower();
+
+		const glm::vec3& worldpos = elem->getWorldPos();
+		for (int i = 0; i < 3; i++)
+		{
+			_lightPosVec4Vec[_lightNum][i] = worldpos[i];
+		}
 		_lightNum++;
 	}
 }

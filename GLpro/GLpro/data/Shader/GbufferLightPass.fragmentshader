@@ -68,11 +68,8 @@ layout (std140) uniform PointLIghtBlock
 layout (std140) uniform DeferredPointLIghtBlock
 {
 	int		_dfLightNum;
-	float	_dfLightPower[MAX_DFFERED_POINTL_LIGHT_NUM];
-	vec4	_dfLightColorVec[MAX_DFFERED_POINTL_LIGHT_NUM];
-	vec3	_dfLightPosVec[MAX_DFFERED_POINTL_LIGHT_NUM];
-	mat4	_dfLightVMat[MAX_DFFERED_POINTL_LIGHT_NUM];
-	mat4	_dfLightVPMat[MAX_DFFERED_POINTL_LIGHT_NUM];
+	vec4	_dfLightColorVec[MAX_DFFERED_POINTL_LIGHT_NUM];	// 3 color & 1 power
+	vec4	_dfLightPosVec[MAX_DFFERED_POINTL_LIGHT_NUM];
 };  
 
 vec2 poissonDisk[4] = vec2[](
@@ -94,15 +91,16 @@ void main()
 	vec4 Position_worldspace = vec4( texture( gPositionMap, TexCoord ).xyz, 1.0);
 	vec3 Normal_worldspace = texture( gNormalMap, TexCoord ).xyz;
 
-	vec3 Normal_cameraspace = ( ViewVP * vec4( Normal_worldspace, 0.0) ).xyz;
+	vec3 Normal_cameraspace = ( ViewV * vec4( Normal_worldspace, 0.0) ).xyz;
 	vec3 n = normalize( Normal_cameraspace );
 
 	// Eye vector (vertex towards the camera)
-	vec3 EyeDirection_cameraspace = vec3(0.0, 0.0, 0.0) - ( ViewVP * Position_worldspace ).xyz;
+	vec3 EyeDirection_cameraspace = vec3(0.0, 0.0, 0.0) - ( ViewV * Position_worldspace ).xyz;
 	vec3 E = normalize(EyeDirection_cameraspace);
 
 	float spotLightAttenuation = 1000.0;
 	float pointLightAttenuation = 2000.0;
+	float deferredPointLightAttenuation = 500.0;
 	
 	// ====== light loop =========
 	for (int loop = 0; loop < _dLightNum; loop++)
@@ -133,7 +131,7 @@ void main()
 		vec3 linv = normalize( LightInvDirection_cameraspace );
 
 		// Cosine of the angle between the normal and the light direction, 
-		float cosTheta = clamp( dot( n,linv ), 0,1 );
+		float cosTheta = clamp( dot( n,linv ), 0, 1 );
 
 		vec3 R = reflect(-linv,n);
 
@@ -260,6 +258,36 @@ void main()
 				int index = i;
 				visibility -= 0.2*(1.0 - texture(shadowMap, vec3(ShadowCoord.xy - poissonDisk[index] / 6000.0, ShadowCoord.z + bias / ShadowCoord.w) ) );
 			}
+			visibility *= 1.0 / (1.0 + distance2 / pointLightAttenuation);
+
+			MaterialDiffuseColorFactor	+= visibility * LightColor * LightPower * cosTheta;
+			MaterialSpecularColorFactor	+= visibility * LightColor * LightPower * pow(cosAlpha,5);
+		}
+	}
+
+
+	for (int loop = 0; loop < _dfLightNum; loop++)
+	{
+		vec3	LightColor = _dfLightColorVec[loop].xyz;
+		float	LightPower = _dfLightColorVec[loop].w;
+		for(int cubeN = 0; cubeN < TEXTURE_POINT_CUBE_NUM; cubeN++)
+		{
+			float visibility = 1.0;
+			// Vector that goes from the vertex to the light, in camera space
+			vec3 LightInvDirection_worldspace = _pLightPosVec[loop].xyz - Position_worldspace.xyz;
+			vec3 LightInvDirection_cameraspace = ( ViewV * vec4(LightInvDirection_worldspace,0)).xyz;
+			vec3 linv = normalize( LightInvDirection_cameraspace );
+
+			// Cosine of the angle : diffuse light
+			float cosTheta = clamp( dot( n,linv ), 0, 1 );
+
+			// Cosine of the angle : specular light
+			vec3 R = reflect(-linv,n);
+			float cosAlpha = clamp( dot( E,R ), 0, 1 );
+
+			vec3 distVec = LightInvDirection_worldspace;
+			float distance2 = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
+		
 			visibility *= 1.0 / (1.0 + distance2 / pointLightAttenuation);
 
 			MaterialDiffuseColorFactor	+= visibility * LightColor * LightPower * cosTheta;

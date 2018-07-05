@@ -6,8 +6,10 @@ layout(location = 1) in vec2 vertexUV;
 layout(location = 2) in vec3 vertexNormal_modelspace;
 
 // Values that stay constant for the whole mesh.
-uniform mat4 MVP;		// shadow space VP * model
+uniform mat4 M;			// model
+uniform mat4 VP;		// camera VP
+
 
 void main(){
-	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
+	gl_Position = VP * M * vec4(vertexPosition_modelspace,1);
 }

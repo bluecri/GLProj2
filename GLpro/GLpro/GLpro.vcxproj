@@ -272,6 +272,7 @@
     <ClCompile Include="src\Shader\ShaderMain.cpp" />
     <ClCompile Include="src\Shader\ShaderManager.cpp" />
     <ClCompile Include="src\Shader\ShaderObj.cpp" />
+    <ClCompile Include="src\Shader\ShaderShadow.cpp" />
     <ClCompile Include="src\Shader\ShaderText.cpp" />
     <ClCompile Include="src\Sound\ALListener.cpp" />
     <ClCompile Include="src\Sound\ALManager.cpp" />

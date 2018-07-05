@@ -40,4 +40,8 @@ public:
 	glm::vec3 _center;
 	OctreeForCollision* _childTree[OCT_POS::OCT_NUM];
 	std::list<CollisionComponent*> _potentialComponents;
+
+	bool _bUsed;				// Whether this octree & children is used or not
+	bool _bUseChildren;	
+	int  _maxCountOfObjects;
 };
