@@ -17,7 +17,7 @@ namespace RENDER_TARGET
 			_model = GModelManager->getModelWithFileName(modelFileName, createEbo);
 			_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
 
-			_frustumRadius = 1.0f;
+			_frustumRadius = 3.0f;
 			_frustumPosCompensation = glm::vec3();
 			_frustumPos = glm::vec3();
 		}
@@ -27,7 +27,7 @@ namespace RENDER_TARGET
 			_model = model;
 			_texture = texture;
 
-			_frustumRadius = 1.0f;
+			_frustumRadius = 3.0f;
 			_frustumPosCompensation = glm::vec3();
 			_frustumPos = glm::vec3();
 		}

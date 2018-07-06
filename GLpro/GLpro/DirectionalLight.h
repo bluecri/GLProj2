@@ -1,6 +1,7 @@
 #pragma once
 
 #include "light.h"
+#include "FrustumOb.h"
 
 class DirectionalLightManager;
 
@@ -8,12 +9,17 @@ class DirectionalLightManager;
 class DirectionalLight	:	public Light
 {
 public:
+	virtual ~DirectionalLight();
+
+	void lightUpdate();
+
 	mat4& GetProjMat() { return _projectionMatrix; }
 	mat4& GetViewMat() { return _viewMatrix; }
 
-	mat4& GetModelMat() { return _modelMatrix; }
+	//mat4& GetModelMat() { return _modelMatrix; }
 	vec3& getLightDirVec() { return _lightLookVec3; }
-	virtual ~DirectionalLight();
+
+	const FrustumOb& getFrustumObRef();
 private:
 	DirectionalLight(DirectionalLightManager* bindedLightManager, int idx, glm::vec4& color, const glm::vec3& lightLookVec3);
 
@@ -25,7 +31,9 @@ private:
 	mat4 _viewMatrix;
 
 	vec3 _lightLookVec3;
-	mat4 _modelMatrix;
+	//mat4 _modelMatrix;
+
+	FrustumOb	_frustumOb;
 public:
 	friend class DirectionalLightManager;
 };

@@ -1,6 +1,27 @@
 #include "stdafx.h"
 #include "CollisionComponent.h"
 
+CollisionComponent::CollisionComponent(RigidbodyComponent * rigidComp)
+{
+	_rigidComp = rigidComp;
+	_bDeleted = false;
+	_bCollisionTest = true;
+	_bCollideVelocityUpdate = true;
+	_bAlreadyVelocityUpdated = false;
+
+	_collisionLogList = std::list<CollisionComponent*>();
+}
+
+const glm::mat4& CollisionComponent::getWorldMatRef()
+{
+	return _worldMat;
+}
+
+const glm::vec3& CollisionComponent::getAxisLenRef()
+{
+	return _axisLen;
+}
+
 void CollisionComponent::setDeleted(bool bDeleted) {
 	_bDeleted = bDeleted;
 }
@@ -15,7 +36,7 @@ void CollisionComponent::setCollisionVelocityUpdate(bool bVelUpdate)
 	_bCollideVelocityUpdate = bVelUpdate;
 }
 
-bool CollisionComponent::sIsBoxCollisionCheck(glm::mat4 & wolrd1, glm::mat4 & wolrd2, glm::vec3 & axisLen1, glm::vec3 & axisLen2)
+bool CollisionComponent::sIsBoxCollisionCheck(const glm::mat4 & wolrd1, const glm::mat4 & wolrd2, const glm::vec3 & axisLen1, const glm::vec3 & axisLen2)
 {
 	double c[3][3];	//ob1 3 axis vs otherOBB 3 axis consine value
 	double absC[3][3];	//abs of c[][]

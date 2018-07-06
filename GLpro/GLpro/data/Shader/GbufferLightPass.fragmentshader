@@ -100,7 +100,7 @@ void main()
 
 	float spotLightAttenuation = 1000.0;
 	float pointLightAttenuation = 2000.0;
-	float deferredPointLightAttenuation = 500.0;
+	float deferredPointLightAttenuation = 1.0;
 	
 	// ====== light loop =========
 	for (int loop = 0; loop < _dLightNum; loop++)
@@ -274,7 +274,7 @@ void main()
 		{
 			float visibility = 1.0;
 			// Vector that goes from the vertex to the light, in camera space
-			vec3 LightInvDirection_worldspace = _pLightPosVec[loop].xyz - Position_worldspace.xyz;
+			vec3 LightInvDirection_worldspace = _dfLightPosVec[loop].xyz - Position_worldspace.xyz;
 			vec3 LightInvDirection_cameraspace = ( ViewV * vec4(LightInvDirection_worldspace,0)).xyz;
 			vec3 linv = normalize( LightInvDirection_cameraspace );
 
@@ -288,7 +288,7 @@ void main()
 			vec3 distVec = LightInvDirection_worldspace;
 			float distance2 = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
 		
-			visibility *= 1.0 / (1.0 + distance2 / pointLightAttenuation);
+			visibility *= 1.0 / (1.0 + distance2 / deferredPointLightAttenuation);
 
 			MaterialDiffuseColorFactor	+= visibility * LightColor * LightPower * cosTheta;
 			MaterialSpecularColorFactor	+= visibility * LightColor * LightPower * pow(cosAlpha,5);

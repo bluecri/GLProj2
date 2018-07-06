@@ -4,6 +4,8 @@ SpotLight::SpotLight(ILightWithEntityManager * bindedLightManager, GameSession *
 	: LightWithEntity(bindedLightManager, gSession, uboType, idx, rotMat, pos, color, lightPower), _fovy(fovy), _aspcect(aspcect), _persNear(persNear), _persFar(persFar)
 {
 	_perspectiveMat = glm::perspective(_fovy, _aspcect, _persNear, _persFar);
+
+	lightUpdate();
 }
 
 void SpotLight::lightUpdate()
@@ -20,6 +22,8 @@ void SpotLight::lightUpdate()
 	_viewMat = glm::lookAt(tempEye, fowardVec + tempEye, upVec);
 
 	_vpMat = _perspectiveMat * _viewMat;
+
+	_frustumOb.updateFrustumOb(_perspectiveMat, _viewMat);
 }
 
 glm::mat4& SpotLight::getVPMatRef()
@@ -35,4 +39,9 @@ glm::mat4 & SpotLight::GetViewMat()
 glm::mat4 & SpotLight::GetProjMat()
 {
 	return _perspectiveMat;
+}
+
+const FrustumOb & SpotLight::getFrustumObRef()
+{
+	return _frustumOb;
 }

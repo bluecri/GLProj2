@@ -169,11 +169,17 @@ bool OctreeForCollision::IsInBoxTest(CollisionComponent * comp)
 	return false;
 	}
 	*/
+
+	AABBOb& aabbOb = comp->_aabbObForOctree;
+	glm::vec3& aabbCemter = aabbOb.getCenter();
+	glm::vec3& aabbAxis = aabbOb.getAxis();
+
+
 	// in box text
 	for (int i = 0; i < 3; i++)
 	{
 		// out condition ( center diff + half > HALF )
-		if (fabs(_center[i] - comp->_center[i] + comp->_halfAxisSize[i]) > _halfAxisSize)
+		if (fabs(_center[i] - aabbCemter[i] + aabbAxis[i]) > _halfAxisSize)
 			return false;
 	}
 

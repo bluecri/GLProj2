@@ -20,6 +20,10 @@ void DirectionalLightManager::initBuffer()
 
 void DirectionalLightManager::updateLights()
 {
+	for (auto elem : _directionalLightVec)
+	{
+		elem->lightUpdate();
+	}
 }
 
 void DirectionalLightManager::updateLightsToBufferData()

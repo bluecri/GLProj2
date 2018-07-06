@@ -15,12 +15,14 @@ void RENDER::RenderManager::renderAll(float deltaTime, float acc)
 	_skyboxContainer.render(deltaTime);
 
 	// normal draw frustum cull
+	
 	for (auto elem : _normalContainer._rRenderContainer)
 	{
 		GOctreeForFrustum->insertSharedDrawElem(elem.second->getDrawElemList());
 	}
 	GOctreeForFrustum->setFrustumBitWithMainCamera();
 	GOctreeForFrustum->clearPotentialCompPropa();
+	
 
 	// normal draw
 	_normalContainer.render(deltaTime);

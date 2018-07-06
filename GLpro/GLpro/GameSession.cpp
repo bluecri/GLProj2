@@ -171,7 +171,8 @@ void GameSession::preMade()
 
 	for (int i = 0; i < 10; i++)
 	{
-		tempSpotGameObj = GLightManager->AddPointLightManager(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+		//tempSpotGameObj = GLightManager->AddPointLightManager(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+		tempSpotGameObj = GLightManager->AddDeferredPointLight(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
 		newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
 	}
 

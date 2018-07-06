@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AABBCollisionComp.cpp" />
+    <ClCompile Include="AABBOb.cpp" />
     <ClCompile Include="AimTextUIObj.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="BuffManager.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="DirectionalLightManager.cpp" />
     <ClCompile Include="EmptyMissileGenerator.cpp" />
     <ClInclude Include="AABBCollisionComp.h" />
+    <ClInclude Include="AABBOb.h" />
     <ClInclude Include="AimTextUIObj.h" />
     <ClInclude Include="BuffManager.h" />
     <ClInclude Include="BuffSum.h" />
@@ -169,6 +171,7 @@
     <ClInclude Include="DirectionalLightManager.h" />
     <ClInclude Include="EntityBindee.h" />
     <ClInclude Include="EntityBinder.h" />
+    <ClInclude Include="FrustumOb.h" />
     <ClInclude Include="IFieldItemForBuff.h" />
     <ClInclude Include="IFieldItemForStuff.h" />
     <ClInclude Include="IBuff.h" />
@@ -181,6 +184,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EntityBindee.cpp" />
     <ClCompile Include="EntityBinder.cpp" />
+    <ClCompile Include="FrustumOb.cpp" />
     <ClCompile Include="IBuff.cpp" />
     <ClCompile Include="IFieldItemForBuff.cpp" />
     <ClCompile Include="FieldItemGenerator.cpp" />

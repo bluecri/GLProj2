@@ -4,15 +4,25 @@
 #include "RigidbodyComponent.h"
 
 
+OBBCollisionComp::OBBCollisionComp(RigidbodyComponent * rigidComp, glm::mat4 & localMat, glm::vec3 & axisLen)
+	: CollisionComponent(rigidComp)
+{
+	_localMat = localMat;
+	_axisLen = _axisLen;
+
+	collisionType = COLLISION_TYPE::COLLISION_OBB;
+	_axisTotalLen = glm::length(_axisLen);
+}
+
 void OBBCollisionComp::updateWithRigidComp()
 {
-	_worldlMat = _rigidComp->getWorldMatRef() * _localMat;
+	_worldMat = _rigidComp->getWorldMatRef() * _localMat;
+	_aabbObForOctree.updateAABBObAxis(_axisTotalLen);
 }
 
 void OBBCollisionComp::updateAABBForOctree()
 {
-	_center = _worldlMat[3];
-	_halfAxisSize = glm::vec3(_axisTotalLen, _axisTotalLen, _axisTotalLen);
+	_aabbObForOctree.updateAABBObCenter(_worldMat[3]);
 }
 
 bool OBBCollisionComp::collideTestToOther(CollisionComponent * comp)
@@ -20,14 +30,12 @@ bool OBBCollisionComp::collideTestToOther(CollisionComponent * comp)
 	switch (comp->collisionType)
 	{
 	case COLLISION_TYPE::COLLISION_AABB:
-		return sIsBoxCollisionCheck(_worldlMat, static_cast<AABBCollisionComp*>(comp)->_worldlMat, _axisLen, static_cast<AABBCollisionComp*>(comp)->_axisLen);
-	
 	case COLLISION_TYPE::COLLISION_OBB:
-		return sIsBoxCollisionCheck(_worldlMat, static_cast<OBBCollisionComp*>(comp)->_worldlMat, _axisLen, static_cast<OBBCollisionComp*>(comp)->_axisLen);
+		return sIsBoxCollisionCheck(_worldMat, comp->getWorldMatRef(), _axisLen, comp->getAxisLenRef());
 		break;
-	
+
 	default:
-		printf_s("[LOG] : default case in OBBCollisionComp::collideTestToOther\n");
+		printf_s("[LOG] : default case inAABBCollisionComp:: collideTestToOther\n");
 		return false;
 	}
 

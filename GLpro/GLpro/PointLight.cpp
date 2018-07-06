@@ -7,6 +7,10 @@ PointLight::PointLight(ILightWithEntityManager * bindedLightManager, GameSession
 {
 	_perspectiveMat = glm::perspective(glm::radians(90.0f), 1.0f, _persNear, _persFar);
 	_cubeVPMatVec = std::vector<glm::mat4>(6, glm::mat4());
+
+	float orthoSize = _persFar * 2;
+	_shadowOrthoMat = glm::ortho(orthoSize, orthoSize, orthoSize, orthoSize);
+
 	lightUpdate();
 }
 
@@ -17,11 +21,18 @@ void PointLight::lightUpdate()
 	{
 		_cubeVPMatVec[i] = _perspectiveMat * glm::lookAt(lightPos, lightPos + _lookAt12Vec[i].first, _lookAt12Vec[i].second);
 	}
+
+	// todo : update aabb
 }
 
 std::vector<glm::mat4>& PointLight::getVPMatCubeVec()
 {
 	return _cubeVPMatVec;
+}
+
+const AABBOb& PointLight::getAABBObRef()
+{
+	return _aabbOb;
 }
 
 void PointLight::PointLightInit()

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "LightWithEntity.h"
+#include "FrustumOb.h"
 
 class SpotLight	: public LightWithEntity
 {
@@ -14,10 +15,13 @@ public:
 
 	glm::mat4&	GetViewMat();
 	glm::mat4&	GetProjMat();
+
+	const FrustumOb& getFrustumObRef();
 	
 private:
 	glm::mat4	_perspectiveMat;
 	glm::mat4	_viewMat;
+	FrustumOb	_frustumOb;
 	float		_fovy, _aspcect, _persNear, _persFar;
 
 	//result

@@ -7,6 +7,18 @@ DirectionalLight::~DirectionalLight()
 	delete this;
 }
 
+void DirectionalLight::lightUpdate()
+{
+	// todo : update pos according to camera view
+
+	_frustumOb.updateFrustumOb(_projectionMatrix, _viewMatrix);
+}
+
+const FrustumOb & DirectionalLight::getFrustumObRef()
+{
+	return _frustumOb;
+}
+
 DirectionalLight::DirectionalLight(DirectionalLightManager * bindedLightManager, int idx, glm::vec4 & color, const glm::vec3 & lightLookVec3)
 	: Light(color, true), _bindedLightManager(bindedLightManager), _idx(idx), _lightLookVec3(lightLookVec3)
 {
@@ -15,5 +27,5 @@ DirectionalLight::DirectionalLight(DirectionalLightManager * bindedLightManager,
 	_viewMatrix = lookAt(lightLookVec3, vec3(0, 0, 0), vec3(0, 1, 0));
 	
 	// create proxy matrix
-	_modelMatrix = _projectionMatrix * _viewMatrix;
+	//_modelMatrix = _projectionMatrix * _viewMatrix;
 }
