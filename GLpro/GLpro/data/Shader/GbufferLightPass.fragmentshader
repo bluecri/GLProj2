@@ -211,9 +211,29 @@ void main()
 	{
 		vec3	LightColor = _pLightColorVec[loop].xyz;
 		float	LightPower = _pLightColorVec[loop].w;
+
+		// Vector that goes from the vertex to the light, in camera space
+		vec3 LightInvDirection_worldspace = _pLightPosVec[loop].xyz - Position_worldspace.xyz;
+		vec3 LightInvDirection_cameraspace = ( ViewV * vec4(LightInvDirection_worldspace,0)).xyz;
+		vec3 linv = normalize( LightInvDirection_cameraspace );
+
+		// Cosine of the angle : diffuse light
+		float cosTheta = clamp( dot( n,linv ), 0, 1 );
+		
+		// Cosine of the angle : specular light
+		vec3 R = reflect(-linv,n);
+		float cosAlpha = clamp( dot( E,R ), 0, 1 );
+
+
+		float visibility = 1.0;
+		float bias = 0.002;
+		vec3 distVec = LightInvDirection_worldspace;
+		float distance2 = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
+		
+		// shadow from 6 cube texture map
 		for(int cubeN = 0; cubeN < TEXTURE_POINT_CUBE_NUM; cubeN++)
 		{
-			vec4 ShadowCoord = biasMatrix * _pLightVPMat[loop] * Position_worldspace;
+			vec4 ShadowCoord = biasMatrix * _pLightVPMat[loop * TEXTURE_POINT_CUBE_NUM + cubeN] * Position_worldspace;
 			ShadowCoord.xyz /= ShadowCoord.w;		// spot light projection
 		
 			// spot light cliping
@@ -235,28 +255,9 @@ void main()
 
 			ShadowCoord.xy += startCoord;
 
-
-			// Vector that goes from the vertex to the light, in camera space
-			vec3 LightInvDirection_worldspace = _pLightPosVec[loop].xyz - Position_worldspace.xyz;
-			vec3 LightInvDirection_cameraspace = ( ViewV * vec4(LightInvDirection_worldspace,0)).xyz;
-			vec3 linv = normalize( LightInvDirection_cameraspace );
-
-			// Cosine of the angle : diffuse light
-			float cosTheta = clamp( dot( n,linv ), 0, 1 );
-
-			// Cosine of the angle : specular light
-			vec3 R = reflect(-linv,n);
-			float cosAlpha = clamp( dot( E,R ), 0, 1 );
-
-
-			float visibility = 1.0;
-			float bias = 0.0002;
-			vec3 distVec = LightInvDirection_worldspace;
-			float distance2 = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
-		
 			for (int i = 0; i<4; i++) {
 				int index = i;
-				visibility -= 0.2*(1.0 - texture(shadowMap, vec3(ShadowCoord.xy - poissonDisk[index] / 6000.0, ShadowCoord.z + bias / ShadowCoord.w) ) );
+				visibility -= 0.2*(1.0 - texture(shadowMap, vec3(ShadowCoord.xy - poissonDisk[index] / 6000.0, ShadowCoord.z - bias / ShadowCoord.w) ) );
 			}
 			visibility *= 1.0 / (1.0 + distance2 / pointLightAttenuation);
 
@@ -264,7 +265,6 @@ void main()
 			MaterialSpecularColorFactor	+= visibility * LightColor * LightPower * pow(cosAlpha,5);
 		}
 	}
-
 
 	for (int loop = 0; loop < _dfLightNum; loop++)
 	{

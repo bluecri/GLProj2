@@ -22,7 +22,7 @@ void PointLight::lightUpdate()
 		_cubeVPMatVec[i] = _perspectiveMat * glm::lookAt(lightPos, lightPos + _lookAt12Vec[i].first, _lookAt12Vec[i].second);
 	}
 
-	// todo : update aabb
+	_aabbOb.updateAABBObCenter(lightPos);
 }
 
 std::vector<glm::mat4>& PointLight::getVPMatCubeVec()
