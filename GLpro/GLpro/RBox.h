@@ -31,9 +31,10 @@ namespace RENDER
 
 		std::shared_ptr<DrawElement> addToDrawList(RENDER_TARGET::TEXT::TextFObj* textFObjBOX);
 
-		virtual void update(CAMERA::Camera** cam) override;	//shader target camera update
+		virtual void updateRRender() override;	//shader target camera update
+		void updateTargetCamera(CAMERA::Camera** cam) override;
 
-		virtual void draw(float deltaTime);
+		virtual void drawRRender(float deltaTime) override;
 
 		void chageShader(SHADER::ShaderText* other);
 

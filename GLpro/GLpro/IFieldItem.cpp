@@ -10,7 +10,7 @@
 IFieldItem::IFieldItem(ENUM_ENTITY_TYPE type, GameSession * gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	:IGameObject(type, gSession, model, texture, shadermain)
 {
-	_rNormal = GRendermanager->getRRender<RENDER::RNormal, SHADER::ShaderMain>(shadermain);
+	_rNormal = GRendermanager->getRRender<RENDER::RNormal>(shadermain);
 	rendererElem = _rNormal->addDrawElem(new RENDER_TARGET::NORMAL::NormalFObj(model, texture), _rigidbodyComponent);
 
 	// default value

@@ -24,6 +24,7 @@ public:
 
 	// 충돌 가능한 모든 CollisionComponent들을 potentialList에 등록
 	void getCollisionPotentialList(std::list<CollisionComponent*>& potentialList, CollisionComponent* comp);
+	void getAllCollisionPotentialList(std::list<CollisionComponent*>& potentialList);
 
 	// 등록해놓은 모든 CollisionComponent refresh.
 	void clearPotentialCompPropa();
@@ -32,7 +33,8 @@ private:
 	// insert 가능한 child box index return
 	int getFitChildBoxIndex(CollisionComponent* comp);
 
-	bool IsInBoxTest(CollisionComponent* comp);
+	bool IsInBoxFitTest(CollisionComponent* comp);
+	int IsInBoxTestAll(CollisionComponent* comp);
 
 public:
 	int _height;

@@ -24,7 +24,8 @@ namespace RENDER
 		public:
 			using TYPE_SHADER = SHADER::ShaderMain;
 			using DrawElement = std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>;
-			using DrawElemContainer = std::list<std::shared_ptr<DrawElement>>;
+			using SharedDrawElement = std::shared_ptr<DrawElement>;
+			using DrawElemContainer = std::list<SharedDrawElement>;
 
 			RNormal(SHADER::ShaderMain* shaderObj);
 			virtual ~RNormal() {};	// Render 삭제시 DrawElemContainer이 shared_ptr 이므로 자동 해제.
@@ -32,7 +33,8 @@ namespace RENDER
 			std::shared_ptr<RNormal::DrawElement> addDrawElem(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent* rigidComponent);
 			DrawElemContainer& getDrawElemList();
 
-			void update(CAMERA::Camera** cam) override;	//shader target camera update
+			void updateRRender() override;	//shader target camera update
+			void updateTargetCamera(CAMERA::Camera** cam) override;
 
 			void shadowBufferPreDraw(float deltaTime);
 			void shadowBufferDraw(float deltaTime);
@@ -41,7 +43,7 @@ namespace RENDER
 			void deferredDraw(float deltaTime);
 
 
-			virtual void draw(float deltaTime);
+			virtual void drawRRender(float deltaTime);
 
 			//	virtual void chageShader(SHADER::ShaderMain* other);	-> make fixed.
 

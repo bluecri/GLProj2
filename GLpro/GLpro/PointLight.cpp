@@ -30,7 +30,7 @@ std::vector<glm::mat4>& PointLight::getVPMatCubeVec()
 	return _cubeVPMatVec;
 }
 
-const AABBOb& PointLight::getAABBObRef()
+AABBOb& PointLight::getAABBObRef()
 {
 	return _aabbOb;
 }

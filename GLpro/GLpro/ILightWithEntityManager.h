@@ -20,6 +20,8 @@ public:
 
 	GLuint	getUBO();
 
+	std::vector<std::shared_ptr<LightWithEntity>>& getLightVec();
+
 protected:
 	GLuint	_ubo;
 	std::vector<std::shared_ptr<LightWithEntity>>	_lightSharedVec;

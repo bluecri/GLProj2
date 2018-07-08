@@ -14,21 +14,13 @@ void RENDER::RenderManager::renderAll(float deltaTime, float acc)
 	// skybox draw
 	_skyboxContainer.render(deltaTime);
 
-	// normal draw frustum cull
 	
-	for (auto elem : _normalContainer._rRenderContainer)
-	{
-		GOctreeForFrustum->insertSharedDrawElem(elem.second->getDrawElemList());
-	}
-	GOctreeForFrustum->setFrustumBitWithMainCamera();
-	GOctreeForFrustum->clearPotentialCompPropa();
-	
-
 	// normal draw
 	_normalContainer.render(deltaTime);
 
+
 	// particle draw
-	//_particleContainer.render(deltaTime);
+	_particleContainer.render(deltaTime);
 
 	//todo gameui box
 	// gameui text
@@ -39,6 +31,19 @@ void RENDER::RenderManager::renderAll(float deltaTime, float acc)
 	// text draw
 	_textContainer.render(deltaTime);
 
+}
+
+void RENDER::RenderManager::frustumObjectUpdate(float deltaTime, float acc)
+{
+	// normal object frustum update
+	for (auto elem : _normalContainer._rRenderContainer)
+		elem.second->updateRRender();
+
+	// normal object frustum test
+	for (auto elem : _normalContainer._rRenderContainer)
+	{
+		GOctreeForFrustum->insertSharedDrawElem(elem.second->getDrawElemList());
+	}
 }
 
 void RENDER::RenderManager::renderBufferInit()
@@ -69,7 +74,13 @@ void RENDER::RRenderContainerClass<RENDER::RNormal, SHADER::ShaderMain>::render(
 	else
 	{
 		// deferred shading
+		GDeferredGFBO->deferredPreDraw(deltaTime);
+
 		for (auto elem : _rRenderContainer)
+		{
 			elem.second->deferredDraw(deltaTime);
+		}
+
+		GDeferredGFBO->deferredAfterDraw(deltaTime);
 	}
 }

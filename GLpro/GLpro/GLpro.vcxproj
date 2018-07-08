@@ -248,6 +248,7 @@
     <ClCompile Include="SkyboxGObject.cpp" />
     <ClCompile Include="SpecifiedNormalMissileInfo.cpp" />
     <ClCompile Include="SpeedBuff.cpp" />
+    <ClCompile Include="SphereOb.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="SpotLightManager.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\objectLoader.cpp" />
@@ -306,6 +307,7 @@
     <ClInclude Include="ShaderStructPointLight.h" />
     <ClInclude Include="ShaderStructSpotLight.h" />
     <ClInclude Include="ShaderTextureSimple.h" />
+    <ClInclude Include="SphereOb.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="SpotLightManager.h" />
     <ClInclude Include="UserInfo.h" />

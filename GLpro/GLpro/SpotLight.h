@@ -16,7 +16,7 @@ public:
 	glm::mat4&	GetViewMat();
 	glm::mat4&	GetProjMat();
 
-	const FrustumOb& getFrustumObRef();
+	FrustumOb& getFrustumObRef();
 	
 private:
 	glm::mat4	_perspectiveMat;

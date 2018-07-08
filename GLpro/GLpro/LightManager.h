@@ -24,6 +24,8 @@ public:
 	SharedLightWithEntity AddDeferredPointLight(glm::vec3 & pos, glm::vec4 & color, float lightPower);
 
 	void updateAllLIghts();
+	void deUpdateAllLIghts();
+
 public:
 	DirectionalLightManager*	_directionalLightManager;
 	SpotLightManager*			_spotLightManager;

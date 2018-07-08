@@ -7,6 +7,7 @@ namespace CAMERA
 
 class RRender
 {
-	virtual void update(CAMERA::Camera** cam) = 0;
-	virtual void draw(float deltaTime) = 0;
+	virtual void updateRRender() = 0;
+	virtual void drawRRender(float deltaTime) = 0;
+	virtual void updateTargetCamera(CAMERA::Camera** cam) = 0;
 };

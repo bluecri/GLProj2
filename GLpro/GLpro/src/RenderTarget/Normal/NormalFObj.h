@@ -4,6 +4,8 @@
 #include "../../../stdafx.h"
 #include "../../../Fobj.h"
 
+#include "../../../SphereOb.h"
+
 #define FRUSTUM_CULL_BIT			(1 << 0)
 #define OCCLUSION_CULL_BIT			(1 << 1)
 #define OCCLUSION_CULL_TEST_BIT		(1 << 2)
@@ -48,14 +50,16 @@ namespace RENDER_TARGET
 			bool getRenderCull();
 
 			void setFrustumRadius(float radius);
-			float getFrustumRadius();
+			float& getFrustumRadiusRef();
 
-			void setFrustumPos(glm::vec3& pos);
+			//void setFrustumPos(glm::vec3& pos);
 			void setFrustumPos(RigidbodyComponent * rigidbodyComponent);
 
 			glm::vec3& getFrustumPosRef();
-			void setFrustumCompensationPos(glm::vec3& compen_pos);
 			glm::vec3& getFrustumCompensationPosRef();
+			void setFrustumCompensationPos(glm::vec3& compen_pos);
+
+			SphereOb& getSphereObForFrustumRef();
 
 		public:
 			RESOURCE::Model * _model = nullptr;
@@ -66,8 +70,7 @@ namespace RENDER_TARGET
 			int _renderBit;	// occlusion cull & frustum cull
 
 			glm::vec3	_frustumPosCompensation;
-			float		_frustumRadius;
-			glm::vec3	_frustumPos;		// use this in frustum (this = posCompen + binded trasform wolrd mat in {DrawElem})
+			SphereOb	_sphereObForFrustum;		// use this in frustum (this = posCompen + binded trasform wolrd mat in {DrawElem})
 		};
 	}
 }

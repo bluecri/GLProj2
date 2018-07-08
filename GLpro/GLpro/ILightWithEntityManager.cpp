@@ -28,3 +28,8 @@ GLuint ILightWithEntityManager::getUBO()
 {
 	return _ubo;
 }
+
+std::vector<std::shared_ptr<LightWithEntity>>& ILightWithEntityManager::getLightVec()
+{
+	return _lightSharedVec;
+}

@@ -11,7 +11,7 @@ std::vector<ImageBox*> ImageBox::preMadeImageBoxesVec;
 ImageBox::ImageBox(int width, int height, int widthLT, int heightLT, const std::string & textureFileName, const std::string & type, SHADER::ShaderText * shaderText)
 	: Box(width, height, widthLT, heightLT)
 {
-	_rBox = GRendermanager->getRRender<RENDER::RBox, SHADER::ShaderText>(shaderText);
+	_rBox = GRendermanager->getRRender<RENDER::RBox>(shaderText);
 
 	RENDER_TARGET::TEXT::TextFObj* tempTextFObj = new RENDER_TARGET::TEXT::TextFObj(textureFileName.c_str(), type.c_str(), width, height, widthLT, heightLT);
 	drawElem = _rBox->addToDrawList(tempTextFObj);
@@ -20,7 +20,7 @@ ImageBox::ImageBox(int width, int height, int widthLT, int heightLT, const std::
 ImageBox::ImageBox(int width, int height, int widthLT, int heightLT, RESOURCE::Texture * texture, SHADER::ShaderText * shaderText)
 	: Box(width, height, widthLT, heightLT)
 {
-	_rBox = GRendermanager->getRRender<RENDER::RBox, SHADER::ShaderText>(shaderText);
+	_rBox = GRendermanager->getRRender<RENDER::RBox>(shaderText);
 
 	RENDER_TARGET::TEXT::TextFObj* tempTextFObj = new RENDER_TARGET::TEXT::TextFObj(texture, width, height, widthLT, heightLT);
 	drawElem = _rBox->addToDrawList(tempTextFObj);

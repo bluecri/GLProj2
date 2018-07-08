@@ -11,7 +11,7 @@ IGameObject::IGameObject(ENUM_ENTITY_TYPE type, GameSession * gSession, RESOURCE
 	: Entity(gSession, type)
 {
 	if(shadermain != nullptr)
-		_rNormal = GRendermanager->getRRender<RENDER::RNormal, SHADER::ShaderMain>(shadermain);
+		_rNormal = GRendermanager->getRRender<RENDER::RNormal>(shadermain);
 	
 	if (model != nullptr && texture != nullptr && shadermain != nullptr)
 		registeredElemInRenderer = _rNormal->addDrawElem(new RENDER_TARGET::NORMAL::NormalFObj(model, texture), _rigidbodyComponent);

@@ -12,7 +12,7 @@ public:
 	virtual void lightUpdate() override;
 
 	std::vector<glm::mat4>&		getVPMatCubeVec();
-	const AABBOb&				getAABBObRef();
+	AABBOb&				getAABBObRef();
 
 	static void PointLightInit();
 protected:

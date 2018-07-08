@@ -30,12 +30,11 @@ namespace RENDER
 		return elem;
 	}
 
-	void RParticle::update(CAMERA::Camera ** cam)
+	void RParticle::updateRRender()
 	{
-		_targetCamera = cam;
 	}
 
-	void RParticle::draw(float deltaTime)
+	void RParticle::drawRRender(float deltaTime)
 	{
 		beforeDraw(deltaTime);		//update particle
 		CAMERA::Camera* cam = *_targetCamera;
@@ -80,6 +79,11 @@ namespace RENDER
 
 		glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
+	}
+
+	void RParticle::updateTargetCamera(CAMERA::Camera ** cam)
+	{
+		_targetCamera = cam;
 	}
 
 	void RParticle::chageShader(RParticle::TYPE_SHADER * other)
@@ -134,4 +138,5 @@ namespace RENDER
 
 		GParticleFObjManager->doAllFobjBeforeDrawBehavior();
 	}
+	
 }

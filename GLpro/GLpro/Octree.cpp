@@ -96,12 +96,10 @@ void OctreeForCollision::getCollisionPotentialList(std::list<CollisionComponent*
 		potentialList.push_back(elem);
 	}
 
-	/*
 	if (_height == 0)
 	{
-		return;		// checked in getFitChildBoxIndex(comp)
+		return;
 	}
-	*/
 
 	if (_bUseChildren == false)
 		return;
@@ -112,13 +110,35 @@ void OctreeForCollision::getCollisionPotentialList(std::list<CollisionComponent*
 	// object가 octree node에서 변경이 드문 경우 하고 불일치시에 처음부터 collision check 하는 방법
 	if (-1 == (targetIdx = getFitChildBoxIndex(comp)))
 	{
-		return;
+		for (int i = 0; i < OCT_NUM; i++)
+			_childTree[targetIdx]->getCollisionPotentialList(potentialList, comp);
 	}
-
-	_childTree[targetIdx]->getCollisionPotentialList(potentialList, comp);
 
 	return;
 }
+
+void OctreeForCollision::getAllCollisionPotentialList(std::list<CollisionComponent*>& potentialList)
+{
+	if (_bUsed == false)
+		return;
+
+	for (auto elem : _potentialComponents)
+	{
+		potentialList.push_back(elem);
+	}
+
+	if (_bUseChildren)
+	{
+		for (int i = 0; i < OCT_NUM; i++)
+		{
+			_childTree[i]->getAllCollisionPotentialList(potentialList);
+		}
+	}
+
+	return;
+}
+
+
 
 // 등록해놓은 모든 CollisionComponent refresh.
 void OctreeForCollision::clearPotentialCompPropa()
@@ -127,6 +147,8 @@ void OctreeForCollision::clearPotentialCompPropa()
 		return;
 
 	_potentialComponents.clear();
+	_bUsed = false;
+	_maxCountOfObjects = 0;
 
 	if (_height == 0)
 	{
@@ -140,7 +162,7 @@ void OctreeForCollision::clearPotentialCompPropa()
 			_childTree[i]->clearPotentialCompPropa();
 		}
 	}
-	
+	_bUseChildren = false;
 }
 
 // insert 가능한 child box index return
@@ -152,7 +174,7 @@ int OctreeForCollision::getFitChildBoxIndex(CollisionComponent * comp)
 	}
 	for (int i = 0; i < OCT_POS::OCT_NUM; i++)
 	{
-		if (_childTree[i]->IsInBoxTest(comp))
+		if (_childTree[i]->IsInBoxFitTest(comp))
 		{
 			return i;
 		}
@@ -160,7 +182,8 @@ int OctreeForCollision::getFitChildBoxIndex(CollisionComponent * comp)
 	return -1;	// 일치하는 하위 child box가 존재하지 않음.
 }
 
-bool OctreeForCollision::IsInBoxTest(CollisionComponent * comp)
+// component가 완전히 inbox인지 check. (intersect == outside)
+bool OctreeForCollision::IsInBoxFitTest(CollisionComponent * comp)
 {
 	/* AABB test
 	for (int i = 0; i < 3; i++)
@@ -170,18 +193,42 @@ bool OctreeForCollision::IsInBoxTest(CollisionComponent * comp)
 	}
 	*/
 
-	AABBOb& aabbOb = comp->_aabbObForOctree;
-	glm::vec3& aabbCemter = aabbOb.getCenter();
-	glm::vec3& aabbAxis = aabbOb.getAxis();
+	const AABBOb& aabbOb = comp->_aabbObForOctree;
+	const glm::vec3& aabbCemter = aabbOb.getCenterConstRef();
+	const glm::vec3& aabbAxis = aabbOb.getAxisConstRef();
 
 
 	// in box text
 	for (int i = 0; i < 3; i++)
 	{
 		// out condition ( center diff + half > HALF )
-		if (fabs(_center[i] - aabbCemter[i] + aabbAxis[i]) > _halfAxisSize)
+		if (fabs(_center[i] - aabbCemter[i]) > fabs (_halfAxisSize - aabbAxis[i]))
 			return false;
 	}
 
 	return true;
+}
+
+// component - box check. (inside, intersect, outside)
+int OctreeForCollision::IsInBoxTestAll(CollisionComponent * comp)
+{
+	int ret = 1;		// inside
+
+	const AABBOb& aabbOb = comp->_aabbObForOctree;
+	const glm::vec3& aabbCemter = aabbOb.getCenterConstRef();
+	const glm::vec3& aabbAxis = aabbOb.getAxisConstRef();
+
+	// in box text
+	for (int i = 0; i < 3; i++)
+	{
+		// out condition ( center diff > HALF + half )
+		if (fabs(_center[i] - aabbCemter[i]) > _halfAxisSize + aabbAxis[i])
+			return -1;	// outside
+
+		// intersection condition ( center diff <= HALF - half )
+		if (fabs(_center[i] - aabbCemter[i]) > fabs(_halfAxisSize - aabbAxis[i]))
+			ret =  0;	// outside
+	}
+
+	return ret;
 }

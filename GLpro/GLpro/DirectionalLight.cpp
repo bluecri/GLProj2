@@ -14,9 +14,24 @@ void DirectionalLight::lightUpdate()
 	_frustumOb.updateFrustumOb(_projectionMatrix, _viewMatrix);
 }
 
-const FrustumOb & DirectionalLight::getFrustumObRef()
+FrustumOb & DirectionalLight::getFrustumObRef()
 {
 	return _frustumOb;
+}
+
+DirectionalLight::DrawElemContainer & DirectionalLight::getFrustumedDrawElementContainerRef()
+{
+	return _frustumedDrawElementContainer;
+}
+
+const DirectionalLight::DrawElemContainer & DirectionalLight::getConstFrustumedDrawElementContainerRef()
+{
+	return _frustumedDrawElementContainer;
+}
+
+void DirectionalLight::clearFrustumedDrawElementContainer()
+{
+	_frustumedDrawElementContainer.clear();
 }
 
 DirectionalLight::DirectionalLight(DirectionalLightManager * bindedLightManager, int idx, glm::vec4 & color, const glm::vec3 & lightLookVec3)

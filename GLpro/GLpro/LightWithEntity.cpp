@@ -71,3 +71,20 @@ ILightWithEntityManager * LightWithEntity::getBindedLightManager()
 {
 	return _bindedLightManager;
 }
+
+// for frustum
+
+LightWithEntity::DrawElemContainer& LightWithEntity::getFrustumedDrawElementContainerRef()
+{
+	return _frustumedDrawElementContainer;
+}
+
+const LightWithEntity::DrawElemContainer& LightWithEntity::getConstFrustumedDrawElementContainerRef()
+{
+	return _frustumedDrawElementContainer;
+}
+
+void LightWithEntity::clearFrustumedDrawElementContainer()
+{
+	_frustumedDrawElementContainer.clear();
+}

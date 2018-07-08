@@ -11,7 +11,7 @@ ParticleEntity::ParticleEntity(GameSession * gSession, const char* textureFileNa
 	: Entity(gSession, ENUM_ENTITY_TYPE::ENUM_ENTITY_PARTICLE)
 {
 	// particle
-	_rParticle = GRendermanager->getRRender<RENDER::RParticle, SHADER::ShaderParticle>(shaderParticle);
+	_rParticle = GRendermanager->getRRender<RENDER::RParticle>(shaderParticle);
 	_rElemInParticle = _rParticle->addToDrawList(GParticleFObjManager->getSharedParticleFObj("data/Texture/particle.DDS", "dds"), _rigidbodyComponent);
 }
 

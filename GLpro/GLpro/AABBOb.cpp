@@ -37,12 +37,12 @@ void AABBOb::updateAABBObCenter(glm::vec4 & center)
 }
 
 
-glm::vec3 & AABBOb::getCenter()
+const glm::vec3& AABBOb::getCenterConstRef() const
 {
 	return _center;
 }
 
-glm::vec3 & AABBOb::getAxis()
+const glm::vec3 & AABBOb::getAxisConstRef() const
 {
 	return _halfAxisSize;
 }

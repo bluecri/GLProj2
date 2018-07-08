@@ -29,12 +29,11 @@ namespace RENDER
 		return elem;
 	}
 
-	void RSkybox::update(CAMERA::Camera** cam)
+	void RSkybox::updateRRender()
 	{
-		_targetCamera = cam;
 	}
 
-	void RSkybox::draw(float deltaTime)
+	void RSkybox::drawRRender(float deltaTime)
 	{
 		CAMERA::Camera* cam = *_targetCamera;
 
@@ -88,6 +87,11 @@ namespace RENDER
 		glDepthMask(GL_TRUE);
 		_shaderObj->unbind();
 
+	}
+
+	void RSkybox::updateTargetCamera(CAMERA::Camera ** cam)
+	{
+		_targetCamera = cam;
 	}
 
 	void RSkybox::chageShader(SHADER::ShaderSkybox* other)

@@ -97,7 +97,7 @@ int WINDOW::Window::init()
 
 	GALManager = new ALManager();
 	GALManager->init();
-	GOctreeForFrustum = new OctreeForFrustum(3, 32, glm::vec3());
+	GOctreeForFrustum = new OctreeForFrustum(4, 128, glm::vec3());
 	// ttest
 	//GLightManager->AddDirectinalLight(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	//GLightManager->AddDirectinalLight(glm::vec3(-10.0f, -10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -181,16 +181,19 @@ void WINDOW::Window::mainLoop()
 		// 1. 1frame 늦게 출력(past - current사이 정확한 interpolation)
 		// 2. acc만큼의 예상 이동 경로 그냥 그리기(acc가 dt에 가까울 수록 interpolation error 증가)
 		// 2번으로 시도.
-		// render lop
+		// render loop
 
-		// light update
-		GLightManager->updateAllLIghts();
+		GCameraManager->updateAllRecentMatrix();
+		GRendermanager->frustumObjectUpdate(usedT, acc);		// draw object frustum update
 
-		// sound update
+		GLightManager->updateAllLIghts();						// light pos update + light frustum object
 		GALManager->updateALSource();
 
-		// render
 		renderAll(usedT, acc);
+
+		GLightManager->deUpdateAllLIghts();		// light frustum object container clear
+		GOctreeForFrustum->clearPotentialCompPropa();	// clear frustum
+
 		usedT = 0.0;
 
 	} while (glfwGetKey(_pWindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
@@ -200,8 +203,6 @@ void WINDOW::Window::mainLoop()
 void WINDOW::Window::renderAll(float usedDeltaTime, float acc)
 {
 	// RRenrder all with acc
-	GCameraManager->updateAllRecentMatrix();			// camera matrix update
-
 	GRendermanager->renderAll(usedDeltaTime, acc);		//render
 	GRendermanager->swapRenderBuffer();					// swap render buffer
 }

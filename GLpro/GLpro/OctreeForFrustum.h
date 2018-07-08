@@ -4,6 +4,9 @@
 #include "Octree.h"
 #include "src/Render/RNormal.h"
 
+class FrustumOb;
+class AABBOb;
+
 namespace CAMERA {
 	class Camera;
 }
@@ -13,29 +16,40 @@ class OctreeForFrustum
 public:
 	OctreeForFrustum(int height, int halfAxisSize, glm::vec3 center);
 	void insertSharedDrawElem(RENDER::RNormal::DrawElemContainer sharedElemContainer);
-	void setFrustumBitWithMainCamera();
-
-	// 등록해놓은 모든 RENDER_TARGET::NORMAL::NormalFObj refresh.
 	void clearPotentialCompPropa();
 
+	void getObjListWithFrustumOb(FrustumOb& frustumOb, RENDER::RNormal::DrawElemContainer& outList);
+	void getObjListWithAABBOb(AABBOb& aabbOb, RENDER::RNormal::DrawElemContainer& outList);
+
 private:
+
 	// insert 가능한 child box index return
-	int getFitChildSphereBoxIndex(RENDER_TARGET::NORMAL::NormalFObj* drawElem);
+	void	insertToOctreeForFrustum(RENDER::RNormal::SharedDrawElement drawElem);
+	int		getFitChildBoxIndex(RENDER::RNormal::SharedDrawElement drawElem);
+	bool	sphereIsInBoxTest(RENDER::RNormal::SharedDrawElement drawElem);
+	int		sphereIsInBoxAllTest(RENDER::RNormal::SharedDrawElement drawElem);
 
-	bool IsInSphereBoxTest(RENDER_TARGET::NORMAL::NormalFObj* drawElem);
-	void insert(RENDER_TARGET::NORMAL::NormalFObj* drawElem);
-	void setFrustumBitWithCamera(CAMERA::Camera * cam);
-	void notCullAllOctree();
+	int isOctreeInFrustumOb(FrustumOb& frustumOb);
+	int isOctreeInAABBOb(AABBOb& aabbObFrustum);
+	void getAllObjListNoTest(RENDER::RNormal::DrawElemContainer& outList);
 
+	//void setFrustumBitWithCamera(CAMERA::Camera * cam);
+	//void notCullAllOctree();
+	//void setFrustumBitWithMainCamera();
 
 public:
 	int _height;
 	int _halfAxisSize;
-	float _frustumRadius2;
 
 	glm::vec3 _center;
 	OctreeForFrustum* _childTree[OCT_POS::OCT_NUM];
-	std::list<RENDER_TARGET::NORMAL::NormalFObj*> _potentialDrawElems;
+	RENDER::RNormal::DrawElemContainer _potentialDrawElems;
+
+	bool _bUsed;				// Whether this octree & children is used or not
+	bool _bUseChildren;
+	int  _maxCountOfObjects;
+
+private:
 };
 
 extern OctreeForFrustum* GOctreeForFrustum;

@@ -33,9 +33,9 @@ namespace RENDER
 
 		std::shared_ptr<DrawElement> addToDrawList(RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj, RigidbodyComponent* rigidComponent);
 
-		virtual void update(CAMERA::Camera** cam) override;		//shader target camera update
-
-		virtual void draw(float deltaTime);
+		virtual void updateRRender() override;		//shader target camera update
+		virtual void drawRRender(float deltaTime) override;
+		void updateTargetCamera(CAMERA::Camera** cam) override;
 
 		void chageShader(SHADER::ShaderSkybox* other);
 

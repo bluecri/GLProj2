@@ -38,9 +38,9 @@ namespace RENDER
 
 		std::shared_ptr<DrawElement> addToDrawList(FObjElem particleFObj, RigidbodyComponent* rigidbodyComponent);
 
-		virtual void update(CAMERA::Camera** cam);	//shader target camera update
-
-		virtual void draw(float deltaTime);
+		virtual void updateRRender() override;	//shader target camera update
+		virtual void drawRRender(float deltaTime) override;
+		void updateTargetCamera(CAMERA::Camera** cam) override;
 
 		void chageShader(TYPE_SHADER* other);
 

@@ -32,8 +32,11 @@ namespace RESOURCE
 		DeferredGFBO(int screenSizeX, int screenSizeY);
 		virtual ~DeferredGFBO();
 		void init();
-
+		
+		void deferredPreDraw(float deltaTime);
 		void deferredDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
+		void deferredAfterDraw(float deltaTime);
+		bool isRenderOnScreenDirect();
 
 	protected:
 		void createBuffer();
@@ -59,11 +62,20 @@ namespace RESOURCE
 		void setRenderScreenDirect(bool bDirect);
 		bool getRenderScreenDirect();
 
+		/*
 		void shadowDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
 		void geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
 		void lightDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
 		void finalDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
+		*/
 
+		void shadowDraw(float deltaTime);
+		void geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
+		void lightDraw(float deltaTime);
+		void finalDraw(float deltaTime);
+
+
+		
 	private:
 		SHADER::ShaderShadow*		_shadowShader;
 		SHADER::ShaderGBufferGeo*	_geoShader;

@@ -41,7 +41,7 @@ glm::mat4 & SpotLight::GetProjMat()
 	return _perspectiveMat;
 }
 
-const FrustumOb & SpotLight::getFrustumObRef()
+FrustumOb & SpotLight::getFrustumObRef()
 {
 	return _frustumOb;
 }

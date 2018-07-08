@@ -193,13 +193,13 @@ void main()
 
 
 		float visibility = 1.0;
-		float bias = 0.0002;
+		float bias = 0.002;
 		vec3 distVec = LightInvDirection_worldspace;
 		float distance2 = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
 		
 		for (int i = 0; i<4; i++) {
 			int index = i;
-			visibility -= 0.2*(1.0 - texture(shadowMap, vec3(ShadowCoord.xy - poissonDisk[index] / 6000.0, ShadowCoord.z + bias / ShadowCoord.w) ) );
+			visibility -= 0.2*(1.0 - texture(shadowMap, vec3(ShadowCoord.xy - poissonDisk[index] / 6000.0, ShadowCoord.z - bias / ShadowCoord.w) ) );
 		}
 		visibility *= 1.0 / (1.0 + distance2 / spotLightAttenuation);
 

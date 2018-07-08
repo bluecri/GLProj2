@@ -13,7 +13,7 @@ std::vector<TextBox*> TextBox::preMadeTextBoxesVec;
 TextBox::TextBox(int line, int len, glm::vec2 pos, int fontSize, const std::string & textTextureFileName, const std::string & type, SHADER::ShaderText * shaderText)
 	: Box(len * static_cast<int>(fontSize), line * static_cast<int>(fontSize), static_cast<int>(pos.x), static_cast<int>(pos.y))	// pos & size calc
 {
-	_rText = GRendermanager->getRRender<RENDER::RText, SHADER::ShaderText>(shaderText);
+	_rText = GRendermanager->getRRender<RENDER::RText>(shaderText);
 	RENDER_TARGET::TEXT::TextFObj* tempTextFObj = new RENDER_TARGET::TEXT::TextFObj(textTextureFileName.c_str(), type.c_str(), line, len, pos, fontSize);
 
 	/*	textbox vertex gen process
@@ -29,7 +29,7 @@ TextBox::TextBox(int line, int len, glm::vec2 pos, int fontSize, const std::stri
 TextBox::TextBox(int line, int len, glm::vec2 pos, int fontSize, RESOURCE::Texture * texture, SHADER::ShaderText * shaderText)
 	: Box(len * static_cast<int>(fontSize), line * static_cast<int>(fontSize), static_cast<int>(pos.x), static_cast<int>(pos.y))
 {
-	_rText = GRendermanager->getRRender<RENDER::RText, SHADER::ShaderText>(shaderText);
+	_rText = GRendermanager->getRRender<RENDER::RText>(shaderText);
 	RENDER_TARGET::TEXT::TextFObj* tempTextFObj = new RENDER_TARGET::TEXT::TextFObj(texture, line, len, pos, fontSize);
 
 	_drawElement = _rText->addToDrawList(tempTextFObj, nullptr);

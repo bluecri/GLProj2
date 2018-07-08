@@ -41,7 +41,7 @@ namespace RENDER
 		_targetCamera = GCameraManager->GetMainCamera();
 	}
 
-	void RNormal::draw(float deltaTime)
+	void RNormal::drawRRender(float deltaTime)
 	{
 	
 	}
@@ -63,7 +63,16 @@ namespace RENDER
 		return _normalDrawElemContainer;
 	}
 
-	void RNormal::update(CAMERA::Camera** cam)
+	void RNormal::updateRRender()
+	{
+		// update frustum all fNormalObj
+		for (auto elem : _normalDrawElemContainer)
+		{
+			elem->first->setFrustumPos(elem->second);
+		}
+	}
+
+	void RNormal::updateTargetCamera(CAMERA::Camera** cam)
 	{
 		_targetCamera = cam;
 	}

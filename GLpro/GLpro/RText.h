@@ -31,9 +31,9 @@ namespace RENDER
 		// rigidbody can be nullptr
 		std::shared_ptr<DrawElement> addToDrawList(RENDER_TARGET::TEXT::TextFObj* _textFObj, RigidbodyComponent* rigidbodyComponent);
 				
-		virtual void update(CAMERA::Camera** cam);	//shader target camera update
-
-		virtual void draw(float deltaTime);
+		virtual void	updateRRender() override;	//shader target camera update
+		virtual void	drawRRender(float deltaTime) override;
+		void			updateTargetCamera(CAMERA::Camera** cam) override;
 
 		void chageShader(SHADER::ShaderText* other);
 

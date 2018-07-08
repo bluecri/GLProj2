@@ -166,14 +166,14 @@ void GameSession::preMade()
 	//spot light on player
 	GLightManager->AddDirectinalLight(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	LightGameObject* tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 45.0f, 1.0f, 0.01f, 15.0f)->getLightGameObject();
+	LightGameObject* tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 40.0f, 1.0f, 0.01f, 20.0f)->getLightGameObject();
 	newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
 
 	for (int i = 0; i < 10; i++)
 	{
 		//tempSpotGameObj = GLightManager->AddPointLightManager(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
-		tempSpotGameObj = GLightManager->AddDeferredPointLight(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
-		newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
+		//tempSpotGameObj = GLightManager->AddDeferredPointLight(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+		//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
 	}
 
 

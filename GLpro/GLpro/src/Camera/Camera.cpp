@@ -129,8 +129,8 @@ namespace CAMERA {
 		_frustum[4] = _tempClip[3] + _tempClip[2];		// near
 		_frustum[5] = _tempClip[3] - _tempClip[2];		// far
 
-		for (int i = 0; i < 6; i++)
-			_frustum[i] = glm::normalize(_frustum[i]);
+		//for (int i = 0; i < 6; i++)
+			//_frustum[i] = glm::normalize(_frustum[i]);
 	}
 
 	int Camera::sphereInFrustum(glm::vec3& center, float& radius2)

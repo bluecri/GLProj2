@@ -73,6 +73,11 @@ ShaderStructDirectionalLight * DirectionalLightManager::getLightStruct()
 	return _lightUniformBufferData;
 }
 
+std::vector<DirectionalLight*>& DirectionalLightManager::getLightVec()
+{
+	return _directionalLightVec;
+}
+
 void DirectionalLightManager::removeDirectionalLightWithNoDelete(DirectionalLight * dLight)
 {
 	int delIdx = dLight->_idx;

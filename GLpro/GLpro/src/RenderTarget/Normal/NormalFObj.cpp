@@ -7,6 +7,7 @@
 #include "../../Resource/TextureManager.h"
 
 #include "../../../RigidbodyComponent.h"
+
 namespace RENDER_TARGET
 {
 	namespace NORMAL
@@ -17,9 +18,7 @@ namespace RENDER_TARGET
 			_model = GModelManager->getModelWithFileName(modelFileName, createEbo);
 			_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
 
-			_frustumRadius = 3.0f;
 			_frustumPosCompensation = glm::vec3();
-			_frustumPos = glm::vec3();
 		}
 		NormalFObj::NormalFObj(RESOURCE::Model * model, RESOURCE::Texture * texture)
 			: FObj()
@@ -27,9 +26,7 @@ namespace RENDER_TARGET
 			_model = model;
 			_texture = texture;
 
-			_frustumRadius = 3.0f;
 			_frustumPosCompensation = glm::vec3();
-			_frustumPos = glm::vec3();
 		}
 		bool NormalFObj::isFrustumCulled()
 		{
@@ -81,27 +78,33 @@ namespace RENDER_TARGET
 		}
 		void NormalFObj::setFrustumRadius(float radius)
 		{
-			_frustumRadius = radius;
+			_sphereObForFrustum.updateSphereOb(radius);
 		}
-		float NormalFObj::getFrustumRadius()
+		float& NormalFObj::getFrustumRadiusRef()
 		{
-			return _frustumRadius;
+			return _sphereObForFrustum.getRadius();
 		}
-		void NormalFObj::setFrustumPos(glm::vec3 & pos)
+		/*
+		void NormalFObj::setFrustumPos(glm::vec3& pos)
 		{
-			_frustumPos = pos;
+			_sphereObForFrustum.updateSphereOb(pos);
 		}
+		*/
 		void NormalFObj::setFrustumPos(RigidbodyComponent * rigidbodyComponent)
 		{
-			_frustumPos = _frustumPosCompensation + rigidbodyComponent->getWorldPosVec();
+			_sphereObForFrustum.updateSphereOb(_frustumPosCompensation + rigidbodyComponent->getWorldPosVec());
 		}
 		glm::vec3 & NormalFObj::getFrustumPosRef()
 		{
-			return _frustumPos;
+			return _sphereObForFrustum.getCenter();
 		}
 		void NormalFObj::setFrustumCompensationPos(glm::vec3 & compen_pos)
 		{
 			_frustumPosCompensation = compen_pos;
+		}
+		SphereOb & NormalFObj::getSphereObForFrustumRef()
+		{
+			return _sphereObForFrustum;
 		}
 		glm::vec3 & NormalFObj::getFrustumCompensationPosRef()
 		{

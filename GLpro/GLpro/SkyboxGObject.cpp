@@ -11,7 +11,7 @@ std::vector<SkyboxGObject*> SkyboxGObject::_preMadeSpaceSkybox;
 SkyboxGObject::SkyboxGObject(GameSession* gameSession, SHADER::ShaderSkybox * shader, RENDER_TARGET::SKYBOX::SkyboxFObj * skyboxFObj)
 	:Entity(gameSession)
 {
-	rSkybox = GRendermanager->getRRender<RENDER::RSkybox, SHADER::ShaderSkybox>(shader);
+	rSkybox = GRendermanager->getRRender<RENDER::RSkybox>(shader);
 	registeredElemInRenderer = rSkybox->addToDrawList(skyboxFObj, _rigidbodyComponent);
 }
 

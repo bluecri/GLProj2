@@ -20,6 +20,8 @@ public:
 
 	GLuint	getUBO();
 	struct ShaderStructDirectionalLight*	getLightStruct();
+
+	std::vector<DirectionalLight*>&	getLightVec();
 private:
 	void	removeDirectionalLightWithNoDelete(DirectionalLight* dLight);
 

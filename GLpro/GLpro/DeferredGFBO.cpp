@@ -31,6 +31,10 @@
 #include "ShaderStructPointLight.h"
 #include "ShaderStructDeferredPointLight.h"
 
+#include "DirectionalLight.h"
+#include "SpotLight.h"
+#include "PointLight.h"
+
 RESOURCE::DeferredGFBO::DeferredGFBO(int screenSizeX, int screenSizeY)
 {
 	_shadowTextureFBOX = TEXTURE_SHADOW_WIDTH;
@@ -65,16 +69,30 @@ void RESOURCE::DeferredGFBO::init()
 	createBuffer();
 }
 
+void RESOURCE::DeferredGFBO::deferredPreDraw(float deltaTime)
+{
+	shadowDraw(deltaTime);
+
+	bindGFBO_GEO();
+	_geoShader->bind();
+
+}
+
 void RESOURCE::DeferredGFBO::deferredDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
 {
-	shadowDraw(deltaTime, drawObjList);
 	geoDraw(deltaTime, drawObjList);
-	lightDraw(deltaTime, drawObjList);
+}
+
+void RESOURCE::DeferredGFBO::deferredAfterDraw(float deltaTime)
+{
+	unbindGFBO_GEO();
+
+	lightDraw(deltaTime);
 
 	if (_bRenderOnScreenDirect)
 		return;
 
-	finalDraw(deltaTime, drawObjList);
+	finalDraw(deltaTime);
 }
 
 void RESOURCE::DeferredGFBO::bindShadowFBO()
@@ -195,7 +213,7 @@ bool RESOURCE::DeferredGFBO::getRenderScreenDirect() {
 	return _bRenderOnScreenDirect;
 }
 
-void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
+void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime)
 {
 	// ===================== shadow buffer ===================== //
 
@@ -203,6 +221,7 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_p
 	_shadowShader->bind();
 
 	// ----------------- directional light ----------------- //
+	std::vector<DirectionalLight*>& directionalLightVec = GLightManager->_directionalLightManager->getLightVec();
 	ShaderStructDirectionalLight* directionalLightStruct = GLightManager->_directionalLightManager->getLightStruct();
 	int textureWidthNum = TEXTURE_SHADOW_WIDTH / TEXTURE_DIRECTIONAL_LIGHT_WIDTH;
 
@@ -213,6 +232,7 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_p
 		glViewport(viewPortLeft, viewPortTop, TEXTURE_DIRECTIONAL_LIGHT_WIDTH, TEXTURE_DIRECTIONAL_LIGHT_WIDTH);
 
 		glm::mat4 VP = directionalLightStruct->_lightPMat[i] * directionalLightStruct->_lightVMat[i];
+		auto& drawObjList = directionalLightVec[i]->getFrustumedDrawElementContainerRef();
 
 		// draw objects
 		for (auto it = drawObjList.begin(); it != drawObjList.end(); ) {
@@ -255,6 +275,7 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_p
 
 	// ----------------- spot light ----------------- //
 	ShaderStructSpotLight* spotLightStruct = GLightManager->_spotLightManager->getLightStruct();
+	std::vector<std::shared_ptr<LightWithEntity>>&  spotLightVec = GLightManager->_spotLightManager->getLightVec();
 	textureWidthNum = TEXTURE_SHADOW_WIDTH / TEXTURE_SPOT_LIGHT_WIDTH;
 
 	for (int i = 0; i < spotLightStruct->_lightNum; i++)
@@ -263,6 +284,7 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_p
 		int viewPortTop = (i / textureWidthNum) * TEXTURE_SPOT_LIGHT_WIDTH + TEXTURE_SPOT_LIGHT_HEIGHT_START;
 		glViewport(viewPortLeft, viewPortTop, TEXTURE_SPOT_LIGHT_WIDTH, TEXTURE_SPOT_LIGHT_WIDTH);
 		glm::mat4 VP = spotLightStruct->_lightP[i] * spotLightStruct->_lightV[i];
+		auto& drawObjList = spotLightVec[i]->getFrustumedDrawElementContainerRef();
 
 		// draw objects
 		for (auto it = drawObjList.begin(); it != drawObjList.end(); ) {
@@ -307,12 +329,14 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_p
 
 	// point light
 	ShaderStructPointLight* pointLightStruct = GLightManager->_pointLightManager->getLightStruct();
+	std::vector<std::shared_ptr<LightWithEntity>>&  pointLightVec = GLightManager->_pointLightManager->getLightVec();
 	textureWidthNum = TEXTURE_SHADOW_WIDTH / TEXTURE_POINT_LIGHT_WIDTH / TEXTURE_POINT_CUBE_NUM;
 
 	for (int i = 0; i < pointLightStruct->_lightNum; i++)
 	{
 		//_shadowShader->loadMatrix4(_shadowShader->VPMatrixID
 		//glm::mat4 (&pointVPMatVec)[MAX_POINTL_LIGHT_NUM][6] = pointLightStruct->_lightVPMat;
+		auto& drawObjList = pointLightVec[i]->getFrustumedDrawElementContainerRef();
 
 		for (int k = 0; k < TEXTURE_POINT_CUBE_NUM; k++)
 		{
@@ -370,9 +394,6 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, std::list<std::shared_p
 
 void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
 {
-	bindGFBO_GEO();
-	_geoShader->bind();
-
 	CAMERA::Camera* cam = *(GCameraManager->GetMainCamera());
 
 	// ====================draw object on screen=====================
@@ -421,10 +442,9 @@ void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, std::list<std::shared_ptr<
 
 	_geoShader->unbind();
 
-	unbindGFBO_GEO();
 }
 
-void RESOURCE::DeferredGFBO::lightDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
+void RESOURCE::DeferredGFBO::lightDraw(float deltaTime)
 {
 	CAMERA::Camera* cam = *(GCameraManager->GetMainCamera());
 
@@ -466,11 +486,19 @@ void RESOURCE::DeferredGFBO::lightDraw(float deltaTime, std::list<std::shared_pt
 	unbndGFBO_LIGHT();
 }
 
-void RESOURCE::DeferredGFBO::finalDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
+void RESOURCE::DeferredGFBO::finalDraw(float deltaTime)
 {
 	bndGFBO_FINAL();
 	renderGFBOToScreen();
 	unbndGFBO_FINAL();
+}
+
+
+//void deferredDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
+
+bool RESOURCE::DeferredGFBO::isRenderOnScreenDirect()
+{
+	return _bRenderOnScreenDirect;
 }
 
 void RESOURCE::DeferredGFBO::createBuffer()

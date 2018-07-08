@@ -5,6 +5,16 @@
 #include "PointLightManager.h"
 #include "DeferredPointLightManager.h"
 
+#include "DirectionalLight.h"
+#include "SpotLight.h"
+#include "PointLight.h"
+#include "DeferredPointLight.h"
+
+#include "RenderManager.h"
+#include "src/Render/RNormal.h"
+#include "OctreeForFrustum.h"
+
+
 LightManager::LightManager()
 {
 	_directionalLightManager = new DirectionalLightManager();
@@ -57,6 +67,69 @@ void LightManager::updateAllLIghts()
 	GLightManager->_deferredPointLightManager->updateLights();
 	GLightManager->_deferredPointLightManager->updateLightsToBufferData();
 	GLightManager->_deferredPointLightManager->updateBufferToVGA();
+
+
+	// Light - object relationship
+	auto& rendererMap = GRendermanager->getRendererContainer<RENDER::RNormal>();
+
+	for (auto elem : _directionalLightManager->getLightVec())
+	{
+		if (!elem->isLightOn())
+		{
+			continue;
+		}
+
+		for (auto& rendererElem : rendererMap)
+		{
+			GOctreeForFrustum->getObjListWithFrustumOb(elem->getFrustumObRef(), elem->getFrustumedDrawElementContainerRef());
+		}
+	}
+
+	for (auto elem : _spotLightManager->getLightVec())
+	{
+		if (!elem->isLightOn())
+		{
+			continue;
+		}
+
+		for (auto& rendererElem : rendererMap)
+		{
+			GOctreeForFrustum->getObjListWithFrustumOb(std::static_pointer_cast<SpotLight>(elem)->getFrustumObRef(), elem->getFrustumedDrawElementContainerRef());
+		}
+	}
+
+	for (auto elem : _pointLightManager->getLightVec())
+	{
+		if (!elem->isLightOn())
+		{
+			continue;
+		}
+
+		for (auto& rendererElem : rendererMap)
+		{
+			GOctreeForFrustum->getObjListWithAABBOb(std::static_pointer_cast<PointLight>(elem)->getAABBObRef(), elem->getFrustumedDrawElementContainerRef());
+		}
+	}
+
+}
+
+void LightManager::deUpdateAllLIghts()
+{
+	// clear FrustumedDrawElementContainer
+	for (auto elem : _directionalLightManager->getLightVec())
+	{
+		elem->clearFrustumedDrawElementContainer();
+	}
+
+	for (auto elem : _spotLightManager->getLightVec())
+	{
+		elem->clearFrustumedDrawElementContainer();
+	}
+
+	for (auto elem : _pointLightManager->getLightVec())
+	{
+		elem->clearFrustumedDrawElementContainer();
+	}
 }
 
 LightManager* GLightManager = nullptr;
