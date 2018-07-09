@@ -36,8 +36,9 @@ namespace RESOURCE
 		void deferredPreDraw(float deltaTime);
 		void deferredDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
 		void deferredAfterDraw(float deltaTime);
-		bool isRenderOnScreenDirect();
+		void deferredDrawToScreen(float deltaTime);	// for DEBUG
 
+		float calcExposureWithMipmap();
 	protected:
 		void createBuffer();
 
@@ -59,9 +60,6 @@ namespace RESOURCE
 		void unbndGFBO_FINAL();
 		SHADER::ShaderGBufferFinal* getShaderGFBOFinal();
 
-		void setRenderScreenDirect(bool bDirect);
-		bool getRenderScreenDirect();
-
 		/*
 		void shadowDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
 		void geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
@@ -73,8 +71,6 @@ namespace RESOURCE
 		void geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
 		void lightDraw(float deltaTime);
 		void finalDraw(float deltaTime);
-
-
 		
 	private:
 		SHADER::ShaderShadow*		_shadowShader;
@@ -91,12 +87,12 @@ namespace RESOURCE
 		GLuint	_GFBONormalTexture;
 		GLuint	_GFBODepthTexture;		// not use in render pipeline
 
+		GLuint	_GFBOBloomTexture;
 		GLuint	_GFBOResultTexture;
 
 		int _shadowTextureFBOX, _shadowTextureFBOY;
 		int _GBOX, _GBOY;
 
-		bool	_bRenderOnScreenDirect;
 	};
 }
 

@@ -13,5 +13,6 @@ namespace SHADER
 		GLuint m_cameraVPMatrixID;
 		GLuint m_modelMatrixID;
 		GLuint m_textureID;
+		GLuint m_bloomValueID;
 	};
 }

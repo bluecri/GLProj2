@@ -211,6 +211,7 @@
     <ClCompile Include="PlaneInfo.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PointLightManager.cpp" />
+    <ClCompile Include="PostGraphicProcess.cpp" />
     <ClCompile Include="ShaderGBufferFinal.cpp" />
     <ClCompile Include="ShaderGBufferGeo.cpp" />
     <ClCompile Include="ShaderGBufferLight.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="PlaneInfo.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PointLightManager.h" />
+    <ClInclude Include="PostGraphicProcess.h" />
     <ClInclude Include="ShaderGBufferFinal.h" />
     <ClInclude Include="ShaderGBufferGeo.h" />
     <ClInclude Include="ShaderGBufferLight.h" />

@@ -81,6 +81,7 @@ void RENDER::RRenderContainerClass<RENDER::RNormal, SHADER::ShaderMain>::render(
 			elem.second->deferredDraw(deltaTime);
 		}
 
+
 		GDeferredGFBO->deferredAfterDraw(deltaTime);
 	}
 }

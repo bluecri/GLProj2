@@ -208,6 +208,9 @@
     <Filter Include="소스 파일\FrustumFObj">
       <UniqueIdentifier>{86d51a40-8b22-4e37-8f6c-7c16224b5389}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\src\Resource\GBuffer\PostEffect">
+      <UniqueIdentifier>{e9410d65-2f09-4bad-ac6c-2124ee12c893}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -586,6 +589,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SphereOb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PostGraphicProcess.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1072,6 +1078,9 @@
     </ClInclude>
     <ClInclude Include="SphereOb.h">
       <Filter>소스 파일\FrustumFObj</Filter>
+    </ClInclude>
+    <ClInclude Include="PostGraphicProcess.h">
+      <Filter>소스 파일\src\Resource\GBuffer\PostEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

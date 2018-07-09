@@ -1,6 +1,7 @@
 #version 330 core
 
 layout(location = 0) out vec3 color;
+layout(location = 1) out vec3 bloomColor;
 
 // from configs_light.h
 
@@ -89,9 +90,10 @@ void main()
 	vec3 MaterialSpecularColorFactor = vec3(0.0, 0.0, 0.0);
 
 	vec4 Position_worldspace = vec4( texture( gPositionMap, TexCoord ).xyz, 1.0);
-	vec3 Normal_worldspace = texture( gNormalMap, TexCoord ).xyz;
+	vec4 Normal_worldspace = texture( gNormalMap, TexCoord ).xyzw;
+	float bloomValue = Normal_worldspace.w;
 
-	vec3 Normal_cameraspace = ( ViewV * vec4( Normal_worldspace, 0.0) ).xyz;
+	vec3 Normal_cameraspace = ( ViewV * vec4( Normal_worldspace.xyz, 0.0) ).xyz;
 	vec3 n = normalize( Normal_cameraspace );
 
 	// Eye vector (vertex towards the camera)
@@ -101,6 +103,7 @@ void main()
 	float spotLightAttenuation = 1000.0;
 	float pointLightAttenuation = 2000.0;
 	float deferredPointLightAttenuation = 1.0;
+	
 	
 	// ====== light loop =========
 	for (int loop = 0; loop < _dLightNum; loop++)
@@ -144,7 +147,7 @@ void main()
 		float bias = 0.002;
 
 		for (int index = 0; index<4; index++) {
-			visibility -= 0.2*(1.0 - texture(shadowMap, vec3(ShadowCoord.xy + poissonDisk[index] / 5600.0, (ShadowCoord.z - bias) / ShadowCoord.w)));
+			visibility -=0.2*(1.0 - texture(shadowMap, vec3(ShadowCoord.xy + poissonDisk[index] / 5600.0, (ShadowCoord.z - bias) / ShadowCoord.w)));
 		}
 
 		MaterialDiffuseColorFactor	+= visibility * LightColor * LightPower * cosTheta;
@@ -299,4 +302,24 @@ void main()
 		MaterialAmbientColor
 		+ MaterialDiffuseColor * MaterialDiffuseColorFactor
 		+ MaterialSpecularColor * MaterialSpecularColorFactor;
+
+	if(bloomValue > 1.0)
+	{
+		color = color * 0.3 +  MaterialDiffuseColor * 0.1 * bloomValue;
+	}
+		
+	// reference : https://github.com/JoeyDeVries/LearnOpenGL/blob/master/src/5.advanced_lighting/7.bloom/7.bloom.fs
+	float bloomThreshHold = dot(color, vec3( 0.2126, 0.7152, 0.0722 ) );
+	
+	if( bloomThreshHold >= 1.0)
+	{
+		// color = color;	// test
+		bloomColor = color;
+	}
+	else
+	{
+		// color = vec3(0.0, 0.0, 0.0);
+		bloomColor = vec3(0.0, 0.0, 0.0);
+	}
+	
 }

@@ -35,6 +35,7 @@
 #include "SpotLight.h"
 #include "PointLight.h"
 
+#include "Option.h"
 RESOURCE::DeferredGFBO::DeferredGFBO(int screenSizeX, int screenSizeY)
 {
 	_shadowTextureFBOX = TEXTURE_SHADOW_WIDTH;
@@ -43,7 +44,7 @@ RESOURCE::DeferredGFBO::DeferredGFBO(int screenSizeX, int screenSizeY)
 	_GBOX = screenSizeX;
 	_GBOY = screenSizeY;
 
-	_bRenderOnScreenDirect = false;
+	_exposureAdjustSpeed = 0.5f;
 }
 
 RESOURCE::DeferredGFBO::~DeferredGFBO()
@@ -52,8 +53,10 @@ RESOURCE::DeferredGFBO::~DeferredGFBO()
 	glDeleteTextures(1, &_GFBOWorldPosTexture);
 	glDeleteTextures(1, &_GFBOColorTexture);
 	glDeleteTextures(1, &_GFBONormalTexture);
+	glDeleteTextures(1, &_GFBOBloomTexture);
 	glDeleteTextures(1, &_GFBODepthTexture);
 	glDeleteTextures(1, &_GFBOResultTexture);
+	
 
 	glDeleteBuffers(1, &_lightsShadowFBO);
 	glDeleteBuffers(1, &_GFBO);
@@ -71,28 +74,36 @@ void RESOURCE::DeferredGFBO::init()
 
 void RESOURCE::DeferredGFBO::deferredPreDraw(float deltaTime)
 {
+	bindShadowFBO();
+
 	shadowDraw(deltaTime);
 
-	bindGFBO_GEO();
-	_geoShader->bind();
-
+	unbindShadowFBO();
 }
 
 void RESOURCE::DeferredGFBO::deferredDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
 {
+	bindGFBO_GEO();
+
 	geoDraw(deltaTime, drawObjList);
+
+	unbindGFBO_GEO();
 }
 
 void RESOURCE::DeferredGFBO::deferredAfterDraw(float deltaTime)
 {
-	unbindGFBO_GEO();
+	bindGFBO_LIGHT();
 
 	lightDraw(deltaTime);
 
-	if (_bRenderOnScreenDirect)
-		return;
+	unbndGFBO_LIGHT();
+}
 
+void RESOURCE::DeferredGFBO::deferredDrawToScreen(float deltaTime)
+{
+	bndGFBO_FINAL();
 	finalDraw(deltaTime);
+	unbndGFBO_FINAL();
 }
 
 void RESOURCE::DeferredGFBO::bindShadowFBO()
@@ -141,28 +152,26 @@ void RESOURCE::DeferredGFBO::unbindGFBO_GEO()
 
 void RESOURCE::DeferredGFBO::bindGFBO_LIGHT()
 {
-	if (_bRenderOnScreenDirect)
+	glBindFramebuffer(GL_FRAMEBUFFER, _GFBO);
+
+	if (GOption->_useBloom)
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 };
+		glDrawBuffers(2, DrawBuffers); // result texture & bloom texture
 	}
 	else
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, _GFBO);
-
-		GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT3 };
+		GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT4 };
 		glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
-
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		{
-			printf_s("[ERR] : DeferredGFBO::bindGFBO_GEO glCheckFramebufferStatus error\n");
-			return;
-		}
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// clear
-
 	}
 
-	// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// clear all draw before normal obj
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		printf_s("[ERR] : DeferredGFBO::bindGFBO_GEO glCheckFramebufferStatus error\n");
+		return;
+	}
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// clear
 }
 
 SHADER::ShaderGBufferLight * RESOURCE::DeferredGFBO::getShaderGFBOLight()
@@ -178,9 +187,6 @@ void RESOURCE::DeferredGFBO::unbndGFBO_LIGHT()
 // render result texture to screen
 void RESOURCE::DeferredGFBO::renderGFBOToScreen()
 {
-	if (_bRenderOnScreenDirect)
-		return;
-
 	glBlitFramebuffer(0, 0, _GBOX, _GBOY, 0, 0, _GBOX, _GBOY, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 }
 
@@ -188,7 +194,8 @@ void RESOURCE::DeferredGFBO::bndGFBO_FINAL()
 {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, _GFBO);
-	glReadBuffer(GL_COLOR_ATTACHMENT3);
+	glReadBuffer(GL_COLOR_ATTACHMENT4);
+
 	//glReadBuffer(GL_COLOR_ATTACHMENT2);
 
 	// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // not clear screen
@@ -202,22 +209,14 @@ SHADER::ShaderGBufferFinal * RESOURCE::DeferredGFBO::getShaderGFBOFinal()
 void RESOURCE::DeferredGFBO::unbndGFBO_FINAL()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void RESOURCE::DeferredGFBO::setRenderScreenDirect(bool bDirect)
-{
-	_bRenderOnScreenDirect = bDirect;
-}
-
-bool RESOURCE::DeferredGFBO::getRenderScreenDirect() {
-	return _bRenderOnScreenDirect;
+	glDisable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime)
 {
 	// ===================== shadow buffer ===================== //
 
-	bindShadowFBO();
 	_shadowShader->bind();
 
 	// ----------------- directional light ----------------- //
@@ -389,7 +388,6 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime)
 	}
 
 	_shadowShader->unbind();
-	unbindShadowFBO();
 }
 
 void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
@@ -421,7 +419,8 @@ void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, std::list<std::shared_ptr<
 
 		const mat4& targetModelMat = targetRigidbodyComponent->getWorldMatRef();
 		_geoShader->loadMatrix4(_geoShader->m_modelMatrixID, targetModelMat);
-
+		_geoShader->loadFloat(_geoShader->m_bloomValueID, 0.0);
+		
 		normalRenderTarget->_model->bind();		// Model buffer bind
 		normalRenderTarget->_model->render();
 
@@ -441,14 +440,12 @@ void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, std::list<std::shared_ptr<
 	roomModel->_model->unbind();
 
 	_geoShader->unbind();
-
 }
 
 void RESOURCE::DeferredGFBO::lightDraw(float deltaTime)
 {
 	CAMERA::Camera* cam = *(GCameraManager->GetMainCamera());
 
-	bindGFBO_LIGHT();
 	glDisable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
 	_lightShader->bind();
@@ -488,17 +485,28 @@ void RESOURCE::DeferredGFBO::lightDraw(float deltaTime)
 
 void RESOURCE::DeferredGFBO::finalDraw(float deltaTime)
 {
-	bndGFBO_FINAL();
 	renderGFBOToScreen();
-	unbndGFBO_FINAL();
 }
 
-
-//void deferredDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
-
-bool RESOURCE::DeferredGFBO::isRenderOnScreenDirect()
+float RESOURCE::DeferredGFBO::calcExposureWithMipmap()
 {
-	return _bRenderOnScreenDirect;
+	// get result texture mipmap
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _GFBOResultTexture);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	int mipmapLevel = (int)floor(log2((float)max(_GBOX, _GBOY))) + 0;
+	float avgColor[3] = { 0.0f, 0.0f, 0.0f };
+	glGetTexImage(GL_TEXTURE_2D, mipmapLevel, GL_RGB, GL_FLOAT, (void*)avgColor);
+
+	// debug
+	//printf_s("%f %f %f\n", avgColor[0], avgColor[1], avgColor[2]);
+
+	// reference : https://www.opengl.org/discussion_boards/showthread.php/164483-automatic-exposure-control
+	float newExposure = 0.5 / (avgColor[0] + avgColor[1] + avgColor[2]);
+	
+	return newExposure;
+
 }
 
 void RESOURCE::DeferredGFBO::createBuffer()
@@ -545,24 +553,33 @@ void RESOURCE::DeferredGFBO::createBuffer()
 
 	glGenTextures(1, &_GFBOColorTexture);
 	glBindTexture(GL_TEXTURE_2D, _GFBOColorTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _GBOX, _GBOY, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, _GBOX, _GBOY, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _GBOX, _GBOY, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, _GFBOColorTexture, 0);
 	
 	glGenTextures(1, &_GFBONormalTexture);
 	glBindTexture(GL_TEXTURE_2D, _GFBONormalTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, _GBOX, _GBOY, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, _GBOX, _GBOY, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, _GFBONormalTexture, 0);
+
+	glGenTextures(1, &_GFBOBloomTexture);
+	glBindTexture(GL_TEXTURE_2D, _GFBOBloomTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, _GBOX, _GBOY, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, _GFBOBloomTexture, 0);
 
 	glGenTextures(1, &_GFBOResultTexture);
 	glBindTexture(GL_TEXTURE_2D, _GFBOResultTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, _GBOX, _GBOY, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, _GFBOResultTexture, 0);
+	glGenerateMipmap(GL_TEXTURE_2D);	// for get 
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, _GFBOResultTexture, 0);
 
 	glGenTextures(1, &_GFBODepthTexture);
 	glBindTexture(GL_TEXTURE_2D, _GFBODepthTexture);

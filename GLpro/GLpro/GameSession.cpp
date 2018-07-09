@@ -164,16 +164,16 @@ void GameSession::preMade()
 	newPlayer->addMissileGenerator(normalMissileGenerator);
 
 	//spot light on player
-	//GLightManager->AddDirectinalLight(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	GLightManager->AddDirectinalLight(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	//LightGameObject* tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 40.0f, 1.0f, 0.01f, 20.0f)->getLightGameObject();
-	//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
+	LightGameObject* tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 40.0f, 1.0f, 0.01f, 20.0f)->getLightGameObject();
+	newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
 
 	for (int i = 0; i < 1; i++)
 	{
-		LightGameObject* tempSpotGameObj = GLightManager->AddPointLightManager(glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+		LightGameObject* tempSpotGameObj2 = GLightManager->AddPointLightManager(glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
 		//tempSpotGameObj = GLightManager->AddDeferredPointLight(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
-		newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
+		newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj2));
 	}
 
 
