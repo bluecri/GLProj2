@@ -112,7 +112,7 @@ int WINDOW::Window::init()
 	GShadowBufferTexture = new RESOURCE::ShadowBufferTextureShader();
 	GShadowBufferTexture->init();
 	GDeferredGFBO = new RESOURCE::DeferredGFBO(_windowWidth, _windowHeight);
-	GDeferredGFBO->init();
+	GDeferredGFBO->initDeferredGFBO();
 
 	//load ttest
 	Box::initPreMade();

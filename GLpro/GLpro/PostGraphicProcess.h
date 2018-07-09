@@ -8,6 +8,10 @@ namespace SHADER
 	class ShaderGBufferGeo;
 	class ShaderGBufferLight;
 	class ShaderGBufferFinal;
+
+	class ShaderTextureSimple;
+	class ShaderHDR;
+	class ShaderFXAA;
 }
 
 namespace RENDER
@@ -30,8 +34,7 @@ enum ENUM_POST_PIPELINE {
 	POST_PIPELINE_FXAA,
 	POST_PIPELINE_POST,
 	POST_PIPELINE_SCREEN
-}
-
+};
 
 namespace RESOURCE
 {
@@ -42,7 +45,7 @@ namespace RESOURCE
 		virtual ~PostGraphicProcess();
 		void initPostGraphicProcess();
 
-		void beforePostGraphicProcess(GLuint GFBORetTextureID, GLuint bloomTextureID, float exposure);
+		void beforePostGraphicProcess(GLuint GFBORetTextureID, GLuint bloomTextureID);
 		void doPostGraphicProcess();
 
 		float getExposure();
@@ -50,18 +53,17 @@ namespace RESOURCE
 	protected:
 		void createBuffer();
 
+		void bindTargetTextureHDR();
 		void bindTargetTextureFXAA();
-		void unbindTargetTextureFXAA();
-
 		void bindTargetTexturePostEffect();
-		void unbindTargetTexturePostEffect();
+		void unbindTargetTexture();
 
-		void bindDrawTargetScreen();
-
-		void bindReadTextureGFBO();
+		// void bindReadTextureGFBO(); // beforePostGraphicProcess
+		void bindReadTextureHDR();
 		void bindReadTextureFXAA();
 		void bindReadTexturePostEffect();
 
+		void bindSimpleShader();
 		void bindHDRShader();
 		void unbindHDRShader();
 		void bindFXAAShader();
@@ -74,8 +76,6 @@ namespace RESOURCE
 
 		// void setExposure(float exp);
 
-
-
 		void calcExposure(float newExposure);
 		void setExposure(float exp);
 		float getExposure();
@@ -85,11 +85,13 @@ namespace RESOURCE
 		bool postGraphicProcessLoop();
 
 	private:
+		SHADER::ShaderTextureSimple* _shaderTextureSimple;
 		SHADER::ShaderHDR*	_hdrShader;
 		SHADER::ShaderFXAA*	_fxaaShader;
 		// SHADER::ShaderPostEffect*	_postEffectShader;
 
 		GLuint	_FBO;
+		GLuint	_FBOHDRTexture;
 		GLuint	_FBOFXAATexture;
 		GLuint	_FBOPostEffectTexture;
 		
@@ -100,5 +102,8 @@ namespace RESOURCE
 
 		std::vector<int>	_renderPipelineVec;
 		int					_renderPipePrevIdx;
+
+		ModelOnlyVertex* modelOnlyVertex;
+
 	};
 }

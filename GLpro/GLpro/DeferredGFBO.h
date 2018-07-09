@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "PostGraphicProcess.h"
 
 namespace SHADER
 {
@@ -31,12 +32,14 @@ namespace RESOURCE
 	public:
 		DeferredGFBO(int screenSizeX, int screenSizeY);
 		virtual ~DeferredGFBO();
-		void init();
+		void initDeferredGFBO();
 		
 		void deferredPreDraw(float deltaTime);
 		void deferredDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
 		void deferredAfterDraw(float deltaTime);
 		void deferredDrawToScreen(float deltaTime);	// for DEBUG
+
+		void postProcessDraw(float deltaTime);	// for DEBUG
 
 		float calcExposureWithMipmap();
 	protected:
@@ -59,13 +62,6 @@ namespace RESOURCE
 		void bndGFBO_FINAL();
 		void unbndGFBO_FINAL();
 		SHADER::ShaderGBufferFinal* getShaderGFBOFinal();
-
-		/*
-		void shadowDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
-		void geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
-		void lightDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
-		void finalDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
-		*/
 
 		void shadowDraw(float deltaTime);
 		void geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
@@ -93,6 +89,7 @@ namespace RESOURCE
 		int _shadowTextureFBOX, _shadowTextureFBOY;
 		int _GBOX, _GBOY;
 
+		PostGraphicProcess _postGraphicProcess;
 	};
 }
 

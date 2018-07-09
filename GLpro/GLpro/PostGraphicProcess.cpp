@@ -3,6 +3,10 @@
 
 #include "src/Shader/ShaderManager.h"
 #include "src/Shader/ShaderShadow.h"
+#include "ShaderHDR.h"
+#include "ShaderFXAA.h"
+
+#include "ShaderTextureSimple.h"
 #include "ShaderGBufferGeo.h"
 #include "ShaderGBufferLight.h"
 #include "ShaderGBufferFinal.h"
@@ -26,6 +30,10 @@ RESOURCE::PostGraphicProcess::PostGraphicProcess(int GBOX, int GBOY)
 {
 	_GBOX = GBOX;
 	_GBOY = GBOY;
+
+	_exposureAdjustSpeed = 0.5f;
+
+	modelOnlyVertex = GModelManager->getModelOnlyVertexWIthName("defaultVertex_QuadScreeen");
 }
 
 RESOURCE::PostGraphicProcess::~PostGraphicProcess()
@@ -36,16 +44,17 @@ RESOURCE::PostGraphicProcess::~PostGraphicProcess()
 
 void RESOURCE::PostGraphicProcess::initPostGraphicProcess()
 {
-	//_hdrShader = GShaderManager->m_addShader<SHADER::ShaderHDR>(SHADER_TYPE_SHADOW, "data/Shader/DepthRTT.vertexshader", "data/Shader/DepthRTT.fragmentshader");
-	//_fxaaShader = GShaderManager->m_addShader<SHADER::ShaderFXAA>(SHADER_TYPE_SHADOW, "data/Shader/DepthRTT.vertexshader", "data/Shader/DepthRTT.fragmentshader");
+	_shaderTextureSimple = GShaderManager->m_addShader<SHADER::ShaderTextureSimple>(ENUM_SHADER_TYPE::SHADER_TYPE_TEXTURESIMPLE, "data/Shader/TexturePrint.vertexshader", "data/Shader/TexturePrint.fragmentshader");
+	_hdrShader = GShaderManager->m_addShader<SHADER::ShaderHDR>(SHADER_TYPE_SHADOW, "data/Shader/HDR.vertexshader", "data/Shader/HDR.fragmentshader");
+	_fxaaShader = GShaderManager->m_addShader<SHADER::ShaderFXAA>(SHADER_TYPE_SHADOW, "data/Shader/FXAA.vertexshader", "data/Shader/FXAA.fragmentshader");
 	// SHADER::ShaderPostEffect*	_postEffectShader;
-
 	createBuffer();
+
+	refreshRenderPipeline();
 }
 
-void RESOURCE::PostGraphicProcess::beforePostGraphicProcess(GLuint GFBORetTextureID, GLuint bloomTextureID, float exposure)
+void RESOURCE::PostGraphicProcess::beforePostGraphicProcess(GLuint GFBORetTextureID, GLuint bloomTextureID)
 {
-	_exposure = exposure;
 	_renderPipePrevIdx = 0;
 
 	glActiveTexture(GL_TEXTURE0);
@@ -73,45 +82,7 @@ void RESOURCE::PostGraphicProcess::doPostGraphicProcess()
 
 	while (!postGraphicProcessLoop()) {};
 
-	if (GOption->_useFXAA)
-	{
-		// draw target is FXAA Texture
-		bindTargetTextureFXAA();
-
-		if (GOption->_bUsePostEffect)
-		{
-			// draw target is Post Texture
-			bindTargetTexturePostEffect();
-		}
-		else
-		{
-			bindDrawTargetScreen();
-		}
-	}
-	else if(GOption->_bUsePostEffect)
-	{
-		// draw target is Post Texture
-		bindTargetTexturePostEffect();
-
-
-
-		bindDrawTargetScreen();
-
-	}
-	else
-	{
-		// only use HDR or Bloom :  draw target is screen
-		bindDrawTargetScreen();
-	}
-
-	
-
-
-
-	if (GOption->_useFXAA)
-	{
-		// draw to postTexture with blooming texture & exposure
-	}
+	unbindTargetTexture();
 
 }
 
@@ -150,17 +121,40 @@ void RESOURCE::PostGraphicProcess::createBuffer()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _FBOFXAATexture, 0);
 	
-	/*
+	
 	glGenTextures(1, &_FBOPostEffectTexture);
 	glBindTexture(GL_TEXTURE_2D, _FBOPostEffectTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _GBOX, _GBOY, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, _FBOPostEffectTexture, 0);
-	*/
+	
+
+	glGenTextures(1, &_FBOHDRTexture);
+	glBindTexture(GL_TEXTURE_2D, _FBOHDRTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _GBOX, _GBOY, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, _FBOHDRTexture, 0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);	// renter to screen
 }
+
+void RESOURCE::PostGraphicProcess::bindTargetTextureHDR()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
+	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		printf_s("[ERR] : PostGraphicProcess::bindTargetTextureIntColor glCheckFramebufferStatus error\n");
+		return;
+	}
+
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+
 
 void RESOURCE::PostGraphicProcess::bindTargetTextureFXAA()
 {
@@ -178,11 +172,6 @@ void RESOURCE::PostGraphicProcess::bindTargetTextureFXAA()
 
 }
 
-void RESOURCE::PostGraphicProcess::unbindTargetTextureFXAA()
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
 void RESOURCE::PostGraphicProcess::bindTargetTexturePostEffect()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
@@ -198,26 +187,35 @@ void RESOURCE::PostGraphicProcess::bindTargetTexturePostEffect()
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void RESOURCE::PostGraphicProcess::unbindTargetTexturePostEffect()
+void RESOURCE::PostGraphicProcess::unbindTargetTexture()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void RESOURCE::PostGraphicProcess::bindDrawTargetScreen()
-{
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-}
 
-void RESOURCE::PostGraphicProcess::bindReadTextureGFBO()
+void RESOURCE::PostGraphicProcess::bindReadTextureHDR()
 {
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _FBOHDRTexture);
+
 }
 
 void RESOURCE::PostGraphicProcess::bindReadTextureFXAA()
 {
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _FBOFXAATexture);
 }
 
 void RESOURCE::PostGraphicProcess::bindReadTexturePostEffect()
 {
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _FBOPostEffectTexture);
+}
+
+void RESOURCE::PostGraphicProcess::bindSimpleShader()
+{
+	_shaderTextureSimple->bind();
+	_shaderTextureSimple->loadInt(_shaderTextureSimple->TextureID, 0);
 }
 
 void RESOURCE::PostGraphicProcess::bindHDRShader()
@@ -228,9 +226,10 @@ void RESOURCE::PostGraphicProcess::bindHDRShader()
 	if (GOption->_useBloom)
 		_hdrShader->loadInt(_hdrShader->m_texBloom, 1);
 
-	_hdrShader->loadInt(_hdrShader->m_useHdr, (int)GOption->_useHDR);
 	_hdrShader->loadInt(_hdrShader->m_useBloom, (int)GOption->_useBloom);
+	_hdrShader->loadInt(_hdrShader->m_useToneMapping, (int)GOption->_useToneMapping);
 
+	_hdrShader->loadFloat(_hdrShader->m_exposure, _exposure);
 }
 
 void RESOURCE::PostGraphicProcess::unbindHDRShader()
@@ -242,7 +241,6 @@ void RESOURCE::PostGraphicProcess::bindFXAAShader()
 {
 	_fxaaShader->bind();
 	_fxaaShader->loadInt(_fxaaShader->m_screenTex, 0);
-	
 }
 
 void RESOURCE::PostGraphicProcess::unbindFXAAShader()
@@ -312,32 +310,34 @@ bool RESOURCE::PostGraphicProcess::postGraphicProcessLoop()
 
 	if (curProcess == POST_PIPELINE_SCREEN)
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, _FBO);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 		// bind texture
 		switch (prevProcess)
 		{
 		case POST_PIPELINE_PREV:
-			return;
-		case POST_PIPELINE_HDR:
-			return;
-		case POST_PIPELINE_FXAA:
-			return;
-		case POST_PIPELINE_POST:
-			return;
-		}
+			//bindReadTextureGFBO();	// already binded in beforePostGraphicProcess func
+			bindSimpleShader();
+			modelOnlyVertex->bind();
+			modelOnlyVertex->render();
+			modelOnlyVertex->unbind();
+			break;
 
-		// bind shader and drawCall
-		switch (curProcess)
-		{
 		case POST_PIPELINE_HDR:
-			return;
+			glReadBuffer(GL_COLOR_ATTACHMENT2);
+			glBlitFramebuffer(0, 0, _GBOX, _GBOY, 0, 0, _GBOX, _GBOY, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			break;
+
 		case POST_PIPELINE_FXAA:
-			return;
+			glReadBuffer(GL_COLOR_ATTACHMENT0);
+			glBlitFramebuffer(0, 0, _GBOX, _GBOY, 0, 0, _GBOX, _GBOY, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			break;
+
 		case POST_PIPELINE_POST:
-			return;
-		case POST_PIPELINE_SCREEN:
-			return;
+			glReadBuffer(GL_COLOR_ATTACHMENT1);
+			glBlitFramebuffer(0, 0, _GBOX, _GBOY, 0, 0, _GBOX, _GBOY, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			break;
 		}
 
 		return true;	// end
@@ -345,27 +345,32 @@ bool RESOURCE::PostGraphicProcess::postGraphicProcessLoop()
 
 	switch (prevProcess)
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
 
 	case POST_PIPELINE_PREV:
+		//bindReadTextureGFBO();	// already binded in beforePostGraphicProcess func
 		return;
 	case POST_PIPELINE_HDR:
+		bindReadTextureHDR();
 		return;
 	case POST_PIPELINE_FXAA:
-		return;
-	case POST_PIPELINE_POST:
+		bindReadTextureFXAA();
 		return;
 	}
 
 	switch (curProcess)
 	{
 	case POST_PIPELINE_HDR:
+		bindTargetTextureHDR();
+		bindHDRShader();
 		return;
 	case POST_PIPELINE_FXAA:
+		bindTargetTextureFXAA();
+		bindFXAAShader();
 		return;
 	case POST_PIPELINE_POST:
-		return;
-	case POST_PIPELINE_SCREEN:
+		bindTargetTexturePostEffect();
+		//bindPostShader();
 		return;
 	}
 

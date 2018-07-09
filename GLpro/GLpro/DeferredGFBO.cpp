@@ -37,6 +37,7 @@
 
 #include "Option.h"
 RESOURCE::DeferredGFBO::DeferredGFBO(int screenSizeX, int screenSizeY)
+	: _postGraphicProcess(screenSizeX, screenSizeY)
 {
 	_shadowTextureFBOX = TEXTURE_SHADOW_WIDTH;
 	_shadowTextureFBOY = TEXTURE_SHADOW_HEIGHT;
@@ -44,7 +45,6 @@ RESOURCE::DeferredGFBO::DeferredGFBO(int screenSizeX, int screenSizeY)
 	_GBOX = screenSizeX;
 	_GBOY = screenSizeY;
 
-	_exposureAdjustSpeed = 0.5f;
 }
 
 RESOURCE::DeferredGFBO::~DeferredGFBO()
@@ -70,6 +70,8 @@ void RESOURCE::DeferredGFBO::init()
 	_finalShader	= GShaderManager->m_addShader<SHADER::ShaderGBufferFinal>(SHADER_TYPE_GBUFFER_FINAL, "data/Shader/GbufferFinalPass.vertexshader", "data/Shader/GbufferFinalPass.fragmentshader");
 
 	createBuffer();
+
+	_postGraphicProcess.initPostGraphicProcess();
 }
 
 void RESOURCE::DeferredGFBO::deferredPreDraw(float deltaTime)
@@ -104,6 +106,12 @@ void RESOURCE::DeferredGFBO::deferredDrawToScreen(float deltaTime)
 	bndGFBO_FINAL();
 	finalDraw(deltaTime);
 	unbndGFBO_FINAL();
+}
+
+void RESOURCE::DeferredGFBO::postProcessDraw(float deltaTime)
+{
+	_postGraphicProcess.beforePostGraphicProcess(_GFBOResultTexture, _GFBOBloomTexture);
+	_postGraphicProcess.doPostGraphicProcess();
 }
 
 void RESOURCE::DeferredGFBO::bindShadowFBO()
