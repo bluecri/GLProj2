@@ -8,27 +8,39 @@ RENDER::RenderManager* GRendermanager = nullptr;;
 // todo : acc Ã³¸®
 void RENDER::RenderManager::renderAll(float deltaTime, float acc)
 {
-	//draw init (clear buffer)
+	// ============= draw init (clear buffer) ============= //
 	renderBufferInit();
 
-	// skybox draw
-	_skyboxContainer.render(deltaTime);
 
-	
-	// normal draw
+	// ============= normal draw ============= //
 	_normalContainer.render(deltaTime);
 
 
-	// particle draw
+	// ============= skybox particle draw ============= //
+	GDeferredGFBO->bindGFBO_RESULT();
+
+	GDeferredGFBO->modeForSkybox();
+	_skyboxContainer.render(deltaTime);
+
+	GDeferredGFBO->modeForParticle();
 	_particleContainer.render(deltaTime);
 
-	//todo gameui box
+	GDeferredGFBO->unbindGFBO_RESULT();
+
+
+	// ============= post process draw ============= //
+	GDeferredGFBO->postProcessDraw(deltaTime);
+
+
+	// ============= gameui box ============= //
 	// gameui text
 
-	// box(ui) draw
+
+	// ============= box(ui) draw ============= //
 	_boxContainer.render(deltaTime);
 
-	// text draw
+
+	// ============= text draw ============= //
 	_textContainer.render(deltaTime);
 
 }
@@ -63,6 +75,7 @@ void RENDER::RenderManager::swapRenderBuffer()
 template<>
 void RENDER::RRenderContainerClass<RENDER::RNormal, SHADER::ShaderMain>::render(float deltaTime)
 {
+	/*
 	if (!GOption->_oldLightUse)
 	{
 		for (auto elem : _rRenderContainer)
@@ -71,17 +84,17 @@ void RENDER::RRenderContainerClass<RENDER::RNormal, SHADER::ShaderMain>::render(
 		for (auto elem : _rRenderContainer)
 			elem.second->shadowMappingDraw(deltaTime);
 	}
-	else
+	*/
+
+	// deferred shading
+	GDeferredGFBO->deferredPreDraw(deltaTime);
+
+	GDeferredGFBO->modeForGeoDraw();
+	for (auto elem : _rRenderContainer)
 	{
-		// deferred shading
-		GDeferredGFBO->deferredPreDraw(deltaTime);
-
-		for (auto elem : _rRenderContainer)
-		{
-			elem.second->deferredDraw(deltaTime);
-		}
-
-
-		GDeferredGFBO->deferredAfterDraw(deltaTime);
+		elem.second->deferredDraw(deltaTime);
 	}
+
+	GDeferredGFBO->modeForAfterDraw();
+	GDeferredGFBO->deferredAfterDraw(deltaTime);
 }

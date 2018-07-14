@@ -229,7 +229,7 @@ void main()
 
 
 		float visibility = 1.0;
-		float bias = 0.002;
+		float bias = 0.008;
 		vec3 distVec = LightInvDirection_worldspace;
 		float distance2 = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
 		

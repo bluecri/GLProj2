@@ -129,6 +129,7 @@ int WINDOW::Window::init()
 	//GScene->changeCanvas(
 	//SkyboxGObject::preMadeSpaceSkybox[0]->skyboxFObj->setBRender(true);
 
+	
 	return 0;
 }
 

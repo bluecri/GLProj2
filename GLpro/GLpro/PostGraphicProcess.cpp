@@ -33,7 +33,7 @@ RESOURCE::PostGraphicProcess::PostGraphicProcess(int GBOX, int GBOY)
 
 	_exposureAdjustSpeed = 0.5f;
 
-	modelOnlyVertex = GModelManager->getModelOnlyVertexWIthName("defaultVertex_QuadScreeen");
+	_modelOnlyVertex = GModelManager->getModelOnlyVertexWIthName("defaultVertex_QuadScreeen");
 }
 
 RESOURCE::PostGraphicProcess::~PostGraphicProcess()
@@ -84,11 +84,6 @@ void RESOURCE::PostGraphicProcess::doPostGraphicProcess()
 
 	unbindTargetTexture();
 
-}
-
-float RESOURCE::PostGraphicProcess::getExposure()
-{
-	return _exposure;
 }
 
 void RESOURCE::PostGraphicProcess::refreshRenderPipeline()
@@ -248,32 +243,28 @@ void RESOURCE::PostGraphicProcess::unbindFXAAShader()
 	_fxaaShader->unbind();
 }
 
-void RESOURCE::PostGraphicProcess::hdrDraw(float deltaTime)
+void RESOURCE::PostGraphicProcess::hdrDraw()
 {
 	// render quad screen ( (-1, -1) ~ (1, 1) )
-	ModelOnlyVertex* modelOnlyVertex = GModelManager->getModelOnlyVertexWIthName("defaultVertex_QuadScreeen");
-	modelOnlyVertex->bind();
-	modelOnlyVertex->render();
-	modelOnlyVertex->unbind();
+	_modelOnlyVertex->bind();
+	_modelOnlyVertex->render();
+	_modelOnlyVertex->unbind();
 }
 
-void RESOURCE::PostGraphicProcess::fxaaDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
+void RESOURCE::PostGraphicProcess::fxaaDraw()
 {
 	// render quad screen ( (-1, -1) ~ (1, 1) )
-	ModelOnlyVertex* modelOnlyVertex = GModelManager->getModelOnlyVertexWIthName("defaultVertex_QuadScreeen");
-	modelOnlyVertex->bind();
-	modelOnlyVertex->render();
-	modelOnlyVertex->unbind();
+	_modelOnlyVertex->bind();
+	_modelOnlyVertex->render();
+	_modelOnlyVertex->unbind();
 }
 
-void RESOURCE::PostGraphicProcess::screenDraw(float deltaTime)
+void RESOURCE::PostGraphicProcess::screenDraw()
 {
-
 	// render quad screen ( (-1, -1) ~ (1, 1) )
-	ModelOnlyVertex* modelOnlyVertex = GModelManager->getModelOnlyVertexWIthName("defaultVertex_QuadScreeen");
-	modelOnlyVertex->bind();
-	modelOnlyVertex->render();
-	modelOnlyVertex->unbind();
+	_modelOnlyVertex->bind();
+	_modelOnlyVertex->render();
+	_modelOnlyVertex->unbind();
 }
 
 
@@ -319,9 +310,9 @@ bool RESOURCE::PostGraphicProcess::postGraphicProcessLoop()
 		case POST_PIPELINE_PREV:
 			//bindReadTextureGFBO();	// already binded in beforePostGraphicProcess func
 			bindSimpleShader();
-			modelOnlyVertex->bind();
-			modelOnlyVertex->render();
-			modelOnlyVertex->unbind();
+			_modelOnlyVertex->bind();
+			_modelOnlyVertex->render();
+			_modelOnlyVertex->unbind();
 			break;
 
 		case POST_PIPELINE_HDR:
@@ -343,19 +334,18 @@ bool RESOURCE::PostGraphicProcess::postGraphicProcessLoop()
 		return true;	// end
 	}
 
+	glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
 	switch (prevProcess)
 	{
-	glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
-
 	case POST_PIPELINE_PREV:
 		//bindReadTextureGFBO();	// already binded in beforePostGraphicProcess func
-		return;
+		break;
 	case POST_PIPELINE_HDR:
 		bindReadTextureHDR();
-		return;
+		break;
 	case POST_PIPELINE_FXAA:
 		bindReadTextureFXAA();
-		return;
+		break;
 	}
 
 	switch (curProcess)
@@ -363,15 +353,18 @@ bool RESOURCE::PostGraphicProcess::postGraphicProcessLoop()
 	case POST_PIPELINE_HDR:
 		bindTargetTextureHDR();
 		bindHDRShader();
-		return;
+		hdrDraw();
+		break;
 	case POST_PIPELINE_FXAA:
 		bindTargetTextureFXAA();
 		bindFXAAShader();
-		return;
+		fxaaDraw();
+		break;
 	case POST_PIPELINE_POST:
 		bindTargetTexturePostEffect();
+		screenDraw();
 		//bindPostShader();
-		return;
+		break;
 	}
 
 	_renderPipePrevIdx++;

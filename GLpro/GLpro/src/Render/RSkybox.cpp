@@ -46,7 +46,7 @@ namespace RENDER
 		// todo : use _div
 		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cameraViewMatrix);
 
-		glDepthMask(GL_FALSE);
+		//glDepthMask(GL_FALSE);
 
 		for (auto it = _skyboxDrawElemContainer.begin(); it != _skyboxDrawElemContainer.end(); ) {
 			RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxRenderTarget = (*it)->first;
@@ -84,7 +84,7 @@ namespace RENDER
 
 			++it;
 		}
-		glDepthMask(GL_TRUE);
+		//glDepthMask(GL_TRUE);
 		_shaderObj->unbind();
 
 	}

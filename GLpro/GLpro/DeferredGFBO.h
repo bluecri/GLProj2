@@ -42,32 +42,44 @@ namespace RESOURCE
 		void postProcessDraw(float deltaTime);	// for DEBUG
 
 		float calcExposureWithMipmap();
+
+
+		void modeForGeoDraw();
+		void modeForAfterDraw();
+		void modeForSkybox();
+		void modeForParticle();
+
+		void bindGFBO_RESULT();
+		void unbindGFBO_RESULT();
+
 	protected:
 		void createBuffer();
 
 		void bindShadowFBO();
 		void unbindShadowFBO();
-		SHADER::ShaderShadow* getShaderDhadow();
-
+		
 		void bindGFBO_GEO();
 		void unbindGFBO_GEO();
-		SHADER::ShaderGBufferGeo* getShaderGFBOGeo();
 
 		void bindGFBO_LIGHT();
 		void unbndGFBO_LIGHT();
-		SHADER::ShaderGBufferLight* getShaderGFBOLight();
 
 		void renderGFBOToScreen();
 
 		void bndGFBO_FINAL();
 		void unbndGFBO_FINAL();
-		SHADER::ShaderGBufferFinal* getShaderGFBOFinal();
 
 		void shadowDraw(float deltaTime);
 		void geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
 		void lightDraw(float deltaTime);
 		void finalDraw(float deltaTime);
-		
+
+
+		SHADER::ShaderShadow* getShaderDhadow();
+		SHADER::ShaderGBufferGeo* getShaderGFBOGeo();
+		SHADER::ShaderGBufferLight* getShaderGFBOLight();
+		SHADER::ShaderGBufferFinal* getShaderGFBOFinal();
+
 	private:
 		SHADER::ShaderShadow*		_shadowShader;
 		SHADER::ShaderGBufferGeo*	_geoShader;
@@ -81,7 +93,7 @@ namespace RESOURCE
 		GLuint	_GFBOWorldPosTexture;
 		GLuint	_GFBOColorTexture;
 		GLuint	_GFBONormalTexture;
-		GLuint	_GFBODepthTexture;		// not use in render pipeline
+		GLuint	_GFBODepthStencilTexture;		// not use in render pipeline
 
 		GLuint	_GFBOBloomTexture;
 		GLuint	_GFBOResultTexture;

@@ -196,9 +196,6 @@
     <Filter Include="소스 파일\src\Resource\ShadowAndLight">
       <UniqueIdentifier>{28edb467-40ed-4808-9296-1f959aa95280}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\src\shader\DeferredLight">
-      <UniqueIdentifier>{da2aff5e-2ad7-47b1-b530-84128a81fc74}</UniqueIdentifier>
-    </Filter>
     <Filter Include="리소스 파일\shaders\GBuffer">
       <UniqueIdentifier>{fc7ca07d-2953-4216-bcee-fa6a7dfc018d}</UniqueIdentifier>
     </Filter>
@@ -210,6 +207,18 @@
     </Filter>
     <Filter Include="소스 파일\src\Resource\GBuffer\PostEffect">
       <UniqueIdentifier>{e9410d65-2f09-4bad-ac6c-2124ee12c893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\shader\GBuffer">
+      <UniqueIdentifier>{da2aff5e-2ad7-47b1-b530-84128a81fc74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\shader\PostPipeline">
+      <UniqueIdentifier>{aa32f2f3-9825-49b2-9eef-b583922c29d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\shaders\postPipeline">
+      <UniqueIdentifier>{7f178407-e4d9-4222-be90-246e3a388ca9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\shaders\textureRender">
+      <UniqueIdentifier>{49e06903-db99-4174-91d7-bdcf3a7a7772}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -592,6 +601,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="PostGraphicProcess.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderHDR.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderFXAA.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderPostEffect.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1059,13 +1077,13 @@
       <Filter>소스 파일\src\config</Filter>
     </ClInclude>
     <ClInclude Include="ShaderGBufferGeo.h">
-      <Filter>소스 파일\src\shader\DeferredLight</Filter>
+      <Filter>소스 파일\src\shader\GBuffer</Filter>
     </ClInclude>
     <ClInclude Include="ShaderGBufferLight.h">
-      <Filter>소스 파일\src\shader\DeferredLight</Filter>
+      <Filter>소스 파일\src\shader\GBuffer</Filter>
     </ClInclude>
     <ClInclude Include="ShaderGBufferFinal.h">
-      <Filter>소스 파일\src\shader\DeferredLight</Filter>
+      <Filter>소스 파일\src\shader\GBuffer</Filter>
     </ClInclude>
     <ClInclude Include="DeferredGFBO.h">
       <Filter>소스 파일\src\Resource\GBuffer</Filter>
@@ -1081,6 +1099,15 @@
     </ClInclude>
     <ClInclude Include="PostGraphicProcess.h">
       <Filter>소스 파일\src\Resource\GBuffer\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderHDR.h">
+      <Filter>소스 파일\src\shader\PostPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderFXAA.h">
+      <Filter>소스 파일\src\shader\PostPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderPostEffect.h">
+      <Filter>소스 파일\src\shader\PostPipeline</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1132,12 +1159,6 @@
     <None Include="data\Shader\TextVertexShader.vertexshader">
       <Filter>리소스 파일\shaders</Filter>
     </None>
-    <None Include="data\Shader\TexturePrint.fragmentshader">
-      <Filter>리소스 파일\shaders</Filter>
-    </None>
-    <None Include="data\Shader\TexturePrint.vertexshader">
-      <Filter>리소스 파일\shaders</Filter>
-    </None>
     <None Include="data\Shader\GbufferGeoPass.fragmentshader">
       <Filter>리소스 파일\shaders\GBuffer</Filter>
     </None>
@@ -1155,6 +1176,24 @@
     </None>
     <None Include="data\Shader\GbufferFinalPass.vertexshader">
       <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\FXAA.fragmentshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\FXAA.vertexshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\HDR.fragmentshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\HDR.vertexshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\TexturePrint.fragmentshader">
+      <Filter>리소스 파일\shaders\textureRender</Filter>
+    </None>
+    <None Include="data\Shader\TexturePrint.vertexshader">
+      <Filter>리소스 파일\shaders\textureRender</Filter>
     </None>
   </ItemGroup>
 </Project>

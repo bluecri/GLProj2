@@ -28,6 +28,11 @@ namespace RENDER_TARGET {
 
 class RigidbodyComponent;
 
+namespace RESOURCE
+{
+	class ModelOnlyVertex;
+}
+
 enum ENUM_POST_PIPELINE {
 	POST_PIPELINE_PREV,
 	POST_PIPELINE_HDR,
@@ -69,16 +74,15 @@ namespace RESOURCE
 		void bindFXAAShader();
 		void unbindFXAAShader();
 
-		void hdrDraw(float deltaTime);
-		void fxaaDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
+		void hdrDraw();
+		void fxaaDraw();
 		// void postEffectDraw(float deltaTime);
-		void screenDraw(float deltaTime);
+		void screenDraw();
 
 		// void setExposure(float exp);
 
 		void calcExposure(float newExposure);
 		void setExposure(float exp);
-		float getExposure();
 		void setExposureAdjustSpeed(float adjustSpeed);
 		float getExposureAdjustSpeed();
 
@@ -103,7 +107,7 @@ namespace RESOURCE
 		std::vector<int>	_renderPipelineVec;
 		int					_renderPipePrevIdx;
 
-		ModelOnlyVertex* modelOnlyVertex;
+		ModelOnlyVertex*	_modelOnlyVertex;
 
 	};
 }

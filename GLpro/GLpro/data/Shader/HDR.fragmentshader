@@ -1,6 +1,6 @@
 #version 330 core
 
-layout(location = 0) out vec3 outColor;
+layout (location = 0) out vec3 outColor;   
 
 in vec2 UV;
 
@@ -26,11 +26,11 @@ void main(){
 
 	if(UseBloom == 1)
 	{
-		vec3 bloomColor = texture(TextureBloom, TexCoords).rgb;
+		vec3 bloomColor = texture(TextureBloom, UV).rgb;
 		hdrColor += bloomColor; // additive blending
 	}
 
-    vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
+    vec3 mapped = vec3(1.0) - exp(-hdrColor * Exposure);
     mapped = pow(mapped, vec3(1.0 / gamma));
 	outColor = mapped;
 	 

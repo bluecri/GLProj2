@@ -1,7 +1,7 @@
 #version 330 core
 
 in vec2 UV;
-out vec4 color;
+layout (location = 0) out vec3 color;
 
 uniform sampler2D myTextureSampler;
 
@@ -18,11 +18,11 @@ void main(){
 	//float cRet =  texture(myTextureSampler, UV).x;
 	//color = vec4(cRet, cRet, cRet, 1.0);
 	
-	//color = texture( myTextureSampler, UV );
+	color = texture( myTextureSampler, UV ).rgb;
 
 	//color = vec4(UV.x, UV.y, 0.0, 1.0);
 
-	color = vec4(vec3(texture( myTextureSampler, UV ).y), 1.0);
+	//color = vec4(vec3(texture( myTextureSampler, UV ).y), 1.0);
 
 	//float cRet = LinearizeDepth();
 	//color = vec4(cRet, cRet, cRet, 1.0);

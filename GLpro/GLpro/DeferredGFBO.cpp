@@ -54,7 +54,7 @@ RESOURCE::DeferredGFBO::~DeferredGFBO()
 	glDeleteTextures(1, &_GFBOColorTexture);
 	glDeleteTextures(1, &_GFBONormalTexture);
 	glDeleteTextures(1, &_GFBOBloomTexture);
-	glDeleteTextures(1, &_GFBODepthTexture);
+	glDeleteTextures(1, &_GFBODepthStencilTexture);
 	glDeleteTextures(1, &_GFBOResultTexture);
 	
 
@@ -62,7 +62,7 @@ RESOURCE::DeferredGFBO::~DeferredGFBO()
 	glDeleteBuffers(1, &_GFBO);
 }
 
-void RESOURCE::DeferredGFBO::init()
+void RESOURCE::DeferredGFBO::initDeferredGFBO()
 {
 	_shadowShader	= GShaderManager->m_addShader<SHADER::ShaderShadow>(SHADER_TYPE_SHADOW, "data/Shader/DepthRTT.vertexshader", "data/Shader/DepthRTT.fragmentshader");
 	_geoShader		= GShaderManager->m_addShader<SHADER::ShaderGBufferGeo>(SHADER_TYPE_GBUFFER_GEO, "data/Shader/GbufferGeoPass.vertexshader", "data/Shader/GbufferGeoPass.fragmentshader");
@@ -85,11 +85,11 @@ void RESOURCE::DeferredGFBO::deferredPreDraw(float deltaTime)
 
 void RESOURCE::DeferredGFBO::deferredDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
 {
-	bindGFBO_GEO();
-
+	GDeferredGFBO->bindGFBO_GEO();
+	
 	geoDraw(deltaTime, drawObjList);
 
-	unbindGFBO_GEO();
+	GDeferredGFBO->unbindGFBO_GEO();
 }
 
 void RESOURCE::DeferredGFBO::deferredAfterDraw(float deltaTime)
@@ -145,7 +145,7 @@ void RESOURCE::DeferredGFBO::bindGFBO_GEO()
 		return;
 	}
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 SHADER::ShaderGBufferGeo * RESOURCE::DeferredGFBO::getShaderGFBOGeo()
@@ -156,6 +156,50 @@ SHADER::ShaderGBufferGeo * RESOURCE::DeferredGFBO::getShaderGFBOGeo()
 void RESOURCE::DeferredGFBO::unbindGFBO_GEO()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RESOURCE::DeferredGFBO::modeForSkybox()
+{
+	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
+
+	glEnable(GL_STENCIL_TEST);
+	glStencilMask(GL_FALSE);
+
+	glStencilFunc(GL_EQUAL, 0, 1);	// no object pixel draw
+}
+
+void RESOURCE::DeferredGFBO::modeForGeoDraw()
+{
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+
+	glEnable(GL_STENCIL_TEST);
+	glStencilMask(GL_TRUE);
+
+	glStencilFunc(GL_ALWAYS, 1, 0);	
+
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	// draw pixel stencil bit is 1.
+	//glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+}
+
+void RESOURCE::DeferredGFBO::modeForAfterDraw()
+{
+	glDisable(GL_DEPTH_TEST);	// draw same object. no need.
+	glDepthMask(GL_FALSE);
+
+	glEnable(GL_STENCIL_TEST);
+	glStencilMask(GL_TRUE);
+
+	glStencilFunc(GL_EQUAL, 1, 1);	// draw only same object ( skybox position Á¦¿Ü )
+}
+
+void RESOURCE::DeferredGFBO::modeForParticle()
+{
+	glEnable(GL_DEPTH_TEST);	// particle depth test
+	glDepthMask(GL_FALSE);
+
+	glDisable(GL_STENCIL_TEST);
 }
 
 void RESOURCE::DeferredGFBO::bindGFBO_LIGHT()
@@ -185,6 +229,25 @@ void RESOURCE::DeferredGFBO::bindGFBO_LIGHT()
 SHADER::ShaderGBufferLight * RESOURCE::DeferredGFBO::getShaderGFBOLight()
 {
 	return _lightShader;
+}
+
+void RESOURCE::DeferredGFBO::bindGFBO_RESULT()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, _GFBO);
+
+	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT4 };
+	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		printf_s("[ERR] : DeferredGFBO::bindGFBO_RESULT glCheckFramebufferStatus error\n");
+		return;
+	}
+}
+
+void RESOURCE::DeferredGFBO::unbindGFBO_RESULT()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void RESOURCE::DeferredGFBO::unbndGFBO_LIGHT()
@@ -454,8 +517,8 @@ void RESOURCE::DeferredGFBO::lightDraw(float deltaTime)
 {
 	CAMERA::Camera* cam = *(GCameraManager->GetMainCamera());
 
-	glDisable(GL_DEPTH_TEST);
-	glDepthMask(GL_FALSE);
+	//glDisable(GL_DEPTH_TEST);
+	//glDepthMask(GL_FALSE);
 	_lightShader->bind();
 
 	// bind shadow texture
@@ -486,8 +549,8 @@ void RESOURCE::DeferredGFBO::lightDraw(float deltaTime)
 	modelOnlyVertex->unbind();
 
 	_lightShader->unbind();
-	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
+	//glEnable(GL_DEPTH_TEST);
+	//glDepthMask(GL_TRUE);
 	unbndGFBO_LIGHT();
 }
 
@@ -589,16 +652,19 @@ void RESOURCE::DeferredGFBO::createBuffer()
 	glGenerateMipmap(GL_TEXTURE_2D);	// for get 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, _GFBOResultTexture, 0);
 
-	glGenTextures(1, &_GFBODepthTexture);
-	glBindTexture(GL_TEXTURE_2D, _GFBODepthTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, _GBOX, _GBOY, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+
+	glGenTextures(1, &_GFBODepthStencilTexture);
+	glBindTexture(GL_TEXTURE_2D, _GFBODepthStencilTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, _GBOX, _GBOY, 0, GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, NULL);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, _GBOX, _GBOY, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _GFBODepthTexture, 0);
+	//glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _GFBODepthStencilTexture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, _GFBODepthStencilTexture, 0);
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);	// renter to screen

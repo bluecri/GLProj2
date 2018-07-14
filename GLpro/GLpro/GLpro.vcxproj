@@ -212,9 +212,12 @@
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PointLightManager.cpp" />
     <ClCompile Include="PostGraphicProcess.cpp" />
+    <ClCompile Include="ShaderFXAA.cpp" />
     <ClCompile Include="ShaderGBufferFinal.cpp" />
     <ClCompile Include="ShaderGBufferGeo.cpp" />
     <ClCompile Include="ShaderGBufferLight.cpp" />
+    <ClCompile Include="ShaderHDR.cpp" />
+    <ClCompile Include="ShaderPostEffect.cpp" />
     <ClCompile Include="ShaderStructDeferredPointLight.cpp" />
     <ClCompile Include="ShaderStructDirectionalLight.cpp" />
     <ClCompile Include="ShaderStructPointLight.cpp" />
@@ -301,9 +304,12 @@
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PointLightManager.h" />
     <ClInclude Include="PostGraphicProcess.h" />
+    <ClInclude Include="ShaderFXAA.h" />
     <ClInclude Include="ShaderGBufferFinal.h" />
     <ClInclude Include="ShaderGBufferGeo.h" />
     <ClInclude Include="ShaderGBufferLight.h" />
+    <ClInclude Include="ShaderHDR.h" />
+    <ClInclude Include="ShaderPostEffect.h" />
     <ClInclude Include="ShaderStructDeferredPointLight.h" />
     <ClInclude Include="ShaderStructDirectionalLight.h" />
     <ClInclude Include="ShaderStructPointLight.h" />
@@ -434,12 +440,16 @@
     <ClInclude Include="UIEntity.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\Shader\FXAA.fragmentshader" />
+    <None Include="data\Shader\FXAA.vertexshader" />
     <None Include="data\Shader\GbufferFinalPass.fragmentshader" />
     <None Include="data\Shader\GbufferFinalPass.vertexshader" />
     <None Include="data\Shader\GbufferGeoPass.fragmentshader" />
     <None Include="data\Shader\GbufferGeoPass.vertexshader" />
     <None Include="data\Shader\GbufferLightPass.fragmentshader" />
     <None Include="data\Shader\GbufferLightPass.vertexshader" />
+    <None Include="data\Shader\HDR.fragmentshader" />
+    <None Include="data\Shader\HDR.vertexshader" />
     <None Include="data\Shader\TexturePrint.fragmentshader" />
     <None Include="data\Shader\TexturePrint.vertexshader" />
     <None Include="data\Shader\DepthRTT.fragmentshader" />
