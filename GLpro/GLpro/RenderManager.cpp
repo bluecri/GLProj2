@@ -87,6 +87,7 @@ void RENDER::RRenderContainerClass<RENDER::RNormal, SHADER::ShaderMain>::render(
 	*/
 
 	// deferred shading
+	GDeferredGFBO->modeForShadowDraw();
 	GDeferredGFBO->deferredPreDraw(deltaTime);
 
 	GDeferredGFBO->modeForGeoDraw();

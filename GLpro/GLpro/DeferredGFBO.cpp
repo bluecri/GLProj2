@@ -169,6 +169,15 @@ void RESOURCE::DeferredGFBO::modeForSkybox()
 	glStencilFunc(GL_EQUAL, 0, 1);	// no object pixel draw
 }
 
+void RESOURCE::DeferredGFBO::modeForShadowDraw()
+{
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+
+	glDisable(GL_STENCIL_TEST);
+	glStencilMask(GL_FALSE);
+}
+
 void RESOURCE::DeferredGFBO::modeForGeoDraw()
 {
 	glEnable(GL_DEPTH_TEST);
@@ -266,8 +275,6 @@ void RESOURCE::DeferredGFBO::bndGFBO_FINAL()
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, _GFBO);
 	glReadBuffer(GL_COLOR_ATTACHMENT4);
-
-	//glReadBuffer(GL_COLOR_ATTACHMENT2);
 
 	// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // not clear screen
 }
@@ -490,7 +497,7 @@ void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, std::list<std::shared_ptr<
 
 		const mat4& targetModelMat = targetRigidbodyComponent->getWorldMatRef();
 		_geoShader->loadMatrix4(_geoShader->m_modelMatrixID, targetModelMat);
-		_geoShader->loadFloat(_geoShader->m_bloomValueID, 0.0);
+		_geoShader->loadFloat(_geoShader->m_bloomValueID, 30.0);	// need > 30
 		
 		normalRenderTarget->_model->bind();		// Model buffer bind
 		normalRenderTarget->_model->render();

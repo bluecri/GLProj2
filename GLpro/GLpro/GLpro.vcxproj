@@ -212,6 +212,7 @@
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PointLightManager.cpp" />
     <ClCompile Include="PostGraphicProcess.cpp" />
+    <ClCompile Include="ShaderBloom.cpp" />
     <ClCompile Include="ShaderFXAA.cpp" />
     <ClCompile Include="ShaderGBufferFinal.cpp" />
     <ClCompile Include="ShaderGBufferGeo.cpp" />
@@ -304,6 +305,7 @@
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PointLightManager.h" />
     <ClInclude Include="PostGraphicProcess.h" />
+    <ClInclude Include="ShaderBloom.h" />
     <ClInclude Include="ShaderFXAA.h" />
     <ClInclude Include="ShaderGBufferFinal.h" />
     <ClInclude Include="ShaderGBufferGeo.h" />
@@ -440,6 +442,8 @@
     <ClInclude Include="UIEntity.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\Shader\Bloom.fragmentshader" />
+    <None Include="data\Shader\Bloom.vertexshader" />
     <None Include="data\Shader\FXAA.fragmentshader" />
     <None Include="data\Shader\FXAA.vertexshader" />
     <None Include="data\Shader\GbufferFinalPass.fragmentshader" />

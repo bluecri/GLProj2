@@ -4,6 +4,7 @@
 #include "src/Shader/ShaderManager.h"
 #include "src/Shader/ShaderShadow.h"
 #include "ShaderHDR.h"
+#include "ShaderBloom.h"
 #include "ShaderFXAA.h"
 
 #include "ShaderTextureSimple.h"
@@ -46,6 +47,7 @@ void RESOURCE::PostGraphicProcess::initPostGraphicProcess()
 {
 	_shaderTextureSimple = GShaderManager->m_addShader<SHADER::ShaderTextureSimple>(ENUM_SHADER_TYPE::SHADER_TYPE_TEXTURESIMPLE, "data/Shader/TexturePrint.vertexshader", "data/Shader/TexturePrint.fragmentshader");
 	_hdrShader = GShaderManager->m_addShader<SHADER::ShaderHDR>(SHADER_TYPE_SHADOW, "data/Shader/HDR.vertexshader", "data/Shader/HDR.fragmentshader");
+	_bloomShader = GShaderManager->m_addShader<SHADER::ShaderBloom>(SHADER_TYPE_SHADOW, "data/Shader/Bloom.vertexshader", "data/Shader/Bloom.fragmentshader");
 	_fxaaShader = GShaderManager->m_addShader<SHADER::ShaderFXAA>(SHADER_TYPE_SHADOW, "data/Shader/FXAA.vertexshader", "data/Shader/FXAA.fragmentshader");
 	// SHADER::ShaderPostEffect*	_postEffectShader;
 	createBuffer();
@@ -53,31 +55,30 @@ void RESOURCE::PostGraphicProcess::initPostGraphicProcess()
 	refreshRenderPipeline();
 }
 
-void RESOURCE::PostGraphicProcess::beforePostGraphicProcess(GLuint GFBORetTextureID, GLuint bloomTextureID)
+void RESOURCE::PostGraphicProcess::beforePostGraphicProcess(GLuint GFBORetTextureID, GLuint bloomBeforeTextureID)
 {
 	_renderPipePrevIdx = 0;
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, GFBORetTextureID);
+	// binded in calcExposure
+	_GFBORetTextureID = GFBORetTextureID;
+	_bloomBeforeTexture = bloomBeforeTextureID;
 
-	if (bloomTextureID != -1)
-	{
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, bloomTextureID);
-	}
+	glDisable(GL_DEPTH_TEST);	// particle depth test
+
 }
 
 void RESOURCE::PostGraphicProcess::doPostGraphicProcess()
 {
-	if (GOption->_useBloom)
-	{
-		// blooming bloom texture
-	}
-
 	if (GOption->_useHDR)
 	{
 		// get exposure
-		calcExposure(GDeferredGFBO->calcExposureWithMipmap());
+		calcExposure(calcExposureWithMipmap());
+	}
+
+	if (GOption->_useBloom && _bloomBeforeTexture != -1)
+	{
+		// blooming bloom texture
+		doBlooming();
 	}
 
 	while (!postGraphicProcessLoop()) {};
@@ -131,6 +132,21 @@ void RESOURCE::PostGraphicProcess::createBuffer()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, _FBOHDRTexture, 0);
+
+
+	glGenTextures(1, &_FBOBloomVertTexture);
+	glBindTexture(GL_TEXTURE_2D, _FBOBloomVertTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _GBOX, _GBOY, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, _FBOBloomVertTexture, 0);
+
+	glGenTextures(1, &_FBOBloomHorTexture);
+	glBindTexture(GL_TEXTURE_2D, _FBOBloomHorTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _GBOX, _GBOY, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, _FBOBloomHorTexture, 0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);	// renter to screen
 }
@@ -188,11 +204,19 @@ void RESOURCE::PostGraphicProcess::unbindTargetTexture()
 }
 
 
+void RESOURCE::PostGraphicProcess::bindReadTextureGFBO()
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _GFBORetTextureID);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, _FBOBloomHorTexture);
+}
+
 void RESOURCE::PostGraphicProcess::bindReadTextureHDR()
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, _FBOHDRTexture);
-
 }
 
 void RESOURCE::PostGraphicProcess::bindReadTextureFXAA()
@@ -236,6 +260,12 @@ void RESOURCE::PostGraphicProcess::bindFXAAShader()
 {
 	_fxaaShader->bind();
 	_fxaaShader->loadInt(_fxaaShader->m_screenTex, 0);
+
+	_fxaaShader->loadFloat(_fxaaShader->m_lumaThreshold, 0.5f);
+	_fxaaShader->loadFloat(_fxaaShader->m_mulReduce, 1.0f/8.0f);
+	_fxaaShader->loadFloat(_fxaaShader->m_minReduce, 1.0f/128.0f);
+	_fxaaShader->loadFloat(_fxaaShader->m_maxSpan, 8.0);
+	_fxaaShader->loadVector2(_fxaaShader->m_texelStep, glm::vec2(1.0f/(float)_GBOX, 1.0f / (float)_GBOY));
 }
 
 void RESOURCE::PostGraphicProcess::unbindFXAAShader()
@@ -294,6 +324,26 @@ float RESOURCE::PostGraphicProcess::getExposureAdjustSpeed()
 	return _exposureAdjustSpeed;
 }
 
+float RESOURCE::PostGraphicProcess::calcExposureWithMipmap()
+{
+	// get result texture mipmap
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _GFBORetTextureID);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	int mipmapLevel = (int)floor(log2((float)max(_GBOX, _GBOY))) + 0;
+	float avgColor[3] = { 0.0f, 0.0f, 0.0f };
+	glGetTexImage(GL_TEXTURE_2D, mipmapLevel, GL_RGB, GL_FLOAT, (void*)avgColor);
+
+	// debug
+	//printf_s("%f %f %f\n", avgColor[0], avgColor[1], avgColor[2]);
+
+	// reference : https://www.opengl.org/discussion_boards/showthread.php/164483-automatic-exposure-control
+	float newExposure = 0.5 / (avgColor[0] + avgColor[1] + avgColor[2]);
+
+	return newExposure;
+}
+
 bool RESOURCE::PostGraphicProcess::postGraphicProcessLoop()
 {
 	int prevProcess = _renderPipelineVec[_renderPipePrevIdx];
@@ -308,7 +358,7 @@ bool RESOURCE::PostGraphicProcess::postGraphicProcessLoop()
 		switch (prevProcess)
 		{
 		case POST_PIPELINE_PREV:
-			//bindReadTextureGFBO();	// already binded in beforePostGraphicProcess func
+			bindReadTextureGFBO();
 			bindSimpleShader();
 			_modelOnlyVertex->bind();
 			_modelOnlyVertex->render();
@@ -338,7 +388,7 @@ bool RESOURCE::PostGraphicProcess::postGraphicProcessLoop()
 	switch (prevProcess)
 	{
 	case POST_PIPELINE_PREV:
-		//bindReadTextureGFBO();	// already binded in beforePostGraphicProcess func
+		bindReadTextureGFBO();	// already binded in beforePostGraphicProcess func
 		break;
 	case POST_PIPELINE_HDR:
 		bindReadTextureHDR();
@@ -370,4 +420,88 @@ bool RESOURCE::PostGraphicProcess::postGraphicProcessLoop()
 	_renderPipePrevIdx++;
 
 	return false;
+}
+
+void RESOURCE::PostGraphicProcess::doBlooming()
+{
+	/*
+	*	_bloomBeforeTexture -> _FBOBloomVertTexture -> _FBOBloomHorTexture
+	*		-> hor -> vert ->... iteration
+	*/
+	glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
+
+	_bloomShader->bind();
+
+	bloomingFirst();		// prev to vert
+
+	for (int loopBloom = 0; loopBloom < 9; loopBloom++)
+	{
+		bloomingHor();		// vert to hor
+		bloomingVert();		// hor to vert
+	}
+
+	bloomingHor();
+
+	_modelOnlyVertex->unbind();
+	_bloomShader->unbind();
+}
+
+void RESOURCE::PostGraphicProcess::bloomingFirst()
+{
+	// before bloom to vert
+	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT3 };
+	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+	//glDrawBuffer(GL_COLOR_ATTACHMENT3);
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, _bloomBeforeTexture);
+
+	_bloomShader->loadInt(_bloomShader->m_texBloom, 2);
+	_bloomShader->loadBool(_bloomShader->m_horizontal, false);
+
+	_modelOnlyVertex->bind();
+	_modelOnlyVertex->render();
+}
+
+void RESOURCE::PostGraphicProcess::bloomingVert()
+{
+	// hor to ver
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, _FBOBloomHorTexture);
+
+	_bloomShader->loadInt(_bloomShader->m_texBloom, 2);
+	_bloomShader->loadBool(_bloomShader->m_horizontal, false);
+
+	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT3 };
+	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		printf_s("[ERR] : PostGraphicProcess::doBlooming glCheckFramebufferStatus error\n");
+		return;
+	}
+
+	_modelOnlyVertex->render();
+}
+
+void RESOURCE::PostGraphicProcess::bloomingHor()
+{
+	// vert to hor
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, _FBOBloomVertTexture);
+
+	_bloomShader->loadInt(_bloomShader->m_texBloom, 2);
+	_bloomShader->loadBool(_bloomShader->m_horizontal, true);
+
+	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT4 };
+	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		printf_s("[ERR] : PostGraphicProcess::doBlooming glCheckFramebufferStatus error\n");
+		return;
+	}
+
+	_modelOnlyVertex->render();
 }

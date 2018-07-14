@@ -44,6 +44,7 @@ namespace RESOURCE
 		float calcExposureWithMipmap();
 
 
+		void modeForShadowDraw();
 		void modeForGeoDraw();
 		void modeForAfterDraw();
 		void modeForSkybox();

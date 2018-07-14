@@ -10,7 +10,8 @@ namespace SHADER
 	class ShaderGBufferFinal;
 
 	class ShaderTextureSimple;
-	class ShaderHDR;
+	class ShaderHDR; 
+	class ShaderBloom;
 	class ShaderFXAA;
 }
 
@@ -63,7 +64,7 @@ namespace RESOURCE
 		void bindTargetTexturePostEffect();
 		void unbindTargetTexture();
 
-		// void bindReadTextureGFBO(); // beforePostGraphicProcess
+		void bindReadTextureGFBO();
 		void bindReadTextureHDR();
 		void bindReadTextureFXAA();
 		void bindReadTexturePostEffect();
@@ -85,17 +86,30 @@ namespace RESOURCE
 		void setExposure(float exp);
 		void setExposureAdjustSpeed(float adjustSpeed);
 		float getExposureAdjustSpeed();
+		float calcExposureWithMipmap();
 
 		bool postGraphicProcessLoop();
+		void doBlooming();
+
+		void bloomingFirst();
+		void bloomingVert();
+		void bloomingHor();
 
 	private:
 		SHADER::ShaderTextureSimple* _shaderTextureSimple;
-		SHADER::ShaderHDR*	_hdrShader;
-		SHADER::ShaderFXAA*	_fxaaShader;
+		SHADER::ShaderHDR*		_hdrShader;
+		SHADER::ShaderBloom*	_bloomShader;
+		SHADER::ShaderFXAA*		_fxaaShader;
 		// SHADER::ShaderPostEffect*	_postEffectShader;
+
+		GLuint	_GFBORetTextureID;
+		GLuint	_bloomBeforeTexture;
 
 		GLuint	_FBO;
 		GLuint	_FBOHDRTexture;
+		
+		GLuint	_FBOBloomVertTexture;
+		GLuint	_FBOBloomHorTexture;
 		GLuint	_FBOFXAATexture;
 		GLuint	_FBOPostEffectTexture;
 		

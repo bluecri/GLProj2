@@ -13,8 +13,8 @@ uniform float Exposure;
 void main(){
 	
 	const float gamma = 2.2;
-	vec3 hdrColor = texture( TextrueGFBO, UV ).rgb;
-	
+	vec3 hdrColor = pow( texture( TextrueGFBO, UV ).rgb ,vec3(gamma));	// already gamma correction is adjusted by artist.
+
 	if(UseToneMapping == 1)
 	{
 		vec3 mapped = hdrColor / (hdrColor + vec3(1.0));
@@ -28,10 +28,18 @@ void main(){
 	{
 		vec3 bloomColor = texture(TextureBloom, UV).rgb;
 		hdrColor += bloomColor; // additive blending
+		
+		// print bloom debug
+		/*
+		outColor = bloomColor;
+		return;
+		*/
 	}
 
     vec3 mapped = vec3(1.0) - exp(-hdrColor * Exposure);
     mapped = pow(mapped, vec3(1.0 / gamma));
 	outColor = mapped;
-	 
+	
+	// debug
+	// outColor = vec3(0.0, 0.0, 0.0);
 }

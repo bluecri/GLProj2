@@ -305,7 +305,7 @@ void main()
 
 	if(bloomValue > 1.0)
 	{
-		color = color * 0.3 +  MaterialDiffuseColor * 0.1 * bloomValue;
+		color = color * 1.0 +  MaterialDiffuseColor * 0.1 * bloomValue;
 	}
 		
 	// reference : https://github.com/JoeyDeVries/LearnOpenGL/blob/master/src/5.advanced_lighting/7.bloom/7.bloom.fs
@@ -313,12 +313,12 @@ void main()
 	
 	if( bloomThreshHold >= 1.0)
 	{
-		// color = color;	// test
+		//color = color;	// test
 		bloomColor = color;
 	}
 	else
 	{
-		// color = vec3(0.0, 0.0, 0.0);
+		//color = vec3(0.0, 0.0, 0.0);	// test
 		bloomColor = vec3(0.0, 0.0, 0.0);
 	}
 	

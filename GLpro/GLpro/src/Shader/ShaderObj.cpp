@@ -18,6 +18,11 @@ GLuint SHADER::ShaderObj::getShaderID() { return m_shaderID; }
 
 void SHADER::ShaderObj::loadInt(GLuint location, int value) { glUniform1i(location, value); }
 
+void SHADER::ShaderObj::loadBool(GLuint location, bool b)
+{
+	glUniform1i(location, (int)b);
+}
+
 void SHADER::ShaderObj::loadVector2i(GLuint location, const int& int1, const int& int2)
 {
 	glUniform2i(location, int1, int2);

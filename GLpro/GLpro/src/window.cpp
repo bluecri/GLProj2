@@ -82,7 +82,7 @@ int WINDOW::Window::init()
 	glfwPollEvents();
 	glfwSetCursorPos(_pWindow, _windowWidth / 2, _windowHeight / 2);
 	
-	glClearColor(0.0f, 0.0f, 0.7f, 0.0f);
+	// glClearColor(0.0f, 0.0f, 0.7f, 0.0f);	set clear color
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);

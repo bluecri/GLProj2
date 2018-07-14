@@ -612,6 +612,9 @@
     <ClCompile Include="ShaderPostEffect.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderBloom.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -1109,6 +1112,9 @@
     <ClInclude Include="ShaderPostEffect.h">
       <Filter>소스 파일\src\shader\PostPipeline</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderBloom.h">
+      <Filter>소스 파일\src\shader\PostPipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\Shader\DepthRTT.fragmentshader">
@@ -1194,6 +1200,12 @@
     </None>
     <None Include="data\Shader\TexturePrint.vertexshader">
       <Filter>리소스 파일\shaders\textureRender</Filter>
+    </None>
+    <None Include="data\Shader\Bloom.fragmentshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\Bloom.vertexshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
     </None>
   </ItemGroup>
 </Project>

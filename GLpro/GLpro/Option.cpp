@@ -6,7 +6,7 @@ Option::Option() {
 	_oldLightUse = true;
 	_useHDR = true;
 	_useToneMapping = false;
-	_useBloom = false;		// can use if hdr on
-	_useFXAA = false;
+	_useBloom = true;		// can use if hdr on
+	_useFXAA = true;
 	_bUsePostEffect = false;
 }
