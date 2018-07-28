@@ -42,6 +42,18 @@ glm::vec3 RigidbodyComponent::getWorldPosVec() const
 	return _worldTotalMatrix[3];
 }
 
+void RigidbodyComponent::setWorldMat(glm::mat4 & inMat)
+{
+	_worldTotalMatrix = inMat;
+}
+
+void RigidbodyComponent::setWorldPosVec(glm::vec3 & inPos)
+{
+	_worldTotalMatrix[3][0] = inPos[0];
+	_worldTotalMatrix[3][1] = inPos[1];
+	_worldTotalMatrix[3][2] = inPos[2];
+}
+
 const glm::mat4& RigidbodyComponent::getModelMatrixConstRef() const
 {
 	return _localModelMatrix;
@@ -453,7 +465,9 @@ void RigidbodyComponent::updateWorldMatrix(float deltaTime)
 	if (_bDirty)
 	{
 		updateLocalWithVelocityOrSpeed(deltaTime);
-		_worldTotalMatrix = (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
+		//_worldTotalMatrix = (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
+		calcWorldMatWithLocalPriv();
+
 		for (auto childRigidbodyComponentPtr : _childRigidbodyComponentPtrList)
 		{
 			childRigidbodyComponentPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
@@ -463,7 +477,9 @@ void RigidbodyComponent::updateWorldMatrix(float deltaTime)
 
 	if (bUpdateLocalWithVelocityOrSpeed(deltaTime)) {
 		_bDirty = true;
-		_worldTotalMatrix = (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
+		//_worldTotalMatrix = (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
+		calcWorldMatWithLocalPriv();
+
 		for (auto childRigidbodyComponentPtr : _childRigidbodyComponentPtrList)
 		{
 			childRigidbodyComponentPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
@@ -574,7 +590,7 @@ void RigidbodyComponent::updateLocalWithVelocityOrSpeed(float deltaTime)
 	return;
 }
 
-void RigidbodyComponent::updateWithDirtyParent(float deltaTime, glm::mat4 & _parentWorldMat)
+void RigidbodyComponent::updateWithDirtyParent(float deltaTime, glm::mat4 & parentWorldMat)
 {
 	if (!_bMove)
 	{
@@ -587,7 +603,9 @@ void RigidbodyComponent::updateWithDirtyParent(float deltaTime, glm::mat4 & _par
 	}
 
 	_bDirty = true;
-	_worldTotalMatrix = _parentWorldMat * (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
+
+	//_worldTotalMatrix = parentWorldMat * (_localModelMatrix * glm::toMat4(testQuat) * _localScaleMatrix);
+	calcWorldMatPriv(parentWorldMat);
 	for (auto childRigidbodyComponentPtr : _childRigidbodyComponentPtrList)
 	{
 		childRigidbodyComponentPtr->updateWithDirtyParent(deltaTime, _worldTotalMatrix);
@@ -608,7 +626,8 @@ void RigidbodyComponent::updateWIthNoDirtyParent(float deltaTime)
 	if (_bDirty)	// this RigidbodyComponent is dirty.. dirty propagation.
 	{
 		bUpdateLocalWithVelocityOrSpeed(deltaTime);
-		_worldTotalMatrix = _parentRigidbodyComponentPtr->getWorldMatRef() * (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
+		calcWorldMatPriv(_parentRigidbodyComponentPtr->getWorldMatRef());
+		//_worldTotalMatrix = _parentRigidbodyComponentPtr->getWorldMatRef() * (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
 
 		for (auto childRigidbodyComponentPtr : _childRigidbodyComponentPtrList)
 		{
@@ -622,6 +641,41 @@ void RigidbodyComponent::updateWIthNoDirtyParent(float deltaTime)
 	{
 		childRigidbodyComponentPtr->updateWIthNoDirtyParent(deltaTime);
 	}
+}
+
+void RigidbodyComponent::calcWorldMatWithLocalPriv()
+{
+	_worldTotalMatrix = glm::toMat4(_localQuaternion);
+
+	for (int i = 0; i < 3; i++)
+	{
+		_worldTotalMatrix[i][0] *= _localScaleMatrix[i][i];
+		_worldTotalMatrix[i][1] *= _localScaleMatrix[i][i];
+		_worldTotalMatrix[i][2] *= _localScaleMatrix[i][i];
+	}
+	
+	_worldTotalMatrix[3][0] = _localModelMatrix[3][0];
+	_worldTotalMatrix[3][1] = _localModelMatrix[3][1];
+	_worldTotalMatrix[3][2] = _localModelMatrix[3][2];
+
+}
+
+void RigidbodyComponent::calcWorldMatPriv(const glm::mat4 & parentMat)
+{
+	_worldTotalMatrix = glm::toMat4(_localQuaternion);
+
+	for (int i = 0; i < 3; i++)
+	{
+		_worldTotalMatrix[i][0] *= _localScaleMatrix[i][i];
+		_worldTotalMatrix[i][1] *= _localScaleMatrix[i][i];
+		_worldTotalMatrix[i][2] *= _localScaleMatrix[i][i];
+	}
+
+	_worldTotalMatrix[3][0] = _localModelMatrix[3][0];
+	_worldTotalMatrix[3][1] = _localModelMatrix[3][1];
+	_worldTotalMatrix[3][2] = _localModelMatrix[3][2];
+
+	_worldTotalMatrix = parentMat * _worldTotalMatrix;
 }
 
 

@@ -129,6 +129,9 @@ void GameSession::update(float deltaTime, float acc)
 			GWindow->mouseToCenter();
 		}
 
+		// skybox update
+		_spaceSkybox->logicUpdate(deltaTime, acc);
+
 		removeEntityProcess();
 		return;
 	}
@@ -157,7 +160,7 @@ void GameSession::preMade()
 	newPlayer->getRigidbodyComponent()->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
 	newPlayer->getRigidbodyComponent()->setDirty();
 	newPlayer->setBRender(true);
-	newPlayer->initIPlane(new PlaneInfo(100, 00, 0.0f), new PlaneInfo(100, 100, 3.0f));
+	newPlayer->initIPlane(new PlaneInfo(100, 0, 3.0f), new PlaneInfo(100, 100, 3.0f));
 	newPlayer->initPlayer();
 	NormalMissileGenerator * normalMissileGenerator = new NormalMissileGenerator();
 	normalMissileGenerator->initNormalMissileGenerator(newPlayer, newPlayer->getMissileGeneratorStorage());
@@ -206,7 +209,7 @@ void GameSession::preMade()
 		newEnemy->getRigidbodyComponent()->setDirty();
 		newEnemy->getRigidbodyComponent()->translateModelMatrix(elem);
 		newEnemy->setBRender(true);
-		newEnemy->initIPlane(new PlaneInfo(100, 00, 0.0f), new PlaneInfo(100, 100, 3.0f));
+		newEnemy->initIPlane(new PlaneInfo(100, 0, 3.0f), new PlaneInfo(100, 100, 3.0f));
 		newEnemy->initEnemy();
 		normalMissileGenerator = new NormalMissileGenerator();
 		normalMissileGenerator->initNormalMissileGenerator(newEnemy, newEnemy->getMissileGeneratorStorage());
@@ -250,6 +253,7 @@ void GameSession::preMade()
 	//SkyboxGObject * spaceSkybox = new SkyboxGObject(skyboxShader, skyboxFObj);
 	SkyboxGObject * spaceSkybox = SkyboxGObject::_preMadeSpaceSkybox[0];
 	spaceSkybox->setBRender(true);
+	newPlayer->attachChildEntity(static_cast<Entity*>(spaceSkybox));
 	premadeSession->_spaceSkybox = spaceSkybox;
 
 	preMadeGameSession.push_back(premadeSession);		// premade session

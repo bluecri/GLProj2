@@ -142,6 +142,11 @@ void WINDOW::Window::mainLoop()
 	float currentTime = static_cast<float>(glfwGetTime());
 	float acc = 0.0;
 
+	static double time_lastframe = static_cast<float>(glfwGetTime());
+	double time_now;
+	int cnt = 0;
+	
+
 	// Draw loop (ESC key or window was closed)
 	do {
 		// time update
@@ -176,6 +181,8 @@ void WINDOW::Window::mainLoop()
 			acc -= dt;
 			t += dt;
 			usedT += dt;
+
+			GCollisionComponentManager->clearOctree();
 		}
 
 		// dt 보정 2가지 방법
@@ -190,12 +197,24 @@ void WINDOW::Window::mainLoop()
 		GLightManager->updateAllLIghts();						// light pos update + light frustum object
 		GALManager->updateALSource();
 
+		//Sleep(1);
 		renderAll(usedT, acc);
 
 		GLightManager->deUpdateAllLIghts();		// light frustum object container clear
 		GOctreeForFrustum->clearPotentialCompPropa();	// clear frustum
 
 		usedT = 0.0;
+
+
+		cnt++;
+		time_now = newTime;
+		double time_frame = time_now - time_lastframe;
+		if (time_frame >= 1.0)
+		{
+			printf_s("%d\n", cnt);
+			cnt = 0;
+			time_lastframe = time_lastframe + 1.0;
+		}
 
 	} while (glfwGetKey(_pWindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 		glfwWindowShouldClose(_pWindow) == 0);

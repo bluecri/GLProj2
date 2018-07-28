@@ -6,6 +6,8 @@
 #include "src/RenderTarget/Skybox/SkyboxFObj.h"
 #include "src/Shader/ShaderSkybox.h"
 
+#include "RigidbodyComponent.h"
+
 std::vector<SkyboxGObject*> SkyboxGObject::_preMadeSpaceSkybox;
 
 SkyboxGObject::SkyboxGObject(GameSession* gameSession, SHADER::ShaderSkybox * shader, RENDER_TARGET::SKYBOX::SkyboxFObj * skyboxFObj)
@@ -32,11 +34,31 @@ void SkyboxGObject::preMade()
 	_preMadeSpaceSkybox.push_back(new SkyboxGObject(nullptr, skyboxShader, tempSkyboxFObj));
 }
 
+
+// Entity을(를) 통해 상속됨
+
+void SkyboxGObject::logicUpdate(float deltaTime, float acc) 
+{
+	float divConst = 1.1f;
+	glm::mat4 newMat = glm::mat4();
+	glm::vec3 divPos = _rigidbodyComponent->getWorldPosVec();
+
+	// div 처리
+	newMat[3][0] = divPos[0] / divConst;
+	newMat[3][1] = divPos[1] / divConst;
+	newMat[3][2] = divPos[2] / divConst;
+
+	_rigidbodyComponent->setWorldMat(newMat);
+
+	return;
+}
+
 void SkyboxGObject::setCollisionTest(bool bCollision)
 {
 }
 
 void SkyboxGObject::doJobWithBeDeleted()
 {
+	
 }
 

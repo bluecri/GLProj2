@@ -2,8 +2,8 @@
 #include "PlaneInfo.h"
 #include "BuffSum.h"
 
-PlaneInfo::PlaneInfo(int hp, int armor, float speed, float deltaSpeed, float notDmgTime, float angle, float angleSpeed)
-	:_hp(hp), _armor(armor), _maxSpeed(speed), _deltaSpeed(deltaSpeed), _notDmgedTime(notDmgTime), _angle(angle), _angleSpeed(angleSpeed)
+PlaneInfo::PlaneInfo(int hp, int armor, float maxSpeed, float deltaSpeed, float notDmgTime, float angle, float angleSpeed)
+	:_hp(hp), _armor(armor), _maxSpeed(maxSpeed), _deltaSpeed(deltaSpeed), _notDmgedTime(notDmgTime), _angle(angle), _angleSpeed(angleSpeed)
 {
 }
 

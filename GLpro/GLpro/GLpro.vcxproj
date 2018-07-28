@@ -207,6 +207,7 @@
     <ClCompile Include="ModelOnlyVertex.cpp" />
     <ClCompile Include="NormalMissile.cpp" />
     <ClCompile Include="NormalMissileGenerator.cpp" />
+    <ClCompile Include="OctreeElem.cpp" />
     <ClCompile Include="ParticleFObjManager.cpp" />
     <ClCompile Include="PlaneInfo.cpp" />
     <ClCompile Include="PointLight.cpp" />
@@ -218,6 +219,7 @@
     <ClCompile Include="ShaderGBufferGeo.cpp" />
     <ClCompile Include="ShaderGBufferLight.cpp" />
     <ClCompile Include="ShaderHDR.cpp" />
+    <ClCompile Include="ShaderMipmap.cpp" />
     <ClCompile Include="ShaderPostEffect.cpp" />
     <ClCompile Include="ShaderStructDeferredPointLight.cpp" />
     <ClCompile Include="ShaderStructDirectionalLight.cpp" />
@@ -300,6 +302,7 @@
     <ClInclude Include="LightGameObject.h" />
     <ClInclude Include="LightWithEntity.h" />
     <ClInclude Include="ModelOnlyVertex.h" />
+    <ClInclude Include="OctreeElem.h" />
     <ClInclude Include="ParticleFObjManager.h" />
     <ClInclude Include="PlaneInfo.h" />
     <ClInclude Include="PointLight.h" />
@@ -311,6 +314,7 @@
     <ClInclude Include="ShaderGBufferGeo.h" />
     <ClInclude Include="ShaderGBufferLight.h" />
     <ClInclude Include="ShaderHDR.h" />
+    <ClInclude Include="ShaderMipmap.h" />
     <ClInclude Include="ShaderPostEffect.h" />
     <ClInclude Include="ShaderStructDeferredPointLight.h" />
     <ClInclude Include="ShaderStructDirectionalLight.h" />
@@ -454,6 +458,8 @@
     <None Include="data\Shader\GbufferLightPass.vertexshader" />
     <None Include="data\Shader\HDR.fragmentshader" />
     <None Include="data\Shader\HDR.vertexshader" />
+    <None Include="data\Shader\MipmapLast.fragmentshader" />
+    <None Include="data\Shader\MipmapLast.vertexshader" />
     <None Include="data\Shader\TexturePrint.fragmentshader" />
     <None Include="data\Shader\TexturePrint.vertexshader" />
     <None Include="data\Shader\DepthRTT.fragmentshader" />

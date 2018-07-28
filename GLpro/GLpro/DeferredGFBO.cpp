@@ -139,11 +139,13 @@ void RESOURCE::DeferredGFBO::bindGFBO_GEO()
 	GLenum DrawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};	//, GL_DEPTH_ATTACHMENT
 	glDrawBuffers(3, DrawBuffers); // "1" is the size of DrawBuffers
 
+	/*	opt
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
 		printf_s("[ERR] : DeferredGFBO::bindGFBO_GEO glCheckFramebufferStatus error\n");
 		return;
 	}
+	*/
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
@@ -226,11 +228,13 @@ void RESOURCE::DeferredGFBO::bindGFBO_LIGHT()
 		glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
 	}
 
+	/*	opt
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
 		printf_s("[ERR] : DeferredGFBO::bindGFBO_GEO glCheckFramebufferStatus error\n");
 		return;
 	}
+	*/
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// clear
 }
@@ -247,11 +251,13 @@ void RESOURCE::DeferredGFBO::bindGFBO_RESULT()
 	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT4 };
 	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
 
+	/*	opt
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
 		printf_s("[ERR] : DeferredGFBO::bindGFBO_RESULT glCheckFramebufferStatus error\n");
 		return;
 	}
+	*/
 }
 
 void RESOURCE::DeferredGFBO::unbindGFBO_RESULT()
@@ -497,7 +503,7 @@ void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, std::list<std::shared_ptr<
 
 		const mat4& targetModelMat = targetRigidbodyComponent->getWorldMatRef();
 		_geoShader->loadMatrix4(_geoShader->m_modelMatrixID, targetModelMat);
-		_geoShader->loadFloat(_geoShader->m_bloomValueID, 30.0);	// need > 30
+		_geoShader->loadFloat(_geoShader->m_bloomValueID, 10.0);	// need > 30
 		
 		normalRenderTarget->_model->bind();		// Model buffer bind
 		normalRenderTarget->_model->render();
@@ -654,7 +660,7 @@ void RESOURCE::DeferredGFBO::createBuffer()
 	glGenTextures(1, &_GFBOResultTexture);
 	glBindTexture(GL_TEXTURE_2D, _GFBOResultTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, _GBOX, _GBOY, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glGenerateMipmap(GL_TEXTURE_2D);	// for get 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, _GFBOResultTexture, 0);

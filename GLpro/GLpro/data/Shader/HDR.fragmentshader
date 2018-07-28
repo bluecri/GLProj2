@@ -9,9 +9,10 @@ uniform sampler2D TextureBloom;
 uniform int UseBloom;
 uniform int UseToneMapping;
 uniform float Exposure;
+uniform int MipmapLevel;
+
 
 void main(){
-	
 	const float gamma = 2.2;
 	vec3 hdrColor = pow( texture( TextrueGFBO, UV ).rgb ,vec3(gamma));	// already gamma correction is adjusted by artist.
 
@@ -35,11 +36,18 @@ void main(){
 		return;
 		*/
 	}
-
-    vec3 mapped = vec3(1.0) - exp(-hdrColor * Exposure);
+	
+	vec3 mipmapColor = textureLod(TextrueGFBO, UV, 9.0).rgb;
+	//vec3 mipmapColor = texelFetch(TextrueGFBO, vec2(1, 1), MipmapLevel).rgb;
+	
+	float mipmapExposure = 0.5 / (mipmapColor[0] + mipmapColor[1] + mipmapColor[2] + 0.001);
+	//mipmapExposure = 0.2;
+    vec3 mapped = vec3(1.0) - exp(-hdrColor * mipmapExposure);
+    //vec3 mapped = vec3(1.0) - exp(-hdrColor * Exposure);
     mapped = pow(mapped, vec3(1.0 / gamma));
 	outColor = mapped;
 	
 	// debug
 	// outColor = vec3(0.0, 0.0, 0.0);
+	//outColor = mipmapColor;
 }

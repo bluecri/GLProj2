@@ -13,7 +13,9 @@ namespace SHADER
 
 		GLuint m_useBloom;
 		GLuint m_useToneMapping;
+		
 
+		GLuint m_mipmapLevel;
 		GLuint m_exposure;
 	};
 }

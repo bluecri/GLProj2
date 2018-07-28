@@ -13,6 +13,7 @@ public:
 	bool _useBloom;		// can use if hdr on
 	bool _useFXAA;
 	bool _bUsePostEffect;
+	bool _useReadPixel;
 	
 };
 

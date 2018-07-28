@@ -8,5 +8,6 @@ Option::Option() {
 	_useToneMapping = false;
 	_useBloom = true;		// can use if hdr on
 	_useFXAA = true;
+	_useReadPixel = false;
 	_bUsePostEffect = false;
 }

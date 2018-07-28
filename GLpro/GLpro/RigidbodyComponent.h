@@ -30,6 +30,8 @@ public:
 	const glm::mat4& getWorldMatRef() const;
 	glm::mat4 getWorldMat() const;
 	glm::vec3 getWorldPosVec() const;
+	void setWorldMat(glm::mat4& inMat);
+	void setWorldPosVec(glm::vec3& inPos);
 	//virtual const glm::vec3& getWorldPosVecRef() const;
 
 	// model mat
@@ -125,6 +127,8 @@ protected:
 	void updateLocalWithVelocityOrSpeed(float deltaTime);
 	void updateWithDirtyParent(float deltaTime, glm::mat4& _parentWorldMat);
 	void updateWIthNoDirtyParent(float deltaTime);
+	void calcWorldMatWithLocalPriv();
+	void calcWorldMatPriv(const glm::mat4& parentMat);
 
 private:
 	Entity* _bindedEntity;

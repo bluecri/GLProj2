@@ -240,31 +240,35 @@ void Enemy::doJobWithBeDeleted()
 void Enemy::playerMovementProgress()
 {
 	float curSpeed = getSpeed();
-	if (fabs(_targetSpeed - curSpeed) < std::numeric_limits<float>::epsilon())
+	float newSpeed = curSpeed;
+
+	// not same
+	if (fabs(_targetSpeed - curSpeed) > std::numeric_limits<float>::epsilon())
 	{
-		// not same
 		if (_targetSpeed < curSpeed)
 		{
-			_curPlaneInfo->_maxSpeed -= _curPlaneInfo->_deltaSpeed;
-			_curPlaneInfo->_maxSpeed = std::max(_curPlaneInfo->_maxSpeed, 0.0f);
+			newSpeed = curSpeed - _curPlaneInfo->_deltaSpeed;
+			newSpeed = std::max(newSpeed, 0.0f);
 		}
 		else
 		{
-			_curPlaneInfo->_maxSpeed += _curPlaneInfo->_deltaSpeed;
-			_curPlaneInfo->_maxSpeed = std::min(_curPlaneInfo->_maxSpeed, _originPlaneInfo->_maxSpeed);
+			newSpeed = curSpeed + _curPlaneInfo->_deltaSpeed;
+			newSpeed = std::min(newSpeed, _curPlaneInfo->_maxSpeed);
 		}
-		_rigidbodyComponent->speedSet(_curPlaneInfo->_maxSpeed);
+		_rigidbodyComponent->speedSet(newSpeed);
 	}
 }
 
 void Enemy::setSpeedWithCurInfo(float speed)
 {
-	_targetSpeed = std::min(speed, _originPlaneInfo->_maxSpeed);
+	_targetSpeed = std::min(speed, _curPlaneInfo->_maxSpeed);
 }
 
 Entity * Enemy::findChaseTarget()
 {
 	// todo : find chase target
+
+
 	return nullptr;
 }
 

@@ -2,6 +2,8 @@
 
 #include "stdafx.h"
 
+#define PBO_SIZE 2
+
 namespace SHADER
 {
 	class ShaderShadow;
@@ -13,6 +15,7 @@ namespace SHADER
 	class ShaderHDR; 
 	class ShaderBloom;
 	class ShaderFXAA;
+	class ShaderMipmap;
 }
 
 namespace RENDER
@@ -86,8 +89,12 @@ namespace RESOURCE
 		void setExposure(float exp);
 		void setExposureAdjustSpeed(float adjustSpeed);
 		float getExposureAdjustSpeed();
-		float calcExposureWithMipmap();
 
+
+		void GenerateMipmapExposure();
+		float calcExposureWithMipmap();
+		float calcExposureWithMipmapReadPixel();
+		
 		bool postGraphicProcessLoop();
 		void doBlooming();
 
@@ -100,6 +107,7 @@ namespace RESOURCE
 		SHADER::ShaderHDR*		_hdrShader;
 		SHADER::ShaderBloom*	_bloomShader;
 		SHADER::ShaderFXAA*		_fxaaShader;
+		SHADER::ShaderMipmap*	_mipmapShader;
 		// SHADER::ShaderPostEffect*	_postEffectShader;
 
 		GLuint	_GFBORetTextureID;
@@ -112,10 +120,23 @@ namespace RESOURCE
 		GLuint	_FBOBloomHorTexture;
 		GLuint	_FBOFXAATexture;
 		GLuint	_FBOPostEffectTexture;
-		
+
+		GLuint	_FBOForMipmap;
+		GLuint	_FBOLastMipmapTexture;
+		int		_mipmapLevel;
+
+		GLuint	_pixelBufferID[PBO_SIZE];
+		GLsync	_fenceSync[2];
+		int		_swapPBOIndex;
+		int		_swapPBOSize;
+		int		_exposureUpdateInterval;
+		int		_curExposureUpdateInterval;
+		bool	_bFirstTry;
+
 		int _GBOX, _GBOY;
 
 		float	_exposure;
+		float	_prevExposure;
 		float	_exposureAdjustSpeed;
 
 		std::vector<int>	_renderPipelineVec;
@@ -123,5 +144,7 @@ namespace RESOURCE
 
 		ModelOnlyVertex*	_modelOnlyVertex;
 
+
+		GLuint _emptyTestTexture;
 	};
 }

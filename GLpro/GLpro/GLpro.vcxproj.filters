@@ -615,6 +615,12 @@
     <ClCompile Include="ShaderBloom.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderMipmap.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="OctreeElem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -1115,6 +1121,12 @@
     <ClInclude Include="ShaderBloom.h">
       <Filter>소스 파일\src\shader\PostPipeline</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderMipmap.h">
+      <Filter>소스 파일\src\shader\PostPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeElem.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\Shader\DepthRTT.fragmentshader">
@@ -1205,6 +1217,12 @@
       <Filter>리소스 파일\shaders\postPipeline</Filter>
     </None>
     <None Include="data\Shader\Bloom.vertexshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\MipmapLast.fragmentshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\MipmapLast.vertexshader">
       <Filter>리소스 파일\shaders\postPipeline</Filter>
     </None>
   </ItemGroup>

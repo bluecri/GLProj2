@@ -3,7 +3,7 @@
 SphereOb::SphereOb()
 {
 	_center = glm::vec3();
-	_radius = 0.0f;
+	_radius = 1.0f;
 }
 
 void SphereOb::updateSphereOb(glm::vec3 & center)

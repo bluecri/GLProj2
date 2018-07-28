@@ -22,6 +22,7 @@ public:
 	void eraseCollisionComponent(CollisionComponent* delTargetComp);
 
 	void doCollisionTest();
+	void clearOctree();
 
 private:
 
@@ -29,7 +30,6 @@ private:
 	void insertTestCompToOctaTreeWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
 	void actualCollisionTest();
 	void collisionTestWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
-	void clearOctree();
 
 private:
 	std::list<CollisionComponent*> _collisionComponentContainerOBB;

@@ -1,0 +1,13 @@
+#version 330 core
+
+layout (location = 0) out vec3 outColor;   
+
+in vec2 UV;
+
+uniform sampler2D MipmapTextrue;
+uniform int MipmapLevel;
+
+void main()
+{
+	outColor = textureLod(MipmapTextrue, UV, MipmapLevel).rgb;
+}

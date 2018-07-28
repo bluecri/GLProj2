@@ -11,5 +11,6 @@ SHADER::ShaderHDR::ShaderHDR(const char * vertexShader, const char * fragmentSha
 		m_useToneMapping = glGetUniformLocation(m_shaderID, "UseToneMapping");
 
 		m_exposure = glGetUniformLocation(m_shaderID, "Exposure");
+		m_mipmapLevel = glGetUniformLocation(m_shaderID, "MipmapLevel");
 	}
 }

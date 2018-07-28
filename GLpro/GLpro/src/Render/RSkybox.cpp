@@ -43,7 +43,6 @@ namespace RENDER
 		RigidbodyComponent* cameraRigidbodyComponent = cam->getRigidbodyComponent();
 		glm::mat4 cameraViewMatrix = cam->getRecentViewMat();
 
-		// todo : use _div
 		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cameraViewMatrix);
 
 		//glDepthMask(GL_FALSE);

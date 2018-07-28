@@ -34,7 +34,6 @@ void CollisionComponentManager::doCollisionTest()
 {
 	insertTestCompToOctaTree();
 	actualCollisionTest();
-	clearOctree();
 }
 
 void CollisionComponentManager::insertTestCompToOctaTree() 

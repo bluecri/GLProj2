@@ -14,8 +14,8 @@ public:
 	SkyboxGObject(GameSession* gameSession, SHADER::ShaderSkybox* shader, RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxFObj);
 	~SkyboxGObject();
 
-	
 	static void preMade();
+	virtual void logicUpdate(float deltaTime, float acc) override;
 
 public:
 	RENDER::RSkybox* rSkybox;
@@ -26,7 +26,6 @@ private:
 	std::shared_ptr<RENDER::RSkybox::DrawElement> registeredElemInRenderer;
 
 	// Entity을(를) 통해 상속됨
-	virtual void logicUpdate(float deltaTime, float acc) {};	// todo? : div 여기서 처리?
 	virtual void setCollisionTest(bool bCollision) override;
 	virtual void doJobWithBeDeleted() override;
 };
