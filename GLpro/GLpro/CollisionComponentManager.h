@@ -24,16 +24,19 @@ public:
 	void doCollisionTest();
 	void clearOctree();
 
-private:
+	void pushToSleepComponentContainer(CollisionComponent* sleepContainer);
 
-	void insertTestCompToOctaTree();
+private:
+	void insertSleepCompToOctTree();
 	void insertTestCompToOctaTreeWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
 	void actualCollisionTest();
 	void collisionTestWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
 
+	void doOctreeUpdate();
+
 private:
-	std::list<CollisionComponent*> _collisionComponentContainerOBB;
-	std::list<CollisionComponent*> _collisionComponentContainerAABB;
+	std::list<CollisionComponent*> _collisionSleepComponentContainerOBB;
+	std::list<CollisionComponent*> _collisionSleepComponentContainerAABB;
 	OctreeForCollision* _octree;
 };
 

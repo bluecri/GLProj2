@@ -220,6 +220,12 @@
     <Filter Include="리소스 파일\shaders\textureRender">
       <UniqueIdentifier>{49e06903-db99-4174-91d7-bdcf3a7a7772}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\preComplie\vectorLikeList">
+      <UniqueIdentifier>{36255e45-3c5f-4bd1-95a3-dac0882d39d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\3rd\clientNetwork">
+      <UniqueIdentifier>{2cfe1392-de2d-471c-b638-b4f5e4a53ba0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -619,6 +625,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="OctreeElem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorPElem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1126,6 +1135,12 @@
     </ClInclude>
     <ClInclude Include="OctreeElem.h">
       <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorPElem.h">
+      <Filter>소스 파일\preComplie\vectorLikeList</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorP.h">
+      <Filter>소스 파일\preComplie\vectorLikeList</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

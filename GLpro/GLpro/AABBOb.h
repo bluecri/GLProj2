@@ -16,7 +16,11 @@ public:
 	const	glm::vec3& getCenterConstRef() const;
 	const	glm::vec3& getAxisConstRef() const;
 
+	bool	getDirty();
+	void	setDirty(bool bDirty);
+
 private:
-	glm::vec3 _center;
-	glm::vec3 _halfAxisSize;
+	bool		_bDirty;
+	glm::vec3	_center;
+	glm::vec3	_halfAxisSize;
 };

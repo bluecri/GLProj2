@@ -2,6 +2,7 @@
 #include "CollisionComponent.h"
 
 CollisionComponent::CollisionComponent(RigidbodyComponent * rigidComp)
+	: VectorPElem()
 {
 	_rigidComp = rigidComp;
 	_bDeleted = false;
@@ -17,12 +18,13 @@ const glm::mat4& CollisionComponent::getWorldMatRef()
 	return _worldMat;
 }
 
-const glm::vec3& CollisionComponent::getAxisLenRef()
+const glm::vec3& CollisionComponent::getAxisLenForAABBRef()
 {
-	return _axisLen;
+	return _aabbObForOctree.getAxisConstRef();
 }
 
-void CollisionComponent::setDeleted(bool bDeleted) {
+void CollisionComponent::setDeleted(bool bDeleted) 
+{
 	_bDeleted = bDeleted;
 }
 
@@ -34,6 +36,34 @@ void CollisionComponent::setCollisionTest(bool bCollisionTest)
 void CollisionComponent::setCollisionVelocityUpdate(bool bVelUpdate)
 {
 	_bCollideVelocityUpdate = bVelUpdate;
+}
+
+void CollisionComponent::setLocalRotation(glm::mat4& rotMat)
+{
+	_bRotateModified = true;
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int k = 0; k < 3; k++)
+		{
+			_localMat[i][k] = rotMat[i][k];
+		}
+	}
+}
+
+void CollisionComponent::setLocalPos(glm::vec3& posVec)
+{
+	_bPosModified = true;
+
+	for (int i = 0; i < 3; i++)
+	{
+		_localMat[3][i] = posVec[i];
+	}
+}
+
+bool CollisionComponent::isAABBForOctreeDirty()
+{
+	return _aabbObForOctree.getDirty();
 }
 
 bool CollisionComponent::sIsBoxCollisionCheck(const glm::mat4 & wolrd1, const glm::mat4 & wolrd2, const glm::vec3 & axisLen1, const glm::vec3 & axisLen2)

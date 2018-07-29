@@ -14,14 +14,14 @@ CollisionComponentManager::CollisionComponentManager(int height, int halfAxisSiz
 CollisionComponent * CollisionComponentManager::GetNewOBBCollisionComp(RigidbodyComponent * rigidComp, glm::mat4 & localMat, glm::vec3 & axisLen)
 {
 	CollisionComponent* retComp = new OBBCollisionComp(rigidComp, localMat, axisLen);
-	_collisionComponentContainerOBB.push_back(retComp);
+	_collisionSleepComponentContainerOBB.push_back(retComp);
 	return retComp;
 }
 
 CollisionComponent * CollisionComponentManager::GetNewAABBCollisionComp(RigidbodyComponent * rigidComp, glm::vec3 & localVec, glm::vec3 & axisLen)
 {
 	CollisionComponent* retComp = new AABBCollisionComp(rigidComp, localVec, axisLen);
-	_collisionComponentContainerAABB.push_back(retComp);
+	_collisionSleepComponentContainerAABB.push_back(retComp);
 	return retComp;
 }
 
@@ -32,14 +32,15 @@ void CollisionComponentManager::eraseCollisionComponent(CollisionComponent * del
 
 void CollisionComponentManager::doCollisionTest()
 {
-	insertTestCompToOctaTree();
-	actualCollisionTest();
+	doOctreeUpdate();			// octree selp update
+	insertSleepCompToOctTree();	// insert new or sleep component to octree
+	actualCollisionTest();		// do actual collision test
 }
 
-void CollisionComponentManager::insertTestCompToOctaTree() 
+void CollisionComponentManager::insertSleepCompToOctTree() 
 {
-	insertTestCompToOctaTreeWithContainer(_collisionComponentContainerOBB);
-	insertTestCompToOctaTreeWithContainer(_collisionComponentContainerAABB);
+	insertTestCompToOctaTreeWithContainer(_collisionSleepComponentContainerOBB);
+	insertTestCompToOctaTreeWithContainer(_collisionSleepComponentContainerAABB);
 }
 
 void CollisionComponentManager::insertTestCompToOctaTreeWithContainer(std::list<CollisionComponent*>& collisionComponentContainer)
@@ -61,20 +62,16 @@ void CollisionComponentManager::insertTestCompToOctaTreeWithContainer(std::list<
 		}
 		(*it)->_bAlreadyVelocityUpdated = false;	// init for velocity update
 
-		// 순서 주의
-		
-		(*it)->updateWithRigidComp();				// update local collision box -> world collision box
-		(*it)->updateAABBForOctree();				// update aabb for _octree
-		_octree->insert(*it);						// insert
+		(*it)->updateCollisionComp();				// update local collision box -> world collision box
+		_octree->newlyInsertComponent(*it);			// insert
 
-		++it;
+		it = collisionComponentContainer.erase(it);
 	}
 }
 
 void CollisionComponentManager::actualCollisionTest()
 {
-	collisionTestWithContainer(_collisionComponentContainerAABB);
-	collisionTestWithContainer(_collisionComponentContainerOBB);
+	collisionTestWithContainer(_octree->_usingComponents);
 }
 
 void CollisionComponentManager::collisionTestWithContainer(std::list<CollisionComponent*>& collisionComponentContainer)
@@ -117,6 +114,23 @@ void CollisionComponentManager::collisionTestWithContainer(std::list<CollisionCo
 	}
 }
 
+void CollisionComponentManager::doOctreeUpdate()
+{
+	_octree->doOctreeUpdate();
+}
+
+void CollisionComponentManager::pushToSleepComponentContainer(CollisionComponent * sleepContainer)
+{
+	switch (sleepContainer->collisionType)
+	{
+	case COLLISION_AABB:
+		_collisionSleepComponentContainerAABB.push_back(sleepContainer);
+		break;
+	case COLLISION_OBB:
+		_collisionSleepComponentContainerOBB.push_back(sleepContainer);
+		break;
+	}
+}
 
 void CollisionComponentManager::clearOctree()
 {

@@ -3,6 +3,7 @@
 #include "OctreeElem.h"
 
 #include "CollisionComponent.h"
+#include "CollisionComponentManager.h"
 
 OctreeForCollision::OctreeForCollision(int height, int halfAxisSize, glm::vec3 center)
 {
@@ -14,7 +15,7 @@ OctreeForCollision::OctreeForCollision(int height, int halfAxisSize, glm::vec3 c
 	_bUseChildren = false;
 	*/
 
-	_maxCountOfObjects = 8;
+	_maxCountOfObjects = 6;
 
 	_octreeElemVec.reserve(pow(8, height) + 1);
 	_octreeElemVec = std::vector<OctreeElem>(pow(8, height) + 1, OctreeElem());
@@ -53,6 +54,10 @@ void OctreeForCollision::initOctreeElem(OctreeElem& elem)
 					_octreeElemVec[childIdx]._halfAxisSize = elem._halfAxisSize / 2;
 					_octreeElemVec[childIdx]._center = childCenter;
 					_octreeElemVec[childIdx]._index = childIdx;
+					_octreeElemVec[childIdx]._potentialAllCount = 0;
+					_octreeElemVec[childIdx]._useChildBit = 0;
+					_octreeElemVec[childIdx]._potentialThreshold = _maxCountOfObjects + elem._height + 1;
+
 					initOctreeElem(_octreeElemVec[childIdx]);
 				}
 			}
@@ -62,108 +67,16 @@ void OctreeForCollision::initOctreeElem(OctreeElem& elem)
 }
 
 
-void OctreeForCollision::insert(CollisionComponent * comp)
+void OctreeForCollision::newlyInsertComponent(CollisionComponent * comp)
 {
-	std::stack<OctreeElem> elemStk;
-	//std::stack<OctreeElem&> elemStk;
-	std::stack<CollisionComponent*> compStk;
-
-	int index = 0;
-	elemStk.push(_octreeElemVec[index]);
-	compStk.push(comp);
-	
-	while (!elemStk.empty())
-	{
-		OctreeElem curElem = elemStk.top();
-		CollisionComponent* curComp = compStk.top();
-		elemStk.pop();
-		compStk.pop();
-
-		curElem._bUsed = true;
-		index = curElem._index;
-		int targetIdx = -1;
-
-		if (curElem._bUseChildren)
-		{
-			if (-1 == (targetIdx = getFitChildBoxIndex(curElem, comp)))
-			{
-				curElem._potentialComponents.push_back(curComp);
-				curComp->_octreeElemIndex = index;
-				return;
-			}
-
-			index = index * 8 + targetIdx;
-			elemStk.push(_octreeElemVec[index]);
-			compStk.push(curComp);
-		}
-		else
-		{
-			curElem._potentialComponents.push_back(comp);
-			curComp->_octreeElemIndex = index;
-
-			//_potentialComponents 개수가 적으면 stop. 일정 수가 넘어가면 children으로.
-			if (_maxCountOfObjects < curElem._potentialComponents.size() && curElem._height != 0)
-			{
-				curElem._bUseChildren = true;
-
-				for (auto it = curElem._potentialComponents.begin(); it != curElem._potentialComponents.end(); )
-				{
-					if (-1 != (targetIdx = getFitChildBoxIndex(curElem, *it)))
-					{
-						// push to child from this(parent)
-						index = index * 8 + targetIdx;
-						elemStk.push(_octreeElemVec[index]);
-						compStk.push((*it));
-
-						it = _potentialComponents.erase(it);
-					}
-					else
-					{
-						++it;
-					}
-				}
-			}
-		}
-	}
-
+	_usingComponents.push_back(comp);
+	insertComponent(comp);
 	return;
 }
 
 // 충돌 가능한 모든 CollisionComponent들을 potentialList에 등록
 void OctreeForCollision::getCollisionPotentialList(std::list<CollisionComponent*>& potentialList, CollisionComponent * comp)
 {
-	/*
-	if (_bUsed == false)
-		return;
-
-	for (auto elem : _potentialComponents)
-	{
-		potentialList.push_back(elem);
-	}
-
-	if (_height == 0)
-	{
-		return;
-	}
-
-	if (_bUseChildren == false)
-		return;
-
-	int targetIdx = -1;
-
-	// doopt : comp에 childBox Index를 미리 저장해놓고 같은 node로 collision 확인.
-	// object가 octree node에서 변경이 드문 경우 하고 불일치시에 처음부터 collision check 하는 방법
-	if (-1 == (targetIdx = getFitChildBoxIndex(comp)))
-	{
-		for (int i = 0; i < OCT_NUM; i++)
-			_childTree[i]->getAllCollisionPotentialList(potentialList);
-	}
-	else
-	{
-		_childTree[targetIdx]->getCollisionPotentialList(potentialList, comp);
-	}
-	*/
-
 	// get all parent & self
 	int index = comp->_octreeElemIndex;
 	while (index != 0)
@@ -208,29 +121,7 @@ void OctreeForCollision::getAllCollisionPotentialList(std::list<CollisionCompone
 			}
 		}
 	}
-
-	/*
-	if (_bUsed == false)
-		return;
-
-	for (auto elem : _potentialComponents)
-	{
-		potentialList.push_back(elem);
-	}
-
-	if (_bUseChildren)
-	{
-		for (int i = 0; i < OCT_NUM; i++)
-		{
-			_childTree[i]->getAllCollisionPotentialList(potentialList);
-		}
-	}
-
-	return;
-	*/
 }
-
-
 
 // 등록해놓은 모든 CollisionComponent refresh.
 void OctreeForCollision::clearPotentialCompPropa()
@@ -249,7 +140,6 @@ void OctreeForCollision::clearPotentialCompPropa()
 
 		_octreeElemVec[idx]._potentialComponents.clear();
 		_octreeElemVec[idx]._bUsed = false;
-		_maxCountOfObjects = 0;
 
 		if (_octreeElemVec[idx]._height == 0)
 		{
@@ -265,6 +155,129 @@ void OctreeForCollision::clearPotentialCompPropa()
 		}
 		_octreeElemVec[idx]._bUseChildren = false;
 	}
+}
+
+void OctreeForCollision::doOctreeUpdate()
+{
+	for (auto it = _usingComponents.begin(); it != _usingComponents.end();)
+	{
+		if ((*it)->_bDeleted)
+		{
+			// remove from octree
+			removeCopmInOctreeElem(*it);
+
+			// delete from usingComponent and DeAlloc
+			delete *it;
+			it = _usingComponents.erase(it);
+			continue;
+		}
+
+		if (!((*it)->_bCollisionTest))
+		{
+			// move from usingComponent to sleepCompContainer
+			GCollisionComponentManager->pushToSleepComponentContainer(*it);
+
+			// remove from octree
+			removeCopmInOctreeElem(*it);
+
+			// remove from usingComponent
+			it = _usingComponents.erase(it);
+			continue;
+		}
+
+		(*it)->_bAlreadyVelocityUpdated = false;	// init for velocity update
+		(*it)->updateCollisionComp();				// update local collision box -> world collision box
+
+		// check aabb is modified
+		if ((*it)->isAABBForOctreeDirty())
+		{
+			return;
+		}
+
+		// check is in same block
+		if (_octreeElemVec[(*it)->_octreeElemIndex].IsInBoxFitTest((*it)))
+		{
+			return;
+			// opt : insert from botttom
+			/*
+			if(use this elem children)
+				check IsInBoxTest of this direct child box
+			*/
+		}
+		else
+		{
+			// If not, Reinsert to root
+			removeCopmInOctreeElem(*it);
+			insertComponent(*it);
+		}
+
+	}
+}
+
+void OctreeForCollision::insertComponent(CollisionComponent * comp)
+{
+	std::stack<OctreeElem> elemStk;
+	std::stack<CollisionComponent*> compStk;
+
+	int index = 0;
+	elemStk.push(_octreeElemVec[index]);
+	compStk.push(comp);
+
+	while (!elemStk.empty())
+	{
+		OctreeElem curElem = elemStk.top();
+		CollisionComponent* curComp = compStk.top();
+		elemStk.pop();
+		compStk.pop();
+
+		curElem._bUsed = true;
+		index = curElem._index;
+		int targetIdx = -1;
+
+		if (curElem._bUseChildren)
+		{
+			if (-1 == (targetIdx = getFitChildBoxIndex(curElem, comp)))
+			{
+				curElem._potentialComponents.push_back(curComp);
+				curComp->_octreeElemIndex = index;
+				return;
+			}
+
+			index = index * 8 + targetIdx;
+			elemStk.push(_octreeElemVec[index]);
+			compStk.push(curComp);
+		}
+		else
+		{
+			curElem._potentialComponents.push_back(comp);
+			curComp->_octreeElemIndex = index;
+
+			//_potentialComponents 개수가 적으면 stop. 일정 수가 넘어가면 children으로.
+			if (curElem._potentialThreshold < curElem._potentialComponents.vecPSize() && curElem._height != 0)
+			{
+				curElem._bUseChildren = true;
+
+				for (auto it = curElem._potentialComponents.begin(); it != curElem._potentialComponents.end(); )
+				{
+					if (-1 != (targetIdx = getFitChildBoxIndex(curElem, *it)))
+					{
+						// push to child from this(parent)
+						index = index * 8 + targetIdx;
+						elemStk.push(_octreeElemVec[index]);
+						compStk.push((*it));
+
+						it = curElem._potentialComponents.erase(it);
+					}
+					else
+					{
+						++it;
+					}
+				}
+			}
+		}
+	}
+
+	return;
 }
 
 // insert 가능한 child box index return
@@ -285,57 +298,42 @@ int OctreeForCollision::getFitChildBoxIndex(OctreeElem& octreeElem, CollisionCom
 	return -1;	// 일치하는 하위 child box가 존재하지 않음.
 }
 
-// component가 완전히 inbox인지 check. (intersect == outside)
-/*
-bool OctreeForCollision::IsInBoxFitTest(CollisionComponent * comp)
+//bool IsInBoxFitTest(CollisionComponent* comp);
+//int IsInBoxTestAll(CollisionComponent* comp);
+
+void OctreeForCollision::removeCopmInOctreeElem(CollisionComponent * comp)
 {
-	//AABB test
-	for (int i = 0; i < 3; i++)
+	int index = comp->_octreeElemIndex;
+	OctreeElem& octreeElem = _octreeElemVec[index];
+	octreeElem._potentialComponents.erase(comp);
+
+	// reduce count all parent
+
+}
+
+bool OctreeForCollision::IsUseThisOctreeElem(OctreeElem & elem)
+{
+	// parent _useChildBit check
+	int idx = elem._index;
+	int mod = elem._index % 8;
+
+	if (idx == 0)
 	{
-	if (fabs(_center[i] - comp->_center[i]) >(_halfAxisSize[i] + comp->_halfAxisSize[i]))
+		return true;
+	}
+
+	idx = (idx - 1) / 8;	// parent index
+
+	if (_octreeElemVec[idx]._useChildBit & (1 << mod))
+	{
+		return true;
+	}
+
 	return false;
-	}
-
-
-	const AABBOb& aabbOb = comp->_aabbObForOctree;
-	const glm::vec3& aabbCemter = aabbOb.getCenterConstRef();
-	const glm::vec3& aabbAxis = aabbOb.getAxisConstRef();
-
-
-	// in box text
-	for (int i = 0; i < 3; i++)
-	{
-		// out condition ( center diff + half > HALF )
-		if (fabs(_center[i] - aabbCemter[i]) > fabs (_halfAxisSize - aabbAxis[i]))
-			return false;
-	}
-
-	return true;
 }
-*/
 
-// component - box check. (inside, intersect, outside)
-/*
-int OctreeForCollision::IsInBoxTestAll(CollisionComponent * comp)
+
+bool OctreeForCollision::IsUseChild(OctreeElem & elem)
 {
-	int ret = 1;		// inside
-
-	const AABBOb& aabbOb = comp->_aabbObForOctree;
-	const glm::vec3& aabbCemter = aabbOb.getCenterConstRef();
-	const glm::vec3& aabbAxis = aabbOb.getAxisConstRef();
-
-	// in box text
-	for (int i = 0; i < 3; i++)
-	{
-		// out condition ( center diff > HALF + half )
-		if (fabs(_center[i] - aabbCemter[i]) > _halfAxisSize + aabbAxis[i])
-			return -1;	// outside
-
-		// intersection condition ( center diff <= HALF - half )
-		if (fabs(_center[i] - aabbCemter[i]) > fabs(_halfAxisSize - aabbAxis[i]))
-			ret =  0;	// outside
-	}
-
-	return ret;
+	return elem._useChildBit != 0;
 }
-*/

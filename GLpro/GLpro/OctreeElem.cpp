@@ -6,7 +6,9 @@ OctreeElem::OctreeElem()
 {
 	_bUsed = false;
 	_bUseChildren = false;
-	_potentialComponents = std::list<CollisionComponent*>();
+	_potentialComponents = VectorP<CollisionComponent*>();
+
+	_useChildBit = 0;
 }
 
 // insert °¡´ÉÇÑ child box index return

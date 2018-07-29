@@ -182,7 +182,7 @@ void WINDOW::Window::mainLoop()
 			t += dt;
 			usedT += dt;
 
-			GCollisionComponentManager->clearOctree();
+			//GCollisionComponentManager->clearOctree();
 		}
 
 		// dt 보정 2가지 방법

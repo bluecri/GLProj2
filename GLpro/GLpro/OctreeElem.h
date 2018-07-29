@@ -10,17 +10,9 @@ public:
 	OctreeElem();
 
 	bool IsInBoxFitTest(CollisionComponent * comp);
-	bool IsUseChild()
-	{
-		return _useChildBit != 0;
-	}
-	bool IsUseThis()
-	{
-		// parent _useChildBit check
-	}
 
 public:
-	std::list<CollisionComponent*> _potentialComponents;
+	VectorP<CollisionComponent*> _potentialComponents;
 
 	int	_index;
 
@@ -34,4 +26,5 @@ public:
 	int	_useChildBit;
 
 	int _potentialAllCount;
+	int _potentialThreshold;
 };

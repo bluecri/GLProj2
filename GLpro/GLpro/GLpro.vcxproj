@@ -157,6 +157,7 @@
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectionalLightManager.cpp" />
     <ClCompile Include="EmptyMissileGenerator.cpp" />
+    <ClCompile Include="VectorPElem.cpp" />
     <ClInclude Include="AABBCollisionComp.h" />
     <ClInclude Include="AABBOb.h" />
     <ClInclude Include="AimTextUIObj.h" />
@@ -325,6 +326,8 @@
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="SpotLightManager.h" />
     <ClInclude Include="UserInfo.h" />
+    <ClInclude Include="VectorP.h" />
+    <ClInclude Include="VectorPElem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.h" />

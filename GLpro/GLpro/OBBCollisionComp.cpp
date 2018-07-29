@@ -14,15 +14,26 @@ OBBCollisionComp::OBBCollisionComp(RigidbodyComponent * rigidComp, glm::mat4 & l
 	_axisTotalLen = glm::length(_axisLen);
 }
 
-void OBBCollisionComp::updateWithRigidComp()
+void OBBCollisionComp::updateCollisionComp()
 {
-	_worldMat = _rigidComp->getWorldMatRef() * _localMat;
-	_aabbObForOctree.updateAABBObAxis(_axisTotalLen);
-}
+	_bDirty = false;
 
-void OBBCollisionComp::updateAABBForOctree()
-{
+	if (_bAxisModified)
+	{
+		_bDirty = true;
+	}
+
+	// no need to update _worldMat
+	if (!(_rigidComp->isDirty()) && !_bPosModified && !_bRotateModified)		//opt : rigid dirty check only pos
+	{
+		return;
+	}
+
+	_worldMat = _rigidComp->getWorldMatRef() * _localMat;
 	_aabbObForOctree.updateAABBObCenter(_worldMat[3]);
+	_bDirty = true;
+
+	return;
 }
 
 bool OBBCollisionComp::collideTestToOther(CollisionComponent * comp)
@@ -31,7 +42,7 @@ bool OBBCollisionComp::collideTestToOther(CollisionComponent * comp)
 	{
 	case COLLISION_TYPE::COLLISION_AABB:
 	case COLLISION_TYPE::COLLISION_OBB:
-		return sIsBoxCollisionCheck(_worldMat, comp->getWorldMatRef(), _axisLen, comp->getAxisLenRef());
+		return sIsBoxCollisionCheck(_worldMat, comp->getWorldMatRef(), _axisLen, comp->getAxisLenForAABBRef());
 		break;
 
 	default:
@@ -40,4 +51,11 @@ bool OBBCollisionComp::collideTestToOther(CollisionComponent * comp)
 	}
 
 	return false;
+}
+
+void OBBCollisionComp::setAxisLen(vec3& halfSxisVec)
+{
+	_bAxisModified = true;
+	_axisTotalLen = glm::length(halfSxisVec);
+	_aabbObForOctree.updateAABBObAxis(_axisTotalLen);
 }

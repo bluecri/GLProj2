@@ -35,6 +35,7 @@
 #include <memory>
 
 #include <type_traits>
+#include "VectorP.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

@@ -8,9 +8,9 @@ public:
 	AABBCollisionComp(RigidbodyComponent* rigidComp, glm::vec3& localVec, glm::vec3& axisLen);
 
 	// CollisionComponent을(를) 통해 상속됨
-	virtual void updateWithRigidComp() override;
-	virtual void updateAABBForOctree() override;
+	virtual void updateCollisionComp() override;
 	virtual bool collideTestToOther(CollisionComponent* comp) override;
+	virtual void setAxisLen(vec3& halfSxisVec) override;
 
 public:
 

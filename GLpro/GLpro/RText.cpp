@@ -73,7 +73,7 @@ void RENDER::RText::drawRRender(float deltaTime)
 
 		_textFObj->_pos += (_textFObj->_deltaPos) * deltaTime;
 		_shaderObj->loadVector2(_shaderObj->m_movedVec2ID, _textFObj->_pos);
-		_shaderObj->loadVector3(_shaderObj->m_textColorID, _textFObj->_color);
+		_shaderObj->loadVector3f(_shaderObj->m_textColorID, _textFObj->_color);
 		
 		// text bind to object OR to screen
 		if (_textFObj->_bBindToScreen)
