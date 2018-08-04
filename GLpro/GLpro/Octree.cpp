@@ -63,7 +63,6 @@ void OctreeForCollision::initOctreeElem(OctreeElem& elem)
 			}
 		}
 	}
-
 }
 
 
@@ -197,12 +196,13 @@ void OctreeForCollision::doOctreeUpdate()
 		// check is in same block
 		if (_octreeElemVec[(*it)->_octreeElemIndex].IsInBoxFitTest((*it)))
 		{
-			return;
-			// opt : insert from botttom
-			/*
+			// if using children && not leaf node, down 1 height
+			/*	opt
 			if(use this elem children)
-				check IsInBoxTest of this direct child box
+			check IsInBoxTest of this direct child box
 			*/
+			return;
+			
 		}
 		else
 		{
@@ -287,6 +287,16 @@ int OctreeForCollision::getFitChildBoxIndex(OctreeElem& octreeElem, CollisionCom
 	{
 		return -1;
 	}
+
+	int spaceIndex = octreeElem.getSpaceOfMatchedCenter(comp);
+	int index = octreeElem._index * 8 + spaceIndex + 1;
+
+	if (_octreeElemVec[index].IsInBoxFitTest(comp))
+	{
+		return spaceIndex + 1;
+	}
+
+	/*
 	for (int i = 0; i < OCT_POS::OCT_NUM; i++)
 	{
 		int index = octreeElem._index * 8 + i + 1;
@@ -295,6 +305,8 @@ int OctreeForCollision::getFitChildBoxIndex(OctreeElem& octreeElem, CollisionCom
 			return i + 1;
 		}
 	}
+	*/
+
 	return -1;	// 일치하는 하위 child box가 존재하지 않음.
 }
 

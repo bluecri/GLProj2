@@ -10,6 +10,7 @@ public:
 	OctreeElem();
 
 	bool IsInBoxFitTest(CollisionComponent * comp);
+	int getSpaceOfMatchedCenter(CollisionComponent * comp);
 
 public:
 	VectorP<CollisionComponent*> _potentialComponents;

@@ -31,7 +31,7 @@ void AABBCollisionComp::updateCollisionComp()
 	}
 
 	// no need to update _worldMat
-	if (!(_rigidComp->isDirty()) && !_bPosModified)		//opt : rigid dirty check only pos
+	if (!(_rigidComp->isDirtyByRigidLoopUpdate()) && !_bPosModified)		//opt : rigid dirty check only pos
 	{
 		return;
 	}

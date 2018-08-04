@@ -92,7 +92,10 @@ namespace RENDER_TARGET
 		*/
 		void NormalFObj::setFrustumPos(RigidbodyComponent * rigidbodyComponent)
 		{
-			_sphereObForFrustum.updateSphereOb(_frustumPosCompensation + rigidbodyComponent->getWorldPosVec());
+			if (rigidbodyComponent->isDirtyForRender())
+			{
+				_sphereObForFrustum.updateSphereOb(_frustumPosCompensation + rigidbodyComponent->getWorldPosVec());
+			}
 		}
 		glm::vec3 & NormalFObj::getFrustumPosRef()
 		{

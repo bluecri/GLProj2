@@ -18,11 +18,19 @@ void RigidbodyComponentManager::updateRigidbodyComps(float deltaTime)
 	}
 }
 
-void RigidbodyComponentManager::resetRigidbodyCompsDirty()
+void RigidbodyComponentManager::resetAndSwapDirtyAll()
 {
 	for (auto elem : _rigidCompList)
 	{
-		elem->resetDirty();
+		elem->resetAndSwapDirty();
+	}
+}
+
+void RigidbodyComponentManager::resetRenderDirtyAll()
+{
+	for (auto elem : _rigidCompList)
+	{
+		elem->setDirtyForRender(false);
 	}
 }
 

@@ -5,6 +5,8 @@
 #include "src/Entity.h"
 #include "RigidbodyComponent.h"
 
+int RigidbodyComponent::_sMaskBDirty = DIRTY_MASK_RIGID;
+
 RigidbodyComponent::RigidbodyComponent(Entity * bindedEntity, const glm::mat4 &modelMatrix, const glm::mat4 &quaternion, const glm::mat4 &scaleMatrix)
 	: _bindedEntity(bindedEntity), _localModelMatrix(modelMatrix), _localQuaternion(quaternion), _localScaleMatrix(scaleMatrix)
 {
@@ -14,7 +16,7 @@ RigidbodyComponent::RigidbodyComponent(Entity * bindedEntity, const glm::mat4 &m
 	_bVelocity = false;			// bVelocity == use original velocity for move
 	_parentRigidbodyComponentPtr = nullptr;
 	_childRigidbodyComponentPtrList = std::list<RigidbodyComponent*>();
-	_bDirty = true;		// update local -> world	:: 없으면 child로 신규 생성시 world update X
+	setDirty();		// update local -> world	:: 없으면 child로 신규 생성시 world update X
 	//_maxZSpeed = 100.0f;	// 100 velocity
 	_mass = 1.0f;
 
@@ -72,7 +74,7 @@ glm::vec3 RigidbodyComponent::getModelVec() const
 
 void RigidbodyComponent::setLocalMatWithWorldMat(const glm::mat4 & worldMat)
 {
-	_bDirty = true;
+	setDirty();
 
 	// do matrix decomposition (Model -> scale, rotate, transition
 
@@ -131,49 +133,49 @@ return glm::quat_cast(_localRotateMatrix);
 
 void RigidbodyComponent::setModelMatrix(const glm::mat4 &localModelMatrix)
 {
-	_bDirty = true;
+	setDirty();
 	_localModelMatrix = localModelMatrix;
 }
 
 void RigidbodyComponent::setQuaternion(const glm::mat4 &rotateMat)
 {
-	_bDirty = true;
+	setDirty();
 	_localQuaternion = glm::toQuat(rotateMat);
 }
 
 void RigidbodyComponent::setScaleMatrix(const glm::mat4 &localScaleMat)
 {
-	_bDirty = true;
+	setDirty();
 	_localScaleMatrix = localScaleMat;
 }
 
 void RigidbodyComponent::setModelMatrix(const glm::vec3 &localModelVec)
 {
-	_bDirty = true;
+	setDirty();
 	_localModelMatrix = glm::translate(glm::mat4(), localModelVec);
 }
 
 void RigidbodyComponent::setQuaternion(const glm::vec3 &rotateVec)
 {
-	_bDirty = true;
+	setDirty();
 	_localQuaternion = glm::quat(rotateVec);
 }
 
 void RigidbodyComponent::setScaleMatrix(const glm::vec3 &localScaleVec)
 {
-	_bDirty = true;
+	setDirty();
 	_localScaleMatrix = glm::scale(glm::mat4(), localScaleVec);
 }
 
 void RigidbodyComponent::setQuaternion(const glm::quat &quat)
 {
-	_bDirty = true;
+	setDirty();
 	_localQuaternion = quat;
 }
 
 void RigidbodyComponent::setVMatrixLookat(const glm::vec3 & lookat, const glm::vec3 & up)
 {
-	_bDirty = true;
+	setDirty();
 	glm::vec3 modelVec = _localModelMatrix[3];
 	glm::mat4 localRotateMatrix = glm::lookAt(modelVec, modelVec + lookat, up);
 
@@ -182,7 +184,7 @@ void RigidbodyComponent::setVMatrixLookat(const glm::vec3 & lookat, const glm::v
 
 void RigidbodyComponent::setVMatrixLookat(const glm::vec3 & pos, const glm::vec3 & lookat, const glm::vec3 & up)
 {
-	_bDirty = true;
+	setDirty();
 	glm::mat4 localRotateMatrix = glm::lookAt(pos, pos + lookat, up);
 
 	_localQuaternion = glm::toQuat(localRotateMatrix);
@@ -190,7 +192,7 @@ void RigidbodyComponent::setVMatrixLookat(const glm::vec3 & pos, const glm::vec3
 
 void RigidbodyComponent::accModelMatrix(const glm::mat4 &localAccModelMatrix)
 {
-	_bDirty = true;
+	setDirty();
 	_localModelMatrix[3][0] += localAccModelMatrix[3][0];
 	_localModelMatrix[3][1] += localAccModelMatrix[3][1];
 	_localModelMatrix[3][2] += localAccModelMatrix[3][2];
@@ -198,13 +200,13 @@ void RigidbodyComponent::accModelMatrix(const glm::mat4 &localAccModelMatrix)
 
 void RigidbodyComponent::accQuaternion(const glm::mat4 &localAccRotateMat)
 {
-	_bDirty = true;
+	setDirty();
 	_localQuaternion = glm::toQuat(localAccRotateMat) * _localQuaternion;
 }
 
 void RigidbodyComponent::accScaleMatrix(const glm::mat4 &scaleMat)
 {
-	_bDirty = true;
+	setDirty();
 	_localScaleMatrix[0][0] *= scaleMat[0][0];
 	_localScaleMatrix[1][1] *= scaleMat[1][1];
 	_localScaleMatrix[2][2] *= scaleMat[2][2];
@@ -212,14 +214,14 @@ void RigidbodyComponent::accScaleMatrix(const glm::mat4 &scaleMat)
 
 void RigidbodyComponent::accModelMatrix(const glm::vec3 &modelVec)
 {
-	_bDirty = true;
+	setDirty();
 	for (int i = 0; i<3; i++)
 		_localModelMatrix[3][i] += modelVec[i];
 }
 
 void RigidbodyComponent::translateModelMatrix(const glm::vec3 &modelVec)
 {
-	_bDirty = true;
+	setDirty();
 	glm::vec3 moveVec = _localQuaternion * modelVec;
 	_localModelMatrix = glm::translate(_localModelMatrix, moveVec);
 	//_localModelMatrix = glm::translate(_localModelMatrix, modelVec);
@@ -257,19 +259,19 @@ float RigidbodyComponent::getSpeed() {
 // rotate axis == model rotation axis
 void RigidbodyComponent::accQuaternion(const float &degree, glm::vec3 &rotateAxis)
 {
-	_bDirty = true;
+	setDirty();
 	_localQuaternion = glm::rotate(_localQuaternion, glm::radians(degree), rotateAxis);
 }
 
 void RigidbodyComponent::accScaleMatrix(const glm::vec3 &scaleVec)
 {
-	_bDirty = true;
+	setDirty();
 	_localScaleMatrix = glm::scale(_localScaleMatrix, scaleVec);
 }
 
 void RigidbodyComponent::accQuaternion(const glm::quat &quat)
 {
-	_bDirty = true;
+	setDirty();
 	_localQuaternion = quat * _localQuaternion;
 }
 
@@ -394,19 +396,55 @@ void RigidbodyComponent::attachChildRigidbodyComponent(RigidbodyComponent * chil
 	return;
 }
 
-void RigidbodyComponent::resetDirty()
+void RigidbodyComponent::resetAndSwapDirty()
 {
-	_bDirty = false;
+	_dirtyBit = (_dirtyBit & DIRTY_MASK_LOGIC) << DIRTYBIT_PROPAGATION;
 }
 
-bool RigidbodyComponent::isDirty()
+bool RigidbodyComponent::isDirtyForRender()
 {
-	return _bDirty;
+	return _bDirtyRender;
 }
 
+void RigidbodyComponent::setDirtyForRender(bool bDirty)
+{
+	_bDirtyRender = bDirty;
+}
+
+bool RigidbodyComponent::isDirtyByRigidLoopUpdate()
+{
+	return (_dirtyBit & DIRTY_MASK_RIGID);
+}
+
+bool RigidbodyComponent::isDirtyByLogicLoopUpdate()
+{
+	return (_dirtyBit & DIRTY_MASK_LOGIC);
+}
+
+bool RigidbodyComponent::isDirtyAll()
+{
+	return (_dirtyBit != 0);
+}
+
+/*
+ * Set Dirty bit when modified.
+ * If Rigidbody is modified then set DIRTY_MASK_RIGID
+ * If logic modified rigidbody then set DIRTY_MASK_LOGIC
+ */
 void RigidbodyComponent::setDirty()
 {
-	_bDirty = true;
+	_dirtyBit = _dirtyBit | _sMaskBDirty;
+	setDirtyForRender(true);
+}
+
+void RigidbodyComponent::changeSetDirtyBitToRigid()
+{
+	_sMaskBDirty = DIRTY_MASK_RIGID;
+}
+
+void RigidbodyComponent::changeSetDirtyBitToLogic()
+{
+	_sMaskBDirty = DIRTY_MASK_LOGIC;
 }
 
 void RigidbodyComponent::setMove(bool bMove)
@@ -462,7 +500,7 @@ void RigidbodyComponent::updateWorldMatrix(float deltaTime)
 		return;
 	}
 
-	if (_bDirty)
+	if (_dirtyBit)
 	{
 		updateLocalWithVelocityOrSpeed(deltaTime);
 		//_worldTotalMatrix = (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
@@ -476,7 +514,7 @@ void RigidbodyComponent::updateWorldMatrix(float deltaTime)
 	}
 
 	if (bUpdateLocalWithVelocityOrSpeed(deltaTime)) {
-		_bDirty = true;
+		_dirtyBit = true;
 		//_worldTotalMatrix = (_localModelMatrix * glm::toMat4(_localQuaternion) * _localScaleMatrix);
 		calcWorldMatWithLocalPriv();
 
@@ -602,7 +640,7 @@ void RigidbodyComponent::updateWithDirtyParent(float deltaTime, glm::mat4 & pare
 		return;
 	}
 
-	_bDirty = true;
+	_dirtyBit = true;
 
 	//_worldTotalMatrix = parentWorldMat * (_localModelMatrix * glm::toMat4(testQuat) * _localScaleMatrix);
 	calcWorldMatPriv(parentWorldMat);
@@ -623,7 +661,7 @@ void RigidbodyComponent::updateWIthNoDirtyParent(float deltaTime)
 		return;
 	}
 
-	if (_bDirty)	// this RigidbodyComponent is dirty.. dirty propagation.
+	if (_dirtyBit)	// this RigidbodyComponent is dirty.. dirty propagation.
 	{
 		bUpdateLocalWithVelocityOrSpeed(deltaTime);
 		calcWorldMatPriv(_parentRigidbodyComponentPtr->getWorldMatRef());

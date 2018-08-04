@@ -11,7 +11,9 @@ OctreeElem::OctreeElem()
 	_useChildBit = 0;
 }
 
-// insert °¡´ÉÇÑ child box index return
+/*
+*	check if comp center is in octreeElem
+*/
 bool OctreeElem::IsInBoxFitTest(CollisionComponent * comp)
 {
 	/* AABB test
@@ -36,4 +38,30 @@ bool OctreeElem::IsInBoxFitTest(CollisionComponent * comp)
 	}
 
 	return true;
+}
+/*
+*	find matched child Space[0~7] of comp center
+*	This is not check comp center in octreeElem Index. 8 SPACE! 
+*/
+int OctreeElem::getSpaceOfMatchedCenter(CollisionComponent * comp)
+{
+	const glm::vec3& center = comp->_aabbObForOctree.getCenterConstRef();
+	int ret = 0;
+
+	if (center.x > _center.x)
+	{
+		ret += 1;
+	}
+
+	if (center.y > _center.y)
+	{
+		ret += 2;
+	}
+
+	if (center.z > _center.z)
+	{
+		ret += 4;
+	}
+
+	return ret;
 }

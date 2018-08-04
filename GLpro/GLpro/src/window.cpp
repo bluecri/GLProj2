@@ -170,10 +170,17 @@ void WINDOW::Window::mainLoop()
 			* RigidbodyComponent 개별 조작시(logic update) dirty,
 			* collision message로 logic update
 			*/
+
+			// Change dirty bit target to Cur
+			RigidbodyComponent::changeSetDirtyBitToRigid();
+
 			GRigidbodyComponentManager->updateRigidbodyComps(dt);
 			GCollisionComponentManager->doCollisionTest();
-			GRigidbodyComponentManager->resetRigidbodyCompsDirty();
+			//GRigidbodyComponentManager->resetRigidbodyCompsDirty();
 			
+			// Change dirty bit target to Next
+			RigidbodyComponent::changeSetDirtyBitToLogic();
+
 			// logic loop
 			GScene->update(dt, acc);
 
@@ -182,7 +189,10 @@ void WINDOW::Window::mainLoop()
 			t += dt;
 			usedT += dt;
 
-			//GCollisionComponentManager->clearOctree();
+			// Dirty bit target Swap (cur <> next)
+			GRigidbodyComponentManager->resetAndSwapDirtyAll();
+
+			// clear dirty bit
 		}
 
 		// dt 보정 2가지 방법
@@ -192,16 +202,18 @@ void WINDOW::Window::mainLoop()
 		// render loop
 
 		GCameraManager->updateAllRecentMatrix();
-		GRendermanager->frustumObjectUpdate(usedT, acc);		// draw object frustum update
-
-		GLightManager->updateAllLIghts();						// light pos update + light frustum object
+		GRendermanager->doFrustumTest(usedT, acc);		// frustum update & test
+		GLightManager->updateAllLIghts();				// light pos update + light frustum object
+		
 		GALManager->updateALSource();
 
-		//Sleep(1);
 		renderAll(usedT, acc);
 
 		GLightManager->deUpdateAllLIghts();		// light frustum object container clear
-		GOctreeForFrustum->clearPotentialCompPropa();	// clear frustum
+		GRigidbodyComponentManager->resetRenderDirtyAll();
+
+		
+		//GOctreeForFrustum->clearPotentialCompPropa();	// clear frustum
 
 		usedT = 0.0;
 

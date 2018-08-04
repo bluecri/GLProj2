@@ -630,6 +630,9 @@
     <ClCompile Include="VectorPElem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="OctreeFrustumElem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -1141,6 +1144,9 @@
     </ClInclude>
     <ClInclude Include="VectorP.h">
       <Filter>소스 파일\preComplie\vectorLikeList</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeFrustumElem.h">
+      <Filter>소스 파일\components\frustum</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

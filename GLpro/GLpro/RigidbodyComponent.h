@@ -1,6 +1,10 @@
 #pragma once
 #include "stdafx.h"
 
+#define DIRTY_MASK_RIGID		(1 << 4)
+#define DIRTY_MASK_LOGIC		(1 << 1)
+#define DIRTYBIT_PROPAGATION	(DIRTY_MASK_RIGID / DIRTY_MASK_LOGIC)
+
 /******************************************************
 *  Document   :	RigidbodyComponent.h
 *  Description: RigidbodyComponent
@@ -102,9 +106,17 @@ public:
 	void attachParentRigidbodyComponent(RigidbodyComponent* parentRigidbodyComponent);
 	void attachChildRigidbodyComponent(RigidbodyComponent* childRigidbodyComponent);
 
-	void resetDirty();
-	bool isDirty();
-	void setDirty();
+	void		setDirty();
+	static void changeSetDirtyBitToRigid();
+	static void changeSetDirtyBitToLogic();
+
+	bool		isDirtyByRigidLoopUpdate();
+	bool		isDirtyByLogicLoopUpdate();
+	bool		isDirtyAll();
+	void		resetAndSwapDirty();
+
+	bool		isDirtyForRender();
+	void		setDirtyForRender(bool bDirty);
 
 	void setMove(bool bMove);
 	void setBTargetQuat(bool bTargetQuat);
@@ -153,5 +165,8 @@ private:
 	RigidbodyComponent* _parentRigidbodyComponentPtr;
 	std::list<RigidbodyComponent*> _childRigidbodyComponentPtrList;
 
-	bool _bDirty;
+	int	 _dirtyBit;
+	bool _bDirtyRender;
+
+	static int _sMaskBDirty;
 };

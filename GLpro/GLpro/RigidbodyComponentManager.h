@@ -9,9 +9,10 @@ class RigidbodyComponentManager
 {
 public:
 	void updateRigidbodyComps(float deltaTime);
-	void resetRigidbodyCompsDirty();
+	void resetAndSwapDirtyAll();
+	void resetRenderDirtyAll();
 	RigidbodyComponent* getNewRigidbodyComp(Entity * bindedEntity);
-
+	
 private:
 	std::list<RigidbodyComponent*> _rigidCompList;
 };

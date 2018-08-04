@@ -24,7 +24,7 @@ void OBBCollisionComp::updateCollisionComp()
 	}
 
 	// no need to update _worldMat
-	if (!(_rigidComp->isDirty()) && !_bPosModified && !_bRotateModified)		//opt : rigid dirty check only pos
+	if (!(_rigidComp->isDirtyByRigidLoopUpdate()) && !_bPosModified && !_bRotateModified)		//opt : rigid dirty check only pos
 	{
 		return;
 	}

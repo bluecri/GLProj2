@@ -68,7 +68,7 @@ namespace RENDER
 
 		// todo : acc Ã³¸®
 		void renderAll(float deltaTime, float acc);
-		void frustumObjectUpdate(float deltaTime, float acc);
+		void doFrustumTest(float deltaTime, float acc);
 		void renderBufferInit();
 		void swapRenderBuffer();
 

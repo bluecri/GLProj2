@@ -33,6 +33,7 @@ public:
 
 	// self update
 	void doOctreeUpdate();
+
 private:
 	void insertComponent(CollisionComponent* comp);
 	// insert °¡´ÉÇÑ child box index return

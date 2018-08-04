@@ -45,17 +45,21 @@ void RENDER::RenderManager::renderAll(float deltaTime, float acc)
 
 }
 
-void RENDER::RenderManager::frustumObjectUpdate(float deltaTime, float acc)
+void RENDER::RenderManager::doFrustumTest(float deltaTime, float acc)
 {
 	// normal object frustum update
 	for (auto elem : _normalContainer._rRenderContainer)
 		elem.second->updateRRender();
 
 	// normal object frustum test
+	/*
 	for (auto elem : _normalContainer._rRenderContainer)
 	{
-		GOctreeForFrustum->insertSharedDrawElem(elem.second->getDrawElemList());
+		GOctreeForFrustum->newlyInsertComponent(elem.second->getDrawElemList());
 	}
+	*/
+
+	GOctreeForFrustum->updateOctreeForFrustum();
 }
 
 void RENDER::RenderManager::renderBufferInit()
