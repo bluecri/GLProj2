@@ -13,7 +13,7 @@ namespace RENDER_TARGET
 	namespace NORMAL
 	{
 		NormalFObj::NormalFObj(const char * modelFileName, bool createEbo, const char * textureFileName, const char * textureType)
-			: FObj()
+			: FObj(), VectorPElem()
 		{
 			_model = GModelManager->getModelWithFileName(modelFileName, createEbo);
 			_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
@@ -21,7 +21,7 @@ namespace RENDER_TARGET
 			_frustumPosCompensation = glm::vec3();
 		}
 		NormalFObj::NormalFObj(RESOURCE::Model * model, RESOURCE::Texture * texture)
-			: FObj()
+			: FObj(), VectorPElem()
 		{
 			_model = model;
 			_texture = texture;

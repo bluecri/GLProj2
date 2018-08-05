@@ -6,6 +6,9 @@
 
 #include "../../../SphereOb.h"
 
+#include "../../../VectorPElem.h"
+
+
 #define FRUSTUM_CULL_BIT			(1 << 0)
 #define OCCLUSION_CULL_BIT			(1 << 1)
 #define OCCLUSION_CULL_TEST_BIT		(1 << 2)
@@ -27,7 +30,7 @@ namespace RENDER_TARGET
 {
 	namespace NORMAL
 	{
-		class NormalFObj : public FObj
+		class NormalFObj : public FObj, public VectorPElem
 		{
 		public:
 			NormalFObj(const char* modelFileName, bool createEbo, const char* textureFileName, const char* textureType);

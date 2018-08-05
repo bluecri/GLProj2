@@ -42,6 +42,16 @@ void OctreeForFrustum::newlyInsertComponent(RENDER::RNormal::SharedDrawElement s
 	return;
 }
 
+void OctreeForFrustum::removeCopmInOctreeElem(RENDER::RNormal::SharedDrawElement sharedElem)
+{
+	int index = sharedElem->first->getPElemIdx();
+	OctreeFrustumElem& octreeFrustumElem = _octreeElemVec[index];
+	octreeFrustumElem._potentialComponents.erase(sharedElem.get());
+
+	// reduce count all parent
+
+}
+
 /*
 void OctreeForFrustum::setFrustumBitWithMainCamera()
 {
@@ -440,13 +450,13 @@ void OctreeForFrustum::doOctreeUpdate()
 		// update frustum
 		(*it)->first->setFrustumPos((*it)->second);	
 													// check aabb is modified
-		if ((*it)->isAABBForOctreeDirty())
+		if (!(*it)->second->isDirtyAll())
 		{
 			return;
 		}
 
 		// check is in same block
-		if (_octreeElemVec[(*it)->_octreeElemIndex].IsInBoxFitTest((*it)))
+		if (_octreeElemVec[(*it)->first->getPElemIdx()].sphereIsInBoxTest((*it).get()))
 		{
 			// if using children && not leaf node, down 1 height
 			/*	opt
@@ -490,7 +500,7 @@ void OctreeForFrustum::insertToOctreeForFrustum(RENDER::RNormal::SharedDrawEleme
 			if (-1 == (targetIdx = getFitChildBoxIndex(curElem, curCompPtr)))
 			{
 				curElem._potentialComponents.push_back(curCompPtr);
-				curCompPtr->first->_octreeElemIndex = index;
+				curCompPtr->first->setPElemIdx(index);
 				return;
 			}
 
@@ -501,7 +511,7 @@ void OctreeForFrustum::insertToOctreeForFrustum(RENDER::RNormal::SharedDrawEleme
 		else
 		{
 			curElem._potentialComponents.push_back(curCompPtr);
-			curCompPtr->first->_octreeElemIndex = index;
+			curCompPtr->first->setPElemIdx(index);
 
 			//_potentialComponents 개수가 적으면 stop. 일정 수가 넘어가면 children으로.
 			if (curElem._potentialThreshold < curElem._potentialComponents.vecPSize() && curElem._height != 0)

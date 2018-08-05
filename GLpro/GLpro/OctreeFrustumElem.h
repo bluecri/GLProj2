@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "VectorPPairFirst.h"
 
 namespace RENDER_TARGET { namespace NORMAL { class NormalFObj; } }
 
@@ -17,7 +18,7 @@ public:
 	int getSpaceOfMatchedCenter(DrawElement* drawElemPtr);
 
 public:
-	VectorP<DrawElement*> _potentialComponents;
+	VectorPPairFirst<DrawElement::first_type, DrawElement::second_type> _potentialComponents;	// vector<DrawElement*>
 
 	int	_index;
 

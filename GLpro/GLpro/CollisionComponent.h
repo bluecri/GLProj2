@@ -46,7 +46,7 @@ public:
 
 	// for AABB in OctreeForCollision	(opt : AABB collision comp인 경우 data 중복)
 	AABBOb		_aabbObForOctree;
-	int			_octreeElemIndex;
+	// int			_octreeElemIndex;
 
 	std::list<CollisionComponent*> _collisionLogList;	// collision event(logic update)와 collision physics 분리
 

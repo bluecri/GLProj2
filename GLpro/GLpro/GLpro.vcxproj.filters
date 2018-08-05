@@ -1148,6 +1148,9 @@
     <ClInclude Include="OctreeFrustumElem.h">
       <Filter>소스 파일\components\frustum</Filter>
     </ClInclude>
+    <ClInclude Include="VectorPPairFirst.h">
+      <Filter>소스 파일\preComplie\vectorLikeList</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\Shader\DepthRTT.fragmentshader">

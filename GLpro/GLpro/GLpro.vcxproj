@@ -330,6 +330,7 @@
     <ClInclude Include="UserInfo.h" />
     <ClInclude Include="VectorP.h" />
     <ClInclude Include="VectorPElem.h" />
+    <ClInclude Include="VectorPPairFirst.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.h" />

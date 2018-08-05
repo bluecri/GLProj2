@@ -77,7 +77,7 @@ void OctreeForCollision::newlyInsertComponent(CollisionComponent * comp)
 void OctreeForCollision::getCollisionPotentialList(std::list<CollisionComponent*>& potentialList, CollisionComponent * comp)
 {
 	// get all parent & self
-	int index = comp->_octreeElemIndex;
+	int index = comp->getPElemIdx();
 	while (index != 0)
 	{
 		for (auto elem : _octreeElemVec[index]._potentialComponents)
@@ -95,7 +95,7 @@ void OctreeForCollision::getCollisionPotentialList(std::list<CollisionComponent*
 	}
 
 	// get all children
-	index = comp->_octreeElemIndex;
+	index = comp->getPElemIdx();
 
 	getAllCollisionPotentialList(potentialList, index);
 
@@ -194,7 +194,7 @@ void OctreeForCollision::doOctreeUpdate()
 		}
 
 		// check is in same block
-		if (_octreeElemVec[(*it)->_octreeElemIndex].IsInBoxFitTest((*it)))
+		if (_octreeElemVec[(*it)->getPElemIdx()].IsInBoxFitTest((*it)))
 		{
 			// if using children && not leaf node, down 1 height
 			/*	opt
@@ -239,7 +239,7 @@ void OctreeForCollision::insertComponent(CollisionComponent * comp)
 			if (-1 == (targetIdx = getFitChildBoxIndex(curElem, comp)))
 			{
 				curElem._potentialComponents.push_back(curComp);
-				curComp->_octreeElemIndex = index;
+				curComp->setPElemIdx(index);
 				return;
 			}
 
@@ -250,7 +250,7 @@ void OctreeForCollision::insertComponent(CollisionComponent * comp)
 		else
 		{
 			curElem._potentialComponents.push_back(comp);
-			curComp->_octreeElemIndex = index;
+			curComp->setPElemIdx(index);
 
 			//_potentialComponents 개수가 적으면 stop. 일정 수가 넘어가면 children으로.
 			if (curElem._potentialThreshold < curElem._potentialComponents.vecPSize() && curElem._height != 0)
@@ -315,7 +315,7 @@ int OctreeForCollision::getFitChildBoxIndex(OctreeElem& octreeElem, CollisionCom
 
 void OctreeForCollision::removeCopmInOctreeElem(CollisionComponent * comp)
 {
-	int index = comp->_octreeElemIndex;
+	int index = comp->getPElemIdx();
 	OctreeElem& octreeElem = _octreeElemVec[index];
 	octreeElem._potentialComponents.erase(comp);
 
