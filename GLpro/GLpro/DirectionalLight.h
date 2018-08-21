@@ -31,8 +31,8 @@ public:
 
 	FrustumOb& getFrustumObRef();
 
-	DrawElemContainer&			getFrustumedDrawElementContainerRef();
-	const DrawElemContainer&	getConstFrustumedDrawElementContainerRef();
+	std::list<DrawElement*>&			getFrustumedDrawElementContainerRef();
+	const std::list<DrawElement*>&		getConstFrustumedDrawElementContainerRef();
 	void						clearFrustumedDrawElementContainer();
 private:
 	DirectionalLight(DirectionalLightManager* bindedLightManager, int idx, glm::vec4& color, const glm::vec3& lightLookVec3);
@@ -48,7 +48,7 @@ private:
 	//mat4 _modelMatrix;
 
 	FrustumOb	_frustumOb;
-	DrawElemContainer _frustumedDrawElementContainer;
+	std::list<DrawElement*> _frustumedDrawElementContainer;
 
 public:
 	friend class DirectionalLightManager;

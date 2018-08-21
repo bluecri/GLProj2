@@ -1,16 +1,18 @@
 #pragma once
 
 #include "stdafx.h"
-#include "AABBOb.h"
 
 class RigidbodyComponent;
 class CollisionComponentManager;
 class OctreeForCollision;
+class DynamicCollisionSubComp;
 
 enum COLLISION_TYPE
 {
 	COLLISION_AABB,
-	COLLISION_OBB
+	COLLISION_OBB,
+	COLLISION_SPHERE,
+	COLLISION_LINE
 };
 
 class CollisionComponent : public VectorPElem
@@ -18,19 +20,29 @@ class CollisionComponent : public VectorPElem
 public:
 	CollisionComponent(RigidbodyComponent* rigidComp);
 
-	const glm::mat4&	getWorldMatRef();
-	const glm::vec3&	getAxisLenForAABBRef();
-
 	void setDeleted(bool bDeleted);
-	void setCollisionTest(bool bCollisionTest);
-	void setCollisionVelocityUpdate(bool bVelUpdate);
+	void setCollisionTest(bool bCollisionTest);		// do collision test?
+	void setCollisionVelocityUpdate(bool bVelUpdate);	// do velocity update result by collision?
 
-	virtual void setAxisLen(vec3& halfSxisVec) = 0;
-	void setLocalRotation(glm::mat4& rotMat);
-	void setLocalPos(glm::vec3& posVec);
+	bool	isCollisionComponentDirty();
+	void	resetCollisionComponentDirty();
 
-	bool isAABBForOctreeDirty();
-	static bool sIsBoxCollisionCheck(const glm::mat4 & wolrd1, const glm::mat4 & wolrd2, const glm::vec3 & axisLen1, const glm::vec3 & axisLen2);
+	void	setCollisionCategoryBit(int bit);
+	void	setCollisionCategoryMaskBit(int maskBit);
+	int		getCollisionCategoryBit();
+	int		getCollisionCategoryMaskBit();
+
+	bool	testCollisionCategoryBit(const CollisionComponent* otherComp);
+	//bool	testCollisionCategoryBit(int otherMastBit);
+	//bool	testCollisionCategoryMaskBit(int otherBit);
+	
+	int		getOctreeElemIndex();
+	void	setOctreeElemIdx(int idx);
+
+	bool	isDynamicComp();
+	void	makeDynamicComp(DynamicCollisionSubComp* subComp);
+	DynamicCollisionSubComp* getDynamicSubComp();
+	virtual void	updateDynamicLap() = 0;
 
 protected:
 	/*
@@ -44,26 +56,22 @@ public:
 	COLLISION_TYPE collisionType;
 	RigidbodyComponent* _rigidComp;
 
-	// for AABB in OctreeForCollision	(opt : AABB collision comp인 경우 data 중복)
-	AABBOb		_aabbObForOctree;
-	// int			_octreeElemIndex;
-
 	std::list<CollisionComponent*> _collisionLogList;	// collision event(logic update)와 collision physics 분리
 
 protected:
-	glm::mat4 _localMat;	// collision component local matrix (trans & rotate)
-	glm::mat4 _worldMat;	// update by updateWithRigidComp()
-
-	bool _bDirty;						// is comp is dirty. update when updateCollisionComp()
-	bool _bAxisModified;				// localMat Axis is modified
-	bool _bPosModified;					// localMat Pos is modified
-	bool _bRotateModified;				// localMat Rotate is modified
+	bool _bDirty;							// is comp is dirty. update when updateCollisionComp()
+	DynamicCollisionSubComp*		_dynamicSubComp;
 
 private:
-	bool _bDeleted;						// component delete
-	bool _bCollisionTest;				// in octree for test or not
-	bool _bCollideVelocityUpdate;		// force with collision or not
-	bool _bAlreadyVelocityUpdated;		// for CollisionComponentManager 
+	int		_octreeElemIdx;					// Octree.h's OctreeElem index.
+
+	bool	_bDeleted;						// component delete
+	bool	_bCollisionTest;				// in octree for test or not
+	bool	_bAlreadyVelocityUpdated;		// for CollisionComponentManager 
+
+	int		_collisionCategoryBit;
+	int		_collisionCategoryMaskBit;
+	bool	_bCollideVelocityUpdate;		// force with collision or not
 
 	friend CollisionComponentManager;
 	friend OctreeForCollision;

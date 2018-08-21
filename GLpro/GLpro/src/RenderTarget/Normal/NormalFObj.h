@@ -57,6 +57,7 @@ namespace RENDER_TARGET
 
 			//void setFrustumPos(glm::vec3& pos);
 			void setFrustumPos(RigidbodyComponent * rigidbodyComponent);
+			float getNearestDistToPoint(glm::vec3& pos);
 
 			glm::vec3& getFrustumPosRef();
 			glm::vec3& getFrustumCompensationPosRef();
@@ -64,6 +65,8 @@ namespace RENDER_TARGET
 
 			SphereOb& getSphereObForFrustumRef();
 
+			int		getOctreeElemIndex();
+			void	setOctreeElemIdx(int idx);
 		public:
 			RESOURCE::Model * _model = nullptr;
 			RESOURCE::Texture * _texture = nullptr;
@@ -71,6 +74,7 @@ namespace RENDER_TARGET
 		private:
 			NormalFObj() {};
 			int _renderBit;	// occlusion cull & frustum cull
+			int		_octreeElemIdx;					// Octree.h's OctreeElem index.
 
 			glm::vec3	_frustumPosCompensation;
 			SphereOb	_sphereObForFrustum;		// use this in frustum (this = posCompen + binded trasform wolrd mat in {DrawElem})

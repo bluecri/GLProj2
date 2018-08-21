@@ -2,6 +2,9 @@
 #include "stdafx.h"
 #include "CollisionComponent.h"
 
+#include "OBBOb.h"
+#include "AABBOb.h"
+
 class OBBCollisionComp : public CollisionComponent
 {
 public:
@@ -10,9 +13,21 @@ public:
 	// CollisionComponent을(를) 통해 상속됨
 	virtual void updateCollisionComp() override;
 	virtual bool collideTestToOther(CollisionComponent* comp) override;
-	virtual void setAxisLen(vec3& halfSxisVec) override;
+
+	void	updateOBBObAxis(const glm::vec3& halfAxisSize);
+
+
+	void setLocalMat(glm::mat4& localMat);
+	void setLocalOnlyRotation(glm::mat4& rotMat);
+	void setLocalPos(glm::vec3& posVec);
+	void setLocalPos(glm::mat4& posMat);
+
+	const AABBOb& getAABBObConstRef();
+	const OBBOb& getOBBObConstRef();
 
 private:
-	float _axisTotalLen;	// for aabb axis len
-	glm::vec3 _axisLen;		// collision box axis len
+	AABBOb _aabb;	// 3 same axis
+	OBBOb _obb;
+
+	glm::mat4 _localMat;
 };

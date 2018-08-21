@@ -3,49 +3,41 @@
 #include "AABBCollisionComp.h"
 #include "RigidbodyComponent.h"
 
-AABBCollisionComp::AABBCollisionComp(RigidbodyComponent * rigidComp, glm::vec3 & localVec, glm::vec3 & axisLen)
+#include "DynamicCollisionSubCompVec.h"
+
+AABBCollisionComp::AABBCollisionComp(RigidbodyComponent * rigidComp, glm::vec3 & localVec, glm::vec3 & axisLen, bool bDynamic = false)
 	: CollisionComponent(rigidComp)
 {
 	collisionType = COLLISION_TYPE::COLLISION_AABB;
+	_localVec = localVec;
+	_aabb.updateAABBObAxis(axisLen);
 
-	_localMat = glm::mat4();
-	for (int i = 0; i < 3; i++)
-	{
-		_localMat[3][i] = localVec[i];
-	}
-
-	_worldMat = glm::mat4();
-
-	_aabbObForOctree.updateAABBObAxis(axisLen);
+	if (bDynamic)
+		_dynamicSubComp = new DynamicCollisionSubCompVec();
 }
 
 void AABBCollisionComp::updateCollisionComp()
 {
 	//No test _bRotateModified : AABB
 
-	_bDirty = false;
-
-	if (_bAxisModified)
-	{
-		_bDirty = true;
-	}
-
 	// no need to update _worldMat
-	if (!(_rigidComp->isDirtyByRigidLoopUpdate()) && !_bPosModified)		//opt : rigid dirty check only pos
+	if (!_rigidComp->isDirtyAll() && !_bDirty)
 	{
 		return;
 	}
+	_bDirty = true;
 
 	const glm::mat4& worldMatRef = _rigidComp->getWorldMatRef();
 
 	// if this is AABB.. only update pos
+	glm::vec3 tempWorldVec;
 	for (int i = 0; i < 3; i++)
 	{
-		_worldMat[3][i] = worldMatRef[3][i] + _localMat[3][i];
+		tempWorldVec[i] = worldMatRef[3][i] + _localVec[i];
 	}
 
-	_aabbObForOctree.updateAABBObCenter(_worldMat[3]);
-	_bDirty = true;
+	_aabb.updateAABBObCenter(tempWorldVec);
+
 }
 
 bool AABBCollisionComp::collideTestToOther(CollisionComponent * comp)
@@ -54,6 +46,8 @@ bool AABBCollisionComp::collideTestToOther(CollisionComponent * comp)
 	{
 	case COLLISION_TYPE::COLLISION_AABB:
 	case COLLISION_TYPE::COLLISION_OBB:
+	case COLLISION_TYPE::COLLISION_LINE:
+	case COLLISION_TYPE::COLLISION_SPHERE:
 		return sIsBoxCollisionCheck(_worldMat, comp->getWorldMatRef(), _aabbObForOctree.getAxisConstRef(), comp->getAxisLenForAABBRef());
 		break;
 
@@ -65,8 +59,41 @@ bool AABBCollisionComp::collideTestToOther(CollisionComponent * comp)
 	return false;
 }
 
-void AABBCollisionComp::setAxisLen(vec3& halfSxisVec)
+void AABBCollisionComp::updateDynamicLap()
 {
-	_bAxisModified = true;
-	_aabbObForOctree.updateAABBObAxis(halfSxisVec);
+	DynamicCollisionSubCompVec* prevWorldSubVec = getDynamicSubCompVec();
+	prevWorldSubVec->updateLapWithAABBOb(_aabb);
+}
+
+void AABBCollisionComp::updateAABBObAxis(glm::vec3 & halfAxisSize)
+{
+	_bDirty = true;
+	_aabb.updateAABBObAxis(halfAxisSize);
+}
+
+void AABBCollisionComp::updateAABBObAxis(float & halfAxisSize)
+{
+	_bDirty = true;
+	_aabb.updateAABBObAxis(halfAxisSize);
+}
+
+{
+	_bDirty = true;
+	_aabb.updateAABBObCenter(center);
+}
+
+
+void AABBCollisionComp::setLocalVec(glm::vec3 &localVec)
+{
+	_localVec = localVec;
+}
+
+const AABBOb & AABBCollisionComp::getAABBConstRef()
+{
+	return _aabb;
+}
+
+DynamicCollisionSubCompVec * AABBCollisionComp::getDynamicSubCompVec()
+{
+	return static_cast<DynamicCollisionSubCompVec*>(_dynamicSubComp);
 }

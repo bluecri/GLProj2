@@ -15,17 +15,17 @@ OctreeForCollision::OctreeForCollision(int height, int halfAxisSize, glm::vec3 c
 	_bUseChildren = false;
 	*/
 
-	_maxCountOfObjects = 6;
-
 	_octreeElemVec.reserve(pow(8, height) + 1);
 	_octreeElemVec = std::vector<OctreeElem>(pow(8, height) + 1, OctreeElem());
 
 	int index = 0;
 	_octreeElemVec[index]._height = height;
-	_octreeElemVec[index]._halfAxisSize = halfAxisSize;
-	_octreeElemVec[index]._center = center;
+	_octreeElemVec[index]._aabbOb.updateAABBObCenter(center);
+	_octreeElemVec[index]._aabbOb.updateAABBObAxis(halfAxisSize);
+	
 	_octreeElemVec[index]._index = index;
-
+	_octreeElemVec[index]._potentialThreshold = 8;
+	
 	initOctreeElem(_octreeElemVec[index]);
 
 }
@@ -41,22 +41,25 @@ void OctreeForCollision::initOctreeElem(OctreeElem& elem)
 		for (int TB = 0; TB < 2; TB++) {
 			for (int LR = 0; LR < 2; LR++) {
 				{
-					glm::vec3 childCenter = elem._center;
 					int childIdx = elem._index * 8 + ( LR + TB * 2 + FB * 4 + 1 );
 					if (childIdx >= _octreeElemVec.size())
 						return;
 
-					childCenter.x += ((LR * 2) - 1) * elem._halfAxisSize / 2;	// (-1, 1) * half_half size
-					childCenter.y += ((TB * 2) - 1) * elem._halfAxisSize / 2;
-					childCenter.z += ((FB * 2) - 1) * elem._halfAxisSize / 2;
+					glm::vec3& halfAxisSize = elem._aabbOb.getAxisConstRef();
+					float childHalfAxisSize = halfAxisSize[0] / 2;
+
+					glm::vec3 childCenter = elem._center;
+					childCenter.x += ((LR * 2) - 1) * childHalfAxisSize;	// (-1, 1) * half_half size
+					childCenter.y += ((TB * 2) - 1) * childHalfAxisSize;
+					childCenter.z += ((FB * 2) - 1) * childHalfAxisSize;
 
 					_octreeElemVec[childIdx]._height = elem._height - 1;
-					_octreeElemVec[childIdx]._halfAxisSize = elem._halfAxisSize / 2;
-					_octreeElemVec[childIdx]._center = childCenter;
+					_octreeElemVec[childIdx]._aabbOb.updateAABBObCenter(childCenter);
+					_octreeElemVec[childIdx]._aabbOb.updateAABBObAxis(childHalfAxisSize);
 					_octreeElemVec[childIdx]._index = childIdx;
 					_octreeElemVec[childIdx]._potentialAllCount = 0;
 					_octreeElemVec[childIdx]._useChildBit = 0;
-					_octreeElemVec[childIdx]._potentialThreshold = _maxCountOfObjects + elem._height + 1;
+					_octreeElemVec[childIdx]._potentialThreshold = elem._potentialThreshold + elem._height + 1;
 
 					initOctreeElem(_octreeElemVec[childIdx]);
 				}
@@ -68,8 +71,18 @@ void OctreeForCollision::initOctreeElem(OctreeElem& elem)
 
 void OctreeForCollision::newlyInsertComponent(CollisionComponent * comp)
 {
-	_usingComponents.push_back(comp);
-	insertComponent(comp);
+	if (comp->isDynamicComp())
+	{
+		comp->updateDynamicLap();
+		_usingDynamicComponents.push_back(comp);
+		insertComponent(comp);
+	}
+	else
+	{
+		_usingStaticComponents.push_back(comp);
+		insertComponent(comp);
+	}
+
 	return;
 }
 
@@ -77,7 +90,7 @@ void OctreeForCollision::newlyInsertComponent(CollisionComponent * comp)
 void OctreeForCollision::getCollisionPotentialList(std::list<CollisionComponent*>& potentialList, CollisionComponent * comp)
 {
 	// get all parent & self
-	int index = comp->getPElemIdx();
+	int index = comp->getOctreeElemIndex();
 	while (index != 0)
 	{
 		for (auto elem : _octreeElemVec[index]._potentialComponents)
@@ -95,7 +108,7 @@ void OctreeForCollision::getCollisionPotentialList(std::list<CollisionComponent*
 	}
 
 	// get all children
-	index = comp->getPElemIdx();
+	index = comp->getOctreeElemIndex();
 
 	getAllCollisionPotentialList(potentialList, index);
 
@@ -133,7 +146,6 @@ void OctreeForCollision::clearPotentialCompPropa()
 		int idx = idxStk.top();
 		idxStk.pop();
 
-
 		if (_octreeElemVec[idx]._bUsed == false)
 			return;
 
@@ -156,9 +168,23 @@ void OctreeForCollision::clearPotentialCompPropa()
 	}
 }
 
+void OctreeForCollision::resetAllCollisionCompDirty()
+{
+	for (auto elem : _usingStaticComponents)
+	{
+		elem->resetCollisionComponentDirty();
+	}
+
+	for (auto elem : _usingDynamicComponents)
+	{
+		elem->resetCollisionComponentDirty();
+	}
+}
+
 void OctreeForCollision::doOctreeUpdate()
 {
-	for (auto it = _usingComponents.begin(); it != _usingComponents.end();)
+	// static
+	for (auto it = _usingStaticComponents.begin(); it != _usingStaticComponents.end();)
 	{
 		if ((*it)->_bDeleted)
 		{
@@ -167,7 +193,7 @@ void OctreeForCollision::doOctreeUpdate()
 
 			// delete from usingComponent and DeAlloc
 			delete *it;
-			it = _usingComponents.erase(it);
+			it = _usingStaticComponents.erase(it);
 			continue;
 		}
 
@@ -180,7 +206,7 @@ void OctreeForCollision::doOctreeUpdate()
 			removeCopmInOctreeElem(*it);
 
 			// remove from usingComponent
-			it = _usingComponents.erase(it);
+			it = _usingStaticComponents.erase(it);
 			continue;
 		}
 
@@ -188,13 +214,13 @@ void OctreeForCollision::doOctreeUpdate()
 		(*it)->updateCollisionComp();				// update local collision box -> world collision box
 
 		// check aabb is modified
-		if ((*it)->isAABBForOctreeDirty())
+		if ((*it)->isCollisionComponentDirty())
 		{
 			return;
 		}
 
 		// check is in same block
-		if (_octreeElemVec[(*it)->getPElemIdx()].IsInBoxFitTest((*it)))
+		if (_octreeElemVec[(*it)->getOctreeElemIndex()].IsInBoxFitTest((*it)))
 		{
 			// if using children && not leaf node, down 1 height
 			/*	opt
@@ -210,47 +236,90 @@ void OctreeForCollision::doOctreeUpdate()
 			removeCopmInOctreeElem(*it);
 			insertComponent(*it);
 		}
+	}
 
+	// dynamic
+	for (auto it = _usingDynamicComponents.begin(); it != _usingDynamicComponents.end();)
+	{
+		if ((*it)->_bDeleted)
+		{
+			// remove from octree
+			removeCopmInOctreeElem(*it);
+
+			// delete from usingComponent and DeAlloc
+			delete *it;
+			it = _usingDynamicComponents.erase(it);
+			continue;
+		}
+
+		if (!((*it)->_bCollisionTest))
+		{
+			// move from usingComponent to sleepCompContainer
+			GCollisionComponentManager->pushToSleepComponentContainer(*it);
+
+			// remove from octree
+			removeCopmInOctreeElem(*it);
+
+			// remove from usingComponent
+			it = _usingStaticComponents.erase(it);
+			continue;
+		}
+
+		(*it)->_bAlreadyVelocityUpdated = false;	// init for velocity update
+		(*it)->updateCollisionComp();				// update local collision box -> world collision box
+		(*it)->updateDynamicLap();					// Dynamic lap update
+													// check aabb is modified
+		if ((*it)->isCollisionComponentDirty())
+		{
+			return;
+		}
+
+		// check is in same block
+		if (_octreeElemVec[(*it)->getOctreeElemIndex()].IsInBoxFitTest((*it)))
+		{
+			// if using children && not leaf node, down 1 height
+			/*	opt
+			if(use this elem children)
+			check IsInBoxTest of this direct child box
+			*/
+			return;
+		}
+		else
+		{
+			// If not, Reinsert to root
+			removeCopmInOctreeElem(*it);
+			insertComponent(*it);
+		}
 	}
 }
 
 void OctreeForCollision::insertComponent(CollisionComponent * comp)
 {
-	std::stack<OctreeElem> elemStk;
-	std::stack<CollisionComponent*> compStk;
-
 	int index = 0;
-	elemStk.push(_octreeElemVec[index]);
-	compStk.push(comp);
+	OctreeElem& curElem = _octreeElemVec[index];
 
-	while (!elemStk.empty())
+	while (true)
 	{
-		OctreeElem curElem = elemStk.top();
-		CollisionComponent* curComp = compStk.top();
-		elemStk.pop();
-		compStk.pop();
-
 		curElem._bUsed = true;
-		index = curElem._index;
-		int targetIdx = -1;
+		int targetChildIdx = -1;
 
 		if (curElem._bUseChildren)
 		{
-			if (-1 == (targetIdx = getFitChildBoxIndex(curElem, comp)))
+			if (-1 == (targetChildIdx = getFitChildBoxIndex(curElem, comp)))
 			{
-				curElem._potentialComponents.push_back(curComp);
-				curComp->setPElemIdx(index);
+				// no match with children
+				curElem._potentialComponents.push_back(comp);
+				comp->setOctreeElemIdx(index);
 				return;
 			}
 
-			index = index * 8 + targetIdx;
-			elemStk.push(_octreeElemVec[index]);
-			compStk.push(curComp);
+			index = index * 8 + targetChildIdx;
+			curElem = _octreeElemVec[index];
 		}
 		else
 		{
 			curElem._potentialComponents.push_back(comp);
-			curComp->setPElemIdx(index);
+			comp->setOctreeElemIdx(index);
 
 			//_potentialComponents 개수가 적으면 stop. 일정 수가 넘어가면 children으로.
 			if (curElem._potentialThreshold < curElem._potentialComponents.vecPSize() && curElem._height != 0)
@@ -259,14 +328,18 @@ void OctreeForCollision::insertComponent(CollisionComponent * comp)
 
 				for (auto it = curElem._potentialComponents.begin(); it != curElem._potentialComponents.end(); )
 				{
-					if (-1 != (targetIdx = getFitChildBoxIndex(curElem, *it)))
+					if (-1 != (targetChildIdx = getFitChildBoxIndex(curElem, *it)))
 					{
 						// push to child from this(parent)
-						index = index * 8 + targetIdx;
-						elemStk.push(_octreeElemVec[index]);
-						compStk.push((*it));
-
+						CollisionComponent* moveComp = (*it);
 						it = curElem._potentialComponents.erase(it);
+
+						int childIndex = index * 8 + targetChildIdx;
+						OctreeElem& childOctreeElem = _octreeElemVec[childIndex];
+
+						childOctreeElem._bUsed = true;
+						childOctreeElem._potentialComponents.push_back(moveComp);
+						(moveComp)->setOctreeElemIdx(childIndex);
 					}
 					else
 					{
@@ -274,6 +347,70 @@ void OctreeForCollision::insertComponent(CollisionComponent * comp)
 					}
 				}
 			}
+
+			return;
+		}
+	}
+
+	return;
+}
+
+int OctreeForCollision::getFitOctreeElemIndex(CollisionComponent * comp)
+{
+	int index = 0;
+	OctreeElem& curElem = _octreeElemVec[index];
+
+	while (true)
+	{
+		curElem._bUsed = true;
+		int targetChildIdx = -1;
+
+		if (curElem._bUseChildren)
+		{
+			if (-1 == (targetChildIdx = getFitChildBoxIndex(curElem, comp)))
+			{
+				// no match with children
+				curElem._potentialComponents.push_back(comp);
+				comp->setOctreeElemIdx(index);
+				return;
+			}
+
+			index = index * 8 + targetChildIdx;
+			curElem = _octreeElemVec[index];
+		}
+		else
+		{
+			curElem._potentialComponents.push_back(comp);
+			comp->setOctreeElemIdx(index);
+
+			//_potentialComponents 개수가 적으면 stop. 일정 수가 넘어가면 children으로.
+			if (curElem._potentialThreshold < curElem._potentialComponents.vecPSize() && curElem._height != 0)
+			{
+				curElem._bUseChildren = true;
+
+				for (auto it = curElem._potentialComponents.begin(); it != curElem._potentialComponents.end(); )
+				{
+					if (-1 != (targetChildIdx = getFitChildBoxIndex(curElem, *it)))
+					{
+						// push to child from this(parent)
+						CollisionComponent* moveComp = (*it);
+						it = curElem._potentialComponents.erase(it);
+
+						int childIndex = index * 8 + targetChildIdx;
+						OctreeElem& childOctreeElem = _octreeElemVec[childIndex];
+
+						childOctreeElem._bUsed = true;
+						childOctreeElem._potentialComponents.push_back(moveComp);
+						(moveComp)->setOctreeElemIdx(childIndex);
+					}
+					else
+					{
+						++it;
+					}
+				}
+			}
+
+			return;
 		}
 	}
 
@@ -315,7 +452,7 @@ int OctreeForCollision::getFitChildBoxIndex(OctreeElem& octreeElem, CollisionCom
 
 void OctreeForCollision::removeCopmInOctreeElem(CollisionComponent * comp)
 {
-	int index = comp->getPElemIdx();
+	int index = comp->getOctreeElemIndex();
 	OctreeElem& octreeElem = _octreeElemVec[index];
 	octreeElem._potentialComponents.erase(comp);
 

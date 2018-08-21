@@ -226,6 +226,9 @@
     <Filter Include="소스 파일\3rd\clientNetwork">
       <UniqueIdentifier>{2cfe1392-de2d-471c-b638-b4f5e4a53ba0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\components\collision\Dynamic">
+      <UniqueIdentifier>{94f50f0e-f58e-4e20-8635-b3d44b8ccb62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -631,6 +634,27 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="OctreeFrustumElem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="LineOb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="OBBOb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="LineCollisionComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollisionComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionFuncStatic.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicCollisionSubComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicCollisionSubCompVec.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1150,6 +1174,33 @@
     </ClInclude>
     <ClInclude Include="VectorPPairFirst.h">
       <Filter>소스 파일\preComplie\vectorLikeList</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionFuncStatic.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="LineOb.h">
+      <Filter>소스 파일\FrustumFObj</Filter>
+    </ClInclude>
+    <ClInclude Include="OBBOb.h">
+      <Filter>소스 파일\FrustumFObj</Filter>
+    </ClInclude>
+    <ClInclude Include="LineCollisionComp.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollisionComp.h">
+      <Filter>소스 파일\components</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicCollisionSubComp.h">
+      <Filter>소스 파일\components\collision\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicCollisionSubCompVec.h">
+      <Filter>소스 파일\components\collision\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicCollisionSubCompMat.h">
+      <Filter>소스 파일\components\collision\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicCollisionSubCompLine.h">
+      <Filter>소스 파일\components\collision\Dynamic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

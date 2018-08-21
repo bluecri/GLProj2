@@ -8,6 +8,8 @@
 
 #include "../../../RigidbodyComponent.h"
 
+#include "../../../CollisionFuncStatic.h"
+
 namespace RENDER_TARGET
 {
 	namespace NORMAL
@@ -97,9 +99,16 @@ namespace RENDER_TARGET
 				_sphereObForFrustum.updateSphereOb(_frustumPosCompensation + rigidbodyComponent->getWorldPosVec());
 			}
 		}
+		float NormalFObj::getNearestDistToPoint(glm::vec3 & pos)
+		{
+			float retDist;
+			CollisionFuncStatic::staticCheck_Dist_POINT_SPHERE(pos, _sphereObForFrustum, retDist);
+			return retDist;
+			return _sphereObForFrustum.nearestDist2ToPoint(pos);
+		}
 		glm::vec3 & NormalFObj::getFrustumPosRef()
 		{
-			return _sphereObForFrustum.getCenter();
+			return _sphereObForFrustum.getCenterConstRef();
 		}
 		void NormalFObj::setFrustumCompensationPos(glm::vec3 & compen_pos)
 		{
@@ -108,6 +117,14 @@ namespace RENDER_TARGET
 		SphereOb & NormalFObj::getSphereObForFrustumRef()
 		{
 			return _sphereObForFrustum;
+		}
+		int NormalFObj::getOctreeElemIndex()
+		{
+			return _octreeElemIdx;
+		}
+		void NormalFObj::setOctreeElemIdx(int idx)
+		{
+			_octreeElemIdx = idx;
 		}
 		glm::vec3 & NormalFObj::getFrustumCompensationPosRef()
 		{

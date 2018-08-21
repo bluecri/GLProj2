@@ -1,5 +1,6 @@
 #include "OctreeFrustumElem.h"
 #include "src/RenderTarget/Normal/NormalFObj.h"
+#include "CollisionFuncStatic.h"
 
 OctreeFrustumElem::OctreeFrustumElem()
 {
@@ -14,23 +15,18 @@ OctreeFrustumElem::OctreeFrustumElem()
 
 bool OctreeFrustumElem::sphereIsInBoxTest(DrawElement* drawElemPtr)
 {
-	glm::vec3&	sphereCenter = drawElemPtr->first->getFrustumPosRef();
-	float&		sphereRadius = drawElemPtr->first->getFrustumRadiusRef();
+	SphereOb& objSphere = drawElemPtr->first->getSphereObForFrustumRef();
 
-	// in box text
-	for (int i = 0; i < 3; i++)
-	{
-		// out condition ( center diff + half > HALF )
-		if (fabs(_center[i] - sphereCenter[i]) > fabs(_halfAxisSize - sphereRadius))
-			return false;
-	}
-
-	return true;
+	return CollisionFuncStatic::staticCheck_AABB_SPHERE_IN(_aabbOb, objSphere);
 }
 
 // check in /out /intersect
+/*
 int OctreeFrustumElem::sphereIs_InOutInter_BoxTest(DrawElement* drawElemPtr)
 {
+	SphereOb& objSphere = drawElemPtr->first->getSphereObForFrustumRef();
+	return CollisionFuncStatic::staticCheck_AABB_SPHERE_IN(_aabbOb, objSphere);
+
 	int ret = 1;		// inside
 	glm::vec3&	sphereCenter = drawElemPtr->first->getFrustumPosRef();
 	float&		sphereRadius = drawElemPtr->first->getFrustumRadiusRef();
@@ -49,26 +45,35 @@ int OctreeFrustumElem::sphereIs_InOutInter_BoxTest(DrawElement* drawElemPtr)
 
 	return ret;
 }
+*/
 
 int OctreeFrustumElem::getSpaceOfMatchedCenter(DrawElement* drawElemPtr)
 {
 	const glm::vec3& center = drawElemPtr->first->getFrustumPosRef();
+	const glm::vec3& octElemCenter = _aabbOb.getCenterConstRef();
 	int ret = 0;
 
-	if (center.x > _center.x)
+	if (center[0] > octElemCenter[0])
 	{
 		ret += 1;
 	}
 
-	if (center.y > _center.y)
+	if (center[1] > octElemCenter[1])
 	{
 		ret += 2;
 	}
 
-	if (center.z > _center.z)
+	if (center[2] > octElemCenter[2])
 	{
 		ret += 4;
 	}
 
 	return ret;
+}
+
+float OctreeFrustumElem::getNearestDistToPoint(glm::vec3 & pos)
+{
+	float retDist = 0.0f;
+	CollisionFuncStatic::staticCheck_Dist_POINT_AABB(pos, _aabbOb, retDist);
+	return retDist;
 }

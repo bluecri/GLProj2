@@ -26,29 +26,36 @@ public:
 
 	// 충돌 가능한 모든 CollisionComponent들을 potentialList에 등록
 	void getCollisionPotentialList(std::list<CollisionComponent*>& potentialList, CollisionComponent* comp);
-	void getAllCollisionPotentialList(std::list<CollisionComponent*>& potentialList, int idx);
 
-	// 등록해놓은 모든 CollisionComponent refresh.
+	// 등록해놓은 모든 CollisionComponent clear.
 	void clearPotentialCompPropa();
 
-	// self update
+	// dirty bit reset (after collision check finished, before logit update begin)
+	void resetAllCollisionCompDirty();
+
+	// self refresh update
 	void doOctreeUpdate();
 
 private:
 	void insertComponent(CollisionComponent* comp);
-	// insert 가능한 child box index return
+	int		getFitOctreeElemIndex(CollisionComponent* comp);
+
+	void getAllCollisionPotentialList(std::list<CollisionComponent*>& potentialList, int idx);
+
+	// comp와 parent octreeElem에 해당하는 child box index return
 	int getFitChildBoxIndex(OctreeElem& octreeElem, CollisionComponent * comp);
 
 	//bool IsInBoxFitTest(CollisionComponent* comp);
 	//int IsInBoxTestAll(CollisionComponent* comp);
 	void removeCopmInOctreeElem(CollisionComponent* comp);
 
-
 	bool IsUseThisOctreeElem(OctreeElem& elem);
 	bool IsUseChild(OctreeElem& elem);
+
 public:
 	std::vector<OctreeElem>		_octreeElemVec;
-	std::list<CollisionComponent*> _usingComponents;
+	std::list<CollisionComponent*> _usingStaticComponents;
+	std::list<CollisionComponent*> _usingDynamicComponents;
 
-	int  _maxCountOfObjects;
+	//int  _maxCountOfObjects;
 };

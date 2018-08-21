@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "AABBOb.h"
 
 class CollisionComponent;
 
@@ -16,10 +17,10 @@ public:
 	VectorP<CollisionComponent*> _potentialComponents;
 
 	int	_index;
-
 	int _height;
-	int _halfAxisSize;
-	glm::vec3 _center;
+	//int _halfAxisSize;
+	//glm::vec3 _center;
+	AABBOb _aabbOb;
 
 	bool _bUsed;				// Whether this octree & children is used or not
 	bool _bUseChildren;

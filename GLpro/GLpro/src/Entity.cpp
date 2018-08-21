@@ -6,7 +6,7 @@
 
 int Entity::_sMaxID = 0;
 
-Entity::Entity(GameSession * gSession, ENUM_ENTITY_TYPE type)
+Entity::Entity(GameSession * gSession, ENUM_ENTITY_TYPE type, int categoryBit)
 {
 	_ID = _sMaxID;
 	_name = std::to_string(_sMaxID);
@@ -16,6 +16,7 @@ Entity::Entity(GameSession * gSession, ENUM_ENTITY_TYPE type)
 	_gameSession = gSession;
 	_bDeleted = false;
 	++_sMaxID;
+	_entityCategoryBit = categoryBit;
 
 	if (_gameSession != nullptr)
 	{
@@ -24,7 +25,7 @@ Entity::Entity(GameSession * gSession, ENUM_ENTITY_TYPE type)
 	}
 }
 
-Entity::Entity(std::string name, GameSession * gSession, ENUM_ENTITY_TYPE type)
+Entity::Entity(std::string name, GameSession * gSession, ENUM_ENTITY_TYPE type, int categoryBit)
 {
 	_ID = _sMaxID;
 	_name = name;
@@ -34,6 +35,7 @@ Entity::Entity(std::string name, GameSession * gSession, ENUM_ENTITY_TYPE type)
 	_gameSession = gSession;
 	_bDeleted = false;
 	++_sMaxID;
+	_entityCategoryBit = categoryBit;
 
 	if (_gameSession != nullptr)
 	{
@@ -91,6 +93,21 @@ std::string Entity::getName() {
 
 const std::string& Entity::getNameRef() const {
 	return _name;
+}
+
+void Entity::setEntityCategoryBit(int bit)
+{
+	_entityCategoryBit = bit;
+}
+
+bool Entity::testEntityCategoryBit(int testBit)
+{
+	return (_entityCategoryBit & testBit);
+}
+
+int Entity::getEntityCategoryBit()
+{
+	return _entityCategoryBit;
 }
 
 void Entity::setGameSession(GameSession * gSession)

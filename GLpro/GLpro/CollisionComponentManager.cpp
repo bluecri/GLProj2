@@ -4,6 +4,8 @@
 #include "RigidbodyComponent.h"
 #include "OBBCollisionComp.h"
 #include "AABBCollisionComp.h"
+#include "SphereCollisionComp.h"
+#include "LineCollisionComp.h"
 #include "Octree.h"
 
 CollisionComponentManager::CollisionComponentManager(int height, int halfAxisSize)
@@ -14,15 +16,29 @@ CollisionComponentManager::CollisionComponentManager(int height, int halfAxisSiz
 CollisionComponent * CollisionComponentManager::GetNewOBBCollisionComp(RigidbodyComponent * rigidComp, glm::mat4 & localMat, glm::vec3 & axisLen)
 {
 	CollisionComponent* retComp = new OBBCollisionComp(rigidComp, localMat, axisLen);
-	_collisionSleepComponentContainerOBB.push_back(retComp);
+	_collisionSleepComponentContainer.push_back(retComp);
 	return retComp;
 }
 
 CollisionComponent * CollisionComponentManager::GetNewAABBCollisionComp(RigidbodyComponent * rigidComp, glm::vec3 & localVec, glm::vec3 & axisLen)
 {
 	CollisionComponent* retComp = new AABBCollisionComp(rigidComp, localVec, axisLen);
-	_collisionSleepComponentContainerAABB.push_back(retComp);
+	_collisionSleepComponentContainer.push_back(retComp);
 	return retComp;
+}
+
+CollisionComponent * CollisionComponentManager::GetNewSphereCollisionComp(RigidbodyComponent * rigidComp, glm::vec3 & localVec, float radius)
+{
+	CollisionComponent* retComp = new SphereCollisionComp(rigidComp, localVec, radius);
+	_collisionSleepComponentContainer.push_back(retComp);
+	return nullptr;
+}
+
+CollisionComponent * CollisionComponentManager::GetNewLineCollisionComp(RigidbodyComponent * rigidComp, glm::vec3 & localVec, glm::vec3 & unitVec, float len, bool isInfiniteLine)
+{
+	CollisionComponent* retComp = new LineCollisionComp(rigidComp, localVec, unitVec, len, isInfiniteLine);
+	_collisionSleepComponentContainer.push_back(retComp);
+	return nullptr;
 }
 
 void CollisionComponentManager::eraseCollisionComponent(CollisionComponent * delTargetComp)
@@ -39,8 +55,7 @@ void CollisionComponentManager::doCollisionTest()
 
 void CollisionComponentManager::insertSleepCompToOctTree() 
 {
-	insertTestCompToOctaTreeWithContainer(_collisionSleepComponentContainerOBB);
-	insertTestCompToOctaTreeWithContainer(_collisionSleepComponentContainerAABB);
+	insertTestCompToOctaTreeWithContainer(_collisionSleepComponentContainer);
 }
 
 void CollisionComponentManager::insertTestCompToOctaTreeWithContainer(std::list<CollisionComponent*>& collisionComponentContainer)
@@ -85,7 +100,12 @@ void CollisionComponentManager::collisionTestWithContainer(std::list<CollisionCo
 		// 충돌 가능한 list와 충돌 Check
 		for (auto potentialComp : potentialCollisionList)
 		{
-			if (elem == potentialComp)	// self
+			// self test
+			if (elem == potentialComp)
+				continue;
+
+			// category test
+			if (!elem->testCollisionCategoryBit(potentialComp))
 				continue;
 
 			// OBB Test
@@ -121,15 +141,12 @@ void CollisionComponentManager::doOctreeUpdate()
 
 void CollisionComponentManager::pushToSleepComponentContainer(CollisionComponent * sleepContainer)
 {
-	switch (sleepContainer->collisionType)
-	{
-	case COLLISION_AABB:
-		_collisionSleepComponentContainerAABB.push_back(sleepContainer);
-		break;
-	case COLLISION_OBB:
-		_collisionSleepComponentContainerOBB.push_back(sleepContainer);
-		break;
-	}
+	_collisionSleepComponentContainer.push_back(sleepContainer);
+}
+
+void CollisionComponentManager::resetAllCollisionCompDirty()
+{
+	_octree->resetAllCollisionCompDirty();
 }
 
 void CollisionComponentManager::clearOctree()

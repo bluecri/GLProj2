@@ -7,21 +7,30 @@
 
 class FrustumOb;
 class AABBOb;
+class LineOb;
 
 namespace CAMERA {
 	class Camera;
 }
 
+enum ENUM_ENTITY_TYPE;
+
 class OctreeForFrustum
 {
+	using BoxIndex = int;
+	using Dist = float;
 public:
 	OctreeForFrustum(int height, int halfAxisSize, glm::vec3 center);
 	//void clearPotentialCompPropa();
 
-	void getObjListWithFrustumOb(FrustumOb& frustumOb, RENDER::RNormal::DrawElemContainer& outList);
-	void getObjListWithAABBOb(AABBOb& aabbOb, RENDER::RNormal::DrawElemContainer& outList);
+	void getObjListWithFrustumOb(FrustumOb& frustumOb, std::list<RENDER::RNormal::DrawElement*>& outList);
+	void getObjListWithAABBOb(AABBOb& aabbOb, std::list<RENDER::RNormal::DrawElement*>& outList);
 
 	void updateOctreeForFrustum();
+	void addNewSleepComp(RENDER::RNormal::SharedDrawElement comp);
+
+	RigidbodyComponent* getNearestRigidbodyComp(glm::vec3& pos, ENUM_ENTITY_TYPE entityTypeFilter, int categoryMaskBit);
+	RigidbodyComponent* getRayTraceRigidbodyComp(const LineOb& lineOb, ENUM_ENTITY_TYPE entityTypeFilter, int categoryMaskBit);
 
 private:
 	void insertSleepWaitComponent();
@@ -30,13 +39,12 @@ private:
 	// insert °¡´ÉÇÑ child box index return
 	void	insertToOctreeForFrustum(RENDER::RNormal::SharedDrawElement comp);
 	int		getFitChildBoxIndex(OctreeFrustumElem& curFrustumElem, RENDER::RNormal::DrawElement* drawElemPtr);
-	//bool	sphereIsInBoxTest(RENDER::RNormal::SharedDrawElement drawElem);
-	int		sphereIs_InOutInter_BoxTest(RENDER::RNormal::SharedDrawElement drawElem);
 
-	int isOctreeInFrustumOb(FrustumOb& frustumOb);
-	int isOctreeInAABBOb(AABBOb& aabbObFrustum);
-	void getAllObjListNoTest(RENDER::RNormal::DrawElemContainer& outList);
+	void getAllObjListNoTest(std::list<RENDER::RNormal::DrawElement*>& outList, int elemIdx);
 
+	void getObjListWithFrustumObLoop(FrustumOb& frustumOb, std::list<RENDER::RNormal::DrawElement*>& outList, int elemIdx);
+	void getObjListWithAABBObLoop(AABBOb& aabbOb, std::list<RENDER::RNormal::DrawElement*> & outList, int elemIdx);
+	
 	//void setFrustumBitWithCamera(CAMERA::Camera * cam);
 	//void notCullAllOctree();
 	//void setFrustumBitWithMainCamera();
@@ -44,16 +52,6 @@ private:
 	void initOctreeElem(OctreeFrustumElem& elem);
 	void newlyInsertComponent(RENDER::RNormal::SharedDrawElement sharedElem);
 	void removeCopmInOctreeElem(RENDER::RNormal::SharedDrawElement sharedElem);
-public:
-	int _height;
-	int _halfAxisSize;
-
-	glm::vec3 _center;
-	//OctreeForFrustum* _childTree[OCT_POS::OCT_NUM];
-
-	bool _bUsed;				// Whether this octree & children is used or not
-	bool _bUseChildren;
-	int  _maxCountOfObjects;
 
 private:
 	RENDER::RNormal::DrawElemContainer	_potentialSleepDrawElems;

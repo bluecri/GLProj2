@@ -29,6 +29,8 @@
 #include "../../PointLightManager.h"
 #include "../window.h"
 
+#include "../../OctreeForFrustum.h"
+
 //temp
 #include "../Resource/TextureManager.h"
 
@@ -51,10 +53,13 @@ namespace RENDER
 		//auto elem = std::make_shared<DrawElement>(normalFObj, rigidComponent);
 		auto elem = std::shared_ptr<RENDER::RNormal::DrawElement>(new RENDER::RNormal::DrawElement(normalFObj, rigidComponent), [](auto ptr)
 		{
+			// if sharedPtr<NormalFObj, RigidbodyComponent> reference count 0, delete normalFObj.
 			delete ptr->first;
 			delete ptr;
 		});
+
 		_normalDrawElemContainer.push_back(elem);
+		GOctreeForFrustum->addNewSleepComp(elem);		// add to OctreeForFrustum
 		return elem;
 	}
 
@@ -65,7 +70,19 @@ namespace RENDER
 
 	void RNormal::updateRRender()
 	{
-		
+		for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end(); ) 
+		{
+			RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
+			RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
+
+			if (normalRenderTarget->isBDeleted())
+			{
+				it = _normalDrawElemContainer.erase(it);
+				continue;
+			}
+
+			it++;
+		}
 	}
 
 	void RNormal::updateTargetCamera(CAMERA::Camera** cam)

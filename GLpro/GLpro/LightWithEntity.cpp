@@ -74,12 +74,12 @@ ILightWithEntityManager * LightWithEntity::getBindedLightManager()
 
 // for frustum
 
-LightWithEntity::DrawElemContainer& LightWithEntity::getFrustumedDrawElementContainerRef()
+LightWithEntity::std::list<DrawElement*>& LightWithEntity::getFrustumedDrawElementContainerRef()
 {
 	return _frustumedDrawElementContainer;
 }
 
-const LightWithEntity::DrawElemContainer& LightWithEntity::getConstFrustumedDrawElementContainerRef()
+const LightWithEntity::std::list<DrawElement*>& LightWithEntity::getConstFrustumedDrawElementContainerRef()
 {
 	return _frustumedDrawElementContainer;
 }

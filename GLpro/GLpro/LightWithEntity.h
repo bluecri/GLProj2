@@ -35,8 +35,8 @@ public:
 	ILightWithEntityManager*	getBindedLightManager();
 
 	// for light frustum
-	DrawElemContainer&			getFrustumedDrawElementContainerRef();
-	const DrawElemContainer&	getConstFrustumedDrawElementContainerRef();
+	std::list<DrawElement*>&			getFrustumedDrawElementContainerRef();
+	const std::list<DrawElement*>&	getConstFrustumedDrawElementContainerRef();
 	void						clearFrustumedDrawElementContainer();
 
 protected:
@@ -51,7 +51,7 @@ protected:
 	float		_lightPower;
 	int			_uboType;
 
-	DrawElemContainer _frustumedDrawElementContainer;
+	std::list<DrawElement*> _frustumedDrawElementContainer;
 public:
 	friend class ILightWithEntityManager;
 };

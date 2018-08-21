@@ -176,7 +176,7 @@ void WINDOW::Window::mainLoop()
 
 			GRigidbodyComponentManager->updateRigidbodyComps(dt);
 			GCollisionComponentManager->doCollisionTest();
-			//GRigidbodyComponentManager->resetRigidbodyCompsDirty();
+			GCollisionComponentManager->resetAllCollisionCompDirty();
 			
 			// Change dirty bit target to Next
 			RigidbodyComponent::changeSetDirtyBitToLogic();

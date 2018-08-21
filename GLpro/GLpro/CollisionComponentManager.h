@@ -18,6 +18,8 @@ public:
 
 	CollisionComponent* GetNewOBBCollisionComp(RigidbodyComponent* rigidComp, glm::mat4& localMat, glm::vec3& axisLen);
 	CollisionComponent* GetNewAABBCollisionComp(RigidbodyComponent* rigidComp, glm::vec3& localVec, glm::vec3& axisLen);
+	CollisionComponent* GetNewSphereCollisionComp(RigidbodyComponent* rigidComp, glm::vec3& localVec, float radius);
+	CollisionComponent* GetNewLineCollisionComp(RigidbodyComponent* rigidComp, glm::vec3& localVec, glm::vec3& unitVec, float len, bool isInfiniteLine);
 
 	void eraseCollisionComponent(CollisionComponent* delTargetComp);
 
@@ -25,6 +27,7 @@ public:
 	void clearOctree();
 
 	void pushToSleepComponentContainer(CollisionComponent* sleepContainer);
+	void resetAllCollisionCompDirty();
 
 private:
 	void insertSleepCompToOctTree();
@@ -35,8 +38,7 @@ private:
 	void doOctreeUpdate();
 
 private:
-	std::list<CollisionComponent*> _collisionSleepComponentContainerOBB;
-	std::list<CollisionComponent*> _collisionSleepComponentContainerAABB;
+	std::list<CollisionComponent*> _collisionSleepComponentContainer;
 	OctreeForCollision* _octree;
 };
 

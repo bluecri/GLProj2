@@ -12,7 +12,8 @@ class GameSession;
 
 enum ENUM_ENTITY_TYPE
 {
-	ENUM_ENTITY_NONE,
+	ENUM_ENTITY_NOFILTER = -1,
+	ENUM_ENTITY_NONE = 0,
 	ENUM_ENTITY_CAMERA,
 	ENUM_ENTITY_PLANE_PLAYER,
 	ENUM_ENTITY_ENEMY,
@@ -44,8 +45,8 @@ enum ENUM_ENTITY_TYPE
 class Entity 
 {
 public:
-	Entity(GameSession* gSession = nullptr, ENUM_ENTITY_TYPE type = ENUM_ENTITY_NONE);
-	Entity(std::string name, GameSession* gSession = nullptr, ENUM_ENTITY_TYPE type = ENUM_ENTITY_NONE);
+	Entity(GameSession* gSession = nullptr, ENUM_ENTITY_TYPE type = ENUM_ENTITY_NONE, int categoryBit = 1);
+	Entity(std::string name, GameSession* gSession = nullptr, ENUM_ENTITY_TYPE type = ENUM_ENTITY_NONE, int categoryBit = 1);
 	virtual	~Entity();
 
 	ENUM_ENTITY_TYPE	getType();
@@ -58,6 +59,10 @@ public:
 	void				setName(std::string& name);
 	std::string			getName();
 	const std::string&	getNameRef() const;
+
+	void				setEntityCategoryBit(int bit);
+	bool				testEntityCategoryBit(int testBit);
+	int					getEntityCategoryBit();
 
 	void			setGameSession(GameSession* gSession);
 	GameSession*	getGameSession();
@@ -100,6 +105,7 @@ protected:
 
 private:
 	int					_ID;
+	int					_entityCategoryBit;
 	ENUM_ENTITY_TYPE	_type;
 	std::string			_name;
 	bool				_bDeleted;
