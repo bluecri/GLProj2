@@ -99,7 +99,7 @@ bool CollisionFuncStatic::staticCheck_LINE_AABB(const LineOb & lineOb, const AAB
 
 bool CollisionFuncStatic::staticCheck_LINE_AABB(const LineOb & lineOb, const AABBOb & aabbOb, float & retDist)
 {
-	int lineType = static_cast<int>(lineOb.getType());
+	int lineType = (int)(lineOb.getType());
 	switch (lineType)
 	{
 	case LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_ONE_DIRTECTION:
@@ -169,7 +169,7 @@ bool CollisionFuncStatic::staticCheck_CLOSEST_LINE_OBB(const LineOb & lineOb, co
 bool CollisionFuncStatic::staticCheck_SPHERE_SPHERE(const SphereOb & sphereOb1, const SphereOb & sphereOb2)
 {
 	float radDist = sphereOb1.getRadius() + sphereOb2.getRadius();
-	float centerDist2 = glm::length2(sphereOb1.getCenterConstRef() - sphereOb2.getCenterConstRef();
+	float centerDist2 = glm::length2(sphereOb1.getCenterConstRef() - sphereOb2.getCenterConstRef());
 
 	if (centerDist2 > radDist * radDist)
 		return false;
@@ -177,7 +177,7 @@ bool CollisionFuncStatic::staticCheck_SPHERE_SPHERE(const SphereOb & sphereOb1, 
 	return true;
 }
 
-bool CollisionFuncStatic::staticCheck_SPHERE_AABB(const SphereOb & sphereOb, const AABBOb & aabb)
+bool CollisionFuncStatic::staticCheck_SPHERE_AABB_OVERLAP(const SphereOb & sphereOb, const AABBOb & aabb)
 {
 	float dist;
 	staticCheck_Dist_POINT_AABB(sphereOb.getCenterConstRef(), aabb, dist);
@@ -189,11 +189,8 @@ bool CollisionFuncStatic::staticCheck_SPHERE_AABB(const SphereOb & sphereOb, con
 
 bool CollisionFuncStatic::staticCheck_SPHERE_OBB(const SphereOb & sphereOb, const OBBOb & obbOb)
 {
-	float dist = staticCheck_Dist_POINT_OBB(sphereOb.getCenterConstRef(), obbOb);
-
-	if (dist > sphereOb.getRadius())
-		return false;
-	return true;
+	float tempDIst;
+	return staticCheck_Dist_POINT_OBB(sphereOb.getCenterConstRef(), obbOb, tempDIst);
 }
 
 bool CollisionFuncStatic::staticCheck_AABB_LINE_IN(const AABBOb & aabbObBig, const LineOb & lineOb)
@@ -203,18 +200,37 @@ bool CollisionFuncStatic::staticCheck_AABB_LINE_IN(const AABBOb & aabbObBig, con
 	switch (lineType)
 	{
 	case LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_ONE_DIRTECTION:
-		return false
+		return false;
 		break;
 	case LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_TWO_DIRECTION:
-		return false
+		return false;
 		break;
 	case LINEOB_TYPE_ENUM::LINEOB_TYPE_LEN:
 		cond1 = staticCheck_POINT_AABB(lineOb.getEndPos(), aabbObBig);
-		cond2 = staticCheck_POINT_AABB(lineOb.getStartPosRef(), aabbObBig);
+		cond2 = staticCheck_POINT_AABB(lineOb.getStartPosConstRef(), aabbObBig);
 		return (cond1 && cond2);
 		break;
 	}
-	bool cond1 = staticCheck_POINT_AABB()
+	return true;
+}
+
+bool CollisionFuncStatic::staticCheck_AABB_LINE_OVERLAP(const AABBOb & aabbObBig, const LineOb & lineOb)
+{
+	int lineType = static_cast<int>(lineOb.getType());
+	float tempFloat;
+
+	switch (lineType)
+	{
+	case LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_ONE_DIRTECTION:
+		return staticCheck_LINE_AABB(lineOb, aabbObBig, tempFloat);
+		break;
+	case LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_TWO_DIRECTION:
+		return false;
+		break;
+	case LINEOB_TYPE_ENUM::LINEOB_TYPE_LEN:
+		return staticCheck_LINE_AABB(lineOb, aabbObBig, tempFloat);
+		break;
+	}
 	return true;
 }
 
@@ -258,7 +274,7 @@ bool CollisionFuncStatic::staticCheck_AABB_AABB_IN(const AABBOb & aabbObBig, con
 	return true;
 }
 
-bool CollisionFuncStatic::staticCheck_AABB_AABB_OUT(const AABBOb & aabbOb1, const AABBOb & aabbOb2)
+bool CollisionFuncStatic::staticCheck_AABB_AABB_OVERLAP(const AABBOb & aabbOb1, const AABBOb & aabbOb2)
 {
 	const glm::vec3& aabb1Center	= aabbOb1.getCenterConstRef();
 	const glm::vec3& aabb1Axis		= aabbOb1.getAxisConstRef();
@@ -270,10 +286,10 @@ bool CollisionFuncStatic::staticCheck_AABB_AABB_OUT(const AABBOb & aabbOb1, cons
 	{
 		// out condition ( center diff > HALF + half )
 		if (fabs(aabb1Center[i] - aabb2Cemter[i]) > aabb1Axis[i] + aabb2Axis[i])
-			return true;	// outside
+			return false;	// outside
 	}
 
-	return false;
+	return true;
 }
 
 int CollisionFuncStatic::staticCheck_AABB_AABB_INOUTOVERLAP(const AABBOb & aabbObBig, const AABBOb & aabbObSmall)
@@ -289,14 +305,14 @@ int CollisionFuncStatic::staticCheck_AABB_AABB_INOUTOVERLAP(const AABBOb & aabbO
 	{
 		// out condition ( center diff > HALF + half )
 		centerDiffAbs[i] = fabs(aabbBigCemter[i] - aabbSmallCemter[i]);
-		if (centerDiffAbs > aabbBigAxis[i] + aabbSmallAxis[i])
+		if (centerDiffAbs[i] > aabbBigAxis[i] + aabbSmallAxis[i])
 			return -1;	// outside
 	}
 
 	for (int i = 0; i < 3; i++)
 	{
-		bool isOverlapCond1 = (aabbBigAxis[i] < aabbSmallAxis);
-		bool isOverlapCond2 = centerDiffAbs > aabbBigAxis[i] - aabbSmallAxis[i]);
+		bool isOverlapCond1 = (aabbBigAxis[i] < aabbSmallAxis[i]);
+		bool isOverlapCond2 = (centerDiffAbs[i] > aabbBigAxis[i] - aabbSmallAxis[i]);
 
 		if (isOverlapCond1 || isOverlapCond2)
 			return 0;	// Overlap
@@ -306,10 +322,9 @@ int CollisionFuncStatic::staticCheck_AABB_AABB_INOUTOVERLAP(const AABBOb & aabbO
 }
 
 
-bool CollisionFuncStatic::staticCheck_AABB_OBB(const AABBOb & aabbOb, const OBBOb & obbOb)
+bool CollisionFuncStatic::staticCheck_AABB_OBB_OVERLAP(const AABBOb & aabbOb, const OBBOb & obbOb)
 {
-	return staticCheck_BOX(aabbOb._worldVec, obbOb._worldMat, aabbOb._halfAxisSize, obbOb._halfAxisSize);
-	return false;
+	return staticCheck_BOX(aabbOb.getCenterConstRef(), obbOb.getMatConstRef(), aabbOb.getAxisConstRef(), obbOb.getAxisConstRef());
 }
 
 // inside(octree totally in frustum), outside, overlap( + frustum totally in octree)
@@ -317,7 +332,7 @@ int CollisionFuncStatic::staticCheck_FRUSTUM_AABB_INOUTOVERLAP(const FrustumOb &
 {
 	const glm::vec3& aabbSmallCemter = aabbObSmall.getCenterConstRef();
 	const glm::vec3& aabbSmallAxis = aabbObSmall.getAxisConstRef();
-	std::vector<glm::vec4>& frustum = frustumOb.getFrustumConstRef();
+	const std::vector<glm::vec4>& frustum = frustumObBig.getFrustumConstRef();
 
 	glm::vec3 octreeMinPoint, octreeMaxPoint;
 	glm::vec3 minPoint, maxPoint;
@@ -384,26 +399,42 @@ int CollisionFuncStatic::staticCheck_FRUSTUM_AABB_INOUTOVERLAP(const FrustumOb &
 	return ret;
 }
 
-bool CollisionFuncStatic::staticCheck_OBB_OBB(const OBBOb & obbOb1, const OBBOb & obbOb2)
+bool CollisionFuncStatic::staticCheck_OBB_OBB_OUT(const OBBOb & obbOb1, const OBBOb & obbOb2)
 {
-	return staticCheck_BOX(obbOb1._worldMat, obbOb2._worldMat, obbOb1._halfAxisSize, obbOb2._halfAxisSize);
+	return staticCheck_BOX(obbOb1.getMatConstRef(), obbOb2.getMatConstRef(), obbOb1.getAxisConstRef(), obbOb2.getAxisConstRef());
 }
 
-void CollisionFuncStatic::staticCheck_CLOSEST_POINT_AABB(const glm::vec3 & point, const AABBOb & aabbOb, const glm::vec3 & retClosestPoint)
+void CollisionFuncStatic::CreateAAABBLAP_SPHERE(const SphereOb & sphereOb, AABBOb & retAabb)
+{
+	retAabb.updateAABBObCenter(sphereOb.getCenter());
+	retAabb.updateAABBObAxis(sphereOb.getRadius());
+}
+
+void CollisionFuncStatic::CreateAAABBLAP_LINE(const LineOb & lineOb, AABBOb & retAabb)
+{
+	glm::vec3 lineStartToEndMiddleVec = (lineOb.getEndPos() - lineOb.getStartPosConstRef()) / 2.0f;
+	retAabb.updateAABBObCenter(lineStartToEndMiddleVec);
+
+	for (int i = 0; i < 3; i++)
+		lineStartToEndMiddleVec[i] = fabsf(lineStartToEndMiddleVec[i]);
+	retAabb.updateAABBObAxis(lineStartToEndMiddleVec);
+}
+
+void CollisionFuncStatic::staticCheck_CLOSEST_POINT_AABB(const glm::vec3 & point, const AABBOb & aabbOb, glm::vec3 & retClosestPoint)
 {
 	const glm::vec3& aabbCenter = aabbOb.getCenterConstRef();
 	const glm::vec3& aabbAxis = aabbOb.getAxisConstRef();
 	retClosestPoint = aabbCenter;
 
+	glm::vec3 oneDist = aabbCenter - aabbAxis;
+	glm::vec3 twoDist = aabbCenter + aabbAxis;
+
 	for (int i = 0; i < 3; i++)
 	{
-		float oneDist = aabbOb.aabbCenter[i] - aabbOb.aabbAxis[i];
-		float twoDist = aabbOb.aabbCenter[i] + aabbOb.aabbAxis[i];
-
-		if (point[i] < oneDist)
-			retClosestPoint[i] = oneDist;
-		if (point[i] > twoDist)
-			retClosestPoint[i] = twoDist;
+		if (point[i] < oneDist[i])
+			retClosestPoint[i] = oneDist[i];
+		if (point[i] > twoDist[i])
+			retClosestPoint[i] = twoDist[i];
 	}
 
 	return;
@@ -413,17 +444,16 @@ bool CollisionFuncStatic::staticCheck_POINT_OBB(const glm::vec3 & point, const O
 {
 	const glm::mat4& obbObMat = obbOb.getMatConstRef();
 	const glm::vec3& obbAxis = obbOb.getAxisConstRef();
-	const glm::vec3 obbCenterPointVec;	// vector from obbCenter to Point
+	glm::vec3 obbCenterPointVec;	// vector from obbCenter to Point
 	for (int i = 0; i < 3; i++)
 		obbCenterPointVec[i] = point[i] - obbObMat[3][i];
 
-
 	for (int i = 0; i < 3; i++)
 	{
-		float rotateAxis = glm::vec3(obbObMat[i]);
+		glm::vec3 rotateAxis = glm::vec3(obbObMat[i]);
 		float rotatedDiff = glm::dot(rotateAxis, obbCenterPointVec);
 
-		if (!(-obbAxis[i] < rotatedDiff[i] && rotatedDiff[i] < obbAxis[i]))
+		if (!(-obbAxis[i] < rotatedDiff && rotatedDiff < obbAxis[i]))
 		{
 			return false;
 		}
@@ -432,15 +462,15 @@ bool CollisionFuncStatic::staticCheck_POINT_OBB(const glm::vec3 & point, const O
 	return true;
 }
 
-bool CollisionFuncStatic::staticCheck_Dist_POINT_OBB(const glm::vec3 & point, OBBOb & obbOb, float & retDist)
+bool CollisionFuncStatic::staticCheck_Dist_POINT_OBB(const glm::vec3 & point, const OBBOb & obbOb, float & retDist)
 {
 	bool isCollide = true;
 	float retDist = 0.0f;
 	const glm::mat4& obbObMat = obbOb.getMatConstRef();
-	const glm::vec3 obbCenterPointVec;	// vector from obbCenter to Point
+	glm::vec3 obbCenterToPointVec;	// vector from obbCenter to Point
 
 	for (int i = 0; i < 3; i++)
-		obbCenterPointVec[i] = point[i] - obbObMat[3][i];
+		obbCenterToPointVec[i] = point[i] - obbObMat[3][i];
 
 	const glm::vec3& obbAxis = obbOb.getAxisConstRef();
 
@@ -448,7 +478,7 @@ bool CollisionFuncStatic::staticCheck_Dist_POINT_OBB(const glm::vec3 & point, OB
 	{
 		float oneDist = -obbAxis[i];
 		float twoDist = obbAxis[i];
-		float dotDIst = glm::dot(obbCenterPointVec, glm::vec3(obbObMat[i]));
+		float dotDIst = glm::dot(obbCenterToPointVec, glm::vec3(obbObMat[i]));
 
 		if (dotDIst < oneDist)
 		{
@@ -467,13 +497,14 @@ bool CollisionFuncStatic::staticCheck_Dist_POINT_OBB(const glm::vec3 & point, OB
 	return isCollide;
 }
 
+
 void CollisionFuncStatic::staticCheck_CLOSEST_POINT_OBB(const glm::vec3 & point, const OBBOb & obbOb, glm::vec3 & retClosestPoint)
 {
 	const glm::mat4& obbObMat = obbOb.getMatConstRef();
-	const glm::vec3 obbCenterPointVec;
+	glm::vec3 obbCenterToPointVec;
 
 	for (int i = 0; i < 3; i++)
-		obbCenterPointVec[i] = point[i] - obbObMat[3][i];
+		obbCenterToPointVec[i] = point[i] - obbObMat[3][i];
 
 	retClosestPoint = glm::vec3(obbObMat[3]);
 
@@ -484,12 +515,12 @@ void CollisionFuncStatic::staticCheck_CLOSEST_POINT_OBB(const glm::vec3 & point,
 		glm::vec3 unitVec = glm::vec3(obbObMat[i]);
 		float oneDist = -obbAxis[i];
 		float twoDist = obbAxis[i];
-		float dotDIst = glm::dot(obbCenterPointVec, unitVec);
+		float dotDIst = glm::dot(obbCenterToPointVec, unitVec);
 
 		if (dotDIst < oneDist)
-			retClosestPoint += oneDist * unitVec);
+			retClosestPoint += oneDist * unitVec;
 		if (dotDIst > twoDist)
-			retClosestPoint += twoDist * unitVec);
+			retClosestPoint += twoDist * unitVec;
 	}
 	
 	return;
@@ -656,15 +687,17 @@ bool CollisionFuncStatic::staticCheck_BOX(const glm::vec3 & wolrd1, const glm::m
 	glm::mat4 tempAABBWorld = glm::mat4();
 
 	for (int i = 0; i < 3; i++)
-		tempAABBWorld[3][i] = world1[i];
+		tempAABBWorld[3][i] = wolrd1[i];
 
 	return staticCheck_BOX(tempAABBWorld, wolrd2, axisLen1, axisLen2);
 }
 
 bool CollisionFuncStatic::checkOBBOneINFLineIntersection(const OBBOb & obbOb, const LineOb & lineOb, float& retDist)
 {
-	glm::mat4& worldMat = obbOb.getMatConstRef();
-	glm::vec3& halfAxisSize = obbOb.getAxisConstRef();
+	const glm::mat4& worldMat = obbOb.getMatConstRef();
+	const glm::vec3& halfAxisSize = obbOb.getAxisConstRef();
+	const glm::vec3& lineVec = lineOb.getUnitVecConstRef();
+	const glm::vec3& lineStartPos = lineOb.getStartPosConstRef();
 
 	glm::vec3 worldPos = worldMat[3];
 	glm::vec3 worldCenterDiff = worldPos - lineStartPos;
@@ -677,7 +710,7 @@ bool CollisionFuncStatic::checkOBBOneINFLineIntersection(const OBBOb & obbOb, co
 	for (int i = 0; i < 3; i++)
 	{
 		rotateAxis[i] = glm::vec3(worldMat[i]);
-		rotatedDiff[i] = glm::dot(rotateAxis, worldCenterDiff);
+		rotatedDiff[i] = glm::dot(rotateAxis[i], worldCenterDiff);
 
 		if (!(-halfAxisSize[i] < rotatedDiff[i] && rotatedDiff[i] < halfAxisSize[i]))
 		{
@@ -704,7 +737,7 @@ bool CollisionFuncStatic::checkOBBOneINFLineIntersection(const OBBOb & obbOb, co
 		if (rotatedLineVec < 0.001f)
 		{
 			// pararell
-			if ((0.0f < worldCenterDiff - halfAxisSize[i]) || (0.0f > worldCenterDiff + halfAxisSize[i]))
+			if ((0.0f < worldCenterDiff[i] - halfAxisSize[i]) || (0.0f > worldCenterDiff[i] + halfAxisSize[i]))
 				return false;
 		}
 		else
@@ -742,14 +775,17 @@ bool CollisionFuncStatic::checkOBBOneINFLineIntersection(const OBBOb & obbOb, co
 
 bool CollisionFuncStatic::checkOBBLineIntersection(const OBBOb & obbOb, const LineOb & lineOb, float& retDist)
 {
-	glm::mat4& worldMat = obbOb.getMatConstRef();
-	glm::vec3& halfAxisSize = obbOb.getAxisConstRef();
+	const glm::mat4& worldMat = obbOb.getMatConstRef();
+	const glm::vec3& halfAxisSize = obbOb.getAxisConstRef();
+	const glm::vec3& lineVec = lineOb.getUnitVecConstRef();
+	const glm::vec3& lineStartPos = lineOb.getStartPosConstRef();
+	float lineLen = lineOb.getLen();
 
 	float minDist = std::numeric_limits<float>::lowest();
 	float maxDist = std::numeric_limits<float>::infinity();
 	glm::vec3 T_vec1, T_vec2;
 
-	if (checkPointIsIn(lineStartPos))
+	if (staticCheck_POINT_OBB(lineStartPos, obbOb))
 	{
 		retDist = 0.0f;
 		return true;
@@ -766,7 +802,7 @@ bool CollisionFuncStatic::checkOBBLineIntersection(const OBBOb & obbOb, const Li
 	for (int i = 0; i < 3; i++)
 	{
 		rotateAxis[i] = worldMat[i];
-		rotatedDiff[i] = glm::dot(rotateAxis, worldCenterDiff);
+		rotatedDiff[i] = glm::dot(rotateAxis[i], worldCenterDiff);
 
 		if (!(-halfAxisSize[i] < rotatedDiff[i] && rotatedDiff[i] < halfAxisSize[i]))
 		{
@@ -784,12 +820,12 @@ bool CollisionFuncStatic::checkOBBLineIntersection(const OBBOb & obbOb, const Li
 	for (int i = 0; i < 3; i++)
 	{
 		// rotatedLineVec = lineVec[0] * worldMat[i][0] + lineVec[1] * worldMat[i][1] + lineVec[2] * worldMat[i][2];	// dot
-		float rotatedLineVec = glm::dot(rotateAxis, lineVec);	// dot
+		float rotatedLineVec = glm::dot(rotateAxis[i], lineVec);	// dot
 
 		if (rotatedLineVec < 0.001f)
 		{
 			// pararell
-			if ((0.0f < worldCenterDiff - halfAxisSize[i]) || (0.0f > worldCenterDiff + halfAxisSize[i]))
+			if ((0.0f < worldCenterDiff[i] - halfAxisSize[i]) || (0.0f > worldCenterDiff[i] + halfAxisSize[i]))
 				return false;
 		}
 		else
@@ -823,7 +859,7 @@ bool CollisionFuncStatic::checkOBBLineIntersection(const OBBOb & obbOb, const Li
 
 	retDist = minDist;
 
-	if (retDist > len)
+	if (retDist > lineLen)
 		return false;
 
 	return true;
@@ -831,14 +867,16 @@ bool CollisionFuncStatic::checkOBBLineIntersection(const OBBOb & obbOb, const Li
 
 bool CollisionFuncStatic::checkAABBOneINFLineIntersection(const AABBOb & aabbOb, const LineOb & lineOb, float& retDist)
 {
-	glm::vec3& worldVec = aabbOb.getCenterConstRef();
-	glm::vec3& halfAxisSize = aabbOb.getAxisConstRef();
+	const glm::vec3& worldVec = aabbOb.getCenterConstRef();
+	const glm::vec3& halfAxisSize = aabbOb.getAxisConstRef();
+	const glm::vec3& lineVec = lineOb.getUnitVecConstRef();
+	const glm::vec3& lineStartPos = lineOb.getStartPosConstRef();
 
 	float minDist = std::numeric_limits<float>::lowest();
 	float maxDist = std::numeric_limits<float>::infinity();
 	glm::vec3 T_vec1, T_vec2;
 
-	if (checkPointInAABB(lineStartPos))
+	if (staticCheck_POINT_AABB(lineStartPos, aabbOb))
 	{
 		retDist = 0.0f;
 		return true;
@@ -887,15 +925,17 @@ bool CollisionFuncStatic::checkAABBOneINFLineIntersection(const AABBOb & aabbOb,
 
 bool CollisionFuncStatic::checkAABBLineIntersection(const AABBOb & aabbOb, const LineOb & lineOb, float& retDist)
 {
-	glm::vec3& worldVec = aabbOb.getCenterConstRef();
-	glm::vec3& halfAxisSize = obbOb.getAxisConstRef();
-
+	const glm::vec3& worldVec = aabbOb.getCenterConstRef();
+	const glm::vec3& halfAxisSize = aabbOb.getAxisConstRef();
+	const glm::vec3& lineVec = lineOb.getUnitVecConstRef();
+	const glm::vec3& lineStartPos = lineOb.getStartPosConstRef();
+	float lineLen = lineOb.getLen();
 	glm::vec3 T_vec1;
 	int longestIdx;
 
-	if (checkPointInAABB(lineStartPos))
+	if (staticCheck_POINT_AABB(lineStartPos, aabbOb))
 	{
-		resultDist = 0.0f;
+		retDist = 0.0f;
 		return true;
 	}
 
@@ -919,16 +959,16 @@ bool CollisionFuncStatic::checkAABBLineIntersection(const AABBOb & aabbOb, const
 				T_vec1[i] = (worldVec[i] + halfAxisSize[i] - lineStartPos[i]) / lineVec[i];
 			}
 
-			if (resultDist < T_vec1[i])
+			if (retDist < T_vec1[i])
 			{
-				resultDist = T_vec1[i];
+				retDist = T_vec1[i];
 				longestIdx = i;
 			}
 		}
 	}
 
 	// check dist in range [0 ~ len]
-	if (!(0 <= resultDist && resultDist <= len))
+	if (!(0 <= retDist && retDist <= lineLen))
 	{
 		return false;
 	}
@@ -937,8 +977,8 @@ bool CollisionFuncStatic::checkAABBLineIntersection(const AABBOb & aabbOb, const
 	int idx1 = (longestIdx + 1) % 3;
 	int idx2 = (longestIdx + 2) % 3;
 
-	float otherLen1 = lineStartPos[idx1] + lineVec[idx1] * len;
-	float otherLen2 = lineStartPos[idx2] + lineVec[idx2] * len;
+	float otherLen1 = lineStartPos[idx1] + lineVec[idx1] * lineLen;
+	float otherLen2 = lineStartPos[idx2] + lineVec[idx2] * lineLen;
 
 	if (!(worldVec[idx1] - halfAxisSize[idx1] <= otherLen1 && otherLen1 <= worldVec[idx1] + halfAxisSize[idx1]))
 	{
@@ -953,6 +993,7 @@ bool CollisionFuncStatic::checkAABBLineIntersection(const AABBOb & aabbOb, const
 	return true;
 }
 
+/*
 bool CollisionFuncStatic::checkINFLineIntersection(const AABBOb & aabbOb, const LineOb & lineOb, float& retDist)
 {
 	return false;
@@ -962,15 +1003,16 @@ bool CollisionFuncStatic::checkINFLineIntersection(const OBBOb & obbOb, const  L
 {
 	return false;
 }
+*/
 
 // refence : https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
 bool CollisionFuncStatic::checkSphereOneINFLineIntersection(const SphereOb & sphereOb, const LineOb & lineOb, float & retDist)
 {
-	glm::vec3& lineStartPos = lineOb.getStartPosRef();
-	glm::vec3& lineUnitVec = lineOb.getUnitVecRef();
-	float lineLen = lineOb.getLenRef();
+	const glm::vec3& lineStartPos = lineOb.getStartPosConstRef();
+	const glm::vec3& lineUnitVec = lineOb.getUnitVecConstRef();
+	float lineLen = lineOb.getLen();
 
-	glm::vec3& sphereCenter = sphereOb.getCenterConstRef();
+	const glm::vec3& sphereCenter = sphereOb.getCenterConstRef();
 	float radius = sphereOb.getRadius();
 
 	if (staticCheck_POINT_SPHERE(lineStartPos, sphereOb))
@@ -1003,11 +1045,11 @@ bool CollisionFuncStatic::checkSphereOneINFLineIntersection(const SphereOb & sph
 
 bool CollisionFuncStatic::checkSphereLineIntersection(const SphereOb & sphereOb, const LineOb & lineOb, float & retDist)
 {
-	glm::vec3& lineStartPos = lineOb.getStartPosRef();
-	glm::vec3& lineUnitVec = lineOb.getUnitVecRef();
-	float lineLen = lineOb.getLenRef();
+	const glm::vec3& lineStartPos = lineOb.getStartPosConstRef();
+	const glm::vec3& lineUnitVec = lineOb.getUnitVecConstRef();
+	float lineLen = lineOb.getLen();
 
-	glm::vec3& sphereCenter = sphereOb.getCenterConstRef();
+	const glm::vec3& sphereCenter = sphereOb.getCenterConstRef();
 	float radius = sphereOb.getRadius();
 
 	if (staticCheck_POINT_SPHERE(lineStartPos, sphereOb))
@@ -1060,10 +1102,10 @@ bool CollisionFuncStatic::staticCheck_CLOSEST_POINT_LINE(const glm::vec3 & point
 
 bool CollisionFuncStatic::staticCheck_POINT_SPHERE(const glm::vec3 & point, const SphereOb & sphereOb)
 {
-	glm::vec3& center = sphereOb.getCenterConstRef();
+	const glm::vec3& center = sphereOb.getCenterConstRef();
 	float radius = sphereOb.getRadius();
-	float dist2 = (point[0] - center[0]) * (point[0] - center[0]) + (point] - center[1]) * (point[1] - center[1])
-		+ (point] - center[2]) * (point[2] - center[2]);
+	float dist2 = (point[0] - center[0]) * (point[0] - center[0]) + (point[1] - center[1]) * (point[1] - center[1])
+		+ (point[2] - center[2]) * (point[2] - center[2]);
 
 	if (dist2 <= radius * radius)
 		return true;
@@ -1074,7 +1116,7 @@ bool CollisionFuncStatic::staticCheck_POINT_SPHERE(const glm::vec3 & point, cons
 // dist from shpere shell ~ point
 bool CollisionFuncStatic::staticCheck_Dist_POINT_SPHERE(const glm::vec3 & point, const SphereOb & sphereOb, float & retDist)
 {
-	glm::vec3& center	= sphereOb.getCenterConstRef();
+	const glm::vec3& center	= sphereOb.getCenterConstRef();
 	float radius		= sphereOb.getRadius();
 	glm::vec3 centerToPoint = point - center;
 
@@ -1096,9 +1138,9 @@ bool CollisionFuncStatic::staticCheck_Dist_POINT_SPHERE(const glm::vec3 & point,
 	}
 }
 
-void CollisionFuncStatic::staticCheck_CLOSEST_POINT_SPHERE(const glm::vec3 & point, const SphereOb & sphereOb, glm::vec3 & retClosestPoint)
+bool CollisionFuncStatic::staticCheck_CLOSEST_POINT_SPHERE(const glm::vec3 & point, const SphereOb & sphereOb, glm::vec3 & retClosestPoint)
 {
-	glm::vec3& center = sphereOb.getCenterConstRef();
+	const glm::vec3& center = sphereOb.getCenterConstRef();
 	float radius = sphereOb.getRadius();
 	glm::vec3 centerToPoint = point - center;
 	float dist2 = (centerToPoint[0]) * (centerToPoint[0]) + (centerToPoint[1]) * (centerToPoint[1])
@@ -1119,8 +1161,8 @@ void CollisionFuncStatic::staticCheck_CLOSEST_POINT_SPHERE(const glm::vec3 & poi
 
 bool CollisionFuncStatic::staticCheck_POINT_AABB(const glm::vec3 & point, const AABBOb & aabbOb)
 {
-	glm::vec3& worldVec = aabbOb.getCenterConstRef();
-	glm::vec3& halfAxisSize = aabbOb.getAxisConstRef();
+	const glm::vec3& worldVec = aabbOb.getCenterConstRef();
+	const glm::vec3& halfAxisSize = aabbOb.getAxisConstRef();
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -1140,21 +1182,21 @@ bool CollisionFuncStatic::staticCheck_Dist_POINT_AABB(const glm::vec3 & point, c
 	const glm::vec3& aabbCenter = aabbOb.getCenterConstRef();
 	const glm::vec3& aabbAxis = aabbOb.getAxisConstRef();
 
+	glm::vec3 oneDist = aabbCenter - aabbAxis;
+	glm::vec3 twoDist = aabbCenter + aabbAxis;
+
 	for (int i = 0; i < 3; i++)
 	{
-		float oneDist = aabbOb.aabbCenter[i] - aabbOb.aabbAxis[i];
-		float twoDist = aabbOb.aabbCenter[i] + aabbOb.aabbAxis[i];
-
-		if (point[i] < oneDist)
+		if (point[i] < oneDist[i])
 		{
 			collide = false;
-			retDist += (point[i] - oneDist) * (point[i] - oneDist);
+			retDist += (point[i] - oneDist[i]) * (point[i] - oneDist[i]);
 		}
 
-		if (point[i] > twoDist)
+		if (point[i] > twoDist[i])
 		{
 			collide = false;
-			retDist += (point[i] - twoDist) * (point[i] - twoDist);
+			retDist += (point[i] - twoDist[i]) * (point[i] - twoDist[i]);
 		}
 	}
 

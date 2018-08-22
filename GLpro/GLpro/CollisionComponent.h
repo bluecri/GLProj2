@@ -22,15 +22,14 @@ public:
 
 	void setDeleted(bool bDeleted);
 	void setCollisionTest(bool bCollisionTest);		// do collision test?
-	void setCollisionVelocityUpdate(bool bVelUpdate);	// do velocity update result by collision?
-
+	
 	bool	isCollisionComponentDirty();
 	void	resetCollisionComponentDirty();
 
 	void	setCollisionCategoryBit(int bit);
 	void	setCollisionCategoryMaskBit(int maskBit);
-	int		getCollisionCategoryBit();
-	int		getCollisionCategoryMaskBit();
+	int		getCollisionCategoryBit() const;
+	int		getCollisionCategoryMaskBit() const;
 
 	bool	testCollisionCategoryBit(const CollisionComponent* otherComp);
 	//bool	testCollisionCategoryBit(int otherMastBit);
@@ -44,13 +43,31 @@ public:
 	DynamicCollisionSubComp* getDynamicSubComp();
 	virtual void	updateDynamicLap() = 0;
 
+	//virtual bool collideTestToOther(CollisionComponent* comp) = 0;
+	virtual bool collideStaticTestToOtherStatic(CollisionComponent* staticComp) = 0;
+	virtual bool collideStaticTestToOtherDynamic(CollisionComponent* staticComp, float collideTime) = 0;
+	//virtual bool collideDynamicTestToOtherStatic(CollisionComponent* staticComp, float collideTime) = 0;
+	virtual bool collideDynamicTestToOtherDynamic(CollisionComponent* staticComp, float collideTime) = 0;
+
+	virtual bool lapStaticTestToOtherStatic(CollisionComponent* staticComp) = 0;
+	virtual bool lapStaticTestToOtherDynamic(CollisionComponent* staticComp) = 0;
+	//virtual bool lapDynamicTestToOtherStatic(CollisionComponent* staticComp) = 0;
+	virtual bool lapDynamicTestToOtherDynamic(CollisionComponent* staticComp) = 0;
+
+	virtual void resolveStaticStaticCollide(CollisionComponent* staticComp) = 0;
+	//virtual void resolveStaticDynamicCollide(float time, CollisionComponent* dynamicComp) = 0;
+	virtual void resolveDynamicStaticCollide(float time, CollisionComponent* staticComp) = 0;
+	virtual void resolveDynamicDynamicCollide(float time, CollisionComponent* dynamicComp) = 0;
+
+	bool isTrigger();
+	void setTrigger(bool bTrigger);
+
 protected:
 	/*
 	*	collision local + rigidComp(world RigidbodyComponent) -> collision world
 	*	return whether is modified
 	*/
 	virtual void updateCollisionComp() = 0;
-	virtual bool collideTestToOther(CollisionComponent* comp) = 0;
 
 public:
 	COLLISION_TYPE collisionType;
@@ -67,11 +84,10 @@ private:
 
 	bool	_bDeleted;						// component delete
 	bool	_bCollisionTest;				// in octree for test or not
-	bool	_bAlreadyVelocityUpdated;		// for CollisionComponentManager 
 
 	int		_collisionCategoryBit;
 	int		_collisionCategoryMaskBit;
-	bool	_bCollideVelocityUpdate;		// force with collision or not
+	bool	_bIsTrigger;		// force with collision or not
 
 	friend CollisionComponentManager;
 	friend OctreeForCollision;

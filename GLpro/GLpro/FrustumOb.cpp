@@ -32,7 +32,7 @@ void FrustumOb::updateFrustumOb(glm::mat4 & persMat, glm::mat4 & viewMat)
 		//_frustum[i] = glm::normalize(_frustum[i]);
 }
 
-const std::vector<glm::vec4>& FrustumOb::getFrustumConstRef()
+const std::vector<glm::vec4>& FrustumOb::getFrustumConstRef() const
 {
 	return _frustum;
 }

@@ -22,12 +22,20 @@ public:
 
 	void		setNotNormalizedUnitVec(glm::vec3& notNormalizedUnitVec, bool isContainLen = false);
 
-	glm::vec3	getStartPos();
+	glm::vec3	getStartPos() const;
 	glm::vec3&	getStartPosRef();
-	glm::vec3	getEndPos();
+	const glm::vec3&	getStartPosConstRef() const;
+
+	glm::vec3	getEndPos() const;
+
 	glm::vec3&	getUnitVecRef();
+	const glm::vec3&	getUnitVecConstRef() const;
+
 	float&		getLenRef();
+	float		getLen() const;
+
 	LINEOB_TYPE_ENUM getType();
+	LINEOB_TYPE_ENUM getType() const;
 
 private:
 	LINEOB_TYPE_ENUM _lineType;

@@ -16,17 +16,17 @@ void SphereOb::updateSphereOb(float & radius)
 	_radius = radius;
 }
 
-const glm::vec3 & SphereOb::getCenterConstRef()
+const glm::vec3 & SphereOb::getCenterConstRef() const
 {
 	return _center;
 }
 
-glm::vec3 SphereOb::getCenter()
+glm::vec3 SphereOb::getCenter() const
 {
 	return _center;
 }
 
-float SphereOb::getRadius()
+float SphereOb::getRadius() const
 {
 	return _radius;
 }

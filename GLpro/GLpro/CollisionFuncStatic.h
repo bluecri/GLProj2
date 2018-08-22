@@ -19,7 +19,7 @@ public:
 
 	static bool staticCheck_POINT_SPHERE(const glm::vec3& point, const SphereOb& sphereOb);
 	static bool staticCheck_Dist_POINT_SPHERE(const glm::vec3& point, const SphereOb& sphereOb, float& retDist);
-	static void staticCheck_CLOSEST_POINT_SPHERE(const glm::vec3& point, const SphereOb& sphereOb, glm::vec3& retClosestPoint);
+	static bool staticCheck_CLOSEST_POINT_SPHERE(const glm::vec3& point, const SphereOb& sphereOb, glm::vec3& retClosestPoint);
 
 	static bool staticCheck_POINT_AABB(const glm::vec3& point, const AABBOb& aabbOb);
 	static bool staticCheck_Dist_POINT_AABB(const glm::vec3& point, const AABBOb& aabbOb, float& retDist);
@@ -47,21 +47,24 @@ public:
 	//static bool staticCheck_CLOSEST_LINE_OBB(const LineOb& lineOb, const OBBOb& obbOb, glm::vec3& pointOnLine, glm::vec3& pointOnOBB);
 
 	static bool staticCheck_SPHERE_SPHERE(const SphereOb& sphereOb1, const SphereOb& sphereOb2);
-	static bool staticCheck_SPHERE_AABB(const SphereOb& sphereOb, const AABBOb& aabbOb);
+	static bool staticCheck_SPHERE_AABB_OVERLAP(const SphereOb& sphereOb, const AABBOb& aabbOb);
 	static bool staticCheck_SPHERE_OBB(const SphereOb& sphereOb, const OBBOb& obbOb);
 
 	static bool staticCheck_AABB_LINE_IN(const AABBOb& aabbObBig, const LineOb& lineOb);
+	static bool staticCheck_AABB_LINE_OVERLAP(const AABBOb& aabbObBig, const LineOb& lineOb);
 	static bool staticCheck_AABB_SPHERE_IN(const AABBOb& aabbObBig, const SphereOb& sphereOb);
 	//static bool staticCheck_AABB_SPHERE_INOUTOVERLAP(const AABBOb& aabbObBig, const SphereOb& sphereOb);
 	static bool staticCheck_AABB_AABB_IN(const AABBOb& aabbObBig, const AABBOb& aabbObSmall);
-	static bool staticCheck_AABB_AABB_OUT(const AABBOb& aabbOb1, const AABBOb& aabbOb2);
+	static bool staticCheck_AABB_AABB_OVERLAP(const AABBOb& aabbOb1, const AABBOb& aabbOb2);
 	static int	staticCheck_AABB_AABB_INOUTOVERLAP(const AABBOb& aabbObBig, const AABBOb& aabbObSmall);
-	static bool staticCheck_AABB_OBB(const AABBOb& aabbOb, const OBBOb& obbOb);
+	static bool staticCheck_AABB_OBB_OVERLAP(const AABBOb& aabbOb, const OBBOb& obbOb);
 
 	static int	staticCheck_FRUSTUM_AABB_INOUTOVERLAP(const FrustumOb& frustumObBig, const AABBOb& aabbObSmall);
 	
-	static bool staticCheck_OBB_OBB(const OBBOb& obbOb1, const OBBOb& obbOb2);
+	static bool staticCheck_OBB_OBB_OUT(const OBBOb& obbOb1, const OBBOb& obbOb2);
 
+	static void CreateAAABBLAP_SPHERE(const SphereOb& sphereOb, AABBOb& retAabb);
+	static void CreateAAABBLAP_LINE(const LineOb& lineOb, AABBOb& retAabb);
 
 private:
 	static bool staticCheck_BOX(const glm::mat4 & wolrd1, const glm::mat4 & wolrd2, const glm::vec3 & axisLen1, const glm::vec3 & axisLen2);

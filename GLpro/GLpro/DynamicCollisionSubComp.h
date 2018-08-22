@@ -12,6 +12,11 @@ public:
 	DynamicCollisionSubComp();
 
 	const AABBOb& getLapConstRef();
+	bool getCollisionOccured();
+	void setCollisoinOccured();
+	void resetCollisionOccured();
+
+	virtual void saveNonCollideInfoToPrevInfo() = 0;
 	//virtual void updateAABBObLapByCollisionComp(CollisionComponent* comp);
 	//void updatePrevWorldMat(RigidbodyComponent * rigidComp);
 
@@ -25,4 +30,5 @@ private:
 
 protected:
 	AABBOb _lap;
+	bool	_bAlreadyDynamicVelocityUpdated;		// for CollisionComponentManager 
 };

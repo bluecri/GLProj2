@@ -28,7 +28,7 @@ OctreeForFrustum::OctreeForFrustum(int height, int halfAxisSize, glm::vec3 cente
 
 	int index = 0;
 	_octreeElemVec[index]._height = height;
-	_octreeElemVec[index]._aabbOb.updateAABBObAxis(halfAxisSize);
+	_octreeElemVec[index]._aabbOb.updateAABBObAxis((float)halfAxisSize);
 	_octreeElemVec[index]._aabbOb.updateAABBObCenter(center);
 	_octreeElemVec[index]._index = index;
 	_octreeElemVec[index]._potentialThreshold = 8;
@@ -374,7 +374,7 @@ RigidbodyComponent* OctreeForFrustum::getNearestRigidbodyComp(glm::vec3& pos, EN
 	return nullptr;
 }
 
-RigidbodyComponent * OctreeForFrustum::getRayTraceRigidbodyComp(const LineOb& lineOb, ENUM_ENTITY_TYPE entityTypeFilter)
+RigidbodyComponent * OctreeForFrustum::getRayTraceRigidbodyComp(const LineOb& lineOb, ENUM_ENTITY_TYPE entityTypeFilter, int categoryMaskBit)
 {
 	std::priority_queue<Dist, std::pair<BoxIndex, RENDER::RNormal::DrawElement*>> prioQue;
 	prioQue.push(std::make_pair(0, std::make_pair(0, nullptr)));
@@ -390,7 +390,7 @@ RigidbodyComponent * OctreeForFrustum::getRayTraceRigidbodyComp(const LineOb& li
 			OctreeFrustumElem& octreeFrustumElem = _octreeElemVec[topElem.second.first];
 
 			// push all comp.
-			for (auto& elem : octreeFrustumElem._potentialComponents)
+			for (auto elem : octreeFrustumElem._potentialComponents)
 			{
 				if ((false == elem->first->isBDeleted()) && (false == elem->second->getBindedEntity()->isBeDeleted()))
 				{
@@ -423,6 +423,9 @@ RigidbodyComponent * OctreeForFrustum::getRayTraceRigidbodyComp(const LineOb& li
 			{
 				// push all child box.
 				OctreeFrustumElem& octreeFrustumChildElem = _octreeElemVec[topElem.second.first * 8 + i];
+				float lineToBlockDist;
+				CollisionFuncStatic::staticCheck_LINE_AABB(lineOb, octreeFrustumChildElem._aabbOb, lineToBlockDist);
+
 				prioQue.push(std::make_pair(octreeFrustumChildElem.getNearestDistToPoint(pos), std::make_pair(topElem.second.first * 8 + i, nullptr)));
 			}
 		}

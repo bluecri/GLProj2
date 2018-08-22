@@ -33,7 +33,7 @@ private:
 	void insertSleepCompToOctTree();
 	void insertTestCompToOctaTreeWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
 	void actualCollisionTest();
-	void collisionTestWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
+	//void collisionTestWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
 
 	void doOctreeUpdate();
 

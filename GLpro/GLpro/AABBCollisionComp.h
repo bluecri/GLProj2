@@ -12,18 +12,32 @@ public:
 
 	// CollisionComponent을(를) 통해 상속됨
 	virtual void updateCollisionComp() override;
-	virtual bool collideTestToOther(CollisionComponent* comp) override;
 	virtual void updateDynamicLap() override;
 
-	void	updateAABBObAxis(glm::vec3& halfAxisSize);
-	void	updateAABBObAxis(float& halfAxisSize);
-
-	void setLocalVec(glm::vec3& localVec);
+	void	updateAABBObAxis(const glm::vec3& halfAxisSize);
+	void	updateAABBObAxis(float halfAxisSize);
+	void	setLocalVec(const glm::vec3& localVec);
 
 	const AABBOb& getAABBConstRef();
 	DynamicCollisionSubCompVec* getDynamicSubCompVec();
 
+	// CollisionComponent을(를) 통해 상속됨
+	virtual bool collideStaticTestToOtherStatic(CollisionComponent * staticComp) override;
+	virtual bool collideStaticTestToOtherDynamic(CollisionComponent * staticComp, float collideTime) override;
+	virtual bool collideDynamicTestToOtherDynamic(CollisionComponent * staticComp, float collideTime) override;
+
+	virtual bool lapStaticTestToOtherStatic(CollisionComponent * staticComp) override;
+	virtual bool lapStaticTestToOtherDynamic(CollisionComponent * staticComp) override;
+	virtual bool lapDynamicTestToOtherDynamic(CollisionComponent * staticComp) override;
+
+	virtual void resolveStaticStaticCollide(CollisionComponent * staticComp) override;
+	virtual void resolveDynamicStaticCollide(float time, CollisionComponent * staticComp) override;
+	virtual void resolveDynamicDynamicCollide(float time, CollisionComponent * dynamicComp) override;
+
 private:
 	AABBOb _aabb;
-	glm::vec3 _localVec;	// collision component local matrix (trans & rotate)
+
+	// collision component local matrix (trans & rotate)
+	glm::vec3 _localVec;
+
 };

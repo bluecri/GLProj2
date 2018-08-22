@@ -1,0 +1,109 @@
+﻿
+'obbCenterPointVec' 이름을 'obbCenterToPointVec'(으)로 바꾸기:
+------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\CollisionFuncStatic.cpp(473, 18)
+e:\gitProjects\GLProj2\GLpro\GLpro\CollisionFuncStatic.cpp(476, 3)
+e:\gitProjects\GLProj2\GLpro\GLpro\CollisionFuncStatic.cpp(487, 28)
+
+'obbCenterPointVec' 이름을 'obbCenterToPointVec'(으)로 바꾸기:
+------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\CollisionFuncStatic.cpp(440, 12)
+e:\gitProjects\GLProj2\GLpro\GLpro\CollisionFuncStatic.cpp(443, 3)
+e:\gitProjects\GLProj2\GLpro\GLpro\CollisionFuncStatic.cpp(451, 28)
+e:\gitProjects\GLProj2\GLpro\GLpro\OctreeElem.cpp(106): 'getSpaceOfMatchedCenterStaticComp' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\OctreeElem.cpp(111): 'getSpaceOfMatchedCenterDynamicComp' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\OctreeElem.cpp(53): 'IsInBoxFitTestStaticComp' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\OctreeElem.cpp(57): 'IsInBoxFitTestDynamicComp' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(431): 'insertStaticComponent' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(435): 'insertDynamicComponent' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(274): 'dynamicDynamicCollisionTest' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(278): 'staticDynamicCollisionTest' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(282): 'staticStaticCollisionTest' 함수 정의를 성공적으로 만들었습니다.
+
+'ddAndDsCOllsionTimeQueue' 이름을 'ddAndDsCOllsionTime'(으)로 바꾸기:
+-------------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(301, 4)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.h(78, 82)
+
+'staticStaticCollisionTest' 이름을 'staticStaticCollisionVecTest'(으)로 바꾸기:
+-----------------------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(184, 3)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(214, 26)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.h(52, 7)
+
+'staticDynamicCollisionTest' 이름을 'staticDynamicCollisionVecTest'(으)로 바꾸기:
+-------------------------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(173, 3)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(179, 3)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(188, 2)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(265, 26)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.h(53, 7)
+
+'dynamicDynamicCollisionTest' 이름을 'dynamicDynamicCollisionVecTest'(으)로 바꾸기:
+---------------------------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(168, 3)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(295, 26)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.h(54, 7)
+
+'staticSelfCollisionTest' 이름을 'staticSelfCollisionVecTest'(으)로 바꾸기:
+-------------------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(191, 2)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(325, 26)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.h(55, 7)
+
+'dynamicSelfCollisionTest' 이름을 'dynamicSelfCollisionVecTest'(으)로 바꾸기:
+---------------------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(194, 2)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(329, 26)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.h(56, 7)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(359): 'staticStaticCollisionTest' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(363): 'staticDynamicCollisionTest' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(367): 'dynamicDynamicCollisionTest' 함수 정의를 성공적으로 만들었습니다.
+
+'staticComp1' 이름을 'staticCompVec1'(으)로 바꾸기:
+-------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(214, 85)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(216, 20)
+
+'staticComp2' 이름을 'staticCompVec2'(으)로 바꾸기:
+-------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(214, 131)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(218, 21)
+
+'_bAlreadyVelocityUpdated' 이름을 '_bAlreadyDynamicVelocityUpdated'(으)로 바꾸기:
+-------------------------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\CollisionComponent.cpp(14, 2)
+e:\gitProjects\GLProj2\GLpro\GLpro\CollisionComponent.h(80, 7)
+e:\gitProjects\GLProj2\GLpro\GLpro\CollisionComponentManager.cpp(78, 10)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(469, 10)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(524, 10)
+e:\gitProjects\GLProj2\GLpro\GLpro\DynamicCollisionSubComp.cpp(18): 'setAlreadyVelocityUpdated' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\DynamicCollisionSubComp.cpp(22): 'resetAlreadyVelocityUpdated' 함수 정의를 성공적으로 만들었습니다.
+
+'setAlreadyVelocityUpdated' 이름을 'setCollisoinOccured'(으)로 바꾸기:
+--------------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\DynamicCollisionSubComp.cpp(22, 31)
+e:\gitProjects\GLProj2\GLpro\GLpro\DynamicCollisionSubComp.h(16, 7)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(403, 37)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(404, 64)
+
+'getAlreadyVelocityUpdated' 이름을 'getCollisionOccured'(으)로 바꾸기:
+--------------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\DynamicCollisionSubComp.cpp(18, 31)
+e:\gitProjects\GLProj2\GLpro\GLpro\DynamicCollisionSubComp.h(15, 7)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(381, 58)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(382, 87)
+
+'resetAlreadyVelocityUpdated' 이름을 'resetCollisionOccured'(으)로 바꾸기:
+------------------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\DynamicCollisionSubComp.cpp(26, 31)
+e:\gitProjects\GLProj2\GLpro\GLpro\DynamicCollisionSubComp.h(17, 7)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(78, 30)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(540, 31)
+e:\gitProjects\GLProj2\GLpro\GLpro\CollisionComponent.cpp(121): 'isTrigger' 함수 정의를 성공적으로 만들었습니다.
+e:\gitProjects\GLProj2\GLpro\GLpro\CollisionComponent.cpp(126): 'setTrigger' 함수 정의를 성공적으로 만들었습니다.
+
+'savePrevInfo' 이름을 'saveNonCollideInfoToPrevInfo'(으)로 바꾸기:
+----------------------------------------------------------
+e:\gitProjects\GLProj2\GLpro\GLpro\DynamicCollisionSubComp.h(19, 15)
+e:\gitProjects\GLProj2\GLpro\GLpro\Octree.cpp(420, 31)

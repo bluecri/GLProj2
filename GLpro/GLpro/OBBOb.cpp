@@ -22,23 +22,23 @@ OBBOb::OBBOb(glm::vec3 & pos, glm::vec3 & halfAxisSize)
 	_halfAxisSize = halfAxisSize;
 }
 
-void OBBOb::updateOBBOb(glm::mat4 & worldMat, glm::vec3 & halfAxisSize)
+void OBBOb::updateOBBOb(const glm::mat4 & worldMat, const glm::vec3 & halfAxisSize)
 {
 	_worldMat = worldMat;
 	_halfAxisSize = halfAxisSize;
 }
 
-void OBBOb::updateOBBObAxis(glm::vec3 & halfAxisSize)
+void OBBOb::updateOBBObAxis(const glm::vec3 & halfAxisSize)
 {
 	_halfAxisSize = halfAxisSize;
 }
 
-void OBBOb::updateOBBObMat(glm::mat4 & worldMat)
+void OBBOb::updateOBBObMat(const glm::mat4 & worldMat)
 {
 	_worldMat = worldMat;
 }
 
-void OBBOb::updateOBBObMatOnlyRotate(glm::mat4 & rotMat)
+void OBBOb::updateOBBObMatOnlyRotate(const glm::mat4 & rotMat)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -49,12 +49,12 @@ void OBBOb::updateOBBObMatOnlyRotate(glm::mat4 & rotMat)
 	}
 }
 
-const glm::vec3 & OBBOb::getMatConstRef()
+const glm::mat4 & OBBOb::getMatConstRef() const
 {
 	return _worldMat;
 }
 
-const glm::vec3 & OBBOb::getAxisConstRef()
+const glm::vec3 & OBBOb::getAxisConstRef() const
 {
 	return _halfAxisSize;
 }

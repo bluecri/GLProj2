@@ -229,6 +229,9 @@
     <Filter Include="소스 파일\components\collision\Dynamic">
       <UniqueIdentifier>{94f50f0e-f58e-4e20-8635-b3d44b8ccb62}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\components\collision\Static">
+      <UniqueIdentifier>{44d5eea0-0cda-415c-a9ac-0ff78b6d2739}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

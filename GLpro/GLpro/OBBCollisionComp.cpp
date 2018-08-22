@@ -52,6 +52,7 @@ bool OBBCollisionComp::collideTestToOther(CollisionComponent * comp)
 
 void OBBCollisionComp::updateOBBOb(const glm::mat4 & worldMat, const glm::vec3 & halfAxisSize)
 {
+	_bDirty = true;
 	_obb.updateOBBOb(worldMat, halfAxisSize);
 	_aabb.updateAABBObCenter(worldMat);
 	_aabb.updateAABBObAxis(glm::length(halfAxisSize));
@@ -59,18 +60,20 @@ void OBBCollisionComp::updateOBBOb(const glm::mat4 & worldMat, const glm::vec3 &
 
 void OBBCollisionComp::updateOBBObAxis(const glm::vec3 & halfAxisSize)
 {
-	_dirty = true;
+	_bDirty = true;
 	_obb.updateOBBObAxis(halfAxisSize);
 	_aabb.updateAABBObAxis(glm::length(halfAxisSize));
 }
 
 void OBBCollisionComp::setLocalMat(glm::mat4 & localMat)
 {
+	_bDirty = true;
 	_localMat = localMat;
 }
 
 void OBBCollisionComp::setLocalOnlyRotation(glm::mat4 & rotMat)
 {
+	_bDirty = true;
 	for (int i = 0; i < 3; i++)
 	{
 		for (int k = 0; k < 3; k++)
@@ -82,22 +85,24 @@ void OBBCollisionComp::setLocalOnlyRotation(glm::mat4 & rotMat)
 
 void OBBCollisionComp::setLocalPos(glm::vec3 & posVec)
 {
+	_bDirty = true;
 	for (int i = 0; i < 3; i++)
 		_localMat[3][i] = posVec[i];
 }
 
 void OBBCollisionComp::setLocalPos(glm::mat4 & posMat)
 {
+	_bDirty = true;
 	for (int i = 0; i < 3; i++)
 		_localMat[3][i] = posMat[3][i];
 }
 
-const AABBOb & OBBCollisionComp::getAABBObConstRef()
+const AABBOb & OBBCollisionComp::getAABBObConstRef() const
 {
 	return _aabb;
 }
 
-const OBBOb & OBBCollisionComp::getOBBObConstRef()
+const OBBOb & OBBCollisionComp::getOBBObConstRef() const
 {
 	return _obb;
 }

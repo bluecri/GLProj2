@@ -15,6 +15,18 @@ const AABBOb & DynamicCollisionSubComp::getLapConstRef()
 {
 	return _lap;
 }
+bool DynamicCollisionSubComp::getCollisionOccured()
+{
+	return _bAlreadyDynamicVelocityUpdated;
+}
+void DynamicCollisionSubComp::setCollisoinOccured()
+{
+	_bAlreadyDynamicVelocityUpdated = true;
+}
+void DynamicCollisionSubComp::resetCollisionOccured()
+{
+	_bAlreadyDynamicVelocityUpdated = false;
+}
 /*
 void DynamicCollisionSubComp::updateAABBObLapByCollisionComp(CollisionComponent * comp)
 {

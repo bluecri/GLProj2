@@ -14,6 +14,7 @@ public:
 	virtual void updateCollisionComp() override;
 	virtual bool collideTestToOther(CollisionComponent* comp) override;
 
+	void	updateOBBOb(const glm::mat4 & worldMat, const glm::vec3 & halfAxisSize);
 	void	updateOBBObAxis(const glm::vec3& halfAxisSize);
 
 
@@ -22,8 +23,8 @@ public:
 	void setLocalPos(glm::vec3& posVec);
 	void setLocalPos(glm::mat4& posMat);
 
-	const AABBOb& getAABBObConstRef();
-	const OBBOb& getOBBObConstRef();
+	const AABBOb& getAABBObConstRef() const;
+	const OBBOb& getOBBObConstRef() const;
 
 private:
 	AABBOb _aabb;	// 3 same axis

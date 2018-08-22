@@ -24,6 +24,11 @@ public:
 	T getElem(int idx);
 	T operator[](int idx);
 
+	const std::vector<T>& getElemVecConstRef() const;
+
+	// do not call erase, clear, push_back... etc
+	std::vector<T>& getElemVecRef();
+
 private:
 	std::vector<T> elemVec;
 };
@@ -137,4 +142,17 @@ template<class T>
 T VectorP<T>::operator[](int idx)
 {
 	return elemVec[idx];
+}
+
+template<class T>
+const std::vector<T>& VectorP<T>::getElemVecConstRef() const
+{
+	return elemVEc;
+}
+
+// do not call erase, clear, push_back... etc
+template<class T>
+std::vector<T>& VectorP<T>::getElemVecRef()
+{
+	return elemVec;
 }

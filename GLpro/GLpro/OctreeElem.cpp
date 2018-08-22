@@ -13,7 +13,8 @@ OctreeElem::OctreeElem()
 {
 	_bUsed = false;
 	_bUseChildren = false;
-	_potentialComponents = VectorP<CollisionComponent*>();
+	_potentialStaticComponents = VectorP<CollisionComponent*>();
+	_potentialDynamicComponents = VectorP<CollisionComponent*>();
 
 	_useChildBit = 0;
 }
@@ -25,9 +26,14 @@ bool OctreeElem::IsInBoxFitTest(CollisionComponent * comp)
 {
 	if (comp->isDynamicComp())
 	{
-		return CollisionFuncStatic::staticCheck_AABB_AABB_IN(_aabbOb, comp->getDynamicSubComp()->getLapConstRef());
+		return IsInBoxFitTestDynamicComp(comp);
 	}
 
+	return IsInBoxFitTestStaticComp(comp);
+}
+
+bool OctreeElem::IsInBoxFitTestStaticComp(CollisionComponent * comp)
+{
 	switch (static_cast<int>(comp->collisionType))
 	{
 	case COLLISION_TYPE::COLLISION_AABB:
@@ -43,11 +49,15 @@ bool OctreeElem::IsInBoxFitTest(CollisionComponent * comp)
 		return CollisionFuncStatic::staticCheck_AABB_LINE_IN(_aabbOb, static_cast<LineCollisionComp*>(comp)->getLineObConstRef());
 		break;
 	default:
+		printf_s("[LOG] :  OctreeElem::IsInBoxFitTestStaticComp(CollisionComponent * comp) Switch Default\n");
 		return false;
 		break;
-
 	}
-	return false;
+}
+
+bool OctreeElem::IsInBoxFitTestDynamicComp(CollisionComponent * comp)
+{
+	return CollisionFuncStatic::staticCheck_AABB_AABB_IN(_aabbOb, comp->getDynamicSubComp()->getLapConstRef());
 }
 /*
 *	find matched child Space[0~7] of comp center
@@ -58,44 +68,65 @@ int OctreeElem::getSpaceOfMatchedCenter(CollisionComponent * comp)
 	glm::vec3 center;
 	if (comp->isDynamicComp())
 	{
-		center = comp->getDynamicSubComp()->getLapConstRef().getCenter();
+		return	getSpaceOfMatchedCenterStaticComp(comp);
 	}
 	else
 	{
-		switch (static_cast<int>(comp->collisionType))
-		{
-		case COLLISION_TYPE::COLLISION_AABB:
-			center = static_cast<AABBCollisionComp*>(comp)->getAABBConstRef().getCenter();
-			break;
-		case COLLISION_TYPE::COLLISION_OBB:
-			center = static_cast<OBBCollisionComp*>(comp)->getAABBObConstRef().getCenter();
-			break;
-		case COLLISION_TYPE::COLLISION_SPHERE:
-			center = static_cast<SphereCollisionComp*>(comp)->getSphereObConstRef().getCenter();
-			break;
-		case COLLISION_TYPE::COLLISION_LINE:
-			center = static_cast<LineCollisionComp*>(comp)->getLineObConstRef().getStartPos();
-			break;
-		default:
-			return false;
-			break;
-		}
+		return	getSpaceOfMatchedCenterDynamicComp(comp);
 	}
-	
+}
+
+int OctreeElem::getSpaceOfMatchedCenterStaticComp(CollisionComponent * comp)
+{
+	glm::vec3 center;
+
+	switch (static_cast<int>(comp->collisionType))
+	{
+	case COLLISION_TYPE::COLLISION_AABB:
+		center = static_cast<AABBCollisionComp*>(comp)->getAABBConstRef().getCenter();
+		break;
+	case COLLISION_TYPE::COLLISION_OBB:
+		center = static_cast<OBBCollisionComp*>(comp)->getAABBObConstRef().getCenter();
+		break;
+	case COLLISION_TYPE::COLLISION_SPHERE:
+		center = static_cast<SphereCollisionComp*>(comp)->getSphereObConstRef().getCenter();
+		break;
+	case COLLISION_TYPE::COLLISION_LINE:
+		center = static_cast<LineCollisionComp*>(comp)->getLineObConstRef().getStartPos();
+		break;
+	default:
+		printf_s("[LOG] : OctreeElem::getSpaceOfMatchedCenterStaticComp(CollisionComponent * comp) Switch Defalut\n");
+		center = glm::vec3();
+		break;
+	}
+
+	return getSpaceOfMatchedCenterWithPos(center);
+}
+
+int OctreeElem::getSpaceOfMatchedCenterDynamicComp(CollisionComponent * comp)
+{
+	glm::vec3 center;
+	center = comp->getDynamicSubComp()->getLapConstRef().getCenter();
+
+	return getSpaceOfMatchedCenterWithPos(center);
+}
+
+int OctreeElem::getSpaceOfMatchedCenterWithPos(glm::vec3 & pos)
+{
 	const glm::vec3& octElemCenter = _aabbOb.getCenterConstRef();
 	int ret = 0;
 
-	if (center[0] > octElemCenter[0])
+	if (pos[0] > octElemCenter[0])
 	{
 		ret += 1;
 	}
 
-	if (center[1] > octElemCenter[1])
+	if (pos[1] > octElemCenter[1])
 	{
 		ret += 2;
 	}
 
-	if (center[2] > octElemCenter[2])
+	if (pos[2] > octElemCenter[2])
 	{
 		ret += 4;
 	}

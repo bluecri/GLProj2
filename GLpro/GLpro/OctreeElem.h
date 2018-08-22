@@ -11,10 +11,18 @@ public:
 	OctreeElem();
 
 	bool IsInBoxFitTest(CollisionComponent * comp);
+	bool IsInBoxFitTestStaticComp(CollisionComponent * comp);
+	bool IsInBoxFitTestDynamicComp(CollisionComponent * comp);
 	int getSpaceOfMatchedCenter(CollisionComponent * comp);
+	int getSpaceOfMatchedCenterStaticComp(CollisionComponent * comp);
+	int getSpaceOfMatchedCenterDynamicComp(CollisionComponent * comp);
+
+private:
+	int getSpaceOfMatchedCenterWithPos(glm::vec3& pos);
 
 public:
-	VectorP<CollisionComponent*> _potentialComponents;
+	VectorP<CollisionComponent*> _potentialStaticComponents;
+	VectorP<CollisionComponent*> _potentialDynamicComponents;
 
 	int	_index;
 	int _height;

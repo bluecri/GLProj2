@@ -75,7 +75,6 @@ void CollisionComponentManager::insertTestCompToOctaTreeWithContainer(std::list<
 			++it;
 			continue;
 		}
-		(*it)->_bAlreadyVelocityUpdated = false;	// init for velocity update
 
 		(*it)->updateCollisionComp();				// update local collision box -> world collision box
 		_octree->newlyInsertComponent(*it);			// insert
@@ -86,9 +85,10 @@ void CollisionComponentManager::insertTestCompToOctaTreeWithContainer(std::list<
 
 void CollisionComponentManager::actualCollisionTest()
 {
-	collisionTestWithContainer(_octree->_usingComponents);
+	//collisionTestWithContainer(_octree->_usingComponents);
+	_octree->doCollisionTest();
 }
-
+/*
 void CollisionComponentManager::collisionTestWithContainer(std::list<CollisionComponent*>& collisionComponentContainer)
 {
 	// O(k^2) : 각 component의 가능한 충돌 component list 가져오기
@@ -133,6 +133,7 @@ void CollisionComponentManager::collisionTestWithContainer(std::list<CollisionCo
 		}
 	}
 }
+*/
 
 void CollisionComponentManager::doOctreeUpdate()
 {

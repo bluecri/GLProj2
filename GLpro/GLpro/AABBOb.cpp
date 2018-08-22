@@ -1,4 +1,5 @@
 #include "AABBOb.h"
+#include "CollisionFuncStatic.h"
 
 AABBOb::AABBOb()
 {
@@ -6,25 +7,25 @@ AABBOb::AABBOb()
 	_halfAxisSize = glm::vec3();
 }
 
-void AABBOb::updateAABBOb(glm::vec3 & center, glm::vec3 & halfAxisSize)
+void AABBOb::updateAABBOb(const glm::vec3 & center, const glm::vec3 & halfAxisSize)
 {
 	_worldVec = center;
 	_halfAxisSize = halfAxisSize;
 }
 
-void AABBOb::updateAABBObAxis(glm::vec3 & halfAxisSize)
+void AABBOb::updateAABBObAxis(const glm::vec3 & halfAxisSize)
 {
 	_halfAxisSize = halfAxisSize;
 }
 
-void AABBOb::updateAABBObAxis(float& halfAxisSize)
+void AABBOb::updateAABBObAxis(float halfAxisSize)
 {
 	_worldVec[0] = halfAxisSize;
 	_worldVec[1] = halfAxisSize;
 	_worldVec[2] = halfAxisSize;
 }
 
-void AABBOb::updateAABBObCenter(glm::mat4 & center)
+void AABBOb::updateAABBObCenter(const glm::mat4 & center)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -32,18 +33,19 @@ void AABBOb::updateAABBObCenter(glm::mat4 & center)
 	}
 }
 
-void AABBOb::updateAABBObCenter(glm::vec3 & center)
+void AABBOb::updateAABBObCenter(const glm::vec3 & center)
 {
 	_worldVec = center;
 }
 
-void AABBOb::updateAABBObCenter(glm::vec4 & center)
+void AABBOb::updateAABBObCenter(const glm::vec4 & center)
 {
 	_worldVec[0] = center[0];
 	_worldVec[1] = center[1];
 	_worldVec[2] = center[2];
 }
 
+/*
 bool AABBOb::checkINFLineIntersection(glm::vec3 & lineStartPos, glm::vec3& lineVec, float & resultDist)
 {
 	float minDist = std::numeric_limits<float>::lowest();
@@ -161,17 +163,11 @@ bool AABBOb::checkLineIntersection(glm::vec3 & lineStartPos, glm::vec3 & lineVec
 
 	return true;
 }
+*/
 
 bool AABBOb::checkPointInAABB(glm::vec3 & pos)
 {
-	for (int i = 0; i < 3; i++)
-	{
-		if (!(_worldVec[i] - _halfAxisSize[i] <= pos[i] && pos[i] <= _worldVec[i] + _halfAxisSize[i]))
-		{
-			return false;
-		}
-	}
-	return true;
+	return CollisionFuncStatic::staticCheck_POINT_AABB(pos, *this);
 }
 
 
@@ -180,7 +176,7 @@ const glm::vec3& AABBOb::getCenterConstRef() const
 	return _worldVec;
 }
 
-glm::vec3 AABBOb::getCenter()
+glm::vec3 AABBOb::getCenter() const
 {
 	return _worldVec;
 }
@@ -190,7 +186,7 @@ const glm::vec3 & AABBOb::getAxisConstRef() const
 	return _halfAxisSize;
 }
 
-glm::vec3 AABBOb::getAxis()
+glm::vec3 AABBOb::getAxis() const
 {
 	return _halfAxisSize;
 }

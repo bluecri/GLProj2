@@ -10,8 +10,7 @@ CollisionComponent::CollisionComponent(RigidbodyComponent * rigidComp)
 	_rigidComp = rigidComp;
 	_bDeleted = false;
 	_bCollisionTest = true;
-	_bCollideVelocityUpdate = true;
-	_bAlreadyVelocityUpdated = false;
+	_bIsTrigger = false;
 
 	_collisionLogList = std::list<CollisionComponent*>();
 
@@ -34,11 +33,6 @@ void CollisionComponent::setCollisionTest(bool bCollisionTest)
 	_bCollisionTest = bCollisionTest;
 }
 
-void CollisionComponent::setCollisionVelocityUpdate(bool bVelUpdate)
-{
-	_bCollideVelocityUpdate = bVelUpdate;
-}
-
 bool CollisionComponent::isCollisionComponentDirty()
 {
 	return _bDirty;
@@ -59,19 +53,19 @@ void CollisionComponent::setCollisionCategoryMaskBit(int maskBit)
 	_collisionCategoryMaskBit = maskBit;
 }
 
-int CollisionComponent::getCollisionCategoryBit()
+int CollisionComponent::getCollisionCategoryBit() const
 {
 	return _collisionCategoryBit;
 }
 
-int CollisionComponent::getCollisionCategoryMaskBit()
+int CollisionComponent::getCollisionCategoryMaskBit() const
 {
 	return _collisionCategoryMaskBit;
 }
 
 bool CollisionComponent::testCollisionCategoryBit(const CollisionComponent * otherComp)
 {
-	bool cond1 = _collisionCategoryMask & otherComp->getCollisionCategoryBit();
+	bool cond1 = _collisionCategoryMaskBit & otherComp->getCollisionCategoryBit();
 	bool cond2 = _collisionCategoryBit & otherComp->getCollisionCategoryMaskBit();
 
 	return (cond1 && cond2);
@@ -97,24 +91,12 @@ DynamicCollisionSubComp * CollisionComponent::getDynamicSubComp()
 	return _dynamicSubComp;
 }
 
-int CollisionComponent::getOctreeElemIndexPrevDynamic()
+bool CollisionComponent::isTrigger()
 {
-	return _dynamicSubComp->getOctreeElemIndexPrevDynamic();
-
+	return _bIsTrigger;
 }
 
-int CollisionComponent::getOctreeElemIndexNextDynamic()
+void CollisionComponent::setTrigger(bool bTrigger)
 {
-	return _dynamicSubComp->getOctreeElemIndexNextDynamic();
-}
-
-void CollisionComponent::setOctreeElemIndexPrevDynamic(int index)
-{
-	_dynamicSubComp->setOctreeElemIndexPrevDynamic(index);
-
-}
-
-void CollisionComponent::setOctreeElemIndexNextDynamic(int index)
-{
-	_dynamicSubComp->setOctreeElemIndexNextDynamic(index);
+	_bIsTrigger = bTrigger;
 }
