@@ -6,7 +6,7 @@ OctreeFrustumElem::OctreeFrustumElem()
 {
 	_bUsed = false;
 	_bUseChildren = false;
-	_potentialComponents = VectorP<DrawElement*>();
+	_potentialComponents = VectorPPairFirst<DrawElement::first_type, DrawElement::second_type>();
 
 	_useChildBit = 0;
 }
@@ -28,7 +28,7 @@ int OctreeFrustumElem::sphereIs_InOutInter_BoxTest(DrawElement* drawElemPtr)
 	return CollisionFuncStatic::staticCheck_AABB_SPHERE_IN(_aabbOb, objSphere);
 
 	int ret = 1;		// inside
-	glm::vec3&	sphereCenter = drawElemPtr->first->getFrustumPosRef();
+	glm::vec3&	sphereCenter = drawElemPtr->first->getFrustumPosConstRef();
 	float&		sphereRadius = drawElemPtr->first->getFrustumRadiusRef();
 
 	// in box text
@@ -49,7 +49,7 @@ int OctreeFrustumElem::sphereIs_InOutInter_BoxTest(DrawElement* drawElemPtr)
 
 int OctreeFrustumElem::getSpaceOfMatchedCenter(DrawElement* drawElemPtr)
 {
-	const glm::vec3& center = drawElemPtr->first->getFrustumPosRef();
+	const glm::vec3& center = drawElemPtr->first->getFrustumPosConstRef();
 	const glm::vec3& octElemCenter = _aabbOb.getCenterConstRef();
 	int ret = 0;
 

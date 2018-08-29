@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "VectorP.h"
 
 class CollisionComponent;
 class OctreeElem;
@@ -41,14 +42,16 @@ public:
 
 private:
 	void insertComponent(CollisionComponent* comp);
-	void insertStaticComponent(CollisionComponent* comp);
-	void insertDynamicComponent(CollisionComponent* comp);
+	void insertStaticComponent(CollisionComponent* comp, OctreeElem& octreeElem);
+	void insertDynamicComponent(CollisionComponent* comp, OctreeElem& octreeElem);
 
-	void propageteComponentsToChildren(OctreeElem& octreeElem);
+	void splitComps(OctreeElem& octreeElem);
+	void trySplitStaticComp(OctreeElem& octreeElem, CollisionComponent* comp);
+	void trySplitDynamicComp(OctreeElem& octreeElem, CollisionComponent* comp);
 
 	void getAllCollisionPotentialList(std::list<CollisionComponent*>& potentialList, int idx);
 
-	void innerDoCollisionTest(OctreeElem& octreeElem, std::vector<VectorP<CollisionComponent*>&> staticVecAcc, std::vector<VectorP<CollisionComponent*>&> dynamicVecAcc);
+	void innerDoCollisionTest(OctreeElem& octreeElem, std::vector<VectorP<CollisionComponent*>*> staticVecAcc, std::vector<VectorP<CollisionComponent*>*> dynamicVecAcc);
 	void staticStaticCollisionVecTest(VectorP<CollisionComponent*>& staticCompVec1, VectorP<CollisionComponent*>& staticCompVec2);
 	void staticDynamicCollisionVecTest(VectorP<CollisionComponent*>& staticCompVec, VectorP<CollisionComponent*>& dynamicCompVec);
 	void dynamicDynamicCollisionVecTest(VectorP<CollisionComponent*>& dycompVec1, VectorP<CollisionComponent*>& dycompVec2);
@@ -74,13 +77,63 @@ private:
 	bool IsUseThisOctreeElem(OctreeElem& elem);
 	bool IsUseChild(OctreeElem& elem);
 
+
+	void TESTTEST(OctreeForCollision* octreeForCollision, int startIndex, std::vector<VectorP<CollisionComponent*>*> staticAccVec, std::vector<VectorP<CollisionComponent*>*> dynamicAccVec);
 public:
 	std::vector<OctreeElem>		_octreeElemVec;
 	std::list<CollisionComponent*> _usingStaticComponents;
 	std::list<CollisionComponent*> _usingDynamicComponents;
 
 private:
-	std::vector<std::pair<float, std::pair<CollisionComponent*, CollisionComponent*>>> ddAndDsCOllsionTime;
-
+	//std::vector<std::pair<float, std::pair<CollisionComponent*, CollisionComponent*>>> ddAndDsCOllsionTime;
+	tbb::concurrent_vector<std::pair<float, std::pair<CollisionComponent*, CollisionComponent*>>> ddAndDsCOllsionTime;
+	
+	friend class CTBB_staticCollideTest;
+	friend class CTBB_staticCollideTest_EX;
 	//int  _maxCountOfObjects;
 };
+
+class CTBB_staticCollideTest
+{
+public:
+	CTBB_staticCollideTest(OctreeForCollision* octreeForCollision, int startIndex, std::vector<VectorP<CollisionComponent*>*> staticAccVec, std::vector<VectorP<CollisionComponent*>*> dynamicAccVec);
+	void operator()(const tbb::blocked_range<size_t>& r) const;
+
+private:
+	OctreeForCollision* const _octreeForCollision;
+	const int _startIndex;
+
+	std::vector<VectorP<CollisionComponent*>*> const _staticAccVec;
+	std::vector<VectorP<CollisionComponent*>*> const _dynamicAccVec;
+};
+
+
+class CTBB_staticCollideTest_EX
+{
+public:
+	CTBB_staticCollideTest_EX(OctreeForCollision* octreeForCollision, int startIndex, std::vector<VectorP<CollisionComponent*>*> staticAccVec, std::vector<VectorP<CollisionComponent*>*> dynamicAccVec);
+	void operator()(const tbb::blocked_range<size_t>& r) const;
+
+private:
+	OctreeForCollision* const _octreeForCollision;
+	const int _startIndex;
+
+	std::vector<VectorP<CollisionComponent*>*> const _staticAccVec;
+	std::vector<VectorP<CollisionComponent*>*> const _dynamicAccVec;
+};
+
+/*
+class CTBB_staticCollideTest_EX
+{
+public:
+	CTBB_staticCollideTest_EX(OctreeForCollision* octreeForCollision, int startIndex, std::vector<VectorP<CollisionComponent*>*> staticAccVec, std::vector<VectorP<CollisionComponent*>*> dynamicAccVec);
+	void operator()(const tbb::blocked_range<size_t>& r) const;
+
+private:
+	OctreeForCollision* const _octreeForCollision;
+	const int _startIndex;
+
+	std::vector<VectorP<CollisionComponent*>*> const _staticAccVec;
+	std::vector<VectorP<CollisionComponent*>*> const _dynamicAccVec;
+};
+*/

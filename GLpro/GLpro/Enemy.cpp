@@ -76,7 +76,7 @@ void Enemy::initEnemy()
 
 	glm::mat4 collisionBoxMat = glm::mat4();
 	collisionBoxMat[3][2] += 0.2f;	//collision box pos º¸Á¤
-	glm::vec3 planeCollisionBox = glm::vec3(0.2f, 0.2f, 0.2f);
+	glm::vec3 planeCollisionBox = glm::vec3(1.2f, 1.2f, 1.2f);
 	initCollisionComponent(GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, collisionBoxMat, planeCollisionBox));
 
 	// particle entity attach parnet

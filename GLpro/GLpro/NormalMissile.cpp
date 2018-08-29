@@ -18,7 +18,7 @@ NormalMissile::NormalMissile(Entity* fromEntity, GameSession* gSession, CommonMi
 	: IMissile(ENUM_ENTITY_TYPE::ENUM_ENTITY_MISSILE_NORMAL, gSession, fromEntity, commonMissileState->_missileModel, commonMissileState->_missileTexture, commonMissileState->_missileShaderMain)
 {
 	CollisionComponent* newComp = GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, commonMissileState->_collisionBoxMat, commonMissileState->_missileCollisionBoxAxis);
-	newComp->setCollisionVelocityUpdate(false);
+	newComp->setCollisionTest(false);
 	initCollisionComponent(newComp);
 }
 

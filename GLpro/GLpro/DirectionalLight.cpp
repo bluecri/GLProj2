@@ -19,12 +19,12 @@ FrustumOb & DirectionalLight::getFrustumObRef()
 	return _frustumOb;
 }
 
-DirectionalLight::std::list<DrawElement*>& DirectionalLight::getFrustumedDrawElementContainerRef()
+std::list<DirectionalLight::DrawElement*>& DirectionalLight::getFrustumedDrawElementContainerRef()
 {
 	return _frustumedDrawElementContainer;
 }
 
-const DirectionalLight::std::list<DrawElement*>& DirectionalLight::getConstFrustumedDrawElementContainerRef()
+const std::list<DirectionalLight::DrawElement*>& DirectionalLight::getConstFrustumedDrawElementContainerRef()
 {
 	return _frustumedDrawElementContainer;
 }

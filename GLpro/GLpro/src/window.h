@@ -11,7 +11,7 @@ namespace WINDOW
 {
 	class Window
 	{
-	public:	
+	public:
 		Window(int windowWidth = 800, int windowHeight = 600);
 		int init();
 		void mainLoop();
@@ -19,10 +19,12 @@ namespace WINDOW
 		void exitWindow();
 
 		void mouseToCenter();
+		float getCollisionDt();
 	public:
 		GLFWwindow* _pWindow;
 		int _windowWidth;		// window size
 		int _windowHeight;
+		const float _collisionDt = 0.02f;
 	};
 }
 

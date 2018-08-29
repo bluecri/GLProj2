@@ -660,6 +660,15 @@
     <ClCompile Include="DynamicCollisionSubCompVec.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionFuncDynamic.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicCollisionSubCompMat.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicCollisionSubCompLine.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -1190,9 +1199,6 @@
     <ClInclude Include="LineCollisionComp.h">
       <Filter>소스 파일\components\collision</Filter>
     </ClInclude>
-    <ClInclude Include="SphereCollisionComp.h">
-      <Filter>소스 파일\components</Filter>
-    </ClInclude>
     <ClInclude Include="DynamicCollisionSubComp.h">
       <Filter>소스 파일\components\collision\Dynamic</Filter>
     </ClInclude>
@@ -1204,6 +1210,15 @@
     </ClInclude>
     <ClInclude Include="DynamicCollisionSubCompLine.h">
       <Filter>소스 파일\components\collision\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionFuncDynamic.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollisionComp.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectPoolLikeVector.h">
+      <Filter>소스 파일\origin</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

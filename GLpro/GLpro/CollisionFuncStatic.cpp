@@ -1,9 +1,9 @@
 #include "CollisionFuncStatic.h"
-#include "OBBOb.h"
-#include "AABBOb.h"
-#include "SphereOb.h"
-#include "LineOb.h"
-#include "FrustumOb.h"
+	#include "OBBOb.h"
+	#include "AABBOb.h"
+	#include "SphereOb.h"
+	#include "LineOb.h"
+	#include "FrustumOb.h"
 /*
 bool CollisionFuncStatic::staticCheck_LINE_LINE(const LineOb & lineOb1, const LineOb & lineOb2)
 {
@@ -166,7 +166,7 @@ bool CollisionFuncStatic::staticCheck_CLOSEST_LINE_OBB(const LineOb & lineOb, co
 }
 */
 
-bool CollisionFuncStatic::staticCheck_SPHERE_SPHERE(const SphereOb & sphereOb1, const SphereOb & sphereOb2)
+bool CollisionFuncStatic::staticCheck_SPHERE_SPHERE_OVERLAP(const SphereOb & sphereOb1, const SphereOb & sphereOb2)
 {
 	float radDist = sphereOb1.getRadius() + sphereOb2.getRadius();
 	float centerDist2 = glm::length2(sphereOb1.getCenterConstRef() - sphereOb2.getCenterConstRef());
@@ -209,26 +209,6 @@ bool CollisionFuncStatic::staticCheck_AABB_LINE_IN(const AABBOb & aabbObBig, con
 		cond1 = staticCheck_POINT_AABB(lineOb.getEndPos(), aabbObBig);
 		cond2 = staticCheck_POINT_AABB(lineOb.getStartPosConstRef(), aabbObBig);
 		return (cond1 && cond2);
-		break;
-	}
-	return true;
-}
-
-bool CollisionFuncStatic::staticCheck_AABB_LINE_OVERLAP(const AABBOb & aabbObBig, const LineOb & lineOb)
-{
-	int lineType = static_cast<int>(lineOb.getType());
-	float tempFloat;
-
-	switch (lineType)
-	{
-	case LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_ONE_DIRTECTION:
-		return staticCheck_LINE_AABB(lineOb, aabbObBig, tempFloat);
-		break;
-	case LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_TWO_DIRECTION:
-		return false;
-		break;
-	case LINEOB_TYPE_ENUM::LINEOB_TYPE_LEN:
-		return staticCheck_LINE_AABB(lineOb, aabbObBig, tempFloat);
 		break;
 	}
 	return true;
@@ -399,7 +379,7 @@ int CollisionFuncStatic::staticCheck_FRUSTUM_AABB_INOUTOVERLAP(const FrustumOb &
 	return ret;
 }
 
-bool CollisionFuncStatic::staticCheck_OBB_OBB_OUT(const OBBOb & obbOb1, const OBBOb & obbOb2)
+bool CollisionFuncStatic::staticCheck_OBB_OBB_OVERLAP(const OBBOb & obbOb1, const OBBOb & obbOb2)
 {
 	return staticCheck_BOX(obbOb1.getMatConstRef(), obbOb2.getMatConstRef(), obbOb1.getAxisConstRef(), obbOb2.getAxisConstRef());
 }
@@ -418,6 +398,365 @@ void CollisionFuncStatic::CreateAAABBLAP_LINE(const LineOb & lineOb, AABBOb & re
 	for (int i = 0; i < 3; i++)
 		lineStartToEndMiddleVec[i] = fabsf(lineStartToEndMiddleVec[i]);
 	retAabb.updateAABBObAxis(lineStartToEndMiddleVec);
+}
+
+void CollisionFuncStatic::staticCheck_DIST_LINE_LINE(const LineOb & lineOb1, const LineOb & lineOb2, float& minDist)
+{
+	int lineType1 = static_cast<int>(lineOb1.getType());
+	int lineType2 = static_cast<int>(lineOb2.getType());
+
+	/*
+	*	s = (bt - c) / a
+	*	t = (bs + f) / e
+	*/
+	float s, t;
+
+	glm::vec3 d1 = lineOb1.getUnitVecConstRef() * lineOb1.getLen();
+	glm::vec3 d2 = lineOb2.getUnitVecConstRef() * lineOb2.getLen();
+
+	glm::vec3 r = lineOb1.getStartPosConstRef() - lineOb2.getStartPosConstRef();
+	float a = glm::dot(d1, d1);
+	float b = glm::dot(d1, d2);
+	float c = glm::dot(d1, r);
+	float e = glm::dot(d2, d2);
+	float f = glm::dot(d2, r);
+	float denom = a*e - b*b;
+
+	if (lineType1 == LINEOB_TYPE_ENUM::LINEOB_TYPE_LEN)
+	{
+		if (lineType2 == LINEOB_TYPE_ENUM::LINEOB_TYPE_LEN)
+		{
+			if (denom != 0.0f)
+				s = glm::clamp<float>((b*f - c*e) / denom, 0.0f, 1.0f);
+			else
+				s = 0.0f;
+			t = (b * s + f) / e;
+
+
+			if (t < 0.0f)
+			{
+				t = 0.0f;
+				s = glm::clamp<float>(-c / a, 0.0f, 1.0f);
+			}
+			else if(t > 1.0f)
+			{
+				t = 1.0f;
+				s = glm::clamp<float>((b - c) / a, 0.0f, 1.0f);
+			}
+
+			glm::vec3 c1 = lineOb1.getStartPosConstRef() + d1 * s;
+			glm::vec3 c2 = lineOb2.getStartPosConstRef() + d2 * t;
+
+			minDist= glm::dot(c1 - c2, c1 - c2);
+			return;
+		}
+		else if (lineType2 == LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_ONE_DIRTECTION)
+		{
+			// 0.0f <= t
+			if (denom != 0.0f)
+				s = glm::clamp<float>((b*f - c*e) / denom, 0.0f, 1.0f);
+			else
+				s = 0.0f;
+			t = (b * s + f) / e;
+
+			if (t < 0.0f)
+			{
+				t = 0.0f;
+				s = glm::clamp<float>(-c / a, 0.0f, 1.0f);
+			}
+			
+			glm::vec3 c1 = lineOb1.getStartPosConstRef() + d1 * s;
+			glm::vec3 c2 = lineOb2.getStartPosConstRef() + d2 * t;
+
+			minDist = glm::dot(c1 - c2, c1 - c2);
+			return;
+		}
+		else
+		{
+			printf_s("[LOG] not implemented staticCheck_DIST_LINE_LINE LINEOB_TYPE_INFINITE_TWO_DIRECTION\n");
+			minDist = 0.0f;
+			return;
+		}
+	}
+	else if(lineType1 == LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_ONE_DIRTECTION)
+	{
+		if (lineType2 == LINEOB_TYPE_ENUM::LINEOB_TYPE_LEN)
+		{
+			// 0.0f <= s
+			if (denom != 0.0f)
+				s = std::max<float>((b*f - c*e) / denom, 0.0f);
+			else
+				s = 0.0f;
+			t = (b * s + f) / e;
+
+			if (t < 0.0f)
+			{
+				t = 0.0f;
+				s = std::max<float>(-c / a, 0.0f);
+			}
+			else if (t > 1.0f)
+			{
+				t = 1.0f;
+				s = std::max<float>((b - c) / a, 0.0f);
+			}
+
+			glm::vec3 c1 = lineOb1.getStartPosConstRef() + d1 * s;
+			glm::vec3 c2 = lineOb2.getStartPosConstRef() + d2 * t;
+
+			minDist = glm::dot(c1 - c2, c1 - c2);
+			return;
+		}
+		else if (lineType2 == LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_ONE_DIRTECTION)
+		{
+			if (denom != 0.0f)
+				s = std::max<float>((b*f - c*e) / denom, 0.0f);
+			else
+				s = 0.0f;
+			t = (b * s + f) / e;
+
+			if (t < 0.0f)
+			{
+				t = 0.0f;
+				s = std::max<float>(-c / a, 0.0f);
+			}
+			
+			glm::vec3 c1 = lineOb1.getStartPosConstRef() + d1 * s;
+			glm::vec3 c2 = lineOb2.getStartPosConstRef() + d2 * t;
+
+			minDist = glm::dot(c1 - c2, c1 - c2);
+			return;
+		}
+		else
+		{
+			printf_s("[LOG] not implemented staticCheck_DIST_LINE_LINE LINEOB_TYPE_INFINITE_TWO_DIRECTION\n");
+			minDist = 0.0f;
+			return;
+		}
+	}
+	else
+	{
+		return;
+	}
+}
+
+bool CollisionFuncStatic::staticCheck_LINE_CAPSULE(const LineOb & lineOb, const glm::vec3 & center1, const glm::vec3 & center2, float radius, float & retDist)
+{
+	// use staticCheck_DIST_LINE_LINE
+	int lineType = static_cast<int>(lineOb.getType());
+	switch (lineType)
+	{
+	case LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_ONE_DIRTECTION:
+	{
+		glm::vec3 d1 = center2 - center1;
+		glm::vec3 d2 = lineOb.getUnitVecConstRef();
+		glm::vec3 c = lineOb.getStartPosConstRef() - center1;
+
+		float a = glm::dot(d1, d1);
+		float b = glm::dot(d2, d2);
+		float cc = glm::dot(c, c);
+		float e = glm::dot(d1, d2);
+		float f = glm::dot(c, d1);
+		float g = glm::dot(c, d2);
+
+		// paralell check
+		if (fabs(e) != 0.0f)
+		{
+			// get s [0, 1] from quad
+			float m = (b*a*a - a) / (e * e);
+			float n = 2 * g*a / e - 2 * f;
+			float o = cc - radius * radius;
+
+			float det = n * n - 4 * m*o;	//b^2 - 4ac
+			if (det > 0)
+			{
+				float minS = (-n - std::sqrtf(det)) / 2 * m;
+				float maxS = (-n + std::sqrtf(det)) / 2 * m;
+				if (minS < 0.0f)
+				{
+					if (maxS < 0.0f)
+					{
+						// no collide cylinder
+					}
+					else
+					{
+						// line is in cylinder
+						retDist = 0.0f;
+						return true;
+					}
+				}
+				else
+				{
+					// collide at minS
+					retDist = (a / e * minS) * lineOb.getLen();
+					if (retDist > lineOb.getLen())
+						return false;
+					return true;
+				}
+
+			}
+			else if (det == 0)
+			{
+				float minS = -n / 2 * m;
+
+				if (minS >= 0.0f)
+				{
+					// collide at minS
+					retDist = (a / e * minS) * lineOb.getLen();
+					if (retDist > lineOb.getLen())
+						return false;
+					return true;
+				}
+				else
+				{
+					// no collide cylinder
+				}
+			}
+		}
+
+		// no collide cylinder
+		// check 2 sphere
+		SphereOb sphere1;
+		sphere1.updateSphereOb(radius);
+		sphere1.updateSphereOb(center1);
+
+		SphereOb sphere2;
+		sphere2.updateSphereOb(radius);
+		sphere2.updateSphereOb(center2);
+
+		float testDist1, testDist2;
+		bool isCollide1 = CollisionFuncStatic::checkSphereLineIntersection(sphere1, lineOb, testDist1);
+		bool isCollide2 = CollisionFuncStatic::checkSphereLineIntersection(sphere2, lineOb, testDist2);
+
+		if (isCollide1 && isCollide2)
+		{
+			retDist = std::min(testDist1, testDist2);
+			if (retDist > lineOb.getLen())
+				return false;
+			return true;
+		}
+
+		if (isCollide1)
+		{
+			retDist = testDist1;
+			if (retDist > lineOb.getLen())
+				return false;
+			return true;
+		}
+
+		if (isCollide2)
+		{
+			retDist = testDist2;
+			if (retDist > lineOb.getLen())
+				return false;
+			return true;
+		}
+
+		return false;
+	}
+	case LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_TWO_DIRECTION:
+		printf_s("[LOG] : staticCheck_LINE_CAPSULE : SWITCH LINEOB_TYPE_INFINITE_TWO_DIRECTION not implemented\n");
+		return false;
+	case LINEOB_TYPE_ENUM::LINEOB_TYPE_LEN:
+	{
+		glm::vec3 d1 = center2 - center1;
+		glm::vec3 d2 = lineOb.getUnitVecConstRef();
+		glm::vec3 c = lineOb.getStartPosConstRef() - center1;
+
+		float a = glm::dot(d1, d1);
+		float b = glm::dot(d2, d2);
+		float cc = glm::dot(c, c);
+		float e = glm::dot(d1, d2);
+		float f = glm::dot(c, d1);
+		float g = glm::dot(c, d2);
+
+		// paralell check
+		if (fabs(e) != 0.0f)
+		{
+			// get s [0, 1] from quad
+			float m = (b*a*a - a) / (e * e);
+			float n = 2 * g*a / e - 2 * f;
+			float o = cc - radius * radius;
+
+			float det = n * n - 4 * m*o;	//b^2 - 4ac
+			if (det > 0)
+			{
+				float minS = (-n - std::sqrtf(det)) / 2 * m;
+				float maxS = (-n + std::sqrtf(det)) / 2 * m;
+				if (minS < 0.0f)
+				{
+					if (maxS < 0.0f)
+					{
+						// no collide cylinder
+					}
+					else
+					{
+						// line is in cylinder
+						retDist = 0.0f;
+						return true;
+					}
+				}
+				else
+				{
+					// collide at minS
+					retDist = (a / e * minS) * lineOb.getLen();
+					return true;
+				}
+
+			}
+			else if (det == 0)
+			{
+				float minS = -n / 2 * m;
+
+				if (minS >= 0.0f)
+				{
+					// collide at minS
+					retDist = (a / e * minS) * lineOb.getLen();
+					return true;
+				}
+				else
+				{
+					// no collide cylinder
+				}
+			}
+		}
+
+		// no collide cylinder
+		// check 2 sphere
+		SphereOb sphere1;
+		sphere1.updateSphereOb(radius);
+		sphere1.updateSphereOb(center1);
+
+		SphereOb sphere2;
+		sphere2.updateSphereOb(radius);
+		sphere2.updateSphereOb(center2);
+
+		float testDist1, testDist2;
+		bool isCollide1 = CollisionFuncStatic::checkSphereLineIntersection(sphere1, lineOb, testDist1);
+		bool isCollide2 = CollisionFuncStatic::checkSphereLineIntersection(sphere2, lineOb, testDist2);
+
+		if (isCollide1 && isCollide2)
+		{
+			retDist = std::min(testDist1, testDist2);
+			return true;
+		}
+
+		if (isCollide1)
+		{
+			retDist = testDist1;
+			return true;
+		}
+
+		if (isCollide2)
+		{
+			retDist = testDist2;
+			return true;
+		}
+
+		return false;
+	}
+	}
+
+	return false;
 }
 
 void CollisionFuncStatic::staticCheck_CLOSEST_POINT_AABB(const glm::vec3 & point, const AABBOb & aabbOb, glm::vec3 & retClosestPoint)
@@ -464,8 +803,8 @@ bool CollisionFuncStatic::staticCheck_POINT_OBB(const glm::vec3 & point, const O
 
 bool CollisionFuncStatic::staticCheck_Dist_POINT_OBB(const glm::vec3 & point, const OBBOb & obbOb, float & retDist)
 {
+	retDist = 0.0f;
 	bool isCollide = true;
-	float retDist = 0.0f;
 	const glm::mat4& obbObMat = obbOb.getMatConstRef();
 	glm::vec3 obbCenterToPointVec;	// vector from obbCenter to Point
 
@@ -884,7 +1223,7 @@ bool CollisionFuncStatic::checkAABBOneINFLineIntersection(const AABBOb & aabbOb,
 
 	for (int i = 0; i < 3; i++)
 	{
-		if (lineVec[i] < 0.001f)
+		if (fabsf(lineVec[i]) < 0.001f)
 		{
 			// pararell
 			if ((lineStartPos[i] < worldVec[i] - halfAxisSize[i]) || (lineStartPos[i] > worldVec[i] + halfAxisSize[i]))
@@ -942,7 +1281,7 @@ bool CollisionFuncStatic::checkAABBLineIntersection(const AABBOb & aabbOb, const
 
 	for (int i = 0; i < 3; i++)
 	{
-		if (lineVec[i] < 0.001f)
+		if (fabsf(lineVec[i]) < 0.001f)
 		{
 			// pararell
 			if ((lineStartPos[i] < worldVec[i] - halfAxisSize[i]) || (lineStartPos[i] > worldVec[i] + halfAxisSize[i]))
@@ -1081,6 +1420,42 @@ bool CollisionFuncStatic::checkSphereLineIntersection(const SphereOb & sphereOb,
 		return false;
 
 	return true;
+}
+
+// reference : http://www.opengl-tutorial.org/kr/intermediate-tutorials/tutorial-17-quaternions/
+
+glm::quat CollisionFuncStatic::rotationBetweenVectors(const glm::vec3 & startVec, const glm::vec3 & endVec)
+{
+	glm::quat retQuat;
+	glm::vec3 start = glm::normalize(startVec);
+	glm::vec3 end = glm::normalize(endVec);
+
+	float cosTheta = glm::dot(start, end);
+	vec3 rotationAxis;
+
+	if (cosTheta < -1 + 0.001f) {
+		// special case when vectors in opposite directions:
+		// there is no "ideal" rotation axis
+		// So guess one; any will do as long as it's perpendicular to start
+		rotationAxis = cross(vec3(0.0f, 0.0f, 1.0f), start);
+		if (glm::length2(rotationAxis) < 0.01) // bad luck, they were parallel, try again!
+			rotationAxis = cross(vec3(1.0f, 0.0f, 0.0f), start);
+
+		rotationAxis = normalize(rotationAxis);
+		return glm::angleAxis(glm::radians(180.0f), rotationAxis);
+	}
+
+	rotationAxis = cross(start, end);
+
+	float s = sqrt((1 + cosTheta) * 2);
+	float invs = 1 / s;
+
+	return quat(
+		s * 0.5f,
+		rotationAxis.x * invs,
+		rotationAxis.y * invs,
+		rotationAxis.z * invs
+	);
 }
 
 /*

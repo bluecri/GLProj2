@@ -111,6 +111,16 @@ int OctreeElem::getSpaceOfMatchedCenterDynamicComp(CollisionComponent * comp)
 	return getSpaceOfMatchedCenterWithPos(center);
 }
 
+int OctreeElem::getIndex()
+{
+	return _index;
+}
+
+void OctreeElem::setIndex(int idx)
+{
+	_index = idx;
+}
+
 int OctreeElem::getSpaceOfMatchedCenterWithPos(glm::vec3 & pos)
 {
 	const glm::vec3& octElemCenter = _aabbOb.getCenterConstRef();

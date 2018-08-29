@@ -35,7 +35,6 @@
 #include <memory>
 
 #include <type_traits>
-#include "VectorP.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -86,4 +85,11 @@ using namespace google;
 #include "protoGen/GetSource/protoTypeEnum.h"
 #include "protoGen/GetSource/protoPack.pb.h"
 */
+
+// tbb
+
+#include "tbb/tbb.h"
+#include "tbb/concurrent_vector.h"
+#include "tbb/parallel_sort.h"
+
 using namespace glm;

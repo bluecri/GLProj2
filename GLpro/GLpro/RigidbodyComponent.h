@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "ObjectPoolLikeVector.h"
 
 #define DIRTY_MASK_RIGID		(1 << 4)
 #define DIRTY_MASK_LOGIC		(1 << 1)
@@ -25,7 +26,7 @@
 class Entity;
 
 // todo : logic update에서 matrix modify시 child matrix modify가 1 frame 늦게 작동.
-class RigidbodyComponent
+class RigidbodyComponent : public ObjectPoolLikeVector<RigidbodyComponent>
 {
 public:
 	RigidbodyComponent(Entity * bindedEntity, const glm::mat4 &modelMatrix = glm::mat4(), const glm::mat4 &rotateMatrix = glm::mat4(), const glm::mat4 &scaleMatrix = glm::mat4());
@@ -170,3 +171,4 @@ private:
 
 	static int _sMaskBDirty;
 };
+

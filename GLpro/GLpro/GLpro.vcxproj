@@ -90,15 +90,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;C:\Program Files\MySQL\MySQL Server 8.0\include;E:\gitProjects\iocp_git\3rdParty\google_protobuf\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;C:\Program Files\MySQL\MySQL Server 8.0\include;E:\gitProjects\iocp_git\3rdParty\google_protobuf\src;C:\Users\bluecri\Desktop\tbb2018_20180618oss_win\tbb2018_20180618oss\include;C:\Users\bluecri\Desktop\tbb2018_20180618oss_win\tbb2018_20180618oss\bin\intel64\vc14;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win64;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\x64;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;C:\Program Files\MySQL\MySQL Server 8.0\lib;E:\3rdParty\new-proto\protobuf-3.5.1\retBuild\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;glfw3dll.lib;opengl32.lib;openal32.lib;SOIL.lib;ws2_32.lib;winmm.lib;mswsock.lib;DbgHelp.lib;gmock.lib;gmock_main.lib;libprotobufd.lib;libprotobuf-lited.lib;libprotocd.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win64;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\x64;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;C:\Program Files\MySQL\MySQL Server 8.0\lib;E:\3rdParty\new-proto\protobuf-3.5.1\retBuild\Debug;C:\Users\bluecri\Desktop\tbb2018_20180618oss_win\tbb2018_20180618oss\lib\intel64\vc14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3dll.lib;opengl32.lib;openal32.lib;SOIL.lib;ws2_32.lib;winmm.lib;mswsock.lib;DbgHelp.lib;gmock.lib;gmock_main.lib;libprotobufd.lib;libprotobuf-lited.lib;libprotocd.lib;libmysql.lib;tbb_debug.lib;tbb_preview_debug.lib;tbbmalloc_debug.lib;tbbproxy_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -127,15 +127,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;C:\Users\bluecri\Desktop\tbb2018_20180618oss_win\tbb2018_20180618oss\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win64;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\x64;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;E:\3rdParty\new-proto\protobuf-3.5.1\retBuild\Release;C:\Program Files\MySQL\MySQL Server 8.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;openal32.lib;SOIL.lib;ws2_32.lib;winmm.lib;mswsock.lib;DbgHelp.lib;gmock.lib;gmock_main.lib;libprotobuf.lib;libprotoc.lib;libprotobuf-lite.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win64;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\x64;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;E:\3rdParty\new-proto\protobuf-3.5.1\retBuild\Release;C:\Program Files\MySQL\MySQL Server 8.0\lib;C:\Users\bluecri\Desktop\tbb2018_20180618oss_win\tbb2018_20180618oss\lib\intel64\vc14_uwp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;openal32.lib;SOIL.lib;ws2_32.lib;winmm.lib;mswsock.lib;DbgHelp.lib;gmock.lib;gmock_main.lib;libprotobuf.lib;libprotoc.lib;libprotobuf-lite.lib;libmysql.lib;tbb.lib;tbb_preview.lib;tbbmalloc.lib;tbbmalloc_proxy.lib;tbbproxy.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -148,6 +148,7 @@
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionComponentManager.cpp" />
+    <ClCompile Include="CollisionFuncDynamic.cpp" />
     <ClCompile Include="CollisionFuncStatic.cpp" />
     <ClCompile Include="CollisionInfo.cpp" />
     <ClCompile Include="CommonMissileState.cpp" />
@@ -158,6 +159,8 @@
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectionalLightManager.cpp" />
     <ClCompile Include="DynamicCollisionSubComp.cpp" />
+    <ClCompile Include="DynamicCollisionSubCompLine.cpp" />
+    <ClCompile Include="DynamicCollisionSubCompMat.cpp" />
     <ClCompile Include="DynamicCollisionSubCompVec.cpp" />
     <ClCompile Include="EmptyMissileGenerator.cpp" />
     <ClCompile Include="LineCollisionComp.cpp" />
@@ -171,6 +174,7 @@
     <ClInclude Include="AimTextUIObj.h" />
     <ClInclude Include="BuffManager.h" />
     <ClInclude Include="BuffSum.h" />
+    <ClInclude Include="CollisionFuncDynamic.h" />
     <ClInclude Include="CollisionFuncStatic.h" />
     <ClInclude Include="configs_light.h" />
     <ClInclude Include="configs_ubo.h" />
@@ -319,6 +323,7 @@
     <ClInclude Include="LineOb.h" />
     <ClInclude Include="ModelOnlyVertex.h" />
     <ClInclude Include="OBBOb.h" />
+    <ClInclude Include="ObjectPoolLikeVector.h" />
     <ClInclude Include="OctreeElem.h" />
     <ClInclude Include="OctreeFrustumElem.h" />
     <ClInclude Include="ParticleFObjManager.h" />

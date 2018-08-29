@@ -82,7 +82,7 @@ namespace RENDER_TARGET
 		{
 			_sphereObForFrustum.updateSphereOb(radius);
 		}
-		float& NormalFObj::getFrustumRadiusRef()
+		float NormalFObj::getFrustumRadius()
 		{
 			return _sphereObForFrustum.getRadius();
 		}
@@ -104,13 +104,12 @@ namespace RENDER_TARGET
 			float retDist;
 			CollisionFuncStatic::staticCheck_Dist_POINT_SPHERE(pos, _sphereObForFrustum, retDist);
 			return retDist;
-			return _sphereObForFrustum.nearestDist2ToPoint(pos);
 		}
-		glm::vec3 & NormalFObj::getFrustumPosRef()
+		const glm::vec3 & NormalFObj::getFrustumPosConstRef() const
 		{
 			return _sphereObForFrustum.getCenterConstRef();
 		}
-		void NormalFObj::setFrustumCompensationPos(glm::vec3 & compen_pos)
+		void NormalFObj::setFrustumCompensationPos(const glm::vec3 & compen_pos)
 		{
 			_frustumPosCompensation = compen_pos;
 		}
@@ -118,7 +117,7 @@ namespace RENDER_TARGET
 		{
 			return _sphereObForFrustum;
 		}
-		int NormalFObj::getOctreeElemIndex()
+		int NormalFObj::getOctreeElemIndex() const
 		{
 			return _octreeElemIdx;
 		}

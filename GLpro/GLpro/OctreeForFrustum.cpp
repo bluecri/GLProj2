@@ -22,9 +22,12 @@ OctreeForFrustum::OctreeForFrustum(int height, int halfAxisSize, glm::vec3 cente
 	_bUsed = false;
 	_bUseChildren = false;
 	*/
+	int powInt = 1;
+	for (int i = 0; i < height; i++)
+		powInt *= 8;
 
-	_octreeElemVec.reserve(pow(8, height) + 1);
-	_octreeElemVec = std::vector<OctreeFrustumElem>(pow(8, height) + 1, OctreeFrustumElem());
+	_octreeElemVec.reserve(powInt + 1);
+	_octreeElemVec = std::vector<OctreeFrustumElem>(powInt + 1, OctreeFrustumElem());
 
 	int index = 0;
 	_octreeElemVec[index]._height = height;
@@ -45,7 +48,7 @@ void OctreeForFrustum::newlyInsertComponent(RENDER::RNormal::SharedDrawElement s
 
 void OctreeForFrustum::removeCopmInOctreeElem(RENDER::RNormal::SharedDrawElement sharedElem)
 {
-	int index = sharedElem->first->getPElemIdx();
+	int index = sharedElem->first->getOctreeElemIndex();
 	OctreeFrustumElem& octreeFrustumElem = _octreeElemVec[index];
 	octreeFrustumElem._potentialComponents.erase(sharedElem.get());
 
@@ -226,7 +229,7 @@ void OctreeForFrustum::getObjListWithAABBObLoop(AABBOb & aabbOb, std::list<RENDE
 	if (!octreeElem._bUsed)
 		return;
 
-	int testResult = CollisionFuncStatic::staticCheck_AABB_AABB_INOUTOVERLAP(frustumOb, octreeElem._aabbOb);
+	int testResult = CollisionFuncStatic::staticCheck_AABB_AABB_INOUTOVERLAP(aabbOb, octreeElem._aabbOb);
 	// outside
 	if (testResult == -1)
 		return;
@@ -241,7 +244,7 @@ void OctreeForFrustum::getObjListWithAABBObLoop(AABBOb & aabbOb, std::list<RENDE
 		{
 			for (int i = 0; i < OCT_POS::OCT_NUM; i++)
 			{
-				getObjListWithFrustumObLoop(frustumOb, outList, elemIdx * 8 + i + 1);
+				getObjListWithAABBObLoop(aabbOb, outList, elemIdx * 8 + i + 1);
 			}
 		}
 		return;
@@ -271,10 +274,10 @@ void OctreeForFrustum::initOctreeElem(OctreeFrustumElem & elem)
 					if (childIdx >= _octreeElemVec.size())
 						return;
 
-					glm::vec3& halfAxisSize = elem._aabbOb.getAxisConstRef();
+					const glm::vec3& halfAxisSize = elem._aabbOb.getAxisConstRef();
 					float childHalfAxisSize = halfAxisSize[0] / 2;
 					
-					glm::vec3 childCenter = elem._center;
+					glm::vec3 childCenter = elem._aabbOb.getCenterConstRef();
 					childCenter.x += ((LR * 2) - 1) * childHalfAxisSize;	// (-1, 1) * half_half size
 					childCenter.y += ((TB * 2) - 1) * childHalfAxisSize;
 					childCenter.z += ((FB * 2) - 1) * childHalfAxisSize;
@@ -317,8 +320,8 @@ void OctreeForFrustum::addNewSleepComp(RENDER::RNormal::SharedDrawElement comp)
 
 RigidbodyComponent* OctreeForFrustum::getNearestRigidbodyComp(glm::vec3& pos, ENUM_ENTITY_TYPE entityTypeFilter, int categoryMaskBit)
 {
-	std::priority_queue<Dist, std::pair<BoxIndex, RENDER::RNormal::DrawElement*>> prioQue;
-	prioQue.push(std::make_pair(0, std::make_pair(0, nullptr)));
+	std::priority_queue<std::pair<Dist, std::pair<BoxIndex, RENDER::RNormal::DrawElement*>>>prioQue;
+	prioQue.push(std::make_pair(0.0f, std::make_pair(0, nullptr)));
 
 	while (!prioQue.empty())
 	{
@@ -376,8 +379,9 @@ RigidbodyComponent* OctreeForFrustum::getNearestRigidbodyComp(glm::vec3& pos, EN
 
 RigidbodyComponent * OctreeForFrustum::getRayTraceRigidbodyComp(const LineOb& lineOb, ENUM_ENTITY_TYPE entityTypeFilter, int categoryMaskBit)
 {
-	std::priority_queue<Dist, std::pair<BoxIndex, RENDER::RNormal::DrawElement*>> prioQue;
-	prioQue.push(std::make_pair(0, std::make_pair(0, nullptr)));
+	// dist, dist, boxIndex
+	std::priority_queue<std::pair<float, std::pair<int, RENDER::RNormal::DrawElement*>>> prioQue;
+	prioQue.push(std::make_pair(0.0f, std::make_pair(0, nullptr)));
 
 	while (!prioQue.empty())
 	{
@@ -421,12 +425,11 @@ RigidbodyComponent * OctreeForFrustum::getRayTraceRigidbodyComp(const LineOb& li
 
 			for (int i = 1; i <= 8; i++)
 			{
-				// push all child box.
+				// push child boxes collide with ray.
 				OctreeFrustumElem& octreeFrustumChildElem = _octreeElemVec[topElem.second.first * 8 + i];
 				float lineToBlockDist;
-				CollisionFuncStatic::staticCheck_LINE_AABB(lineOb, octreeFrustumChildElem._aabbOb, lineToBlockDist);
-
-				prioQue.push(std::make_pair(octreeFrustumChildElem.getNearestDistToPoint(pos), std::make_pair(topElem.second.first * 8 + i, nullptr)));
+				if(true == CollisionFuncStatic::staticCheck_LINE_AABB(lineOb, octreeFrustumChildElem._aabbOb, lineToBlockDist))
+					prioQue.push(std::make_pair(lineToBlockDist, std::make_pair(topElem.second.first * 8 + i, nullptr)));
 			}
 		}
 		// top elem = comp
@@ -500,7 +503,7 @@ void OctreeForFrustum::doOctreeUpdate()
 		}
 
 		// check is in same block
-		if (_octreeElemVec[(*it)->first->getPElemIdx()].sphereIsInBoxTest((*it).get()))
+		if (_octreeElemVec[(*it)->first->getOctreeElemIndex()].sphereIsInBoxTest((*it).get()))
 		{
 			// if using children && not leaf node, down 1 height
 			/*	opt
@@ -525,52 +528,52 @@ void OctreeForFrustum::insertToOctreeForFrustum(RENDER::RNormal::SharedDrawEleme
 	//std::stack<RENDER::RNormal::DrawElement*> compPtrStk;
 
 	int index = 0;
-	OctreeFrustumElem& curOctreeElem = _octreeElemVec[index];
+	OctreeFrustumElem* curOctreeElem = &_octreeElemVec[index];
 	RENDER::RNormal::DrawElement* curCompPtr = drawElemShared.get();
 	//elemStk.push(_octreeElemVec[index]);
 	//compPtrStk.push(drawElemShared.get());
 
 	while (1)
 	{
-		curElem._bUsed = true;
+		curOctreeElem->_bUsed = true;
 		int childSubIdx = -1;
 
-		if (curElem._bUseChildren)
+		if (curOctreeElem->_bUseChildren)
 		{
-			if (-1 == (childSubIdx = getFitChildBoxIndex(curElem, curCompPtr)))
+			if (-1 == (childSubIdx = getFitChildBoxIndex(*curOctreeElem, curCompPtr)))
 			{
-				curElem._potentialComponents.push_back(curCompPtr);
+				curOctreeElem->_potentialComponents.push_back(curCompPtr);
 				curCompPtr->first->setOctreeElemIdx(index);
 				return;
 			}
 
 			index = index * 8 + childSubIdx;
-			curElem = _octreeElemVec[index];
+			curOctreeElem = &_octreeElemVec[index];
 		}
 		else
 		{
-			curElem._potentialComponents.push_back(curCompPtr);
+			curOctreeElem->_potentialComponents.push_back(curCompPtr);
 			curCompPtr->first->setOctreeElemIdx(index);
 
 			//_potentialComponents 개수가 적으면 stop. 일정 수가 넘어가면 children으로.
-			if (curElem._potentialThreshold < curElem._potentialComponents.vecPSize() && curElem._height != 0)
+			if (curOctreeElem->_potentialThreshold < curOctreeElem->_potentialComponents.vecPSize() && curOctreeElem->_height != 0)
 			{
-				curElem._bUseChildren = true;
+				curOctreeElem->_bUseChildren = true;
 
-				for (auto it = curElem._potentialComponents.begin(); it != curElem._potentialComponents.end(); )
+				for (auto it = curOctreeElem->_potentialComponents.begin(); it != curOctreeElem->_potentialComponents.end(); )
 				{
-					if (-1 != (childSubIdx = getFitChildBoxIndex(curElem, *it)))
+					if (-1 != (childSubIdx = getFitChildBoxIndex(*curOctreeElem, *it)))
 					{
 						// push to child from this(parent)
 						RENDER::RNormal::DrawElement* moveComp = (*it);
-						it = curElem._potentialComponents.erase(it);
+						it = curOctreeElem->_potentialComponents.erase(it);
 
 						int childIndex = index * 8 + childSubIdx;
 						OctreeFrustumElem& childOctreeElem = _octreeElemVec[childIndex];
 
 						childOctreeElem._bUsed = true;
 						childOctreeElem._potentialComponents.push_back(moveComp);
-						(moveComp)->setOctreeElemIdx(childIndex);
+						(moveComp)->first->setOctreeElemIdx(childIndex);
 					}
 					else
 					{
@@ -578,6 +581,8 @@ void OctreeForFrustum::insertToOctreeForFrustum(RENDER::RNormal::SharedDrawEleme
 					}
 				}
 			}
+
+			return;
 		}
 	}
 

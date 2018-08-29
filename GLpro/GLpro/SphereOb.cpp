@@ -6,12 +6,12 @@ SphereOb::SphereOb()
 	_radius = 1.0f;
 }
 
-void SphereOb::updateSphereOb(glm::vec3 & center)
+void SphereOb::updateSphereOb(const glm::vec3 & center)
 {
 	_center = center;
 }
 
-void SphereOb::updateSphereOb(float & radius)
+void SphereOb::updateSphereOb(float radius)
 {
 	_radius = radius;
 }

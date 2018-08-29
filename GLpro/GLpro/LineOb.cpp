@@ -10,7 +10,7 @@ void LineOb::setType(LINEOB_TYPE_ENUM type)
 	_lineType = type;
 }
 
-void LineOb::setStartEndPos(glm::vec3 & startPos, glm::vec3 & endPos)
+void LineOb::setStartEndPos(const glm::vec3 & startPos, const glm::vec3 & endPos)
 {
 	_startPos = startPos;
 	_unitVec = glm::normalize(endPos - startPos);
@@ -18,29 +18,29 @@ void LineOb::setStartEndPos(glm::vec3 & startPos, glm::vec3 & endPos)
 		_len = glm::length(endPos - startPos);
 }
 
-void LineOb::setStartUnitLen(glm::vec3 & startPos, glm::vec3 & unitVec, float len)
+void LineOb::setStartUnitLen(const glm::vec3 & startPos, const glm::vec3 & unitVec, float len)
 {
 	_startPos = startPos;
 	_unitVec = unitVec;
 	_len = len;
 }
 
-void LineOb::setStartPos(glm::vec3 & startPos)
+void LineOb::setStartPos(const glm::vec3 & startPos)
 {
 	_startPos = startPos;
 }
 
-void LineOb::setNormalizedUnitVec(glm::vec3 & normalizedUnitVec)
+void LineOb::setNormalizedUnitVec(const glm::vec3 & normalizedUnitVec)
 {
 	_unitVec = normalizedUnitVec;
 }
 
-void LineOb::setLineLen(float & len)
+void LineOb::setLineLen(float len)
 {
 	_len = len;
 }
 
-void LineOb::setNotNormalizedUnitVec(glm::vec3 & notNormalizedUnitVec, bool isContainLen)
+void LineOb::setNotNormalizedUnitVec(const glm::vec3 & notNormalizedUnitVec, bool isContainLen)
 {
 	_unitVec = glm::normalize(notNormalizedUnitVec);
 	if (isContainLen)
@@ -65,6 +65,11 @@ const glm::vec3 & LineOb::getStartPosConstRef() const
 glm::vec3 LineOb::getEndPos() const
 {
 	return _unitVec * _len + _startPos;
+}
+
+glm::vec3 LineOb::getLineCenterPos() const
+{
+	return ( getEndPos() + getStartPosConstRef() ) / 2.0f;
 }
 
 glm::vec3 & LineOb::getUnitVecRef()

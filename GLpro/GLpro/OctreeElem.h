@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "AABBOb.h"
+#include "VectorP.h"
 
 class CollisionComponent;
 
@@ -17,6 +18,9 @@ public:
 	int getSpaceOfMatchedCenterStaticComp(CollisionComponent * comp);
 	int getSpaceOfMatchedCenterDynamicComp(CollisionComponent * comp);
 
+	int getIndex();;
+	void setIndex(int idx);
+
 private:
 	int getSpaceOfMatchedCenterWithPos(glm::vec3& pos);
 
@@ -24,7 +28,6 @@ public:
 	VectorP<CollisionComponent*> _potentialStaticComponents;
 	VectorP<CollisionComponent*> _potentialDynamicComponents;
 
-	int	_index;
 	int _height;
 	//int _halfAxisSize;
 	//glm::vec3 _center;
@@ -37,4 +40,7 @@ public:
 
 	int _potentialAllCount;
 	int _potentialThreshold;
+
+private:
+	int	_index;
 };

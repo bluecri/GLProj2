@@ -15,16 +15,23 @@ OctreeForCollision::OctreeForCollision(int height, int halfAxisSize, glm::vec3 c
 	_bUsed = false;
 	_bUseChildren = false;
 	*/
+	int powInt = 1;
+	int retSize = 1;
+	for (int i = 0; i < height; i++)
+	{
+		powInt *= 8;
+		retSize += powInt;
+	}
 
-	_octreeElemVec.reserve(pow(8, height) + 1);
-	_octreeElemVec = std::vector<OctreeElem>(pow(8, height) + 1, OctreeElem());
+	_octreeElemVec.reserve(retSize + 1);
+	_octreeElemVec = std::vector<OctreeElem>(retSize + 1, OctreeElem());
 
 	int index = 0;
 	_octreeElemVec[index]._height = height;
 	_octreeElemVec[index]._aabbOb.updateAABBObCenter(center);
-	_octreeElemVec[index]._aabbOb.updateAABBObAxis(halfAxisSize);
+	_octreeElemVec[index]._aabbOb.updateAABBObAxis((float)halfAxisSize);
 	
-	_octreeElemVec[index]._index = index;
+	_octreeElemVec[index].setIndex(index);
 	_octreeElemVec[index]._potentialThreshold = 8;
 	
 	initOctreeElem(_octreeElemVec[index]);
@@ -42,7 +49,7 @@ void OctreeForCollision::initOctreeElem(OctreeElem& elem)
 		for (int TB = 0; TB < 2; TB++) {
 			for (int LR = 0; LR < 2; LR++) {
 				{
-					int childIdx = elem._index * 8 + ( LR + TB * 2 + FB * 4 + 1 );
+					int childIdx = elem.getIndex() * 8 + ( LR + TB * 2 + FB * 4 + 1 );
 					if (childIdx >= _octreeElemVec.size())
 						return;
 
@@ -57,7 +64,7 @@ void OctreeForCollision::initOctreeElem(OctreeElem& elem)
 					_octreeElemVec[childIdx]._height = elem._height - 1;
 					_octreeElemVec[childIdx]._aabbOb.updateAABBObCenter(childCenter);
 					_octreeElemVec[childIdx]._aabbOb.updateAABBObAxis(childHalfAxisSize);
-					_octreeElemVec[childIdx]._index = childIdx;
+					_octreeElemVec[childIdx].setIndex(childIdx);
 					_octreeElemVec[childIdx]._potentialAllCount = 0;
 					_octreeElemVec[childIdx]._useChildBit = 0;
 					_octreeElemVec[childIdx]._potentialThreshold = elem._potentialThreshold + elem._height + 1;
@@ -92,7 +99,14 @@ void OctreeForCollision::newlyInsertComponent(CollisionComponent * comp)
 void OctreeForCollision::doCollisionTest()
 {
 	// collision test
-	innerDoCollisionTest(_octreeElemVec[0], std::vector<VectorP<CollisionComponent*>&>(), std::vector<VectorP<CollisionComponent*>&>());
+	innerDoCollisionTest(_octreeElemVec[0], std::vector<VectorP<CollisionComponent*>*>(), std::vector<VectorP<CollisionComponent*>*>());
+	//this->TESTTEST(this, 0, std::vector<VectorP<CollisionComponent*>*>(), std::vector<VectorP<CollisionComponent*>*>());
+	
+	//tbb::parallel_for(tbb::blocked_range<size_t>(0, 1), CTBB_staticCollideTest(this, 0, std::vector<VectorP<CollisionComponent*>*>(), std::vector<VectorP<CollisionComponent*>*>()));
+
+	//tbb::parallel_for(tbb::blocked_range<size_t>(0, 8), CTBB_staticCollideTest_EX(this, 0, std::vector<VectorP<CollisionComponent*>*>(), std::vector<VectorP<CollisionComponent*>*>()));
+	
+	
 
 	// Test Dynamic-Dynamic & Dynamic-Static :: ddAndDsCOllsionTime
 	ddAndDsCOllsionResolve();
@@ -163,35 +177,35 @@ void OctreeForCollision::getAllCollisionPotentialList(std::list<CollisionCompone
 	}
 }
 
-void OctreeForCollision::innerDoCollisionTest(OctreeElem& octreeElem, std::vector<VectorP<CollisionComponent*>&> staticVecAcc, std::vector<VectorP<CollisionComponent*>&> dynamicVecAcc)
+void OctreeForCollision::innerDoCollisionTest(OctreeElem& octreeElem, std::vector<VectorP<CollisionComponent*>*> staticVecAcc, std::vector<VectorP<CollisionComponent*>*> dynamicVecAcc)
 {
 	if (!octreeElem._bUsed)
 		return;
 
 	// accDynamic vs curDynamic
-	for (auto& accVector : dynamicVecAcc)
+	for (auto accVector : dynamicVecAcc)
 	{
-		dynamicDynamicCollisionVecTest(accVector, octreeElem._potentialDynamicComponents);
+		dynamicDynamicCollisionVecTest(*accVector, octreeElem._potentialDynamicComponents);
 	}
 	// accStatic vs curDynamic
-	for (auto& accVector : staticVecAcc)
+	for (auto accVector : staticVecAcc)
 	{
-		staticDynamicCollisionVecTest(accVector, octreeElem._potentialDynamicComponents);
+		staticDynamicCollisionVecTest(*accVector, octreeElem._potentialDynamicComponents);
 	}
 
 	// accDynamic vs curStatic
-	for (auto& accVector : dynamicVecAcc)
+	for (auto accVector : dynamicVecAcc)
 	{
-		staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, accVector);
+		staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, *accVector);
 	}
 	// accStatic vs curStatic
-	for (auto& accVector : staticVecAcc)
+	for (auto accVector : staticVecAcc)
 	{
-		staticStaticCollisionVecTest(accVector, octreeElem._potentialStaticComponents);
+		staticStaticCollisionVecTest(*accVector, octreeElem._potentialStaticComponents);
 	}
 
 	// curDynamic vs curStatic
-	staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, octreeElem._potentialStaticComponents);
+	staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, octreeElem._potentialDynamicComponents);
 
 	// curStatic vs curStatic
 	staticSelfCollisionVecTest(octreeElem._potentialStaticComponents);
@@ -204,10 +218,10 @@ void OctreeForCollision::innerDoCollisionTest(OctreeElem& octreeElem, std::vecto
 		return;
 	}
 
-	staticVecAcc.push_back(octreeElem._potentialStaticComponents);
-	dynamicVecAcc.push_back(octreeElem._potentialDynamicComponents);
+	staticVecAcc.push_back(&(octreeElem._potentialStaticComponents));
+	dynamicVecAcc.push_back(&(octreeElem._potentialDynamicComponents));
 
-	int index = octreeElem._index;
+	int index = octreeElem.getIndex();
 	for (int i = 0; i < OCT_NUM; i++)
 	{
 		// propagete copied compVec's vector
@@ -253,10 +267,10 @@ void OctreeForCollision::dynamicDynamicCollisionVecTest(VectorP<CollisionCompone
 void OctreeForCollision::staticSelfCollisionVecTest(VectorP<CollisionComponent*>& staticCompVec)
 {
 	std::vector<CollisionComponent*>& compVecRef = staticCompVec.getElemVecRef();
-	
-	for (int i = 0; i < compVecRef.size() - 1; i++)
+	int vecSize = compVecRef.size();
+	for (int i = 0; i < vecSize; i++)
 	{
-		for (int k = i + 1; k < compVecRef.size(); k++)
+		for (int k = i + 1; k < vecSize; k++)
 		{
 			staticStaticCollisionTest(compVecRef[i], compVecRef[k]);
 		}
@@ -267,9 +281,11 @@ void OctreeForCollision::dynamicSelfCollisionVecTest(VectorP<CollisionComponent*
 {
 	std::vector<CollisionComponent*>& compVecRef = dynamicCompVec.getElemVecRef();
 
-	for (int i = 0; i < compVecRef.size() - 1; i++)
+	int vecSize = compVecRef.size();
+
+	for (int i = 0; i < vecSize - 1; i++)
 	{
-		for (int k = i + 1; k < compVecRef.size(); k++)
+		for (int k = i + 1; k < vecSize; k++)
 		{
 			dynamicDynamicCollisionTest(compVecRef[i], compVecRef[k]);
 		}
@@ -281,21 +297,41 @@ void OctreeForCollision::staticStaticCollisionTest(CollisionComponent * staticCo
 	// self test
 	//if (elem == potentialComp)
 	//continue;
+	staticComp1->_tbbRWLock.try_lock_read();
+	staticComp2->_tbbRWLock.try_lock_read();
 
 	// category test
 	bool categoryTest1 = staticComp1->testCollisionCategoryBit(staticComp2);
 	bool categoryTest2 = staticComp2->testCollisionCategoryBit(staticComp1);
 	if (!categoryTest1 || !categoryTest1)
+	{
+		staticComp1->_tbbRWLock.unlock();
+		staticComp2->_tbbRWLock.unlock();
 		return;
+	}
 
 	// aabb lap test
 	if (false == staticComp1->lapStaticTestToOtherStatic(staticComp2))
+	{
+		staticComp1->_tbbRWLock.unlock();
+		staticComp2->_tbbRWLock.unlock();
 		return;
+	}
 
 	// actual shape test
 	if (false == staticComp1->collideStaticTestToOtherStatic(staticComp2))
+	{
+		staticComp1->_tbbRWLock.unlock();
+		staticComp2->_tbbRWLock.unlock();
 		return;
-	
+	}
+
+	staticComp1->_tbbRWLock.unlock();
+	staticComp2->_tbbRWLock.unlock();
+
+	tbb::reader_writer_lock::scoped_lock(staticComp1->_tbbRWLock);
+	tbb::reader_writer_lock::scoped_lock(staticComp2->_tbbRWLock);
+
 	// save collision comp list to comp for logic
 	staticComp1->_collisionLogList.push_back(staticComp2);
 	staticComp2->_collisionLogList.push_back(staticComp1);
@@ -306,20 +342,6 @@ void OctreeForCollision::staticStaticCollisionTest(CollisionComponent * staticCo
 	if (isTrigger1 || isTrigger2)
 		return;
 
-	// modify velocity (탄성 충돌)
-	/*
-	elem->_bAlreadyVelocityUpdated = true;
-	potentialComp->_bAlreadyVelocityUpdated = true;
-
-	glm::vec3& v1 = elem->_rigidComp->getVelocityRef();
-	glm::vec3& v2 = potentialComp->_rigidComp->getVelocityRef();
-	float m1 = elem->_rigidComp->getMass();
-	float m2 = potentialComp->_rigidComp->getMass();
-
-	glm::vec3 v1Ret = v1 + m2*(v2 - v1) * 2.0f / (m1 + m2);
-	glm::vec3 v2Ret = v2 + m2*(v1 - v2) * 2.0f / (m1 + m2);
-	*/
-
 	staticComp1->resolveStaticStaticCollide(staticComp2);
 	
 	return;
@@ -327,6 +349,9 @@ void OctreeForCollision::staticStaticCollisionTest(CollisionComponent * staticCo
 
 void OctreeForCollision::staticDynamicCollisionTest(CollisionComponent * staticComp, CollisionComponent * dynamicComp)
 {
+	tbb::reader_writer_lock::scoped_lock_read(staticComp->_tbbRWLock);
+	tbb::reader_writer_lock::scoped_lock_read(dynamicComp->_tbbRWLock);
+
 	// category test
 	bool categoryTest1 = staticComp->testCollisionCategoryBit(dynamicComp);
 	bool categoryTest2 = dynamicComp->testCollisionCategoryBit(staticComp);
@@ -349,6 +374,9 @@ void OctreeForCollision::staticDynamicCollisionTest(CollisionComponent * staticC
 
 void OctreeForCollision::dynamicDynamicCollisionTest(CollisionComponent * dycomp1, CollisionComponent * dycomp2)
 {
+	tbb::reader_writer_lock::scoped_lock_read(dycomp1->_tbbRWLock);
+	tbb::reader_writer_lock::scoped_lock_read(dycomp2->_tbbRWLock);
+
 	// category test
 	bool categoryTest1 = dycomp1->testCollisionCategoryBit(dycomp2);
 	bool categoryTest2 = dycomp2->testCollisionCategoryBit(dycomp1);
@@ -371,7 +399,11 @@ void OctreeForCollision::dynamicDynamicCollisionTest(CollisionComponent * dycomp
 void OctreeForCollision::ddAndDsCOllsionResolve()
 {
 	// Test Dynamic-Dynamic & Dynamic-Static :: ddAndDsCOllsionTime
-	std::sort(ddAndDsCOllsionTime.begin(), ddAndDsCOllsionTime.end(), std::less<float>());
+	std::sort(ddAndDsCOllsionTime.begin(), ddAndDsCOllsionTime.end());
+
+	// check comps that should not be updated ( first time --> last time )
+
+	// update no need lock.(only 1 update)
 
 	for (auto elem : ddAndDsCOllsionTime)
 	{
@@ -412,13 +444,15 @@ void OctreeForCollision::ddAndDsCOllsionResolve()
 		}
 	}
 
-	//todo : if no dynamic time collision, copy result(post) to prev
+	// if no dynamic time collision, copy result(post) to prev
 	for (auto elem : _usingDynamicComponents)
 	{
-		if (elem->getDynamicSubComp()->getCollisionOccured())
+		if (!elem->getDynamicSubComp()->getCollisionOccured())
 		{
-			elem->getDynamicSubComp()->saveNonCollideInfoToPrevInfo();
+			elem->saveDynamicRetCollideInfoToPrevInfo();
 		}
+
+		elem->getDynamicSubComp()->resetCollisionOccured();	// init for velocity update
 	}
 
 	ddAndDsCOllsionTime.clear();
@@ -505,7 +539,8 @@ void OctreeForCollision::doOctreeUpdate()
 		// check aabb is modified
 		if ((*it)->isCollisionComponentDirty())
 		{
-			return;
+			++it;
+			continue;
 		}
 
 		// check is in same block
@@ -516,14 +551,16 @@ void OctreeForCollision::doOctreeUpdate()
 			if(use this elem children)
 			check IsInBoxTest of this direct child box
 			*/
-			return;
-			
+			trySplitStaticComp(_octreeElemVec[(*it)->getOctreeElemIndex()], (*it));
+			++it;
+			continue;
 		}
 		else
 		{
 			// If not, Reinsert to root
 			removeStaticCopmInOctreeElem(*it);
-			insertStaticComponent(*it);
+			insertStaticComponent(*it, _octreeElemVec[0]);
+			++it;
 		}
 	}
 
@@ -556,11 +593,11 @@ void OctreeForCollision::doOctreeUpdate()
 
 		(*it)->updateCollisionComp();				// update local collision box -> world collision box
 		(*it)->updateDynamicLap();					// Dynamic lap update
-		(*it)->getDynamicSubComp()->resetCollisionOccured();	// init for velocity update
 														// check aabb is modified
 		if ((*it)->isCollisionComponentDirty())
 		{
-			return;
+			++it;
+			continue;
 		}
 
 		// check is in same block
@@ -571,13 +608,17 @@ void OctreeForCollision::doOctreeUpdate()
 			if(use this elem children)
 			check IsInBoxTest of this direct child box
 			*/
-			return;
+			trySplitDynamicComp(_octreeElemVec[(*it)->getOctreeElemIndex()], (*it));
+
+			++it;
+			continue;
 		}
 		else
 		{
 			// If not, Reinsert to root
 			removeDynamicCopmInOctreeElem(*it);
-			insertDynamicComponent(*it);
+			insertDynamicComponent(*it, _octreeElemVec[0]);
+			++it;
 		}
 	}
 }
@@ -585,43 +626,43 @@ void OctreeForCollision::doOctreeUpdate()
 void OctreeForCollision::insertComponent(CollisionComponent * comp)
 {
 	if (comp->isDynamicComp())
-		insertDynamicComponent(comp);
+		insertDynamicComponent(comp, _octreeElemVec[0]);
 	else
-		insertStaticComponent(comp);
+		insertStaticComponent(comp, _octreeElemVec[0]);
 }
 
-void OctreeForCollision::insertStaticComponent(CollisionComponent * comp)
+void OctreeForCollision::insertStaticComponent(CollisionComponent * comp, OctreeElem& octreeElem)
 {
-	int index = 0;
-	OctreeElem& curElem = _octreeElemVec[index];
+	OctreeElem* curElem = &octreeElem;
+	int index = curElem->getIndex();
 
 	while (true)
 	{
-		curElem._bUsed = true;
+		curElem->_bUsed = true;
 		int targetChildIdx = -1;
 
-		if (curElem._bUseChildren)
+		if (curElem->_bUseChildren)
 		{
-			if (-1 == (targetChildIdx = getFitChildBoxIndexStaticComp(curElem, comp)))
+			if (-1 == (targetChildIdx = getFitChildBoxIndexStaticComp(*curElem, comp)))
 			{
 				// no match with children
-				curElem._potentialStaticComponents.push_back(comp);
+				curElem->_potentialStaticComponents.push_back_pointer(comp);
 				comp->setOctreeElemIdx(index);
 				return;
 			}
 
 			index = index * 8 + targetChildIdx;
-			curElem = _octreeElemVec[index];
+			curElem = &_octreeElemVec[index];
 		}
 		else
 		{
-			curElem._potentialStaticComponents.push_back(comp);
+			curElem->_potentialStaticComponents.push_back_pointer(comp);
 			comp->setOctreeElemIdx(index);
 
 			//_potentialComponents 개수가 적으면 stop. 일정 수가 넘어가면 children으로.
-			if (curElem._potentialThreshold < curElem._potentialStaticComponents.vecPSize() + curElem._potentialDynamicComponents.vecPSize() && curElem._height != 0)
+			if (curElem->_potentialThreshold < curElem->_potentialStaticComponents.vecPSize() + curElem->_potentialDynamicComponents.vecPSize() && curElem->_height != 0)
 			{
-				propageteComponentsToChildren(curElem);
+				splitComps(*curElem);
 			}
 
 			return;
@@ -631,38 +672,38 @@ void OctreeForCollision::insertStaticComponent(CollisionComponent * comp)
 	return;
 }
 
-void OctreeForCollision::insertDynamicComponent(CollisionComponent * comp)
+void OctreeForCollision::insertDynamicComponent(CollisionComponent * comp, OctreeElem& octreeElem)
 {
-	int index = 0;
-	OctreeElem& curElem = _octreeElemVec[index];
+	OctreeElem* curElem = &octreeElem;
+	int index = curElem->getIndex();
 
 	while (true)
 	{
-		curElem._bUsed = true;
+		curElem->_bUsed = true;
 		int targetChildIdx = -1;
 
-		if (curElem._bUseChildren)
+		if (curElem->_bUseChildren)
 		{
-			if (-1 == (targetChildIdx = getFitChildBoxIndexDynamicComp(curElem, comp)))
+			if (-1 == (targetChildIdx = getFitChildBoxIndexDynamicComp(*curElem, comp)))
 			{
 				// no match with children
-				curElem._potentialDynamicComponents.push_back(comp);
+				curElem->_potentialDynamicComponents.push_back_pointer(comp);
 				comp->setOctreeElemIdx(index);
 				return;
 			}
 
 			index = index * 8 + targetChildIdx;
-			curElem = _octreeElemVec[index];
+			curElem = &_octreeElemVec[index];
 		}
 		else
 		{
-			curElem._potentialDynamicComponents.push_back(comp);
+			curElem->_potentialDynamicComponents.push_back_pointer(comp);
 			comp->setOctreeElemIdx(index);
 
 			//_potentialComponents 개수가 적으면 stop. 일정 수가 넘어가면 children으로.
-			if (curElem._potentialThreshold < curElem._potentialStaticComponents.vecPSize() + curElem._potentialDynamicComponents.vecPSize() && curElem._height != 0)
+			if (curElem->_potentialThreshold < curElem->_potentialStaticComponents.vecPSize() + curElem->_potentialDynamicComponents.vecPSize() && curElem->_height != 0)
 			{
-				propageteComponentsToChildren(curElem);
+				splitComps(*curElem);
 			}
 
 			return;
@@ -672,10 +713,10 @@ void OctreeForCollision::insertDynamicComponent(CollisionComponent * comp)
 	return;
 }
 
-void OctreeForCollision::propageteComponentsToChildren(OctreeElem & octreeElem)
+void OctreeForCollision::splitComps(OctreeElem & octreeElem)
 {
 	int targetChildIdx;
-	int index = octreeElem._index;
+	int index = octreeElem.getIndex();
 	octreeElem._bUseChildren = true;
 
 	// static
@@ -686,13 +727,12 @@ void OctreeForCollision::propageteComponentsToChildren(OctreeElem & octreeElem)
 			// push to child from this(parent)
 			CollisionComponent* moveComp = (*it);
 			it = octreeElem._potentialStaticComponents.erase(it);
+			
 
 			int childIndex = index * 8 + targetChildIdx;
 			OctreeElem& childOctreeElem = _octreeElemVec[childIndex];
-
-			childOctreeElem._bUsed = true;
-			childOctreeElem._potentialStaticComponents.push_back(moveComp);
-			(moveComp)->setOctreeElemIdx(childIndex);
+			moveComp->setOctreeElemIdx(-1);
+			insertStaticComponent(moveComp, childOctreeElem);
 		}
 		else
 		{
@@ -711,16 +751,57 @@ void OctreeForCollision::propageteComponentsToChildren(OctreeElem & octreeElem)
 
 			int childIndex = index * 8 + targetChildIdx;
 			OctreeElem& childOctreeElem = _octreeElemVec[childIndex];
+			moveComp->setOctreeElemIdx(-1);
 
-			childOctreeElem._bUsed = true;
-			childOctreeElem._potentialDynamicComponents.push_back(moveComp);
-			(moveComp)->setOctreeElemIdx(childIndex);
+			insertDynamicComponent(moveComp, childOctreeElem);
 		}
 		else
 		{
 			++it;
 		}
 	}
+
+	return;
+}
+
+void OctreeForCollision::trySplitStaticComp(OctreeElem & octreeElem, CollisionComponent * comp)
+{
+	OctreeElem* curElem = &octreeElem;
+	int index = curElem->getIndex();
+	int targetChildIdx = -1;
+
+	if (curElem->_bUseChildren)
+	{
+		if (-1 != (targetChildIdx = getFitChildBoxIndexStaticComp(*curElem, comp)))
+		{
+			// remove cur
+			removeStaticCopmInOctreeElem(comp);
+			insertStaticComponent(comp, _octreeElemVec[index * 8 + targetChildIdx]);
+		}
+	}
+
+	// stay cur box
+	return;
+}
+
+void OctreeForCollision::trySplitDynamicComp(OctreeElem & octreeElem, CollisionComponent * comp)
+{
+	OctreeElem* curElem = &octreeElem;
+	int index = curElem->getIndex();
+	int targetChildIdx = -1;
+
+	if (curElem->_bUseChildren)
+	{
+		if (-1 != (targetChildIdx = getFitChildBoxIndexDynamicComp(*curElem, comp)))
+		{
+			// remove cur
+			removeDynamicCopmInOctreeElem(comp);
+			insertDynamicComponent(comp, _octreeElemVec[index * 8 + targetChildIdx]);
+		}
+	}
+
+	// stay cur box
+	return;
 }
 
 // insert 가능한 child box index return
@@ -732,7 +813,7 @@ int OctreeForCollision::getFitChildBoxIndex(OctreeElem& octreeElem, CollisionCom
 	}
 
 	int spaceIndex = octreeElem.getSpaceOfMatchedCenter(comp);
-	int index = octreeElem._index * 8 + spaceIndex + 1;
+	int index = octreeElem.getIndex() * 8 + spaceIndex + 1;
 
 	if (_octreeElemVec[index].IsInBoxFitTest(comp))
 	{
@@ -750,7 +831,7 @@ int OctreeForCollision::getFitChildBoxIndexStaticComp(OctreeElem & octreeElem, C
 	}
 
 	int spaceIndex = octreeElem.getSpaceOfMatchedCenterStaticComp(comp);
-	int index = octreeElem._index * 8 + spaceIndex + 1;
+	int index = octreeElem.getIndex() * 8 + spaceIndex + 1;
 
 	if (_octreeElemVec[index].IsInBoxFitTestStaticComp(comp))
 	{
@@ -768,7 +849,7 @@ int OctreeForCollision::getFitChildBoxIndexDynamicComp(OctreeElem & octreeElem, 
 	}
 
 	int spaceIndex = octreeElem.getSpaceOfMatchedCenterDynamicComp(comp);
-	int index = octreeElem._index * 8 + spaceIndex + 1;
+	int index = octreeElem.getIndex() * 8 + spaceIndex + 1;
 
 	if (_octreeElemVec[index].IsInBoxFitTestDynamicComp(comp))
 	{
@@ -795,6 +876,7 @@ void OctreeForCollision::removeStaticCopmInOctreeElem(CollisionComponent * comp)
 	int index = comp->getOctreeElemIndex();
 	OctreeElem& octreeElem = _octreeElemVec[index];
 	octreeElem._potentialStaticComponents.erase(comp);
+	comp->setOctreeElemIdx(-1);
 
 	// reduce count all parent
 }
@@ -804,6 +886,7 @@ void OctreeForCollision::removeDynamicCopmInOctreeElem(CollisionComponent * comp
 	int index = comp->getOctreeElemIndex();
 	OctreeElem& octreeElem = _octreeElemVec[index];
 	octreeElem._potentialDynamicComponents.erase(comp);
+	comp->setOctreeElemIdx(-1);
 
 	// reduce count all parent
 }
@@ -811,8 +894,8 @@ void OctreeForCollision::removeDynamicCopmInOctreeElem(CollisionComponent * comp
 bool OctreeForCollision::IsUseThisOctreeElem(OctreeElem & elem)
 {
 	// parent _useChildBit check
-	int idx = elem._index;
-	int mod = elem._index % 8;
+	int idx = elem.getIndex();
+	int mod = elem.getIndex() % 8;
 
 	if (idx == 0)
 	{
@@ -829,8 +912,229 @@ bool OctreeForCollision::IsUseThisOctreeElem(OctreeElem & elem)
 	return false;
 }
 
-
 bool OctreeForCollision::IsUseChild(OctreeElem & elem)
 {
 	return elem._useChildBit != 0;
+}
+
+void OctreeForCollision::TESTTEST(OctreeForCollision * octreeForCollision, int startIndex, std::vector<VectorP<CollisionComponent*>*> _staticAccVec, std::vector<VectorP<CollisionComponent*>*> _dynamicAccVec)
+{
+	// startElem
+	OctreeElem& octreeElem = octreeForCollision->_octreeElemVec[startIndex];
+
+	if (!octreeElem._bUsed)
+		return;
+
+	// accDynamic vs curDynamic
+	for (auto accVector : _dynamicAccVec)
+	{
+		octreeForCollision->dynamicDynamicCollisionVecTest(*accVector, octreeElem._potentialDynamicComponents);
+	}
+	// accStatic vs curDynamic
+	for (auto accVector : _staticAccVec)
+	{
+		octreeForCollision->staticDynamicCollisionVecTest(*accVector, octreeElem._potentialDynamicComponents);
+	}
+
+	// accDynamic vs curStatic
+	for (auto accVector : _dynamicAccVec)
+	{
+		octreeForCollision->staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, *accVector);
+	}
+	// accStatic vs curStatic
+	for (auto accVector : _staticAccVec)
+	{
+		octreeForCollision->staticStaticCollisionVecTest(*accVector, octreeElem._potentialStaticComponents);
+	}
+
+	// curDynamic vs curStatic
+	octreeForCollision->staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, octreeElem._potentialDynamicComponents);
+
+	// curStatic vs curStatic
+	octreeForCollision->staticSelfCollisionVecTest(octreeElem._potentialStaticComponents);
+
+	// curDynamic vs curDynamic
+	octreeForCollision->dynamicSelfCollisionVecTest(octreeElem._potentialDynamicComponents);
+
+	if (!octreeElem._bUseChildren)
+	{
+		return;
+	}
+
+	std::vector<VectorP<CollisionComponent*>*> newStaticAccVec(_staticAccVec);
+	std::vector<VectorP<CollisionComponent*>*> newDynamicAccVec(_dynamicAccVec);
+
+	newStaticAccVec.push_back(&(octreeElem._potentialStaticComponents));
+	newDynamicAccVec.push_back(&(octreeElem._potentialDynamicComponents));
+
+	int index = octreeElem.getIndex();
+	for (int i = 0; i < OCT_NUM; i++)
+	{
+		// propagete copied compVec's vector
+		//tbb::parallel_for(tbb::blocked_range<size_t>(0, 1), CTBB_staticCollideTest(octreeForCollision, startIndex * 8 + i, newStaticAccVec, newDynamicAccVec));
+		octreeForCollision->TESTTEST(octreeForCollision, startIndex * 8 + i + 1, _staticAccVec, _dynamicAccVec);
+	}
+
+	return;
+}
+
+CTBB_staticCollideTest::CTBB_staticCollideTest(OctreeForCollision* octreeForCollision, int startIndex, std::vector<VectorP<CollisionComponent*>*> staticAccVec, std::vector<VectorP<CollisionComponent*>*> dynamicAccVec)
+	: _octreeForCollision(octreeForCollision), _startIndex(startIndex), _staticAccVec(staticAccVec), _dynamicAccVec(dynamicAccVec)
+{
+}
+
+void CTBB_staticCollideTest::operator()(const tbb::blocked_range<size_t>& r) const
+{
+	// startElem
+	OctreeElem& octreeElem = _octreeForCollision->_octreeElemVec[_startIndex];
+
+	if (!octreeElem._bUsed)
+		return;
+
+	// accDynamic vs curDynamic
+	for (auto accVector : _dynamicAccVec)
+	{
+		_octreeForCollision->dynamicDynamicCollisionVecTest(*accVector, octreeElem._potentialDynamicComponents);
+	}
+	// accStatic vs curDynamic
+	for (auto accVector : _staticAccVec)
+	{
+		_octreeForCollision->staticDynamicCollisionVecTest(*accVector, octreeElem._potentialDynamicComponents);
+	}
+
+	// accDynamic vs curStatic
+	for (auto accVector : _dynamicAccVec)
+	{
+		_octreeForCollision->staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, *accVector);
+	}
+	// accStatic vs curStatic
+	for (auto accVector : _staticAccVec)
+	{
+		_octreeForCollision->staticStaticCollisionVecTest(*accVector, octreeElem._potentialStaticComponents);
+	}
+
+	// curDynamic vs curStatic
+	_octreeForCollision->staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, octreeElem._potentialDynamicComponents);
+
+	// curStatic vs curStatic
+	_octreeForCollision->staticSelfCollisionVecTest(octreeElem._potentialStaticComponents);
+
+	// curDynamic vs curDynamic
+	_octreeForCollision->dynamicSelfCollisionVecTest(octreeElem._potentialDynamicComponents);
+
+	if (!octreeElem._bUseChildren)
+	{
+		return;
+	}
+
+	std::vector<VectorP<CollisionComponent*>*> newStaticAccVec(_staticAccVec);
+	std::vector<VectorP<CollisionComponent*>*> newDynamicAccVec(_dynamicAccVec);
+
+	newStaticAccVec.push_back(&(octreeElem._potentialStaticComponents));
+	newDynamicAccVec.push_back(&(octreeElem._potentialDynamicComponents));
+
+	int index = octreeElem.getIndex();
+	for (int i = 0; i < OCT_NUM; i++)
+	{
+		// propagete copied compVec's vector
+		tbb::parallel_for(tbb::blocked_range<size_t>(0, 1), CTBB_staticCollideTest(_octreeForCollision, _startIndex * 8 + i + 1, newStaticAccVec, newDynamicAccVec));
+	}
+
+	return;
+}
+
+CTBB_staticCollideTest_EX::CTBB_staticCollideTest_EX(OctreeForCollision * octreeForCollision, int startIndex, std::vector<VectorP<CollisionComponent*>*> staticAccVec, std::vector<VectorP<CollisionComponent*>*> dynamicAccVec)
+	: _octreeForCollision(octreeForCollision), _startIndex(startIndex), _staticAccVec(staticAccVec), _dynamicAccVec(dynamicAccVec)
+{
+}
+
+void CTBB_staticCollideTest_EX::operator()(const tbb::blocked_range<size_t>& r) const
+{
+	// startElem
+	//OctreeElem& parentElem = _octreeForCollision->_octreeElemVec[_startIndex];
+	for (size_t i = r.begin(); i != r.end(); ++i)
+	{
+		int cIndex = _startIndex * 8 + i + 1;
+		OctreeElem& octreeElem = _octreeForCollision->_octreeElemVec[cIndex];
+
+		if (!octreeElem._bUsed)
+			continue;
+
+		// accDynamic vs curDynamic
+		for (auto accVector : _dynamicAccVec)
+		{
+			_octreeForCollision->dynamicDynamicCollisionVecTest(*accVector, octreeElem._potentialDynamicComponents);
+		}
+		// accStatic vs curDynamic
+		for (auto accVector : _staticAccVec)
+		{
+			_octreeForCollision->staticDynamicCollisionVecTest(*accVector, octreeElem._potentialDynamicComponents);
+		}
+
+		// accDynamic vs curStatic
+		for (auto accVector : _dynamicAccVec)
+		{
+			_octreeForCollision->staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, *accVector);
+		}
+		// accStatic vs curStatic
+		for (auto accVector : _staticAccVec)
+		{
+			_octreeForCollision->staticStaticCollisionVecTest(*accVector, octreeElem._potentialStaticComponents);
+		}
+
+		// curDynamic vs curStatic
+		_octreeForCollision->staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, octreeElem._potentialDynamicComponents);
+
+		// curStatic vs curStatic
+		_octreeForCollision->staticSelfCollisionVecTest(octreeElem._potentialStaticComponents);
+
+		// curDynamic vs curDynamic
+		_octreeForCollision->dynamicSelfCollisionVecTest(octreeElem._potentialDynamicComponents);
+
+
+		std::vector<VectorP<CollisionComponent*>*> newStaticAccVec(_staticAccVec);
+		std::vector<VectorP<CollisionComponent*>*> newDynamicAccVec(_dynamicAccVec);
+
+		if (!octreeElem._bUseChildren)
+		{
+			continue;
+		}
+
+		newStaticAccVec.push_back(&(octreeElem._potentialStaticComponents));
+		newDynamicAccVec.push_back(&(octreeElem._potentialDynamicComponents));
+
+		// propagete copied compVec's vector
+		tbb::parallel_for(tbb::blocked_range<size_t>(0, 8), CTBB_staticCollideTest(_octreeForCollision, cIndex, newStaticAccVec, newDynamicAccVec));
+
+		newStaticAccVec.pop_back();
+		newDynamicAccVec.pop_back();
+	}
+
+	/*
+	std::vector<VectorP<CollisionComponent*>*> newStaticAccVec(_staticAccVec);
+	std::vector<VectorP<CollisionComponent*>*> newDynamicAccVec(_dynamicAccVec);
+
+	
+	for (int i = 0; i < OCT_NUM; i++)
+	{
+		int cIndex = _startIndex * 8 + i + 1;
+		OctreeElem& octreeElem = _octreeForCollision->_octreeElemVec[cIndex];
+
+		if (!octreeElem._bUsed || !octreeElem._bUseChildren)
+		{
+			continue;
+		}
+		
+		newStaticAccVec.push_back(&(octreeElem._potentialStaticComponents));
+		newDynamicAccVec.push_back(&(octreeElem._potentialDynamicComponents));
+
+		// propagete copied compVec's vector
+		tbb::parallel_for(tbb::blocked_range<size_t>(0, 8), CTBB_staticCollideTest(_octreeForCollision, cIndex, newStaticAccVec, newDynamicAccVec));
+
+		newStaticAccVec.pop_back();
+		newDynamicAccVec.pop_back();
+	}
+	*/
+
+	return;
 }

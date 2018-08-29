@@ -53,19 +53,19 @@ namespace RENDER_TARGET
 			bool getRenderCull();
 
 			void setFrustumRadius(float radius);
-			float& getFrustumRadiusRef();
+			float getFrustumRadius();
 
 			//void setFrustumPos(glm::vec3& pos);
 			void setFrustumPos(RigidbodyComponent * rigidbodyComponent);
 			float getNearestDistToPoint(glm::vec3& pos);
 
-			glm::vec3& getFrustumPosRef();
+			const glm::vec3& getFrustumPosConstRef() const;
 			glm::vec3& getFrustumCompensationPosRef();
-			void setFrustumCompensationPos(glm::vec3& compen_pos);
+			void setFrustumCompensationPos(const glm::vec3& compen_pos);
 
 			SphereOb& getSphereObForFrustumRef();
 
-			int		getOctreeElemIndex();
+			int		getOctreeElemIndex() const;
 			void	setOctreeElemIdx(int idx);
 		public:
 			RESOURCE::Model * _model = nullptr;

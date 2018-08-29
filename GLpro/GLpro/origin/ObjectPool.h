@@ -9,7 +9,6 @@ public:
 	static void* operator new(size_t objSize)
 	{
 		LockGuard criticalSection;
-		
 
 		if (!mFreeList)
 		{

@@ -20,9 +20,9 @@ void AABBOb::updateAABBObAxis(const glm::vec3 & halfAxisSize)
 
 void AABBOb::updateAABBObAxis(float halfAxisSize)
 {
-	_worldVec[0] = halfAxisSize;
-	_worldVec[1] = halfAxisSize;
-	_worldVec[2] = halfAxisSize;
+	_halfAxisSize[0] = halfAxisSize;
+	_halfAxisSize[1] = halfAxisSize;
+	_halfAxisSize[2] = halfAxisSize;
 }
 
 void AABBOb::updateAABBObCenter(const glm::mat4 & center)

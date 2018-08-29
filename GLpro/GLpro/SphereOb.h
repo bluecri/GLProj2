@@ -6,8 +6,8 @@ class SphereOb
 {
 public:
 	SphereOb();
-	void		updateSphereOb(glm::vec3& center);
-	void		updateSphereOb(float& radius);
+	void		updateSphereOb(const glm::vec3& center);
+	void		updateSphereOb(float radius);
 	
 	const glm::vec3&	getCenterConstRef() const;
 	glm::vec3	getCenter() const;

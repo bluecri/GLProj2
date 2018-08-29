@@ -34,9 +34,17 @@ CollisionComponent * CollisionComponentManager::GetNewSphereCollisionComp(Rigidb
 	return nullptr;
 }
 
-CollisionComponent * CollisionComponentManager::GetNewLineCollisionComp(RigidbodyComponent * rigidComp, glm::vec3 & localVec, glm::vec3 & unitVec, float len, bool isInfiniteLine)
+CollisionComponent * CollisionComponentManager::GetNewLineCollisionComp(RigidbodyComponent * rigidComp, glm::vec3 & localVec, glm::vec3 & unitVec, float len, bool isOneInfiniteLine)
 {
-	CollisionComponent* retComp = new LineCollisionComp(rigidComp, localVec, unitVec, len, isInfiniteLine);
+	CollisionComponent* retComp;
+	if (isOneInfiniteLine)
+	{
+		retComp = new LineCollisionComp(rigidComp, localVec, unitVec, len, LINEOB_TYPE_ENUM::LINEOB_TYPE_INFINITE_ONE_DIRTECTION);
+	}
+	else
+	{
+		retComp = new LineCollisionComp(rigidComp, localVec, unitVec, len, LINEOB_TYPE_ENUM::LINEOB_TYPE_LEN);
+	}
 	_collisionSleepComponentContainer.push_back(retComp);
 	return nullptr;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "VectorPElem.h"
 
 class RigidbodyComponent;
 class CollisionComponentManager;
@@ -42,22 +43,26 @@ public:
 	void	makeDynamicComp(DynamicCollisionSubComp* subComp);
 	DynamicCollisionSubComp* getDynamicSubComp();
 	virtual void	updateDynamicLap() = 0;
+	virtual void	saveDynamicRetCollideInfoToPrevInfo() = 0;	// save [collision result world info] to dynamic [prevInfo]
 
 	//virtual bool collideTestToOther(CollisionComponent* comp) = 0;
 	virtual bool collideStaticTestToOtherStatic(CollisionComponent* staticComp) = 0;
-	virtual bool collideStaticTestToOtherDynamic(CollisionComponent* staticComp, float collideTime) = 0;
-	//virtual bool collideDynamicTestToOtherStatic(CollisionComponent* staticComp, float collideTime) = 0;
-	virtual bool collideDynamicTestToOtherDynamic(CollisionComponent* staticComp, float collideTime) = 0;
+	virtual bool collideStaticTestToOtherDynamic(CollisionComponent* dynamicComp, float& collideTime) = 0;
+	//virtual bool collideDynamicTestToOtherStatic(CollisionComponent* staticComp, float& collideTime) = 0;
+	virtual bool collideDynamicTestToOtherDynamic(CollisionComponent* dynamicComp, float& collideTime) = 0;
 
 	virtual bool lapStaticTestToOtherStatic(CollisionComponent* staticComp) = 0;
-	virtual bool lapStaticTestToOtherDynamic(CollisionComponent* staticComp) = 0;
+	virtual bool lapStaticTestToOtherDynamic(CollisionComponent* dynamicComp) = 0;
 	//virtual bool lapDynamicTestToOtherStatic(CollisionComponent* staticComp) = 0;
-	virtual bool lapDynamicTestToOtherDynamic(CollisionComponent* staticComp) = 0;
+	virtual bool lapDynamicTestToOtherDynamic(CollisionComponent* dynamicComp) = 0;
 
 	virtual void resolveStaticStaticCollide(CollisionComponent* staticComp) = 0;
 	//virtual void resolveStaticDynamicCollide(float time, CollisionComponent* dynamicComp) = 0;
 	virtual void resolveDynamicStaticCollide(float time, CollisionComponent* staticComp) = 0;
 	virtual void resolveDynamicDynamicCollide(float time, CollisionComponent* dynamicComp) = 0;
+
+	virtual void resolveThisStatic(glm::quat& rotateQuat) = 0;
+	virtual void resolveThisDynamic(const glm::vec3& collidePosition, glm::quat& rotateQuat) = 0;
 
 	bool isTrigger();
 	void setTrigger(bool bTrigger);
@@ -68,10 +73,12 @@ protected:
 	*	return whether is modified
 	*/
 	virtual void updateCollisionComp() = 0;
+	void getRotateQuatAfterCollisionAndSetSpeed(CollisionComponent* otherComp, const glm::vec3& collisionCenterDiff, glm::quat& rotateQuat1, glm::quat& rotateQuat2);
 
 public:
 	COLLISION_TYPE collisionType;
 	RigidbodyComponent* _rigidComp;
+	tbb::reader_writer_lock _tbbRWLock;
 
 	std::list<CollisionComponent*> _collisionLogList;	// collision event(logic update)¿Í collision physics ºÐ¸®
 

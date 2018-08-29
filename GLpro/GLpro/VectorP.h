@@ -12,7 +12,7 @@ public:
 	VectorP();
 	VectorP(int reserveSize);
 
-	void push_back(T elem);
+	void push_back_pointer(T elem);
 	void erase(T elem);
 	void erase(int idx);
 	void clear();
@@ -26,7 +26,7 @@ public:
 
 	const std::vector<T>& getElemVecConstRef() const;
 
-	// do not call erase, clear, push_back... etc
+	// do not call erase, clear, push_back_pointer... etc
 	std::vector<T>& getElemVecRef();
 
 private:
@@ -47,18 +47,16 @@ VectorP<T>::VectorP(int reserveSize)
 	elemVec.reserve(reserveSize);
 }
 
-template<class T>
-void VectorP<T>::push_back(T elem)
-{
-	static_assert(true == std::is_convertible<T, VectorPElem*>::value, "only allowed VectorPElem in VectorP<T>::push_back(T& elem)");
 
-	if (_DEBUG)
+template<class T>
+void VectorP<T>::push_back_pointer(T elem)
+{
+	static_assert(true == std::is_convertible<T, VectorPElem*>::value, "only allowed VectorPElem in VectorP<T>::push_back_pointer(T& elem)");
+
+	int originIdx = static_cast<VectorPElem*>(elem)->getPElemIdx();
+	if (originIdx != -1)
 	{
-		int originIdx = static_cast<VectorPElem*>(elem)->getPElemIdx();
-		if (originIdx != -1)
-		{
-			printf_s("[ERR] : elem is already binded to vector in VectorP<T>::push_back(T& elem)\n");
-		}
+		printf_s("[ERR] :: elem is already binded to vector in VectorP<T>::push_back_pointer(T& elem)\n");
 	}
 
 	elemVec.push_back(elem);
@@ -71,18 +69,19 @@ void VectorP<T>::erase(T elem)
 	static_assert(true == std::is_convertible<T, VectorPElem*>::value, "only allowed VectorPElem in VectorP<T>::erase(T& elem)");
 	int originIdx = static_cast<VectorPElem*>(elem)->getPElemIdx();
 
-	if (_DEBUG)
+	if (originIdx == -1)
 	{
-		if (originIdx == -1)
-		{
-			printf_s("[ERR] : elem is not binded to vector in VectorP<T>::erase(T& elem)\n");
-		}
+		printf_s("[ERR] : elem is not binded to vector in VectorP<T>::erase(T& elem)\n");
 	}
 
 	static_cast<VectorPElem*>(elemVec[originIdx])->setPElemIdx(-1);
 
-	elemVec[originIdx] = elemVec[elemVec.size() - 1];
-	static_cast<VectorPElem*>(elemVec[originIdx])->setPElemIdx(originIdx);
+	if (originIdx != elemVec.size() - 1)
+	{
+		elemVec[originIdx] = elemVec[elemVec.size() - 1];
+		static_cast<VectorPElem*>(elemVec[originIdx])->setPElemIdx(originIdx);
+	}
+		
 	elemVec.pop_back();
 }
 
@@ -91,8 +90,12 @@ void VectorP<T>::erase(int idx)
 {
 	static_cast<VectorPElem*>(elemVec[idx])->setPElemIdx(-1);
 
-	elemVec[idx] = elemVec[elemVec.size() - 1];
-	static_cast<VectorPElem*>(elemVec[idx])->setPElemIdx(idx);
+	if (idx != elemVec.size() - 1)
+	{
+		elemVec[idx] = elemVec[elemVec.size() - 1];
+		static_cast<VectorPElem*>(elemVec[idx])->setPElemIdx(idx);
+	}
+
 	elemVec.pop_back();
 }
 
@@ -100,6 +103,10 @@ void VectorP<T>::erase(int idx)
 template<class T>
 void VectorP<T>::clear()
 {
+	for (auto elem : elemVec)
+	{
+		static_cast<VectorPElem*>(elem)->setPElemIdx(-1);
+	}
 	elemVec.clear();
 }
 
@@ -150,7 +157,7 @@ const std::vector<T>& VectorP<T>::getElemVecConstRef() const
 	return elemVEc;
 }
 
-// do not call erase, clear, push_back... etc
+// do not call erase, clear, push_back_pointer... etc
 template<class T>
 std::vector<T>& VectorP<T>::getElemVecRef()
 {

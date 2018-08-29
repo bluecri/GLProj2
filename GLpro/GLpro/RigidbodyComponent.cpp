@@ -5,6 +5,8 @@
 #include "src/Entity.h"
 #include "RigidbodyComponent.h"
 
+//template class ClassTypeLock<RigidbodyComponent>;
+
 int RigidbodyComponent::_sMaskBDirty = DIRTY_MASK_RIGID;
 
 RigidbodyComponent::RigidbodyComponent(Entity * bindedEntity, const glm::mat4 &modelMatrix, const glm::mat4 &quaternion, const glm::mat4 &scaleMatrix)
@@ -715,5 +717,3 @@ void RigidbodyComponent::calcWorldMatPriv(const glm::mat4 & parentMat)
 
 	_worldTotalMatrix = parentMat * _worldTotalMatrix;
 }
-
-

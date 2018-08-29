@@ -55,7 +55,7 @@ void ParticleFObjManager::doAllFobjBeforeDrawBehavior()
 		elem.second->sortContainerByDist();
 
 		// fill ParticleBuffer (pos buffer & color buffer)
-		elem.second->orderFillParticleBuffer();
+		elem.second->orderFillParticleBuffer();		// cannot parallel
 
 		elem.second->resetOveruseParticle();
 	}

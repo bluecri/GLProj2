@@ -62,12 +62,20 @@ RENDER_TARGET::PARTICLE::ParticleFObj::~ParticleFObj()
 void RENDER_TARGET::PARTICLE::ParticleFObj::sortContainerByDist()
 {
 	// needCheck
+	tbb::parallel_sort(_particleContainer.begin(), _particleContainer.end(),
+		[](const ParticleStruct* lhs, const ParticleStruct* rhs) -> bool
+	{
+		return lhs->_cameradistance > rhs->_cameradistance;
+	}
+	);
+
+	/*
 	std::sort(_particleContainer.begin(), _particleContainer.end(),
 	[](const ParticleStruct* lhs, const ParticleStruct* rhs) -> bool
 	{
 		return lhs->_cameradistance > rhs->_cameradistance;
 	});
-	
+	*/
 }
 
 void RENDER_TARGET::PARTICLE::ParticleFObj::orderFillParticleBuffer()
@@ -173,10 +181,18 @@ void RENDER_TARGET::PARTICLE::ParticleFObj::resetOveruseParticle()
 
 void RENDER_TARGET::PARTICLE::ParticleFObj::updateParticleStructs(float deltaTime, glm::vec3 & camPosVec)
 {
+	/*
 	for (auto elem : _particleContainer)
 	{
 		// cam distance update
 		elem->update(deltaTime, camPosVec);
 	}
+	*/
+
+	tbb::parallel_for(tbb::blocked_range<size_t>(0, _particleContainer.size()),
+		[=](const tbb::blocked_range<size_t>& r) {
+		for (size_t i = r.begin(); i != r.end(); ++i)
+			_particleContainer[i]->update(deltaTime, camPosVec);
+	});
 }
 

@@ -46,12 +46,11 @@ public:
 	static bool staticCheck_LINE_OBB(const LineOb& lineOb, const OBBOb& obbOb, float& retDist);	// return dist if collision occur
 	//static bool staticCheck_CLOSEST_LINE_OBB(const LineOb& lineOb, const OBBOb& obbOb, glm::vec3& pointOnLine, glm::vec3& pointOnOBB);
 
-	static bool staticCheck_SPHERE_SPHERE(const SphereOb& sphereOb1, const SphereOb& sphereOb2);
+	static bool staticCheck_SPHERE_SPHERE_OVERLAP(const SphereOb& sphereOb1, const SphereOb& sphereOb2);
 	static bool staticCheck_SPHERE_AABB_OVERLAP(const SphereOb& sphereOb, const AABBOb& aabbOb);
 	static bool staticCheck_SPHERE_OBB(const SphereOb& sphereOb, const OBBOb& obbOb);
 
 	static bool staticCheck_AABB_LINE_IN(const AABBOb& aabbObBig, const LineOb& lineOb);
-	static bool staticCheck_AABB_LINE_OVERLAP(const AABBOb& aabbObBig, const LineOb& lineOb);
 	static bool staticCheck_AABB_SPHERE_IN(const AABBOb& aabbObBig, const SphereOb& sphereOb);
 	//static bool staticCheck_AABB_SPHERE_INOUTOVERLAP(const AABBOb& aabbObBig, const SphereOb& sphereOb);
 	static bool staticCheck_AABB_AABB_IN(const AABBOb& aabbObBig, const AABBOb& aabbObSmall);
@@ -61,10 +60,17 @@ public:
 
 	static int	staticCheck_FRUSTUM_AABB_INOUTOVERLAP(const FrustumOb& frustumObBig, const AABBOb& aabbObSmall);
 	
-	static bool staticCheck_OBB_OBB_OUT(const OBBOb& obbOb1, const OBBOb& obbOb2);
+	static bool staticCheck_OBB_OBB_OVERLAP(const OBBOb& obbOb1, const OBBOb& obbOb2);
 
 	static void CreateAAABBLAP_SPHERE(const SphereOb& sphereOb, AABBOb& retAabb);
 	static void CreateAAABBLAP_LINE(const LineOb& lineOb, AABBOb& retAabb);
+
+
+	static void staticCheck_DIST_LINE_LINE(const LineOb& lineOb1, const LineOb& lineOb2, float& minDist);
+	static bool staticCheck_LINE_CAPSULE(const LineOb& lineOb, const glm::vec3& center1, const glm::vec3& center2, float radius, float & retDist);
+
+	// reference : http://www.opengl-tutorial.org/kr/intermediate-tutorials/tutorial-17-quaternions/
+	static glm::quat rotationBetweenVectors(const glm::vec3& startVec, const glm::vec3& endVec);
 
 private:
 	static bool staticCheck_BOX(const glm::mat4 & wolrd1, const glm::mat4 & wolrd2, const glm::vec3 & axisLen1, const glm::vec3 & axisLen2);
@@ -85,4 +91,5 @@ private:
 
 	static bool checkSphereOneINFLineIntersection(const SphereOb& sphereOb, const LineOb& lineOb, float& retDist);
 	static bool checkSphereLineIntersection(const SphereOb& sphereOb, const LineOb& lineOb, float& retDist);
+
 };

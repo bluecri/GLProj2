@@ -5,6 +5,8 @@
 
 namespace RENDER_TARGET { namespace NORMAL { class NormalFObj; } }
 
+class RigidbodyComponent;
+
 class OctreeFrustumElem
 {
 public:

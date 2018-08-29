@@ -137,7 +137,6 @@ void WINDOW::Window::mainLoop()
 {
 	float t = 0.0f;
 	float usedT = 0.0f;
-	const float dt = 0.02f;
 
 	float currentTime = static_cast<float>(glfwGetTime());
 	float acc = 0.0;
@@ -157,7 +156,7 @@ void WINDOW::Window::mainLoop()
 		acc += intervalTime;
 		glfwPollEvents();
 		GInputManager->keyUpdate();		// transfer keyinput to GScene
-		while (acc >= dt)
+		while (acc >= _collisionDt)
 		{
 			/*physics loop
 			*{
@@ -174,7 +173,7 @@ void WINDOW::Window::mainLoop()
 			// Change dirty bit target to Cur
 			RigidbodyComponent::changeSetDirtyBitToRigid();
 
-			GRigidbodyComponentManager->updateRigidbodyComps(dt);
+			GRigidbodyComponentManager->updateRigidbodyComps(_collisionDt);
 			GCollisionComponentManager->doCollisionTest();
 			GCollisionComponentManager->resetAllCollisionCompDirty();
 			
@@ -182,12 +181,12 @@ void WINDOW::Window::mainLoop()
 			RigidbodyComponent::changeSetDirtyBitToLogic();
 
 			// logic loop
-			GScene->update(dt, acc);
+			GScene->update(_collisionDt, acc);
 
 			// todo : update
-			acc -= dt;
-			t += dt;
-			usedT += dt;
+			acc -= _collisionDt;
+			t += _collisionDt;
+			usedT += _collisionDt;
 
 			// Dirty bit target Swap (cur <> next)
 			GRigidbodyComponentManager->resetAndSwapDirtyAll();
@@ -195,9 +194,9 @@ void WINDOW::Window::mainLoop()
 			// clear dirty bit
 		}
 
-		// dt 보정 2가지 방법
+		// _collisionDt 보정 2가지 방법
 		// 1. 1frame 늦게 출력(past - current사이 정확한 interpolation)
-		// 2. acc만큼의 예상 이동 경로 그냥 그리기(acc가 dt에 가까울 수록 interpolation error 증가)
+		// 2. acc만큼의 예상 이동 경로 그냥 그리기(acc가 _collisionDt에 가까울 수록 interpolation error 증가)
 		// 2번으로 시도.
 		// render loop
 
@@ -246,6 +245,11 @@ void WINDOW::Window::exitWindow()
 void WINDOW::Window::mouseToCenter()
 {
 	glfwSetCursorPos(_pWindow, _windowWidth / 2, _windowHeight / 2);
+}
+
+float WINDOW::Window::getCollisionDt()
+{
+	return _collisionDt;
 }
 
 WINDOW::Window* GWindow = nullptr;

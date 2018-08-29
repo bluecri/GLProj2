@@ -190,16 +190,19 @@ void GameSession::preMade()
 	
 
 	std::vector<glm::vec3> enemyVec;
-	for (int i = -3; i < 3; i++)
+	for (int i = -8; i < 7; i++)
 	{
-		for (int k = -3; k < 3; k++)
+		for (int k = -8; k < 7; k++)
 		{
-			for (int q = -3; q < 3; q++)
+			for (int q = -8; q < 7; q++)
 			{
-				enemyVec.push_back(glm::vec3(i * 10.0f, k * 5.0f, q * 10.0f) );
+				if (i == 0 && k == 0 && q == 0)
+					continue;
+				enemyVec.push_back(glm::vec3(i * 12.0f + 5.0f, k * 12.0f + 5.0f, q * 12.0f + 5.0f));
 			}
 		}
 	}
+
 	Enemy * newEnemy = nullptr;
 	for (auto elem : enemyVec)
 	{
@@ -216,8 +219,6 @@ void GameSession::preMade()
 		newEnemy->addMissileGenerator(normalMissileGenerator);
 		
 	}
-
-
 	
 	CAMERA::Camera** mainCam = GCameraManager->GetMainCamera();
 	//(*mainCam)->_rigidbodyComponent->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
