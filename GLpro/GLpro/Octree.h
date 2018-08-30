@@ -62,6 +62,7 @@ private:
 	void staticDynamicCollisionTest(CollisionComponent* staticComp, CollisionComponent* dynamicComp);
 	void dynamicDynamicCollisionTest(CollisionComponent* dycomp1, CollisionComponent* dycomp2);
 
+	void ssCollsionResolve();
 	void ddAndDsCOllsionResolve();
 	// comp와 parent octreeElem에 해당하는 child box index return
 	int getFitChildBoxIndex(OctreeElem& octreeElem, CollisionComponent * comp);
@@ -87,9 +88,16 @@ public:
 private:
 	//std::vector<std::pair<float, std::pair<CollisionComponent*, CollisionComponent*>>> ddAndDsCOllsionTime;
 	tbb::concurrent_vector<std::pair<float, std::pair<CollisionComponent*, CollisionComponent*>>> ddAndDsCOllsionTime;
+	tbb::concurrent_vector<std::pair<CollisionComponent*, CollisionComponent*>> ssCollsionCvec;
 	
-	friend class CTBB_staticCollideTest;
+	tbb::concurrent_vector<CollisionComponent*>	_pushToRootCompsCvec;
+	tbb::concurrent_vector<CollisionComponent*>	_pushToSelfBoxCompsCvec;
+
+	friend class CTBB_staticCollideTest; 
 	friend class CTBB_staticCollideTest_EX;
+	friend class CTBB_staticCollideTest_EXXX;
+	friend class CTBB_UpdateStaticCollision_do;
+	friend class CTBB_UpdateDynamicCollision_do;
 	//int  _maxCountOfObjects;
 };
 
@@ -122,6 +130,18 @@ private:
 	std::vector<VectorP<CollisionComponent*>*> const _dynamicAccVec;
 };
 
+
+class CTBB_staticCollideTest_EXXX
+{
+public:
+	CTBB_staticCollideTest_EXXX(OctreeForCollision* octreeForCollision);
+	void operator()(const tbb::blocked_range<size_t>& r) const;
+
+private:
+	OctreeForCollision* const _octreeForCollision;
+
+};
+
 /*
 class CTBB_staticCollideTest_EX
 {
@@ -137,3 +157,23 @@ private:
 	std::vector<VectorP<CollisionComponent*>*> const _dynamicAccVec;
 };
 */
+
+
+
+class CTBB_UpdateStaticCollision_do
+{
+private:
+	OctreeForCollision& const _octreeForCollision;
+public:
+	CTBB_UpdateStaticCollision_do(OctreeForCollision& octree);
+	void operator()(CollisionComponent* comp) const;
+};
+
+class CTBB_UpdateDynamicCollision_do
+{
+private:
+	OctreeForCollision& const _octreeForCollision;
+public:
+	CTBB_UpdateDynamicCollision_do(OctreeForCollision& octree);
+	void operator()(CollisionComponent* comp) const;
+};

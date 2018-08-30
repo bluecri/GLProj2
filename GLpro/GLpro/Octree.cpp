@@ -99,17 +99,16 @@ void OctreeForCollision::newlyInsertComponent(CollisionComponent * comp)
 void OctreeForCollision::doCollisionTest()
 {
 	// collision test
-	innerDoCollisionTest(_octreeElemVec[0], std::vector<VectorP<CollisionComponent*>*>(), std::vector<VectorP<CollisionComponent*>*>());
-	//this->TESTTEST(this, 0, std::vector<VectorP<CollisionComponent*>*>(), std::vector<VectorP<CollisionComponent*>*>());
+	tbb::parallel_for(tbb::blocked_range<size_t>(0, _octreeElemVec.size()), CTBB_staticCollideTest_EXXX(this));
 	
+	//innerDoCollisionTest(_octreeElemVec[0], std::vector<VectorP<CollisionComponent*>*>(), std::vector<VectorP<CollisionComponent*>*>());
+	//this->TESTTEST(this, 0, std::vector<VectorP<CollisionComponent*>*>(), std::vector<VectorP<CollisionComponent*>*>());
 	//tbb::parallel_for(tbb::blocked_range<size_t>(0, 1), CTBB_staticCollideTest(this, 0, std::vector<VectorP<CollisionComponent*>*>(), std::vector<VectorP<CollisionComponent*>*>()));
-
 	//tbb::parallel_for(tbb::blocked_range<size_t>(0, 8), CTBB_staticCollideTest_EX(this, 0, std::vector<VectorP<CollisionComponent*>*>(), std::vector<VectorP<CollisionComponent*>*>()));
 	
-	
-
 	// Test Dynamic-Dynamic & Dynamic-Static :: ddAndDsCOllsionTime
-	ddAndDsCOllsionResolve();
+	ssCollsionResolve();
+	//ddAndDsCOllsionResolve();
 }
 
 // 충돌 가능한 모든 CollisionComponent들을 potentialList에 등록
@@ -297,37 +296,37 @@ void OctreeForCollision::staticStaticCollisionTest(CollisionComponent * staticCo
 	// self test
 	//if (elem == potentialComp)
 	//continue;
-	staticComp1->_tbbRWLock.try_lock_read();
-	staticComp2->_tbbRWLock.try_lock_read();
+	//staticComp1->_tbbRWLock.try_lock_read();
+	//staticComp2->_tbbRWLock.try_lock_read();
 
 	// category test
 	bool categoryTest1 = staticComp1->testCollisionCategoryBit(staticComp2);
 	bool categoryTest2 = staticComp2->testCollisionCategoryBit(staticComp1);
 	if (!categoryTest1 || !categoryTest1)
 	{
-		staticComp1->_tbbRWLock.unlock();
-		staticComp2->_tbbRWLock.unlock();
+		//staticComp1->_tbbRWLock.unlock();
+		//staticComp2->_tbbRWLock.unlock();
 		return;
 	}
 
 	// aabb lap test
 	if (false == staticComp1->lapStaticTestToOtherStatic(staticComp2))
 	{
-		staticComp1->_tbbRWLock.unlock();
-		staticComp2->_tbbRWLock.unlock();
+		//staticComp1->_tbbRWLock.unlock();
+		//staticComp2->_tbbRWLock.unlock();
 		return;
 	}
 
 	// actual shape test
 	if (false == staticComp1->collideStaticTestToOtherStatic(staticComp2))
 	{
-		staticComp1->_tbbRWLock.unlock();
-		staticComp2->_tbbRWLock.unlock();
+		//staticComp1->_tbbRWLock.unlock();
+		//staticComp2->_tbbRWLock.unlock();
 		return;
 	}
 
-	staticComp1->_tbbRWLock.unlock();
-	staticComp2->_tbbRWLock.unlock();
+	//staticComp1->_tbbRWLock.unlock();
+	//staticComp2->_tbbRWLock.unlock();
 
 	tbb::reader_writer_lock::scoped_lock(staticComp1->_tbbRWLock);
 	tbb::reader_writer_lock::scoped_lock(staticComp2->_tbbRWLock);
@@ -342,7 +341,8 @@ void OctreeForCollision::staticStaticCollisionTest(CollisionComponent * staticCo
 	if (isTrigger1 || isTrigger2)
 		return;
 
-	staticComp1->resolveStaticStaticCollide(staticComp2);
+	ssCollsionCvec.push_back(std::make_pair(staticComp1, staticComp2));
+	//staticComp1->resolveStaticStaticCollide(staticComp2);
 	
 	return;
 }
@@ -395,6 +395,15 @@ void OctreeForCollision::dynamicDynamicCollisionTest(CollisionComponent * dycomp
 	ddAndDsCOllsionTime.push_back(std::make_pair(collideTime, std::make_pair(dycomp1, dycomp2)));
 	return;
 }
+
+void OctreeForCollision::ssCollsionResolve()
+{
+	for (auto elem : ssCollsionCvec)
+	{
+		elem.first->resolveStaticStaticCollide(elem.second);
+	}
+}
+
 
 void OctreeForCollision::ddAndDsCOllsionResolve()
 {
@@ -494,6 +503,10 @@ void OctreeForCollision::clearPotentialCompPropa()
 
 void OctreeForCollision::resetAllCollisionCompDirty()
 {
+	tbb::parallel_do(_usingStaticComponents.begin(), _usingStaticComponents.end(), CTBB_DirtyBItInit_do());
+	tbb::parallel_do(_usingDynamicComponents.begin(), _usingDynamicComponents.end(), CTBB_DirtyBItInit_do());
+	
+	/*
 	for (auto elem : _usingStaticComponents)
 	{
 		elem->resetCollisionComponentDirty();
@@ -503,10 +516,14 @@ void OctreeForCollision::resetAllCollisionCompDirty()
 	{
 		elem->resetCollisionComponentDirty();
 	}
+	*/
 }
 
 void OctreeForCollision::doOctreeUpdate()
 {
+	//_pushToRootCompsCvec;
+	//_pushToSelfBoxCompsCvec;
+
 	// static
 	for (auto it = _usingStaticComponents.begin(); it != _usingStaticComponents.end();)
 	{
@@ -533,7 +550,24 @@ void OctreeForCollision::doOctreeUpdate()
 			it = _usingStaticComponents.erase(it);
 			continue;
 		}
+		++it;
+	}
+	
+	tbb::parallel_do(_usingStaticComponents.begin(), _usingStaticComponents.end(), CTBB_UpdateStaticCollision_do(*this));
 
+	for(auto elem : _pushToSelfBoxCompsCvec)
+		trySplitStaticComp(_octreeElemVec[elem->getOctreeElemIndex()], elem);
+
+	for (auto elem : _pushToRootCompsCvec)
+	{
+		removeStaticCopmInOctreeElem(elem);
+		insertStaticComponent(elem, _octreeElemVec[0]);
+	}
+
+	_pushToRootCompsCvec.clear();
+	_pushToSelfBoxCompsCvec.clear();
+
+	/*
 		(*it)->updateCollisionComp();				// update local collision box -> world collision box
 
 		// check aabb is modified
@@ -547,10 +581,9 @@ void OctreeForCollision::doOctreeUpdate()
 		if (_octreeElemVec[(*it)->getOctreeElemIndex()].IsInBoxFitTestStaticComp((*it)))
 		{
 			// if using children && not leaf node, down 1 height
-			/*	opt
-			if(use this elem children)
-			check IsInBoxTest of this direct child box
-			*/
+			
+			// opt	if(use this elem children)
+			//		check IsInBoxTest of this direct child box
 			trySplitStaticComp(_octreeElemVec[(*it)->getOctreeElemIndex()], (*it));
 			++it;
 			continue;
@@ -562,7 +595,9 @@ void OctreeForCollision::doOctreeUpdate()
 			insertStaticComponent(*it, _octreeElemVec[0]);
 			++it;
 		}
+		
 	}
+	*/
 
 	// dynamic
 	for (auto it = _usingDynamicComponents.begin(); it != _usingDynamicComponents.end();)
@@ -590,7 +625,24 @@ void OctreeForCollision::doOctreeUpdate()
 			it = _usingDynamicComponents.erase(it);
 			continue;
 		}
+		++it;
+	}
 
+	tbb::parallel_do(_usingDynamicComponents.begin(), _usingDynamicComponents.end(), CTBB_UpdateDynamicCollision_do(*this));
+
+	for (auto elem : _pushToSelfBoxCompsCvec)
+		trySplitDynamicComp(_octreeElemVec[elem->getOctreeElemIndex()], elem);
+
+	for (auto elem : _pushToRootCompsCvec)
+	{
+		removeDynamicCopmInOctreeElem(elem);
+		insertDynamicComponent(elem, _octreeElemVec[0]);
+	}
+
+	_pushToRootCompsCvec.clear();
+	_pushToSelfBoxCompsCvec.clear();
+
+		/*
 		(*it)->updateCollisionComp();				// update local collision box -> world collision box
 		(*it)->updateDynamicLap();					// Dynamic lap update
 														// check aabb is modified
@@ -604,10 +656,6 @@ void OctreeForCollision::doOctreeUpdate()
 		if (_octreeElemVec[(*it)->getOctreeElemIndex()].IsInBoxFitTestDynamicComp((*it)))
 		{
 			// if using children && not leaf node, down 1 height
-			/*	opt
-			if(use this elem children)
-			check IsInBoxTest of this direct child box
-			*/
 			trySplitDynamicComp(_octreeElemVec[(*it)->getOctreeElemIndex()], (*it));
 
 			++it;
@@ -621,6 +669,7 @@ void OctreeForCollision::doOctreeUpdate()
 			++it;
 		}
 	}
+	*/
 }
 
 void OctreeForCollision::insertComponent(CollisionComponent * comp)
@@ -1137,4 +1186,119 @@ void CTBB_staticCollideTest_EX::operator()(const tbb::blocked_range<size_t>& r) 
 	*/
 
 	return;
+}
+
+
+CTBB_staticCollideTest_EXXX::CTBB_staticCollideTest_EXXX(OctreeForCollision* octreeForCollision)
+	: _octreeForCollision(octreeForCollision)
+{
+}
+
+void CTBB_staticCollideTest_EXXX::operator()(const tbb::blocked_range<size_t>& r) const
+{
+	for (size_t _startIndex = r.begin(); _startIndex != r.end(); ++_startIndex)
+	{
+		// startElem
+		OctreeElem& octreeElem = _octreeForCollision->_octreeElemVec[_startIndex];
+
+		std::vector<VectorP<CollisionComponent*>*> _staticAccVec;
+		std::vector<VectorP<CollisionComponent*>*> _dynamicAccVec;
+
+		int parentIdx = (_startIndex - 1);
+		while (parentIdx >= 0)
+		{
+			parentIdx /= 8;
+			_staticAccVec.push_back(&(_octreeForCollision->_octreeElemVec[parentIdx]._potentialStaticComponents));
+			_dynamicAccVec.push_back(&(_octreeForCollision->_octreeElemVec[parentIdx]._potentialDynamicComponents));
+			parentIdx -= 1;
+		}
+
+		if (!octreeElem._bUsed)
+			return;
+
+		// accDynamic vs curDynamic
+		for (auto accVector : _dynamicAccVec)
+		{
+			_octreeForCollision->dynamicDynamicCollisionVecTest(*accVector, octreeElem._potentialDynamicComponents);
+		}
+		// accStatic vs curDynamic
+		for (auto accVector : _staticAccVec)
+		{
+			_octreeForCollision->staticDynamicCollisionVecTest(*accVector, octreeElem._potentialDynamicComponents);
+		}
+
+		// accDynamic vs curStatic
+		for (auto accVector : _dynamicAccVec)
+		{
+			_octreeForCollision->staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, *accVector);
+		}
+		// accStatic vs curStatic
+		for (auto accVector : _staticAccVec)
+		{
+			_octreeForCollision->staticStaticCollisionVecTest(*accVector, octreeElem._potentialStaticComponents);
+		}
+
+		// curDynamic vs curStatic
+		_octreeForCollision->staticDynamicCollisionVecTest(octreeElem._potentialStaticComponents, octreeElem._potentialDynamicComponents);
+
+		// curStatic vs curStatic
+		_octreeForCollision->staticSelfCollisionVecTest(octreeElem._potentialStaticComponents);
+
+		// curDynamic vs curDynamic
+		_octreeForCollision->dynamicSelfCollisionVecTest(octreeElem._potentialDynamicComponents);
+
+		if (!octreeElem._bUseChildren)
+		{
+			return;
+		}
+
+		std::vector<VectorP<CollisionComponent*>*> newStaticAccVec(_staticAccVec);
+		std::vector<VectorP<CollisionComponent*>*> newDynamicAccVec(_dynamicAccVec);
+
+		newStaticAccVec.push_back(&(octreeElem._potentialStaticComponents));
+		newDynamicAccVec.push_back(&(octreeElem._potentialDynamicComponents));
+
+		return;
+	}
+}
+
+
+
+CTBB_UpdateStaticCollision_do::CTBB_UpdateStaticCollision_do(OctreeForCollision & octree)
+	:_octreeForCollision(octree)
+{
+}
+
+void CTBB_UpdateStaticCollision_do::operator()(CollisionComponent * comp) const
+{
+	comp->updateCollisionComp();				// update local collision box -> world collision box
+												
+	if (comp->isCollisionComponentDirty())		// check aabb is modified
+		return;
+
+	// check is in same block
+	if (_octreeForCollision._octreeElemVec[comp->getOctreeElemIndex()].IsInBoxFitTestStaticComp(comp))
+		_octreeForCollision._pushToSelfBoxCompsCvec.push_back(comp);
+	else
+		_octreeForCollision._pushToRootCompsCvec.push_back(comp);
+}
+
+CTBB_UpdateDynamicCollision_do::CTBB_UpdateDynamicCollision_do(OctreeForCollision & octree)
+	:_octreeForCollision(octree)
+{
+}
+
+void CTBB_UpdateDynamicCollision_do::operator()(CollisionComponent * comp) const
+{
+	comp->updateCollisionComp();				// update local collision box -> world collision box
+	comp->updateDynamicLap();					// Dynamic lap update
+												// check aabb is modified
+	if (comp->isCollisionComponentDirty())
+		return;
+
+	// check is in same block
+	if (_octreeForCollision._octreeElemVec[comp->getOctreeElemIndex()].IsInBoxFitTestDynamicComp(comp))
+		_octreeForCollision._pushToSelfBoxCompsCvec.push_back(comp);
+	else
+		_octreeForCollision._pushToRootCompsCvec.push_back(comp);
 }

@@ -8,6 +8,7 @@ class RigidbodyComponentManager
 {
 public:
 	void updateRigidbodyComps(float deltaTime);
+	
 	void resetAndSwapDirtyAll();
 	void resetRenderDirtyAll();
 	RigidbodyComponent* getNewRigidbodyComp(Entity * bindedEntity);

@@ -20,6 +20,7 @@ class CollisionComponent : public VectorPElem
 {
 public:
 	CollisionComponent(RigidbodyComponent* rigidComp);
+	virtual ~CollisionComponent();
 
 	void setDeleted(bool bDeleted);
 	void setCollisionTest(bool bCollisionTest);		// do collision test?
@@ -98,4 +99,11 @@ private:
 
 	friend CollisionComponentManager;
 	friend OctreeForCollision;
+	friend class CTBB_UpdateStaticCollision_do;
+	friend class CTBB_UpdateDynamicCollision_do;
+};
+
+class CTBB_DirtyBItInit_do {
+public:
+	void operator()(CollisionComponent* item) const;
 };

@@ -20,6 +20,10 @@ CollisionComponent::CollisionComponent(RigidbodyComponent * rigidComp)
 	_collisionCategoryMaskBit = -1;
 }
 
+CollisionComponent::~CollisionComponent()
+{
+}
+
 void CollisionComponent::makeDynamicComp(DynamicCollisionSubComp * subComp)
 {
 	_dynamicSubComp = subComp;
@@ -136,4 +140,9 @@ void CollisionComponent::getRotateQuatAfterCollisionAndSetSpeed(CollisionCompone
 	// set speed
 	_rigidComp->speedSet(retSpeed1);
 	otherComp->_rigidComp->speedSet(retSpeed2);
+}
+
+void CTBB_DirtyBItInit_do::operator()(CollisionComponent * item) const
+{
+	item->resetCollisionComponentDirty();
 }

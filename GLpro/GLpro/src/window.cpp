@@ -181,7 +181,7 @@ void WINDOW::Window::mainLoop()
 			RigidbodyComponent::changeSetDirtyBitToLogic();
 
 			// logic loop
-			GScene->update(_collisionDt, acc);
+			//GScene->update(_collisionDt, acc);
 
 			// todo : update
 			acc -= _collisionDt;
@@ -204,7 +204,7 @@ void WINDOW::Window::mainLoop()
 		GRendermanager->doFrustumTest(usedT, acc);		// frustum update & test
 		GLightManager->updateAllLIghts();				// light pos update + light frustum object
 		
-		GALManager->updateALSource();
+		//GALManager->updateALSource();
 
 		renderAll(usedT, acc);
 

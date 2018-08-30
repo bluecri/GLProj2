@@ -66,18 +66,24 @@ void RigidbodyComponentManager::updateRigidbodyComps(float deltaTime)
 
 void RigidbodyComponentManager::resetAndSwapDirtyAll()
 {
+	tbb::parallel_do(_rigidCompPtrList.begin(), _rigidCompPtrList.end(), CTBB_Rigid_ResetAndSwapDirtyAll_do());
+	/*
 	for (auto elem : _rigidCompPtrList)
 	{
 		elem->resetAndSwapDirty();
 	}
+	*/
 }
 
 void RigidbodyComponentManager::resetRenderDirtyAll()
 {
+	tbb::parallel_do(_rigidCompPtrList.begin(), _rigidCompPtrList.end(), CTBB_Rigid_ResetRenderDirtyAll_do());
+	/*
 	for (auto elem : _rigidCompPtrList)
 	{
 		elem->setDirtyForRender(false);
 	}
+	*/
 }
 
 RigidbodyComponent * RigidbodyComponentManager::getNewRigidbodyComp(Entity * bindedEntity)

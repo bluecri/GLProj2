@@ -172,3 +172,12 @@ private:
 	static int _sMaskBDirty;
 };
 
+class CTBB_Rigid_ResetAndSwapDirtyAll_do {
+public:
+	void operator()(RigidbodyComponent* item) const;
+};
+
+class CTBB_Rigid_ResetRenderDirtyAll_do {
+public:
+	void operator()(RigidbodyComponent* item) const;
+};

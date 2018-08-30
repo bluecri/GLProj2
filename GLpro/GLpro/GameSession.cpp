@@ -190,18 +190,34 @@ void GameSession::preMade()
 	
 
 	std::vector<glm::vec3> enemyVec;
-	for (int i = -8; i < 7; i++)
+
+	for (int i = -10; i < 9; i++)
 	{
-		for (int k = -8; k < 7; k++)
+		for (int k = -10; k < 9; k++)
 		{
-			for (int q = -8; q < 7; q++)
+			for (int q = -10; q < 9; q++)
 			{
 				if (i == 0 && k == 0 && q == 0)
 					continue;
-				enemyVec.push_back(glm::vec3(i * 12.0f + 5.0f, k * 12.0f + 5.0f, q * 12.0f + 5.0f));
+				enemyVec.push_back(glm::vec3(i * 10.0f + 3.0f, k * 10.0f + 3.0f, q * 10.0f + 3.0f));
 			}
 		}
 	}
+	
+	/*
+	for (int i = -3; i < 3; i++)
+	{
+		for (int k = -3; k < 3; k++)
+		{
+			for (int q = -3; q < 3; q++)
+			{
+				if (i == 0 && k == 0 && q == 0)
+					continue;
+				enemyVec.push_back(glm::vec3(i * 10.0f + 3.0f, k * 10.0f + 3.0f, q * 10.0f + 3.0f));
+			}
+		}
+	}
+	*/
 
 	Enemy * newEnemy = nullptr;
 	for (auto elem : enemyVec)

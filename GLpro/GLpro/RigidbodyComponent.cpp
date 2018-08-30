@@ -717,3 +717,13 @@ void RigidbodyComponent::calcWorldMatPriv(const glm::mat4 & parentMat)
 
 	_worldTotalMatrix = parentMat * _worldTotalMatrix;
 }
+
+void CTBB_Rigid_ResetRenderDirtyAll_do::operator()(RigidbodyComponent * item) const
+{
+	item->setDirtyForRender(false);
+}
+
+void CTBB_Rigid_ResetAndSwapDirtyAll_do::operator()(RigidbodyComponent * item) const
+{
+	item->resetAndSwapDirty();
+}
