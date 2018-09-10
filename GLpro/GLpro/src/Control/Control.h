@@ -12,7 +12,7 @@ namespace CONTROL
 			virtual ~Control() {};
 
 			virtual bool checkKeyInput(GLFWwindow* pWindow) = 0;
-			virtual bool isKeyON() = 0;
+			virtual bool isKeyON(bool reset = true) = 0;
 
 		protected:
 			bool isBTriggerOn();
@@ -22,7 +22,7 @@ namespace CONTROL
 			void setBTrigger(bool b);
 
 			int _glfwKeyNum;
-			bool _bKey;
+			bool _bKey;		// is not mouse key input
 
 		private:
 			bool _bTriggered;

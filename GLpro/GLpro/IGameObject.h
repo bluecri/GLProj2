@@ -31,6 +31,7 @@ public:
 protected:
 	void					collisionLogicUpdate();									// collision events 처리
 	virtual void			collisionFunc(CollisionComponent* collisionComp) = 0;	// collisionLogicUpdate에서 사용하는 collision 처리 함수
+	std::shared_ptr<RENDER::RNormal::DrawElement> getRendererSharedElem();
 
 private:
 	std::shared_ptr<RENDER::RNormal::DrawElement> registeredElemInRenderer;

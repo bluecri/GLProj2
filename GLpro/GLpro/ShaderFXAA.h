@@ -14,6 +14,7 @@ namespace SHADER
 		GLuint m_mulReduce;
 		GLuint m_minReduce;
 		GLuint m_maxSpan;
+		GLuint m_presentRedColor;
 
 		GLuint m_texelStep;
 	};

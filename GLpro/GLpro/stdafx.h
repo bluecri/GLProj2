@@ -24,6 +24,7 @@
 #include <set>
 #include <stack>
 #include <functional>
+#include <unordered_map>
 
 
 #include <process.h>

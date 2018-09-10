@@ -40,18 +40,9 @@ void LineCollisionComp::updateCollisionComp()
 	glm::vec3 tempWorldUnitVec;
 	glm::vec3 tempWorldPos;
 
-	for (int i = 0; i < 3; i++)
-	{
-		tempWorldPos[i] = worldMatRef[3][i] + _localPosVec[i];
-	}
-
-	for (int i = 0; i < 3; i++)
-	{
-		for (int k = 0; k < 3; k++)
-		{
-			tempWorldUnitVec[i] = worldMatRef[k][i] * _localUnitVec[k];
-		}
-	}
+	
+	tempWorldPos = glm::vec3( worldMatRef *  glm::vec4(_localPosVec, 1.0f) );
+	tempWorldUnitVec =  glm::vec3(worldMatRef *  glm::vec4(_localUnitVec, 0.0f));
 
 	_lineOb.setStartPos(tempWorldPos);
 	_lineOb.setNormalizedUnitVec(tempWorldUnitVec);

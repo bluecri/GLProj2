@@ -14,7 +14,7 @@ namespace RESOURCE
 		void bind() const;
 		void unbind() const;
 
-		void render();
+		void render(GLenum drawMode = GL_TRIANGLES);
 		int getGLCount();
 		bool isEBO();
 

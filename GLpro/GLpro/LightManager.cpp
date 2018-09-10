@@ -79,9 +79,9 @@ void LightManager::updateAllLIghts()
 			continue;
 		}
 
-		for (auto& rendererElem : rendererMap)
+		//for (auto& rendererElem : rendererMap)
 		{
-			GOctreeForFrustum->getObjListWithFrustumOb(elem->getFrustumObRef(), elem->getFrustumedDrawElementContainerRef());
+			//GOctreeForFrustum->getObjListWithFrustumOb(elem->getFrustumObRef(), elem->getFrustumedDrawElementContainerRef());
 		}
 	}
 
@@ -92,7 +92,7 @@ void LightManager::updateAllLIghts()
 			continue;
 		}
 
-		for (auto& rendererElem : rendererMap)
+		//for (auto& rendererElem : rendererMap)
 		{
 			GOctreeForFrustum->getObjListWithFrustumOb(std::static_pointer_cast<SpotLight>(elem)->getFrustumObRef(), elem->getFrustumedDrawElementContainerRef());
 		}
@@ -105,7 +105,7 @@ void LightManager::updateAllLIghts()
 			continue;
 		}
 
-		for (auto& rendererElem : rendererMap)
+		//for (auto& rendererElem : rendererMap)
 		{
 			GOctreeForFrustum->getObjListWithAABBOb(std::static_pointer_cast<PointLight>(elem)->getAABBObRef(), elem->getFrustumedDrawElementContainerRef());
 		}

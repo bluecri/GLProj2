@@ -8,6 +8,14 @@ SHADER::ShaderObj::ShaderObj(const char * vertexShader, const char * fragmentSha
 	_keyStr.append(fragmentShader);
 }
 
+SHADER::ShaderObj::ShaderObj(const char * vertexShader, const char * geometryShader, const char * fragmentShader)
+	: _keyStr(vertexShader)
+{
+	m_shaderID = LoadShaders(vertexShader, geometryShader, fragmentShader);
+	_keyStr.append(geometryShader);
+	_keyStr.append(fragmentShader);
+}
+
 SHADER::ShaderObj::~ShaderObj() { glDeleteProgram(m_shaderID); }
 
 void SHADER::ShaderObj::bind() { glUseProgram(m_shaderID); }

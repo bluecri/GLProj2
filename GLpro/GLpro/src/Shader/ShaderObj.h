@@ -9,6 +9,7 @@ namespace SHADER
 	{
 	public:
 		ShaderObj(const char * vertexShader, const char * fragmentShader);
+		ShaderObj(const char * vertexShader, const char * geometryShader, const char * fragmentShader);
 		virtual ~ShaderObj();
 
 		void bind();

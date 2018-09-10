@@ -167,6 +167,7 @@
     <ClCompile Include="LineOb.cpp" />
     <ClCompile Include="OBBOb.cpp" />
     <ClCompile Include="OctreeFrustumElem.cpp" />
+    <ClCompile Include="ShaderDebugLines.cpp" />
     <ClCompile Include="SphereCollisionComp.cpp" />
     <ClCompile Include="VectorPElem.cpp" />
     <ClInclude Include="AABBCollisionComp.h" />
@@ -332,6 +333,7 @@
     <ClInclude Include="PointLightManager.h" />
     <ClInclude Include="PostGraphicProcess.h" />
     <ClInclude Include="ShaderBloom.h" />
+    <ClInclude Include="ShaderDebugLines.h" />
     <ClInclude Include="ShaderFXAA.h" />
     <ClInclude Include="ShaderGBufferFinal.h" />
     <ClInclude Include="ShaderGBufferGeo.h" />
@@ -475,6 +477,9 @@
   <ItemGroup>
     <None Include="data\Shader\Bloom.fragmentshader" />
     <None Include="data\Shader\Bloom.vertexshader" />
+    <None Include="data\Shader\DebugLines.fragmentshader" />
+    <None Include="data\Shader\DebugLines.geometryshader" />
+    <None Include="data\Shader\DebugLines.vertexshader" />
     <None Include="data\Shader\FXAA.fragmentshader" />
     <None Include="data\Shader\FXAA.vertexshader" />
     <None Include="data\Shader\GbufferFinalPass.fragmentshader" />

@@ -94,10 +94,8 @@ namespace RENDER_TARGET
 		*/
 		void NormalFObj::setFrustumPos(RigidbodyComponent * rigidbodyComponent)
 		{
-			if (rigidbodyComponent->isDirtyForRender())
-			{
-				_sphereObForFrustum.updateSphereOb(_frustumPosCompensation + rigidbodyComponent->getWorldPosVec());
-			}
+			//if (rigidbodyComponent->isDirtyAll())
+			_sphereObForFrustum.updateSphereOb(glm::vec3(rigidbodyComponent->getWorldMatRef() * glm::vec4(_frustumPosCompensation, 1.0)));
 		}
 		float NormalFObj::getNearestDistToPoint(glm::vec3 & pos)
 		{

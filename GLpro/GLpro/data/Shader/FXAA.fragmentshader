@@ -18,6 +18,7 @@ uniform float LumaThreshold;	// 0.5
 uniform float MulReduce;	// 1.0/8.0
 uniform float MinReduce;	// 1.0/128.0
 uniform float MaxSpan;	// 8.0
+uniform bool PresentRedColor;	// true / false
 uniform vec2 TexelStep;	// 1.0f / (GLfloat)SCREEN_WIDTH, 1.0f / (GLfloat)SCREEN_HEIGHT
 
 ivec2 NWOffsetVec2 = ivec2(-1, 1);
@@ -101,5 +102,7 @@ void main(){
 		// ... no, so use four samples. 
 		outColor = rgbFourTab;
 	}
-	//outColor.r = 1.0;
+
+	if(PresentRedColor)
+		outColor.r = 1.0;
 }

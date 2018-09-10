@@ -16,7 +16,8 @@ namespace RESOURCE
 
 	void ModelManager::createDefaultModelOnlyVertex()
 	{
-		addModelOnlyVertexWIthName(defaultVertex_QuadScreeen, "defaultVertex_QuadScreeen");
+		addModelOnlyVertexWIthName(defaultVertex_QuadScreeen, "defaultVertex_QuadScreeen", false);
+		addModelOnlyVertexWIthName(defaultVertex_Point, "defaultVertex_Point", false);
 	}
 
 	Model * ModelManager::getModelWithFileName(const std::string & modelFileName, bool createEbo)

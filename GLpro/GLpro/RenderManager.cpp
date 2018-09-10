@@ -16,21 +16,23 @@ void RENDER::RenderManager::renderAll(float deltaTime, float acc)
 	_normalContainer.render(deltaTime);
 
 
-	// ============= skybox particle draw ============= //
+	// ============= skybox &  particle draw ============= //
 	GDeferredGFBO->bindGFBO_RESULT();
 
 	GDeferredGFBO->modeForSkybox();
-	_skyboxContainer.render(deltaTime);
+	if (!GOption->_offSkybox)
+		_skyboxContainer.render(deltaTime);
 
 	GDeferredGFBO->modeForParticle();
-	_particleContainer.render(deltaTime);
 
+	if(!GOption->_offParticle)
+		_particleContainer.render(deltaTime);
+	
 	GDeferredGFBO->unbindGFBO_RESULT();
 
 
 	// ============= post process draw ============= //
 	GDeferredGFBO->postProcessDraw(deltaTime);
-
 
 	// ============= gameui box ============= //
 	// gameui text
@@ -92,13 +94,18 @@ void RENDER::RRenderContainerClass<RENDER::RNormal, SHADER::ShaderMain>::render(
 
 	// deferred shading
 	GDeferredGFBO->modeForShadowDraw();
-	GDeferredGFBO->deferredPreDraw(deltaTime);
+	for (auto elem : _rRenderContainer)
+	{
+		GDeferredGFBO->deferredPreDraw(deltaTime, *elem.second);
+	}
 
 	GDeferredGFBO->modeForGeoDraw();
 	for (auto elem : _rRenderContainer)
 	{
-		elem.second->deferredDraw(deltaTime);
+		// ============= collision line draw IN ============= //
+		GDeferredGFBO->deferredDraw(deltaTime, *elem.second);
 	}
+
 
 	GDeferredGFBO->modeForAfterDraw();
 	GDeferredGFBO->deferredAfterDraw(deltaTime);

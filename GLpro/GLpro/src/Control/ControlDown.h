@@ -12,7 +12,7 @@ namespace CONTROL
 			virtual ~ControlDown() {};
 
 			virtual bool checkKeyInput(GLFWwindow* pWindow);
-			virtual bool isKeyON();
+			virtual bool isKeyON(bool reset = true);
 	};
 }
 

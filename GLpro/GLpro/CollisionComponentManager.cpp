@@ -156,6 +156,23 @@ void CollisionComponentManager::pushToSleepComponentContainer(CollisionComponent
 void CollisionComponentManager::resetAllCollisionCompDirty()
 {
 	_octree->resetAllCollisionCompDirty();
+	_octree->collisionListReset();
+}
+
+void CollisionComponentManager::getCollisionCompAll(std::list<CollisionComponent*>** staticList, std::list<CollisionComponent*>** dynamicList)
+{
+	*staticList = &(_octree->_usingStaticComponents);
+	*dynamicList = &(_octree->_usingDynamicComponents);
+}
+
+float CollisionComponentManager::getOctreeLevel() const
+{
+	return _octree->getLevel();
+}
+
+glm::vec3 CollisionComponentManager::getOctreeAxisLen() const
+{
+	return _octree->getAxisLen();
 }
 
 void CollisionComponentManager::clearOctree()

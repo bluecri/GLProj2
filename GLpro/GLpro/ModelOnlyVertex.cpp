@@ -56,12 +56,12 @@ namespace RESOURCE
 		glGenVertexArrays(1, &_vao);
 	}
 
-	void ModelOnlyVertex::render()
+	void ModelOnlyVertex::render(GLenum drawMode)
 	{
 		if (_bEbo)
 		{
 			glDrawElements(
-				GL_TRIANGLES,      // mode
+				drawMode,      // mode
 				getGLCount(),    // count
 				GL_UNSIGNED_SHORT,   // type
 				(void*)0         // element array buffer offset
@@ -69,7 +69,7 @@ namespace RESOURCE
 		}
 		else
 		{
-			glDrawArrays(GL_TRIANGLES, 0, getGLCount());
+			glDrawArrays(drawMode, 0, getGLCount());
 		}
 
 	}

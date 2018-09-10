@@ -232,6 +232,9 @@
     <Filter Include="소스 파일\components\collision\Static">
       <UniqueIdentifier>{44d5eea0-0cda-415c-a9ac-0ff78b6d2739}</UniqueIdentifier>
     </Filter>
+    <Filter Include="리소스 파일\shaders\debugInfo">
+      <UniqueIdentifier>{a11f5f96-334b-4a3f-8790-f5c1e5c31c74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -667,6 +670,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="DynamicCollisionSubCompLine.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderDebugLines.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1220,6 +1226,9 @@
     <ClInclude Include="ObjectPoolLikeVector.h">
       <Filter>소스 파일\origin</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderDebugLines.h">
+      <Filter>소스 파일\src\shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\Shader\DepthRTT.fragmentshader">
@@ -1317,6 +1326,15 @@
     </None>
     <None Include="data\Shader\MipmapLast.vertexshader">
       <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\DebugLines.fragmentshader">
+      <Filter>리소스 파일\shaders\debugInfo</Filter>
+    </None>
+    <None Include="data\Shader\DebugLines.geometryshader">
+      <Filter>리소스 파일\shaders\debugInfo</Filter>
+    </None>
+    <None Include="data\Shader\DebugLines.vertexshader">
+      <Filter>리소스 파일\shaders\debugInfo</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -54,3 +54,9 @@ void IGameObject::collisionLogicUpdate()
 
 	_collisionComp->_collisionLogList.clear();
 }
+
+
+std::shared_ptr<RENDER::RNormal::DrawElement> IGameObject::getRendererSharedElem()
+{
+	return registeredElemInRenderer;
+}

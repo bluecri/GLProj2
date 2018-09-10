@@ -33,6 +33,22 @@ enum ENUM_BEHAVIOR {
 	KEY_0_DOWN,
 	KEY_SPACE_DOWN,
 	TAB_DOWN,
+	KEY_F1_ONCE,
+	KEY_F2_ONCE,
+	KEY_F3_ONCE,
+	KEY_F4_ONCE,
+	KEY_F5_ONCE,
+	KEY_F6_ONCE,
+	KEY_F7_ONCE,
+	KEY_F8_ONCE,
+	KEY_F9_ONCE,
+	KEY_F10_ONCE,
+	KEY_F11_ONCE,
+	KEY_F12_ONCE,
+
+	KEY_MIDDLE_PLUS_ONCE,
+	KEY_MIDDLE_MINUS_ONCE,
+
 	ENUM_BEHAVIOR_SIZE
 };
 
@@ -71,4 +87,5 @@ void chatModeCallBack(GLFWwindow* window, int inKey, int scancode, int action, i
 void gameModeCallBack(GLFWwindow* window, int inKey, int scancode, int action, int modifier);
 
 extern CONTROL::InputManager* GInputManager;
+
 #endif

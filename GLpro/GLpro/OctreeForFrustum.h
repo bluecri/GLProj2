@@ -37,7 +37,7 @@ private:
 	void doOctreeUpdate();
 
 	// insert °¡´ÉÇÑ child box index return
-	void	insertToOctreeForFrustum(RENDER::RNormal::SharedDrawElement comp);
+	void	insertToOctreeForFrustum(RENDER::RNormal::SharedDrawElement comp, int index);
 	int		getFitChildBoxIndex(OctreeFrustumElem& curFrustumElem, RENDER::RNormal::DrawElement* drawElemPtr);
 
 	void getAllObjListNoTest(std::list<RENDER::RNormal::DrawElement*>& outList, int elemIdx);
@@ -54,10 +54,10 @@ private:
 	void removeCopmInOctreeElem(RENDER::RNormal::SharedDrawElement sharedElem);
 
 private:
-	RENDER::RNormal::DrawElemContainer	_potentialSleepDrawElems;
+	std::list<RENDER::RNormal::SharedDrawElement>	_potentialSleepDrawElems;
 
 	std::vector<OctreeFrustumElem>		_octreeElemVec;
-	RENDER::RNormal::DrawElemContainer	_usingComponents;
+	std::list<RENDER::RNormal::SharedDrawElement>	_usingComponents;
 };
 
 extern OctreeForFrustum* GOctreeForFrustum;

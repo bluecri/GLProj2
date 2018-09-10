@@ -23,11 +23,15 @@ OctreeForFrustum::OctreeForFrustum(int height, int halfAxisSize, glm::vec3 cente
 	_bUseChildren = false;
 	*/
 	int powInt = 1;
+	int retSize = 1;
 	for (int i = 0; i < height; i++)
+	{
 		powInt *= 8;
-
-	_octreeElemVec.reserve(powInt + 1);
-	_octreeElemVec = std::vector<OctreeFrustumElem>(powInt + 1, OctreeFrustumElem());
+		retSize += powInt;
+	}
+	
+	_octreeElemVec.reserve(retSize + 1);
+	_octreeElemVec = std::vector<OctreeFrustumElem>(retSize + 1, OctreeFrustumElem());
 
 	int index = 0;
 	_octreeElemVec[index]._height = height;
@@ -42,7 +46,7 @@ OctreeForFrustum::OctreeForFrustum(int height, int halfAxisSize, glm::vec3 cente
 void OctreeForFrustum::newlyInsertComponent(RENDER::RNormal::SharedDrawElement sharedElem)
 {
 	_usingComponents.push_back(sharedElem);
-	insertToOctreeForFrustum(sharedElem);
+	insertToOctreeForFrustum(sharedElem, 0);
 	return;
 }
 
@@ -494,40 +498,43 @@ void OctreeForFrustum::doOctreeUpdate()
 			continue;
 		}
 
-		// update frustum
-		(*it)->first->setFrustumPos((*it)->second);	
+		// already updated frustum
+		//(*it)->first->setFrustumPos((*it)->second);	
 													// check aabb is modified
-		if (!(*it)->second->isDirtyAll())
-		{
-			return;
-		}
+		//if (!(*it)->second->isDirtyAll())
 
 		// check is in same block
-		if (_octreeElemVec[(*it)->first->getOctreeElemIndex()].sphereIsInBoxTest((*it).get()))
+		int curIndex = (*it)->first->getOctreeElemIndex();
+		OctreeFrustumElem& curOctreeFrustumElem = _octreeElemVec[curIndex];
+		if (curOctreeFrustumElem.sphereIsInBoxTest((*it).get()))
 		{
-			// if using children && not leaf node, down 1 height
-			/*	opt
-			if(use this elem children)
-			check IsInBoxTest of this direct child box
-			*/
-			return;
-
+			if (curOctreeFrustumElem._bUseChildren)
+			{
+				int targetChildIdx;
+				if (-1 != (targetChildIdx = getFitChildBoxIndex(curOctreeFrustumElem, (*it).get())))
+				{
+					// remove cur
+					removeCopmInOctreeElem(*it);
+					insertToOctreeForFrustum((*it), curIndex * 8 + targetChildIdx);
+				}
+			}
 		}
 		else
 		{
 			// If not, Reinsert to root
 			removeCopmInOctreeElem(*it);
-			insertToOctreeForFrustum(*it);
+			insertToOctreeForFrustum(*it, 0);
 		}
+		it++;
 	}
 }
 
-void OctreeForFrustum::insertToOctreeForFrustum(RENDER::RNormal::SharedDrawElement drawElemShared)
+void OctreeForFrustum::insertToOctreeForFrustum(RENDER::RNormal::SharedDrawElement drawElemShared, int index)
 {
 	//std::stack<OctreeFrustumElem> elemStk;
 	//std::stack<RENDER::RNormal::DrawElement*> compPtrStk;
 
-	int index = 0;
+	//int index = 0;
 	OctreeFrustumElem* curOctreeElem = &_octreeElemVec[index];
 	RENDER::RNormal::DrawElement* curCompPtr = drawElemShared.get();
 	//elemStk.push(_octreeElemVec[index]);

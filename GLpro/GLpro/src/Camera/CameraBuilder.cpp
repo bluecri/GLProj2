@@ -46,7 +46,7 @@ namespace CAMERA
 		_horizontalFovValue = 4.0f;	//4:3 window ratio
 		_verticalFovValue = 3.0f;
 		_frontFrustrumValue = 0.1f;	//0.1f
-		_backFrustrumValue = 100.0f;	//100.0f
+		_backFrustrumValue = 200.0f;	//150.0f
 	}
 
 	Camera* CameraBuilder::constructPtr()

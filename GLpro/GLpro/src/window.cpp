@@ -97,7 +97,7 @@ int WINDOW::Window::init()
 
 	GALManager = new ALManager();
 	GALManager->init();
-	GOctreeForFrustum = new OctreeForFrustum(4, 128, glm::vec3());
+	GOctreeForFrustum = new OctreeForFrustum(4, 192, glm::vec3());
 	// ttest
 	//GLightManager->AddDirectinalLight(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	//GLightManager->AddDirectinalLight(glm::vec3(-10.0f, -10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -105,7 +105,7 @@ int WINDOW::Window::init()
 
 	GShaderManager = new SHADER::ShaderManager();
 	GRendermanager = new RENDER::RenderManager();
-	GCollisionComponentManager = new CollisionComponentManager(4, 128);
+	GCollisionComponentManager = new CollisionComponentManager(4, 192);
 	GOption = new Option();
 	GScene = new Scene();
 	
@@ -181,7 +181,7 @@ void WINDOW::Window::mainLoop()
 			RigidbodyComponent::changeSetDirtyBitToLogic();
 
 			// logic loop
-			//GScene->update(_collisionDt, acc);
+			GScene->update(_collisionDt, acc);
 
 			// todo : update
 			acc -= _collisionDt;

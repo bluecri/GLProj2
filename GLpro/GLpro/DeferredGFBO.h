@@ -9,6 +9,8 @@ namespace SHADER
 	class ShaderGBufferGeo;
 	class ShaderGBufferLight;
 	class ShaderGBufferFinal;
+	class ShaderDebugLines;
+	
 }
 
 namespace RENDER
@@ -34,10 +36,11 @@ namespace RESOURCE
 		virtual ~DeferredGFBO();
 		void initDeferredGFBO();
 		
-		void deferredPreDraw(float deltaTime);
-		void deferredDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
+		void deferredPreDraw(float deltaTime, RENDER::RNormal& rNormalRef);
+		void deferredDraw(float deltaTime, RENDER::RNormal& rNormalRef);
 		void deferredAfterDraw(float deltaTime);
 		void deferredDrawToScreen(float deltaTime);	// for DEBUG
+		void deferredDebugInfoDraw(float deltaTime, RENDER::RNormal& rNormalRef);
 
 		void postProcessDraw(float deltaTime);	// for DEBUG
 
@@ -70,11 +73,12 @@ namespace RESOURCE
 		void bndGFBO_FINAL();
 		void unbndGFBO_FINAL();
 
-		void shadowDraw(float deltaTime);
-		void geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList);
+		void shadowDraw(float deltaTime, RENDER::RNormal& rNormalRef);
+		void geoDraw(float deltaTime, RENDER::RNormal& rNormalRef);
 		void lightDraw(float deltaTime);
 		void finalDraw(float deltaTime);
 
+		void deferredDebugOctreeDraw(glm::vec3 axisSize, int level);
 
 		SHADER::ShaderShadow* getShaderDhadow();
 		SHADER::ShaderGBufferGeo* getShaderGFBOGeo();
@@ -86,6 +90,9 @@ namespace RESOURCE
 		SHADER::ShaderGBufferGeo*	_geoShader;
 		SHADER::ShaderGBufferLight*	_lightShader;
 		SHADER::ShaderGBufferFinal*	_finalShader;
+
+		SHADER::ShaderDebugLines*	_debugLinesShader;
+
 
 		GLuint	_lightsShadowFBO;
 		GLuint	_lightsShadowDepthTexture;

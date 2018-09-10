@@ -40,10 +40,11 @@ namespace CONTROL
 		
 	}
 
-	bool ControlOnce::isKeyON()
+	bool ControlOnce::isKeyON(bool reset)
 	{
 		if (isBTriggerOn() && !_bOnceEnd) {
-			_bOnceEnd = true;
+			if(reset)
+				_bOnceEnd = true;
 			return true;
 		}
 		else {

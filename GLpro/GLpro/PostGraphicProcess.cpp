@@ -117,7 +117,7 @@ void RESOURCE::PostGraphicProcess::refreshRenderPipeline()
 	if (GOption->_useHDR)
 		_renderPipelineVec.push_back(POST_PIPELINE_HDR);
 
-	if (GOption->_useFXAA)
+	if (GOption->_useFXAA != 2)	// not use
 		_renderPipelineVec.push_back(POST_PIPELINE_FXAA);
 
 	if (GOption->_bUsePostEffect)
@@ -326,6 +326,12 @@ void RESOURCE::PostGraphicProcess::bindFXAAShader()
 	_fxaaShader->loadFloat(_fxaaShader->m_mulReduce, 1.0f/8.0f);
 	_fxaaShader->loadFloat(_fxaaShader->m_minReduce, 1.0f/128.0f);
 	_fxaaShader->loadFloat(_fxaaShader->m_maxSpan, 8.0);
+
+	if(GOption->_useFXAA == 1)
+		_fxaaShader->loadBool(_fxaaShader->m_presentRedColor, true);
+	else
+		_fxaaShader->loadBool(_fxaaShader->m_presentRedColor, false);
+
 	_fxaaShader->loadVector2(_fxaaShader->m_texelStep, glm::vec2(1.0f/(float)_GBOX, 1.0f / (float)_GBOY));
 }
 

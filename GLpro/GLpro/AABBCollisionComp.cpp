@@ -29,7 +29,7 @@ void AABBCollisionComp::updateCollisionComp()
 	// no need to update _worldMat
 	if (!_rigidComp->isDirtyAll() && !_bDirty)
 	{
-		return;
+		//return;
 	}
 	_bDirty = true;
 

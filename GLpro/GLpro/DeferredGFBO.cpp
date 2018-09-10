@@ -5,6 +5,7 @@
 #include "ShaderGBufferGeo.h"
 #include "ShaderGBufferLight.h"
 #include "ShaderGBufferFinal.h"
+#include "ShaderDebugLines.h"
 
 #include "src/window.h"
 #include "configs_light.h"
@@ -36,6 +37,14 @@
 #include "PointLight.h"
 
 #include "Option.h"
+#include "src/Render/RNormal.h"
+#include "CollisionComponentManager.h"
+#include "CollisionComponent.h"
+#include "OBBCollisionComp.h"
+#include "AABBCollisionComp.h"
+#include "SphereCollisionComp.h"
+#include "LineCollisionComp.h"
+
 RESOURCE::DeferredGFBO::DeferredGFBO(int screenSizeX, int screenSizeY)
 	: _postGraphicProcess(screenSizeX, screenSizeY)
 {
@@ -68,28 +77,32 @@ void RESOURCE::DeferredGFBO::initDeferredGFBO()
 	_geoShader		= GShaderManager->m_addShader<SHADER::ShaderGBufferGeo>(SHADER_TYPE_GBUFFER_GEO, "data/Shader/GbufferGeoPass.vertexshader", "data/Shader/GbufferGeoPass.fragmentshader");
 	_lightShader	= GShaderManager->m_addShader<SHADER::ShaderGBufferLight>(SHADER_TYPE_GBUFFER_LIGHT, "data/Shader/GbufferLightPass.vertexshader", "data/Shader/GbufferLightPass.fragmentshader");
 	_finalShader	= GShaderManager->m_addShader<SHADER::ShaderGBufferFinal>(SHADER_TYPE_GBUFFER_FINAL, "data/Shader/GbufferFinalPass.vertexshader", "data/Shader/GbufferFinalPass.fragmentshader");
+	_debugLinesShader = GShaderManager->m_addShader<SHADER::ShaderDebugLines>(SHADER_TYPE_DEBUG_LINES, "data/Shader/DebugLines.vertexshader", "data/Shader/DebugLines.geometryshader", "data/Shader/DebugLines.fragmentshader");
 
 	createBuffer();
 
 	_postGraphicProcess.initPostGraphicProcess();
 }
 
-void RESOURCE::DeferredGFBO::deferredPreDraw(float deltaTime)
+void RESOURCE::DeferredGFBO::deferredPreDraw(float deltaTime, RENDER::RNormal& rNormalRef)
 {
 	bindShadowFBO();
 
-	shadowDraw(deltaTime);
+	shadowDraw(deltaTime, rNormalRef);
 
 	unbindShadowFBO();
 }
 
-void RESOURCE::DeferredGFBO::deferredDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
+void RESOURCE::DeferredGFBO::deferredDraw(float deltaTime, RENDER::RNormal& rNormalRef)
 {
-	GDeferredGFBO->bindGFBO_GEO();
+	bindGFBO_GEO();
 	
-	geoDraw(deltaTime, drawObjList);
+	if(!GOption->_offNormalObj)
+		geoDraw(deltaTime, rNormalRef);
 
-	GDeferredGFBO->unbindGFBO_GEO();
+	deferredDebugInfoDraw(deltaTime, rNormalRef);
+
+	unbindGFBO_GEO();
 }
 
 void RESOURCE::DeferredGFBO::deferredAfterDraw(float deltaTime)
@@ -106,6 +119,133 @@ void RESOURCE::DeferredGFBO::deferredDrawToScreen(float deltaTime)
 	bndGFBO_FINAL();
 	finalDraw(deltaTime);
 	unbndGFBO_FINAL();
+}
+
+void RESOURCE::DeferredGFBO::deferredDebugInfoDraw(float deltaTime, RENDER::RNormal & rNormalRef)
+{
+	// glLineWidth((GLfloat)(0.0f)); // useless
+	CAMERA::Camera* cam = *(GCameraManager->GetMainCamera());
+
+	// ====================draw frustum sphere on screen=====================
+
+	_debugLinesShader->bind();
+	_debugLinesShader->loadMatrix4(_debugLinesShader->VPMatrixID, cam->getRecentVPMat());
+	_debugLinesShader->loadInt(_debugLinesShader->RenderTypeIntID, 0);
+	_debugLinesShader->loadVector3f(_debugLinesShader->LineColorVecID, glm::vec3(10.0f, 10.0f, 0.0f));
+	
+	ModelOnlyVertex* _modelOnlyVertex = GModelManager->getModelOnlyVertexWIthName("defaultVertex_Point");
+	//ModelOnlyVertex* _modelOnlyVertex = GModelManager->getModelOnlyVertexWIthName("defaultVertex_QuadScreeen");
+	_modelOnlyVertex->bind();
+
+	if (GOption->_printFrustumSphere)
+	{
+		RENDER::RNormal::DrawElemContainer& drawObjContainer = rNormalRef.getDrawElemList();
+
+
+		for (auto texIt = drawObjContainer.begin(); texIt != drawObjContainer.end(); texIt++) {
+			for (auto modelIt = texIt->second.begin(); modelIt != texIt->second.end(); modelIt++) {
+				for (auto vecElem : modelIt->second)
+				{
+					RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = vecElem->first;
+					RigidbodyComponent* targetRigidbodyComponent = vecElem->second;
+
+					if (!normalRenderTarget->isRender())
+					{
+						continue;
+					}
+
+					_debugLinesShader->loadVector3f(_debugLinesShader->PosVecID, normalRenderTarget->getFrustumPosConstRef());
+					_debugLinesShader->loadVector3f(_debugLinesShader->AxisLenVecID, glm::vec3(normalRenderTarget->getFrustumRadius(), 0.0f, 0.0f));
+
+					_modelOnlyVertex->render(GL_POINTS);
+				}
+			}
+		}
+	}
+
+	// ====================draw collision box on screen=====================
+	if (GOption->_printCollisionBox)
+	{
+		std::list<CollisionComponent*>* staticList;
+		std::list<CollisionComponent*>* dynamicList;
+		GCollisionComponentManager->getCollisionCompAll(&staticList, &dynamicList);
+		_debugLinesShader->loadVector3f(_debugLinesShader->LineColorVecID, glm::vec3(0.0f, 10.0f, 10.0f));
+
+		for (auto elem : *staticList)
+		{
+			switch (elem->collisionType)
+			{
+			case COLLISION_SPHERE:
+				_debugLinesShader->loadInt(_debugLinesShader->RenderTypeIntID, 0);
+				_debugLinesShader->loadVector3f(_debugLinesShader->PosVecID, static_cast<SphereCollisionComp*>(elem)->getSphereObConstRef().getCenterConstRef());
+				_debugLinesShader->loadVector3f(_debugLinesShader->AxisLenVecID, glm::vec3(static_cast<SphereCollisionComp*>(elem)->getSphereObConstRef().getRadius(), 0.0f, 0.0f));
+				break;
+			case COLLISION_LINE:
+				_debugLinesShader->loadInt(_debugLinesShader->RenderTypeIntID, 1);
+				_debugLinesShader->loadVector3f(_debugLinesShader->PosVecID, static_cast<LineCollisionComp*>(elem)->getLineObConstRef().getStartPosConstRef());
+				_debugLinesShader->loadVector3f(_debugLinesShader->AxisLenVecID, static_cast<LineCollisionComp*>(elem)->getLineObConstRef().getEndPos());
+				break;
+			case COLLISION_AABB:
+				_debugLinesShader->loadInt(_debugLinesShader->RenderTypeIntID, 2);
+				_debugLinesShader->loadVector3f(_debugLinesShader->PosVecID, static_cast<AABBCollisionComp*>(elem)->getAABBConstRef().getCenterConstRef());
+				_debugLinesShader->loadVector3f(_debugLinesShader->AxisLenVecID, static_cast<AABBCollisionComp*>(elem)->getAABBConstRef().getAxisConstRef());
+				break;
+			case COLLISION_OBB:
+				_debugLinesShader->loadInt(_debugLinesShader->RenderTypeIntID, 3);
+				//_debugLinesShader->loadVector3f(_debugLinesShader->PosVecID, static_cast<AABBCollisionComp*>(elem)->getAABBConstRef().getCenterConstRef());
+				_debugLinesShader->loadVector3f(_debugLinesShader->AxisLenVecID, static_cast<OBBCollisionComp*>(elem)->getOBBObConstRef().getAxisConstRef());
+				_debugLinesShader->loadMatrix4(_debugLinesShader->OBBMatrixID, static_cast<OBBCollisionComp*>(elem)->getOBBObConstRef().getMatConstRef());
+				break;
+			}
+
+			_modelOnlyVertex->render(GL_POINTS);
+		}
+	}
+	
+	// ====================draw octree boxes on screen=====================
+	if(GOption->_printOctree)
+		deferredDebugOctreeDraw(GCollisionComponentManager->getOctreeAxisLen(), GCollisionComponentManager->getOctreeLevel());
+}
+
+void RESOURCE::DeferredGFBO::deferredDebugOctreeDraw(glm::vec3 axisSize, int level)
+{
+	int drawCubeNum = 1;
+	glm::vec3 startPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	_debugLinesShader->loadInt(_debugLinesShader->RenderTypeIntID, 2);
+	_debugLinesShader->loadVector3f(_debugLinesShader->LineColorVecID, glm::vec3(10.0f, 10.0f, 10.0f));
+	
+	ModelOnlyVertex* _modelOnlyVertex = GModelManager->getModelOnlyVertexWIthName("defaultVertex_Point");
+	_modelOnlyVertex->bind();
+
+	// height boundary
+	GOption->_printOctreeLevel = max(min(GOption->_printOctreeLevel, level), 0);
+
+	for (int curLevel = 0; curLevel < GOption->_printOctreeLevel; curLevel++)
+	{
+		drawCubeNum *= 2;
+		axisSize /= 2;
+		startPos -= axisSize;
+	}
+		
+	glm::vec3 startPosUse = startPos;
+	for (int i = 0; i < drawCubeNum; i++)
+	{
+		for (int k = 0; k < drawCubeNum; k++)
+		{
+			for (int p = 0; p < drawCubeNum; p++)
+			{
+				_debugLinesShader->loadVector3f(_debugLinesShader->PosVecID, startPosUse);
+				_debugLinesShader->loadVector3f(_debugLinesShader->AxisLenVecID, axisSize);
+				_modelOnlyVertex->render(GL_POINTS);
+
+				startPosUse[2] += axisSize[2] * 2;		// next z pos
+			}
+			startPosUse[2] = startPos[2];		// rollback z pos
+			startPosUse[1] += axisSize[1] * 2;	// next y pos
+		}
+		startPosUse[1] = startPos[1];		// rollback y pos
+		startPosUse[0] += axisSize[0] * 2;	// next x pos
+	}
 }
 
 void RESOURCE::DeferredGFBO::postProcessDraw(float deltaTime)
@@ -188,7 +328,7 @@ void RESOURCE::DeferredGFBO::modeForGeoDraw()
 	glEnable(GL_STENCIL_TEST);
 	glStencilMask(GL_TRUE);
 
-	glStencilFunc(GL_ALWAYS, 1, 0);	
+	glStencilFunc(GL_ALWAYS, 1, 1);	
 
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	// draw pixel stencil bit is 1.
 	//glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
@@ -199,8 +339,11 @@ void RESOURCE::DeferredGFBO::modeForAfterDraw()
 	glDisable(GL_DEPTH_TEST);	// draw same object. no need.
 	glDepthMask(GL_FALSE);
 
-	glEnable(GL_STENCIL_TEST);
+	glEnable(GL_STENCIL_TEST);	// ?
 	glStencilMask(GL_TRUE);
+	
+	//glDisable(GL_STENCIL_TEST);
+	//glStencilMask(GL_FALSE);
 
 	glStencilFunc(GL_EQUAL, 1, 1);	// draw only same object ( skybox position Á¦¿Ü )
 }
@@ -297,7 +440,7 @@ void RESOURCE::DeferredGFBO::unbndGFBO_FINAL()
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime)
+void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime, RENDER::RNormal& rNormalRef)
 {
 	// ===================== shadow buffer ===================== //
 
@@ -315,13 +458,13 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime)
 		glViewport(viewPortLeft, viewPortTop, TEXTURE_DIRECTIONAL_LIGHT_WIDTH, TEXTURE_DIRECTIONAL_LIGHT_WIDTH);
 
 		glm::mat4 VP = directionalLightStruct->_lightPMat[i] * directionalLightStruct->_lightVMat[i];
+		/*
 		auto& drawObjList = directionalLightVec[i]->getFrustumedDrawElementContainerRef();
 
 		// draw objects
 		for (auto it = drawObjList.begin(); it != drawObjList.end(); ) {
 			RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
 			RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
-
 			if (normalRenderTarget->isBDeleted())
 			{
 				it = drawObjList.erase(it);
@@ -342,6 +485,40 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime)
 			normalRenderTarget->_model->unbind();
 
 			++it;
+		}
+		*/
+		RENDER::RNormal::DrawElemContainer& drawObjContainer = rNormalRef.getDrawElemList();
+
+		for (auto texIt = drawObjContainer.begin(); texIt != drawObjContainer.end(); texIt++) {
+			glActiveTexture(GL_TEXTURE0);			// active texture #
+			texIt->first->bind();	// real texture bind to #
+			_geoShader->loadInt(_geoShader->m_textureID, 0);
+
+			for (auto modelIt = texIt->second.begin(); modelIt != texIt->second.end(); modelIt++) {
+
+				modelIt->first->bind();		// Model buffer bind
+
+				for (auto vecElem : modelIt->second)
+				{
+					RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = vecElem->first;
+					RigidbodyComponent* targetRigidbodyComponent = vecElem->second;
+
+					if (!normalRenderTarget->isRender())
+					{
+						continue;
+					}
+
+					const mat4& targetModelMat = targetRigidbodyComponent->getWorldMatRef();
+					_shadowShader->loadMatrix4(_shadowShader->MMatrixID, targetRigidbodyComponent->getWorldMatRef());	// bind global old shader
+					_shadowShader->loadMatrix4(_shadowShader->VPMatrixID, VP);	// bind global old shader
+
+					normalRenderTarget->_model->render();
+
+				}
+				modelIt->first->unbind();
+
+			}
+			texIt->first->unbind();
 		}
 
 
@@ -474,7 +651,8 @@ void RESOURCE::DeferredGFBO::shadowDraw(float deltaTime)
 	_shadowShader->unbind();
 }
 
-void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
+//void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, std::list<std::shared_ptr<std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>>>& drawObjList)
+void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, RENDER::RNormal& rNormalRef)
 {
 	CAMERA::Camera* cam = *(GCameraManager->GetMainCamera());
 
@@ -485,33 +663,38 @@ void RESOURCE::DeferredGFBO::geoDraw(float deltaTime, std::list<std::shared_ptr<
 	_geoShader->loadMatrix4(_geoShader->m_cameraVPMatrixID, cam->getRecentVPMat());
 	//_geoShader->loadMatrix4(_geoShader->m_textureID, cam->getRecentVPMat());
 	//_geoShader->loadMatrix4(_geoShader->m_modelMatrixID, cam->getRecentVPMat());
+	RENDER::RNormal::DrawElemContainer& drawObjContainer = rNormalRef.getDrawElemList();
 
-	for (auto it = drawObjList.begin(); it != drawObjList.end(); ) {
-		RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
-		RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
-
-		if (!normalRenderTarget->isRender())
-		{
-			++it;
-			continue;
-		}
-
-
+	for (auto texIt = drawObjContainer.begin(); texIt != drawObjContainer.end(); texIt++) {
 		glActiveTexture(GL_TEXTURE0);			// active texture #
-		normalRenderTarget->_texture->bind();	// real texture bind to #
+		texIt->first->bind();	// real texture bind to #
 		_geoShader->loadInt(_geoShader->m_textureID, 0);
 
-		const mat4& targetModelMat = targetRigidbodyComponent->getWorldMatRef();
-		_geoShader->loadMatrix4(_geoShader->m_modelMatrixID, targetModelMat);
-		_geoShader->loadFloat(_geoShader->m_bloomValueID, 10.0);	// need > 30
-		
-		normalRenderTarget->_model->bind();		// Model buffer bind
-		normalRenderTarget->_model->render();
+		for (auto modelIt = texIt->second.begin(); modelIt != texIt->second.end(); modelIt++) {
 
-		normalRenderTarget->_texture->unbind();
-		normalRenderTarget->_model->unbind();
+			modelIt->first->bind();		// Model buffer bind
 
-		++it;
+			for (auto vecElem : modelIt->second)
+			{
+				RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = vecElem->first;
+				RigidbodyComponent* targetRigidbodyComponent = vecElem->second;
+
+				if (!normalRenderTarget->isRender())
+				{
+					continue;
+				}
+
+				const mat4& targetModelMat = targetRigidbodyComponent->getWorldMatRef();
+				_geoShader->loadMatrix4(_geoShader->m_modelMatrixID, targetModelMat);
+				_geoShader->loadFloat(_geoShader->m_bloomValueID, 10.0);	// need > 30
+
+				normalRenderTarget->_model->render();
+
+			}
+			modelIt->first->unbind();
+
+		}
+		texIt->first->unbind();
 	}
 
 	_geoShader->loadMatrix4(_geoShader->m_modelMatrixID, glm::mat4());

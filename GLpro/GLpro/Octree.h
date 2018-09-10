@@ -31,6 +31,9 @@ public:
 	// 충돌 가능한 모든 CollisionComponent들을 potentialList에 등록
 	void getCollisionPotentialList(std::list<CollisionComponent*>& potentialList, CollisionComponent* comp);
 
+	// collision list reset
+	void collisionListReset();
+
 	// 등록해놓은 모든 CollisionComponent clear.
 	void clearPotentialCompPropa();
 
@@ -39,6 +42,9 @@ public:
 
 	// self refresh update
 	void doOctreeUpdate();
+
+	int getLevel() const;
+	glm::vec3 getAxisLen() const;
 
 private:
 	void insertComponent(CollisionComponent* comp);
@@ -78,7 +84,7 @@ private:
 	bool IsUseThisOctreeElem(OctreeElem& elem);
 	bool IsUseChild(OctreeElem& elem);
 
-
+	void TEE();
 	void TESTTEST(OctreeForCollision* octreeForCollision, int startIndex, std::vector<VectorP<CollisionComponent*>*> staticAccVec, std::vector<VectorP<CollisionComponent*>*> dynamicAccVec);
 public:
 	std::vector<OctreeElem>		_octreeElemVec;
@@ -99,6 +105,9 @@ private:
 	friend class CTBB_UpdateStaticCollision_do;
 	friend class CTBB_UpdateDynamicCollision_do;
 	//int  _maxCountOfObjects;
+
+	int _level;
+	glm::vec3 _axisLen;
 };
 
 class CTBB_staticCollideTest

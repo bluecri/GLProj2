@@ -159,6 +159,8 @@ void GameSession::preMade()
 	//newPlayer->_rigidbodyComponent->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	newPlayer->getRigidbodyComponent()->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
 	newPlayer->getRigidbodyComponent()->setDirty();
+	newPlayer->getRigidbodyComponent()->translateModelMatrix(glm::vec3(0.0f, 0.0f, 0.0f));
+
 	newPlayer->setBRender(true);
 	newPlayer->initIPlane(new PlaneInfo(100, 0, 3.0f), new PlaneInfo(100, 100, 3.0f));
 	newPlayer->initPlayer();
@@ -169,17 +171,15 @@ void GameSession::preMade()
 	//spot light on player
 	GLightManager->AddDirectinalLight(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	LightGameObject* tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 40.0f, 1.0f, 0.01f, 20.0f)->getLightGameObject();
+	LightGameObject* tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 40.0f, 1.0f, 0.01f, 10.0f)->getLightGameObject();
 	newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
 
 	for (int i = 0; i < 1; i++)
 	{
-		LightGameObject* tempSpotGameObj2 = GLightManager->AddPointLightManager(glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+		//LightGameObject* tempSpotGameObj2 = GLightManager->AddPointLightManager(glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
 		//tempSpotGameObj = GLightManager->AddDeferredPointLight(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
-		newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj2));
+		//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj2));
 	}
-
-
 	
 	//tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 4.0f, 4.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
 	//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
@@ -187,29 +187,14 @@ void GameSession::preMade()
 	//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
 	//tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 4.0f, 4.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
 	//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
-	
 
 	std::vector<glm::vec3> enemyVec;
-
-	for (int i = -10; i < 9; i++)
-	{
-		for (int k = -10; k < 9; k++)
-		{
-			for (int q = -10; q < 9; q++)
-			{
-				if (i == 0 && k == 0 && q == 0)
-					continue;
-				enemyVec.push_back(glm::vec3(i * 10.0f + 3.0f, k * 10.0f + 3.0f, q * 10.0f + 3.0f));
-			}
-		}
-	}
-	
 	/*
-	for (int i = -3; i < 3; i++)
+	for (int i = -8; i < 9; i++)
 	{
-		for (int k = -3; k < 3; k++)
+		for (int k = -9; k < 9; k++)
 		{
-			for (int q = -3; q < 3; q++)
+			for (int q = -9; q < 9; q++)
 			{
 				if (i == 0 && k == 0 && q == 0)
 					continue;
@@ -218,7 +203,22 @@ void GameSession::preMade()
 		}
 	}
 	*/
+	
+	for (int i = -2; i < 2; i++)
+	{
+		for (int k = -2; k < 2; k++)
+		{
+			for (int q = 0; q < 2; q++)
+			{
+				if (i == 0 && k == 0 && q == 0)
+					continue;
 
+				enemyVec.push_back(glm::vec3(i * 10.0f + 3.0f, k * 10.0f + 3.0f, q * 10.0f + 3.0f));
+			}
+		}
+	}
+	
+	
 	Enemy * newEnemy = nullptr;
 	for (auto elem : enemyVec)
 	{

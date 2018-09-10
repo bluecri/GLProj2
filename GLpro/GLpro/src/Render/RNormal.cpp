@@ -58,7 +58,30 @@ namespace RENDER
 			delete ptr;
 		});
 
-		_normalDrawElemContainer.push_back(elem);
+		// texMap find
+		auto texMapIt = _normalDrawElemContainer.find(normalFObj->_texture);
+		if (texMapIt == _normalDrawElemContainer.end())
+		{
+			_normalDrawElemContainer.insert(std::make_pair(
+				normalFObj->_texture, 
+				std::unordered_map<RESOURCE::Model*, std::vector<SharedDrawElement>>())
+			);
+		}
+		auto& texMapElem = _normalDrawElemContainer.at(normalFObj->_texture);
+
+		// modelMap find
+		auto modelMapIt = texMapElem.find(normalFObj->_model);
+		if (modelMapIt == texMapElem.end())
+		{
+			texMapElem.insert(std::make_pair(
+				normalFObj->_model, std::vector<SharedDrawElement>())
+			);
+		}
+
+		// insert normalFObj in vector
+		auto& modelMapElem = texMapElem.at(normalFObj->_model);
+		modelMapElem.push_back(elem);
+
 		GOctreeForFrustum->addNewSleepComp(elem);		// add to OctreeForFrustum
 		return elem;
 	}
@@ -70,18 +93,33 @@ namespace RENDER
 
 	void RNormal::updateRRender()
 	{
-		for (auto it = _normalDrawElemContainer.begin(); it != _normalDrawElemContainer.end(); ) 
+		for (auto texIt = _normalDrawElemContainer.begin(); texIt != _normalDrawElemContainer.end(); texIt++)
 		{
-			RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = (*it)->first;
-			RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
-
-			if (normalRenderTarget->isBDeleted())
+			for (auto modelIt = texIt->second.begin(); modelIt != texIt->second.end(); modelIt++)
 			{
-				it = _normalDrawElemContainer.erase(it);
-				continue;
-			}
+				std::vector<SharedDrawElement>& vecRef = modelIt->second;
+				int lastIdx = vecRef.size();
+				for (int curIdx = 0; curIdx < lastIdx;		)
+				{
+					RENDER_TARGET::NORMAL::NormalFObj* normalRenderTarget = vecRef[curIdx]->first;
+					RigidbodyComponent* targetRigidbodyComponent = vecRef[curIdx]->second;
 
-			it++;
+					if (normalRenderTarget->isBDeleted())
+					{
+						if (curIdx == lastIdx - 1)
+							vecRef[curIdx] = nullptr;
+						else
+							vecRef[curIdx] = vecRef[lastIdx - 1];
+
+						lastIdx--;
+						vecRef.resize(lastIdx);
+						continue;
+					}
+
+					normalRenderTarget->setFrustumPos(targetRigidbodyComponent);
+					curIdx++;
+				}
+			}
 		}
 	}
 
@@ -93,7 +131,7 @@ namespace RENDER
 	void RNormal::shadowBufferPreDraw(float deltaTime)
 	{
 		// ===============draw object on shadow buffer==============
-
+		/*
 		
 		GShadowBufferTexture->bindFBO();		//bind texture
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -255,10 +293,12 @@ namespace RENDER
 		GShadowBufferTexture->unbindFBO();
 
 		glViewport(0, 0, GWindow->_windowWidth, GWindow->_windowHeight);
+		*/
 	}
 
 	void RNormal::shadowBufferDraw(float deltaTime)
 	{
+		/*
 		SHADER::ShaderTextureSimple* shaderTextureSimple = GShaderManager->m_addShader<SHADER::ShaderTextureSimple>(ENUM_SHADER_TYPE::SHADER_TYPE_TEXTURESIMPLE, "data/Shader/TexturePrint.vertexshader", "data/Shader/TexturePrint.fragmentshader");
 		shaderTextureSimple->bind();
 
@@ -282,11 +322,12 @@ namespace RENDER
 		}
 
 		shaderTextureSimple->unbind();
+		*/
 	}
 
 	void RNormal::shadowMappingDraw(float deltaTime)
 	{
-
+		/*
 		CAMERA::Camera* cam = *_targetCamera;
 
 		// ====================draw object on screen=====================
@@ -344,11 +385,7 @@ namespace RENDER
 		roomModel->_model->unbind();
 
 		_shaderObj->unbind();
-	}
-
-	void RNormal::deferredDraw(float deltaTime)
-	{
-		GDeferredGFBO->deferredDraw(deltaTime, _normalDrawElemContainer);
+		*/
 	}
 
 	SHADER::ShaderMain * RNormal::getShader() const

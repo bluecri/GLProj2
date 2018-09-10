@@ -75,9 +75,14 @@ void Enemy::initEnemy()
 	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent);
 
 	glm::mat4 collisionBoxMat = glm::mat4();
-	collisionBoxMat[3][2] += 0.2f;	//collision box pos 보정
-	glm::vec3 planeCollisionBox = glm::vec3(1.2f, 1.2f, 1.2f);
+	collisionBoxMat[3][1] += 0.4f;	//collision box pos 보정
+	collisionBoxMat[3][2] += 2.0f;	//collision box pos 보정
+	glm::vec3 planeCollisionBox = glm::vec3(1.6f, 0.5f, 3.0f);
 	initCollisionComponent(GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, collisionBoxMat, planeCollisionBox));
+
+	std::shared_ptr<RENDER::RNormal::DrawElement> rendererShredElem = getRendererSharedElem();
+	rendererShredElem.get()->first->setFrustumRadius(3.5f);
+	rendererShredElem.get()->first->setFrustumCompensationPos(glm::vec3(0.0f, 0.0f, 2.0f));
 
 	// particle entity attach parnet
 	_backParticle->attachParentEntity(this);

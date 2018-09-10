@@ -12,6 +12,8 @@ SHADER::ShaderFXAA::ShaderFXAA(const char * vertexShader, const char * fragmentS
 		m_minReduce = glGetUniformLocation(m_shaderID, "MinReduce");
 		m_maxSpan = glGetUniformLocation(m_shaderID, "MaxSpan");
 
+		m_presentRedColor = glGetUniformLocation(m_shaderID, "PresentRedColor");
+
 		m_texelStep = glGetUniformLocation(m_shaderID, "TexelStep");
 	}
 }

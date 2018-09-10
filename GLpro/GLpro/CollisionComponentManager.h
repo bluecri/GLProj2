@@ -28,6 +28,10 @@ public:
 
 	void pushToSleepComponentContainer(CollisionComponent* sleepContainer);
 	void resetAllCollisionCompDirty();
+	void getCollisionCompAll(std::list<CollisionComponent*>** staticList, std::list<CollisionComponent*>** dynamicList);
+
+	float getOctreeLevel() const;
+	glm::vec3 getOctreeAxisLen() const;
 
 private:
 	void insertSleepCompToOctTree();
