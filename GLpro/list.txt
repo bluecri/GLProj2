@@ -1,0 +1,27 @@
+collision dirty bit reset
+collision test functions static
+sphere, line collision comp
+collisition test by type switch
+octree change with aabb composition
+collision test loop modifing :: not get list of collision target. travel octree [vector]
+7. do 6step with frustum
+collision, entity category
+
+dynamic collsion test option
+9. 탄성충돌을 정상 collision으로
+10. pararell
+
+	glm::vec3& worldVec = aabbOb.getCenterConstRef();
+	glm::vec3& halfAxisSize = aabbOb.getAxisConstRef();
+
+glm::mat4& worldMat = obbOb.getMatConstRef();
+	glm::vec3& halfAxisSize = obbOb.getAxisConstRef();
+
+
+
+dynamic lap prev init
+collision resolve traversal change & dd, ds queue
+if dd ds collide, rigidmove & prevMove = rigidMove
+All non collide : prevMove = worldMove
+
+https://www.geometrictools.com/Documentation/DynamicCollisionDetection.pdf

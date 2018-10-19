@@ -3,21 +3,21 @@
 #include <alc.h>
 
 #include "./ALSound.h"
-#include "../Transform.h"
 
 class ALManager;
+class RigidbodyComponent;
 
 class ALSource {
 
 public:
 	ALSource();
 
-	ALSource(Transform* transform, float pitch, float gain);
+	ALSource(RigidbodyComponent* rigidbodyComponent, float pitch, float gain);
 	void initSource(ALuint soundBufferID);
 	void bindSourceToBuffer(ALuint soundBufferID);
 	void bindSourceToALSound(ALSound *alSound);
 
-	void updateTransformPtr(Transform * transform);
+	void updateRigidbodyComponentPtr(RigidbodyComponent * rigidbodyComponent);
 	void play();
 	void stop();
 
@@ -28,7 +28,7 @@ public:
 private:
 	void sourcePlay();
 	void sourceStop();
-	void updatePos();		// with _transform pos
+	void updatePos();		// with _RigidbodyComponent pos
 	friend class ALManager;
 
 private:
@@ -42,5 +42,5 @@ private:
 	float m_sourcePos[3];
 	ALboolean m_isLoop = AL_FALSE;
 
-	Transform* _transform;
+	RigidbodyComponent* _rigidbodyComponent;
 };

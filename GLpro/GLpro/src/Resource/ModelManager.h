@@ -1,11 +1,14 @@
 #ifndef __MODEL_MANAGER_H__
 #define __MODEL_MANAGER_H__
 
-#include <map>
-#include <string>
+#include "../../stdafx.h"
 
-namespace RESOURCE { class Model; }
+namespace RESOURCE { 
+	class Model;
+	class ModelOnlyVertex;
+}
 using ModelElemContainer = std::map<std::string, RESOURCE::Model*>;
+using ModelOnlyVertexElemContainer = std::map<std::string, RESOURCE::ModelOnlyVertex*>;
 
 
 namespace RESOURCE
@@ -14,10 +17,15 @@ namespace RESOURCE
 	public:
 		ModelManager() {};
 		virtual ~ModelManager();
-		Model* getModelWithFileName(const std::string &modelFileName, bool createEbo = true);
-		
+
+		void				createDefaultModelOnlyVertex();
+		Model*				getModelWithFileName(const std::string &modelFileName, bool createEbo = true);
+		ModelOnlyVertex*	getModelOnlyVertexWIthName(const std::string &modelName, bool createEbo = true);
+		bool				addModelOnlyVertexWIthName(const std::vector<glm::vec3> &vertices, const std::string &modelName, bool createEbo = true);
+
 	private:
-		ModelElemContainer _mapModelWithFileName;
+		ModelElemContainer				_mapModelWithFileName;
+		ModelOnlyVertexElemContainer	_mapModelOnlyVertexWithName;
 	};
 }
 

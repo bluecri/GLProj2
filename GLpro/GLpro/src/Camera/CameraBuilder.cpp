@@ -32,9 +32,9 @@ namespace CAMERA
 		return *this;
 	}
 
-	CameraBuilder::CameraBuilder(std::string & name, int type) : _name(name)
+	CameraBuilder::CameraBuilder(std::string & name) : _name(name)
 	{
-		_type = type;
+		//_type = type;
 
 		_bProjection = true;
 
@@ -46,11 +46,11 @@ namespace CAMERA
 		_horizontalFovValue = 4.0f;	//4:3 window ratio
 		_verticalFovValue = 3.0f;
 		_frontFrustrumValue = 0.1f;	//0.1f
-		_backFrustrumValue = 100.0f;	//100.0f
+		_backFrustrumValue = 200.0f;	//150.0f
 	}
 
 	Camera* CameraBuilder::constructPtr()
 	{
-		return new Camera(_name, _type, _fov, _speed, _keySpeed, _mouseSpeed, _horizontalFovValue, _verticalFovValue, _frontFrustrumValue, _backFrustrumValue);
+		return new Camera(_name, ENUM_ENTITY_CAMERA, _fov, _speed, _keySpeed, _mouseSpeed, _horizontalFovValue, _verticalFovValue, _frontFrustrumValue, _backFrustrumValue);
 	}
 }

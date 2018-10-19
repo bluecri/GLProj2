@@ -1,13 +1,12 @@
 #include "./Entity.h"
 #include "../RigidbodyComponentManager.h"
 #include "../RigidbodyComponent.h"
-#include "./Transform.h"
 
 #include "../GameSession.h"
 
 int Entity::_sMaxID = 0;
 
-Entity::Entity(GameSession * gSession, int type)
+Entity::Entity(GameSession * gSession, ENUM_ENTITY_TYPE type, int categoryBit)
 {
 	_ID = _sMaxID;
 	_name = std::to_string(_sMaxID);
@@ -17,6 +16,7 @@ Entity::Entity(GameSession * gSession, int type)
 	_gameSession = gSession;
 	_bDeleted = false;
 	++_sMaxID;
+	_entityCategoryBit = categoryBit;
 
 	if (_gameSession != nullptr)
 	{
@@ -25,7 +25,7 @@ Entity::Entity(GameSession * gSession, int type)
 	}
 }
 
-Entity::Entity(std::string name, GameSession * gSession, int type)
+Entity::Entity(std::string name, GameSession * gSession, ENUM_ENTITY_TYPE type, int categoryBit)
 {
 	_ID = _sMaxID;
 	_name = name;
@@ -35,6 +35,7 @@ Entity::Entity(std::string name, GameSession * gSession, int type)
 	_gameSession = gSession;
 	_bDeleted = false;
 	++_sMaxID;
+	_entityCategoryBit = categoryBit;
 
 	if (_gameSession != nullptr)
 	{
@@ -44,11 +45,12 @@ Entity::Entity(std::string name, GameSession * gSession, int type)
 }
 
 Entity::~Entity() {
-	_rigidbodyComponent->_bdoDelete = true;
+	_rigidbodyComponent->setBDeleted();
+	
 	detachParentEntity();
 }
 
-int Entity::getType() {
+ENUM_ENTITY_TYPE Entity::getType() {
 	return _type;
 }
 
@@ -56,7 +58,7 @@ int Entity::getID() {
 	return _ID;
 }
 
-int Entity::getType() const{
+ENUM_ENTITY_TYPE Entity::getType() const{
 	return _type;
 }
 
@@ -78,7 +80,7 @@ void Entity::setBeDeleted()
 	}
 	setAllChildBRender(false);
 	setAllChildCollisionComp(false);
-	doAllJobWithBeDeleted();
+	//doAllJobWithBeDeleted();
 }
 
 void Entity::setName(std::string& name) {
@@ -91,6 +93,42 @@ std::string Entity::getName() {
 
 const std::string& Entity::getNameRef() const {
 	return _name;
+}
+
+void Entity::setEntityCategoryBit(int bit)
+{
+	_entityCategoryBit = bit;
+}
+
+bool Entity::testEntityCategoryBit(int testBit)
+{
+	return (_entityCategoryBit & testBit);
+}
+
+int Entity::getEntityCategoryBit()
+{
+	return _entityCategoryBit;
+}
+
+void Entity::setGameSession(GameSession * gSession)
+{
+	if (_gameSession != nullptr)
+	{
+		// 기존 gamesession에서의 gSession 해제
+		_gameSession->_allEntityMap.erase(_ID);
+		printf_s("setGameSession(GameSession* gSession) : change entity gamesession to another\n");
+	}
+	_gameSession = gSession;
+	_gameSession->_allEntityMap.insert(std::make_pair(_ID, this));
+}
+
+GameSession * Entity::getGameSession()
+{
+	return _gameSession;
+}
+
+RigidbodyComponent * Entity::getRigidbodyComponent() {
+	return _rigidbodyComponent;
 }
 
 Entity * Entity::getParentEntityPtr()
@@ -140,7 +178,7 @@ Entity * Entity::detachChildEntityWithID(int id)
 		if (elem->getID() == id)
 		{
 			// delete child -> parent(this)
-			elem->_rigidbodyComponent->_transform->detachParentTransform();
+			elem->_rigidbodyComponent->detachParentRigidbodyComponent();
 			elem->_parentEntity = nullptr;
 
 			// delete parant(this) -> child
@@ -159,7 +197,7 @@ Entity * Entity::detachChildEntityWithName(const std::string & name)
 		if (elem->getNameRef().compare(name) == 0)
 		{
 			// delete child -> parent(this)
-			elem->_rigidbodyComponent->_transform->detachParentTransform();
+			elem->_rigidbodyComponent->detachParentRigidbodyComponent();
 			elem->_parentEntity = nullptr;
 
 			// delete parant(this) -> child
@@ -182,7 +220,7 @@ void Entity::attachChildEntity(Entity * childEntity)
 	if (childEntity->_parentEntity != nullptr)
 		childEntity->detachParentEntity();
 
-	_rigidbodyComponent->_transform->attachChildTransform(childEntity->_rigidbodyComponent->_transform);
+	_rigidbodyComponent->attachChildRigidbodyComponent(childEntity->_rigidbodyComponent);
 	
 	_childEntityList.push_back(childEntity);
 	childEntity->_parentEntity = this;
@@ -214,4 +252,17 @@ void Entity::doAllJobWithBeDeleted()
 	{
 		elem->doAllJobWithBeDeleted();
 	}
+}
+
+void Entity::destroyCallBack()
+{
+	for (auto elem : _destroyCallBackFuncVec)
+	{
+		elem();
+	}
+}
+
+void Entity::registerDestroyCallBackFunc(const std::function<void(void)>& fn)
+{
+	_destroyCallBackFuncVec.push_back(fn);
 }

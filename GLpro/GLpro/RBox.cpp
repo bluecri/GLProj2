@@ -21,13 +21,17 @@ std::shared_ptr<RENDER::RBox::DrawElement> RENDER::RBox::addToDrawList(RENDER_TA
 	return elem;
 }
 
-void RENDER::RBox::update(CAMERA::Camera ** cam)
+void RENDER::RBox::updateRRender()
 {
-	// none camera
 }
 
 
-void RENDER::RBox::draw(float deltaTime)
+void RENDER::RBox::updateTargetCamera(CAMERA::Camera ** cam)
+{
+	//_targetCamera = cam;
+}
+
+void RENDER::RBox::drawRRender(float deltaTime)
 {
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);

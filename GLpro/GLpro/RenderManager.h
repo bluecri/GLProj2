@@ -11,6 +11,7 @@
 #include "src/Render/RSkybox.h"
 #include "RText.h"
 #include "RParticle.h"
+#include "Option.h"
 
 
 namespace SHADER
@@ -33,17 +34,18 @@ enum RRENDER_TYPE
 
 namespace RENDER
 {
-
 	// TODO : RRenerer is base of T (type check)
 	template<class T, class K>	// T = R*****(renderer class), K== shaderObj(child)
 	class RRenderContainerClass
 	{
 	public:
 		// shader로 renderer 생성 or 기존의 renderer 반환
-		T* addOrGetRenderer(K* inShaderPtr);
+		T*		 addOrGetRenderer(K* inShaderPtr);
 		// renderer 제거.
-		void removeRenderer(T* delRenderer);
-		void render(float deltaTime);
+		void	removeRenderer(T* delRenderer);
+		void	render(float deltaTime);
+		std::map<K*, T*>&	getRRenderContainer();
+
 	public:
 		std::map<K*, T*> _rRenderContainer;
 	};
@@ -66,61 +68,79 @@ namespace RENDER
 
 		// todo : acc 처리
 		void renderAll(float deltaTime, float acc);
-		void renderBufferInit()
-		{
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glViewport(0, 0, GWindow->_windowWidth, GWindow->_windowHeight); // Render on the whole framebuffer, complete from the lower left corner to the upper right
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
-		}
-
+		void doFrustumTest(float deltaTime, float acc);
+		void renderBufferInit();
 		void swapRenderBuffer();
 
-		// T = RenderClass , K shaderObj children
-		template<class T, class K>
+		// T = RenderClass
+		template<class T>
+		typename std::enable_if<std::is_same<T, RENDER::RNormal>::value, std::map<SHADER::ShaderMain*, T*>&>::type
+			getRendererContainer() {
+			return _normalContainer.getRRenderContainer();
+		}
+
+		template<class T>
+		typename std::enable_if<std::is_same<T, RENDER::RBox>::value, std::map<SHADER::ShaderText*, T*>&>::type
+			getRendererContainer() {
+			return _boxContainer.getRRenderContainer();
+		}
+
+		template<class T>
+		typename std::enable_if<std::is_same<T, RENDER::RSkybox>::value, std::map<SHADER::ShaderSkybox*, T*>&>::type
+			getRendererContainer() {
+			return _skyboxContainer.getRRenderContainer();
+		}
+
+		template<class T>
+		typename std::enable_if<std::is_same<T, RENDER::RText>::value, std::map<SHADER::ShaderText*, T*>&>::type
+			getRendererContainer() {
+			return _textContainer.getRRenderContainer();
+		}
+
+		template<class T>
+		typename std::enable_if<std::is_same<T, RENDER::RParticle>::value, std::map<SHADER::ShaderParticle*, T*>&>::type
+			getRendererContainer() {
+			return _particleContainer.getRRenderContainer();
+		}
+
+
+
+		// T = RenderClass
+		template<class T>
 		typename std::enable_if<std::is_same<T, RENDER::RNormal>::value, T*>::type
-			getRRender(K* shaderObj) {
+			getRRender(SHADER::ShaderMain* shaderObj) {
 			return _normalContainer.addOrGetRenderer(shaderObj);
 		}
 
-		template<class T, class K>
+		template<class T>
 		typename std::enable_if<std::is_same<T, RENDER::RBox>::value, T*>::type
-			getRRender(K* shaderObj) {
+			getRRender(SHADER::ShaderText* shaderObj) {
 			return _boxContainer.addOrGetRenderer(shaderObj);
 		}
 
-		template<class T, class K>
+		template<class T>
 		typename std::enable_if<std::is_same<T, RENDER::RSkybox>::value, T*>::type
-			getRRender(K* shaderObj) {
+			getRRender(SHADER::ShaderSkybox* shaderObj) {
 			return _skyboxContainer.addOrGetRenderer(shaderObj);
 		}
 
-		template<class T, class K>
+		template<class T>
 		typename std::enable_if<std::is_same<T, RENDER::RText>::value, T*>::type
-			getRRender(K* shaderObj) {
+			getRRender(SHADER::ShaderText* shaderObj) {
 			return _textContainer.addOrGetRenderer(shaderObj);
 		}
 
-		template<class T, class K>
+		template<class T>
 		typename std::enable_if<std::is_same<T, RENDER::RParticle>::value, T*>::type
-			getRRender(K* shaderObj) {
+			getRRender(SHADER::ShaderParticle* shaderObj) {
 			return _particleContainer.addOrGetRenderer(shaderObj);
 		}
-
-		// K = RenderClass , T shaderObj children
-		/*	nextTodo : change shader(inner obj : shader(renderer) -> shader(renderer))
-		template<class K, class T>
-		typename std::enable_if<std::is_same<K, RENDER::RNormal>::value, K*>::type
-			changeRRender(K* oldRenderer, T* targetShaderObj) {
-			static_assert(std::is_same<K::TYPE_SHADER, T>::value, "getRRender RNormal type static assert");
-			oldRenderer->
-		}
-		*/
 	};
+
 
 	// shader로 renderer 생성 or 기존의 renderer 반환
 	template<class T, class K>
-	T * RRenderContainerClass<T, K>::addOrGetRenderer(K * inShaderPtr)
+	inline T * RRenderContainerClass<T, K>::addOrGetRenderer(K * inShaderPtr)
 	{
 		auto it = _rRenderContainer.find(inShaderPtr);
 		if (it != _rRenderContainer.end())
@@ -150,9 +170,18 @@ namespace RENDER
 	{
 		for (auto elem : _rRenderContainer)
 		{
-			elem.second->draw(deltaTime);
+			elem.second->drawRRender(deltaTime);
 		}
 	}
+
+	template<class T, class K>
+	std::map<K*, T*>& RRenderContainerClass<T, K>::getRRenderContainer()
+	{
+		return _rRenderContainer;
+	}
+
+	template<>
+	void RRenderContainerClass<RNormal, SHADER::ShaderMain>::render(float deltaTime);
 	
 }
 

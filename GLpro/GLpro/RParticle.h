@@ -28,19 +28,19 @@ namespace RENDER
 	{
 	public:
 		using TYPE_SHADER = SHADER::ShaderParticle;
-		using FObjElem = RENDER_TARGET::PARTICLE::ParticleFObj;
-		using DrawElement = std::pair<RENDER_TARGET::PARTICLE::ParticleFObj*, ParticleCreateInfo*>;
+		using FObjElem = std::shared_ptr<RENDER_TARGET::PARTICLE::ParticleFObj>;
+		using DrawElement = ParticleCreateInfo;
 		using DrawElemContainer = std::list<std::shared_ptr<DrawElement>>;
 
 	public:
 		RParticle(TYPE_SHADER* shaderObj);
 		virtual ~RParticle() {};
 
-		std::shared_ptr<DrawElement> addToDrawList(FObjElem* particleFObj, RigidbodyComponent* rigidbodyComponent);
+		std::shared_ptr<DrawElement> addToDrawList(FObjElem particleFObj, RigidbodyComponent* rigidbodyComponent);
 
-		virtual void update(CAMERA::Camera** cam);	//shader target camera update
-
-		virtual void draw(float deltaTime);
+		virtual void updateRRender() override;	//shader target camera update
+		virtual void drawRRender(float deltaTime) override;
+		void updateTargetCamera(CAMERA::Camera** cam) override;
 
 		void chageShader(TYPE_SHADER* other);
 

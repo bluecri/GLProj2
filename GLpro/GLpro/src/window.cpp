@@ -3,7 +3,6 @@
 #include "Resource\ModelManager.h"
 #include "Resource\TextureManager.h"
 
-#include "Transform.h"
 #include "../LightManager.h"
 #include "Camera\CameraManager.h"
 
@@ -11,6 +10,8 @@
 
 #include "../Option.h"
 #include "../ShadowBufferTextureShader.h"
+#include "../DeferredGFBO.h"
+
 #include "../RenderManager.h"
 #include "../CollisionComponentManager.h"
 #include "../RigidbodyComponentManager.h"
@@ -25,6 +26,9 @@
 #include "../Canvas.h"
 #include "../SkyboxGObject.h"
 #include "../GameSession.h"
+
+#include "../OctreeForFrustum.h"
+#include "../ParticleFObjManager.h"
 
 
 WINDOW::Window::Window(int windowWidth, int windowHeight)
@@ -78,29 +82,37 @@ int WINDOW::Window::init()
 	glfwPollEvents();
 	glfwSetCursorPos(_pWindow, _windowWidth / 2, _windowHeight / 2);
 	
-	glClearColor(0.0f, 0.0f, 0.7f, 0.0f);
+	// glClearColor(0.0f, 0.0f, 0.7f, 0.0f);	set clear color
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 	GInputManager = new CONTROL::InputManager();
 	GRigidbodyComponentManager = new RigidbodyComponentManager();
 	GModelManager = new RESOURCE::ModelManager();
+	GModelManager->createDefaultModelOnlyVertex();
 	GTextureManager = new RESOURCE::TextureManager();
 	GCameraManager = new CAMERA::CameraManager();
 	GLightManager = new LightManager();
+	GParticleFObjManager = new ParticleFObjManager();
+
 	GALManager = new ALManager();
 	GALManager->init();
+	GOctreeForFrustum = new OctreeForFrustum(4, 192, glm::vec3());
 	// ttest
-	GLightManager->AddDirectinalLight(DirectionalLight(glm::vec3(1.0f, 1.0f, 1.0f)));
+	//GLightManager->AddDirectinalLight(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	//GLightManager->AddDirectinalLight(glm::vec3(-10.0f, -10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
 
 	GShaderManager = new SHADER::ShaderManager();
 	GRendermanager = new RENDER::RenderManager();
-	GCollisionComponentManager = new CollisionComponentManager(3, 64);
+	GCollisionComponentManager = new CollisionComponentManager(4, 192);
 	GOption = new Option();
 	GScene = new Scene();
-	//
+	
 	GShadowBufferTexture = new RESOURCE::ShadowBufferTextureShader();
 	GShadowBufferTexture->init();
+	GDeferredGFBO = new RESOURCE::DeferredGFBO(_windowWidth, _windowHeight);
+	GDeferredGFBO->initDeferredGFBO();
 
 	//load ttest
 	Box::initPreMade();
@@ -117,62 +129,103 @@ int WINDOW::Window::init()
 	//GScene->changeCanvas(
 	//SkyboxGObject::preMadeSpaceSkybox[0]->skyboxFObj->setBRender(true);
 
+	
 	return 0;
 }
 
 void WINDOW::Window::mainLoop()
 {
-	float t = 0.0;
-	float usedT = 0.0;
-	const float dt = 0.02;
+	float t = 0.0f;
+	float usedT = 0.0f;
 
-	float currentTime = glfwGetTime();
+	float currentTime = static_cast<float>(glfwGetTime());
 	float acc = 0.0;
+
+	static double time_lastframe = static_cast<float>(glfwGetTime());
+	double time_now;
+	int cnt = 0;
+	
 
 	// Draw loop (ESC key or window was closed)
 	do {
 		// time update
-		float newTime = glfwGetTime();
+		float newTime = static_cast<float>(glfwGetTime());
 		float intervalTime = newTime - currentTime;
 		currentTime = newTime;
 
 		acc += intervalTime;
 		glfwPollEvents();
 		GInputManager->keyUpdate();		// transfer keyinput to GScene
-		while (acc >= dt)
+		while (acc >= _collisionDt)
 		{
 			/*physics loop
 			*{
-			* rigidbody Comp에서 최상위 transform부터 dirty bit를 이용한 world matrix update 시작하며
-			*		delta 존재시 적용후 dirty on(O(n))	// transform 자식으로 collision을 넣어 collision update도 하면서 순회도중에 dirty init 하는 방법 존재.
+			* rigidbody Comp에서 최상위 RigidbodyComponent부터 dirty bit를 이용한 world matrix update 시작하며
+			*		delta 존재시 적용후 dirty on(O(n))
 			*		collision box update에 dirty & world matrix 사용
 			*		collision event push & collision message 남김
 			*		dirty bit init(O(n))
 			* }
-			* transform 개별 조작시(logic update) dirty,
+			* RigidbodyComponent 개별 조작시(logic update) dirty,
 			* collision message로 logic update
 			*/
-			GRigidbodyComponentManager->updateRigidbodyComps(dt);
+
+			// Change dirty bit target to Cur
+			RigidbodyComponent::changeSetDirtyBitToRigid();
+
+			GRigidbodyComponentManager->updateRigidbodyComps(_collisionDt);
 			GCollisionComponentManager->doCollisionTest();
-			GRigidbodyComponentManager->resetRigidbodyCompsDirty();
+			GCollisionComponentManager->resetAllCollisionCompDirty();
+			
+			// Change dirty bit target to Next
+			RigidbodyComponent::changeSetDirtyBitToLogic();
 
 			// logic loop
-			GScene->update(dt, acc);
-			GALManager->updateALSource();
+			GScene->update(_collisionDt, acc);
 
 			// todo : update
-			acc -= dt;
-			t += dt;
-			usedT += dt;
+			acc -= _collisionDt;
+			t += _collisionDt;
+			usedT += _collisionDt;
+
+			// Dirty bit target Swap (cur <> next)
+			GRigidbodyComponentManager->resetAndSwapDirtyAll();
+
+			// clear dirty bit
 		}
 
-		// dt 보정 2가지 방법
+		// _collisionDt 보정 2가지 방법
 		// 1. 1frame 늦게 출력(past - current사이 정확한 interpolation)
-		// 2. acc만큼의 예상 이동 경로 그냥 그리기(acc가 dt에 가까울 수록 interpolation error 증가)
+		// 2. acc만큼의 예상 이동 경로 그냥 그리기(acc가 _collisionDt에 가까울 수록 interpolation error 증가)
 		// 2번으로 시도.
-		// render lop
+		// render loop
+
+		GCameraManager->updateAllRecentMatrix();
+		GRendermanager->doFrustumTest(usedT, acc);		// frustum update & test
+		GLightManager->updateAllLIghts();				// light pos update + light frustum object
+		
+		//GALManager->updateALSource();
+
 		renderAll(usedT, acc);
+
+		GLightManager->deUpdateAllLIghts();		// light frustum object container clear
+		GRigidbodyComponentManager->resetRenderDirtyAll();
+
+		
+		//GOctreeForFrustum->clearPotentialCompPropa();	// clear frustum
+
 		usedT = 0.0;
+
+
+		cnt++;
+		time_now = newTime;
+		double time_frame = time_now - time_lastframe;
+		if (time_frame >= 1.0)
+		{
+			printf_s("%d\n", cnt);
+			cnt = 0;
+			time_lastframe = time_lastframe + 1.0;
+		}
 
 	} while (glfwGetKey(_pWindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 		glfwWindowShouldClose(_pWindow) == 0);
@@ -181,7 +234,6 @@ void WINDOW::Window::mainLoop()
 void WINDOW::Window::renderAll(float usedDeltaTime, float acc)
 {
 	// RRenrder all with acc
-	GCameraManager->updateAllRecentMatrix();			// camera matrix update
 	GRendermanager->renderAll(usedDeltaTime, acc);		//render
 	GRendermanager->swapRenderBuffer();					// swap render buffer
 }
@@ -193,6 +245,11 @@ void WINDOW::Window::exitWindow()
 void WINDOW::Window::mouseToCenter()
 {
 	glfwSetCursorPos(_pWindow, _windowWidth / 2, _windowHeight / 2);
+}
+
+float WINDOW::Window::getCollisionDt()
+{
+	return _collisionDt;
 }
 
 WINDOW::Window* GWindow = nullptr;

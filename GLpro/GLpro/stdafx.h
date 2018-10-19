@@ -21,6 +21,11 @@
 #include <deque>
 #include <queue>
 #include <map>
+#include <set>
+#include <stack>
+#include <functional>
+#include <unordered_map>
+
 
 #include <process.h>
 #include <assert.h>
@@ -81,4 +86,11 @@ using namespace google;
 #include "protoGen/GetSource/protoTypeEnum.h"
 #include "protoGen/GetSource/protoPack.pb.h"
 */
+
+// tbb
+
+#include "tbb/tbb.h"
+#include "tbb/concurrent_vector.h"
+#include "tbb/parallel_sort.h"
+
 using namespace glm;

@@ -14,7 +14,7 @@ namespace CONTROL
 		virtual ~ControlOnce() {};
 
 		virtual bool checkKeyInput(GLFWwindow* pWindow);
-		virtual bool isKeyON();
+		virtual bool isKeyON(bool reset = true);
 
 	private:
 		bool _bOnceEnd;

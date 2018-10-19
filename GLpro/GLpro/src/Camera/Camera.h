@@ -1,7 +1,6 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
-#include "../Transform.h"
 #include "../Entity.h"
 
 namespace CAMERA 
@@ -13,7 +12,7 @@ namespace CAMERA
 	class Camera : public Entity
 	{
 	public:
-		Camera(std::string name, int type, float fov, float speed = 0.1f, float keySpeed = 0.5f, float mouseSpeed = 0.005f,
+		Camera(std::string name, ENUM_ENTITY_TYPE type, float fov, float speed = 0.1f, float keySpeed = 0.5f, float mouseSpeed = 0.005f,
 			float horizontalFovValue = 4.0f, float verticalFovValue = 3.0f, float frontFrustrumValue = 0.1f, float backFrustrumValue = 100.0f);
 		virtual ~Camera() {}
 
@@ -27,6 +26,8 @@ namespace CAMERA
 		glm::mat4& getRecentVPMat();
 		glm::mat4& getRecentViewMat();
 		void updateRecentVPAndViewMat();
+
+		int sphereInFrustum(glm::vec3 & center, float & radius);
 
 		glm::mat4 getCamProjMat() const;
 		const glm::mat4& getCamProjMatRef() const;
@@ -59,6 +60,8 @@ namespace CAMERA
 
 		glm::mat4	_vpMatRecentUsed;
 		glm::mat4	_viewMatRecentUsed;
+		glm::vec4	_frustum[6];
+		glm::mat4	_tempClip;
 	};
 }
 

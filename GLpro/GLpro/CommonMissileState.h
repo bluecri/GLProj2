@@ -1,30 +1,27 @@
 #pragma once
-
 #include "stdafx.h"
 
 namespace RESOURCE { class Model;  class Texture; }
 namespace SHADER { class ShaderMain; }
 
-class Transform;
-class ALSource;
-class GameSession;
-class Entity;
-class CommonNormalMissileInfo;
+class ICommonMissileInfo;
+class BuffSum;
 
 class CommonMissileState
 {
 public:
 	CommonMissileState();
-	void init(CommonNormalMissileInfo* commonNormalMissileInfo);
+	void initCommonState(ICommonMissileInfo* commonMissileInfo);
+	void transferBuffSum(BuffSum* buffSum, CommonMissileState* originState);
 
-	RESOURCE::Model* _missileModel;
-	RESOURCE::Texture* _missileTexture;
-	SHADER::ShaderMain* _missileShaderMain;
+	RESOURCE::Model*		_missileModel;
+	RESOURCE::Texture*		_missileTexture;
+	SHADER::ShaderMain*		_missileShaderMain;
 
-	glm::mat4 collisionBoxMat;
-	glm::vec3 missileCollisionBoxAxis;
+	glm::mat4				_collisionBoxMat;
+	glm::vec3				_missileCollisionBoxAxis;
 
-	float _missileDelay;
+	float					_shotDelay;
 };
 
 /*

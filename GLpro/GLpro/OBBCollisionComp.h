@@ -2,29 +2,59 @@
 #include "stdafx.h"
 #include "CollisionComponent.h"
 
+#include "OBBOb.h"
+#include "AABBOb.h"
+
+class DynamicCollisionSubCompMat;
+
 class OBBCollisionComp : public CollisionComponent
 {
 public:
-	OBBCollisionComp(RigidbodyComponent* rigidComp, glm::mat4& localMat, glm::vec3& axisLen)
-		: CollisionComponent(rigidComp), _localMat(localMat), _axisLen(_axisLen)
-	{
-		collisionType = COLLISION_TYPE::COLLISION_OBB;
-		_axisTotalLen = glm::length(_axisLen);
-	}
+	OBBCollisionComp(RigidbodyComponent* rigidComp, glm::mat4& localMat, glm::vec3& axisLen);
+
+	void	updateOBBOb(const glm::mat4 & worldMat, const glm::vec3 & halfAxisSize);
+	void	modifyOBBObMat(const glm::mat4 & worldMat);
+	void	updateOBBObAxis(const glm::vec3& halfAxisSize);
+	void	modifyWorld(const glm::mat4& worldMat);
+
+	void setLocalMat(glm::mat4& localMat);
+	void setLocalOnlyRotation(glm::mat4& rotMat);
+	void setLocalPos(glm::vec3& posVec);
+	void setLocalPos(glm::mat4& posMat);
+
+	const AABBOb& getAABBObConstRef() const;
+	const OBBOb& getOBBObConstRef() const;
+	DynamicCollisionSubCompMat* getDynamicSubCompMat();
 
 	// CollisionComponent을(를) 통해 상속됨
-	virtual void updateWithRigidComp() override;
-	virtual void updateAABBForOctree() override;
-	virtual bool collideTestToOther(CollisionComponent* comp) override;
+	virtual void updateCollisionComp() override;
+	virtual void updateDynamicLap() override;
 
-public:
-	glm::mat4 _localMat;	//used for axis vec : mat[0]. mat[1], mat[2]	// pos : mat[3]
-	glm::vec3 _axisLen;
-	float _axisTotalLen;	//for aabb
+	virtual bool collideStaticTestToOtherStatic(CollisionComponent * staticComp) override;
+	virtual bool collideStaticTestToOtherDynamic(CollisionComponent * dynamicComp, float& collideTime) override;
+	virtual bool collideDynamicTestToOtherDynamic(CollisionComponent * dynamicComp, float& collideTime) override;
 
-	glm::mat4 _worldlMat;	// update by updateWithRigidComp()
+	virtual bool lapStaticTestToOtherStatic(CollisionComponent * staticComp) override;
+	virtual bool lapStaticTestToOtherDynamic(CollisionComponent * dynamicComp) override;
+	virtual bool lapDynamicTestToOtherDynamic(CollisionComponent * dynamicComp) override;
 
-	// CollisionComponent을(를) 통해 상속됨 (for AABB - octree)
-	//glm::vec3 _center;
-	//glm::vec3 _halfAxisSize;
+	virtual void resolveStaticStaticCollide(CollisionComponent * staticComp) override;
+	virtual void resolveDynamicStaticCollide(float time, CollisionComponent * staticComp) override;
+	virtual void resolveDynamicDynamicCollide(float time, CollisionComponent * dynamicComp) override;
+
+	virtual void saveDynamicRetCollideInfoToPrevInfo() override;
+	virtual void resolveThisStatic(glm::quat & rotateQuat) override;
+	virtual void resolveThisDynamic(const glm::vec3 & collidePosition, glm::quat & rotateQuat) override;
+
+private:
+	glm::mat4 getCollisionLocalMat();
+
+private:
+	AABBOb _aabb;	// 3 same axis
+	OBBOb _obb;
+
+	glm::mat4 _localMat;
+
+
+
 };

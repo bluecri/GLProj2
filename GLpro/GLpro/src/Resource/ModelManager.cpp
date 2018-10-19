@@ -1,6 +1,8 @@
 #include "ModelManager.h"
 
 #include "./Model.h"
+#include "../../ModelOnlyVertex.h"
+#include "../../config_default_vertex.h"
 
 namespace RESOURCE
 {
@@ -11,6 +13,12 @@ namespace RESOURCE
 			delete elem.second;
 		});
 	};
+
+	void ModelManager::createDefaultModelOnlyVertex()
+	{
+		addModelOnlyVertexWIthName(defaultVertex_QuadScreeen, "defaultVertex_QuadScreeen", false);
+		addModelOnlyVertexWIthName(defaultVertex_Point, "defaultVertex_Point", false);
+	}
 
 	Model * ModelManager::getModelWithFileName(const std::string & modelFileName, bool createEbo)
 	{
@@ -28,6 +36,38 @@ namespace RESOURCE
 
 		return makeNewModel;
 	};
+
+	ModelOnlyVertex* ModelManager::getModelOnlyVertexWIthName(const std::string & modelName, bool createEbo)
+	{
+		// Check model already loaded
+		auto mapTextureName = _mapModelOnlyVertexWithName.find(modelName);
+
+		if (mapTextureName != _mapModelOnlyVertexWithName.end())
+		{
+			return mapTextureName->second;	// Return preLoaded Texture
+		}
+
+		return nullptr;
+	};
+
+	bool ModelManager::addModelOnlyVertexWIthName(const std::vector<glm::vec3>& vertices, const std::string & modelName, bool createEbo)
+	{
+		// Check model already loaded
+		auto mapTextureName = _mapModelOnlyVertexWithName.find(modelName);
+
+		if (mapTextureName != _mapModelOnlyVertexWithName.end())
+		{
+			return false;
+		}
+
+		// Create new model
+
+		ModelOnlyVertex* makeNewModel = new ModelOnlyVertex(vertices, createEbo);
+		_mapModelOnlyVertexWithName.insert(std::make_pair(modelName, makeNewModel));
+
+		return true;
+	};
+	
 }
 
 RESOURCE::ModelManager* GModelManager = nullptr;

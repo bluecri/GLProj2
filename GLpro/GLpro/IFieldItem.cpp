@@ -1,18 +1,16 @@
-#include "stdafx.h"
 #include "IFieldItem.h"
 
-#include "src/RenderTarget/Normal/NormalFObj.h"
 #include "RenderManager.h"
-#include "src/Render/RNormal.h"
+#include "src/RenderTarget/Normal/NormalFObj.h"
 #include "src/Shader/ShaderMain.h"
 #include "CollisionComponent.h"
 #include "RigidbodyComponent.h"
-#include "src/Transform.h"
 
-IFieldItem::IFieldItem(int type, GameSession * gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
-	:Entity(gSession, type)
+
+IFieldItem::IFieldItem(ENUM_ENTITY_TYPE type, GameSession * gSession, RESOURCE::Model * model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
+	:IGameObject(type, gSession, model, texture, shadermain)
 {
-	_rNormal = GRendermanager->getRRender<RENDER::RNormal, SHADER::ShaderMain>(shadermain);
+	_rNormal = GRendermanager->getRRender<RENDER::RNormal>(shadermain);
 	rendererElem = _rNormal->addDrawElem(new RENDER_TARGET::NORMAL::NormalFObj(model, texture), _rigidbodyComponent);
 
 	// default value
@@ -20,35 +18,30 @@ IFieldItem::IFieldItem(int type, GameSession * gSession, RESOURCE::Model * model
 	_angleSpeed = 0.8f;
 	_moveType = ENUM_ITEM_MOVE_STAY;
 	_randomInterval = 5.0f;
-	_curRandomInterval = 0.0f;
-	_curLIfeTime = 30.0f;
-	_buffCount = 1;
+	_timerRandomInterval = 0.0f;
+	_timerLIfeTime = 30.0f;
+	_itemCount = 1;
+	_maxSpeed = 3;
 }
 
 IFieldItem::~IFieldItem()
 {
-	_collisionComp->setDeleted(true);
 }
 
-void IFieldItem::IFieldItemInit(float lifeTime, int buffCount, float randomInterval, ENUM_ITEM_MOVE_TYPE moveType, float angleSpeed)
+void IFieldItem::IFieldItemInit(float lifeTime, float activeTime, int buffCount, float randomInterval, ENUM_ITEM_MOVE_TYPE moveType, float angleSpeed)
 {
-	_curLIfeTime = lifeTime;
-	_buffCount = buffCount;
+	_lIfeTime = lifeTime;
+	_timerLIfeTime = lifeTime;
+
+	_activeTime = activeTime;
+	_timeActiveTime = _activeTime;
+
+	_itemCount = buffCount;
 	_angleSpeed = angleSpeed;
 	_moveType = moveType;
 	_randomInterval = randomInterval;
 }
 
-void IFieldItem::setBRender(bool bRender)
-{
-	rendererElem->first->setBRender(bRender);
-}
-
-void IFieldItem::setCollisionTest(bool bCollision)
-{
-	if (_collisionComp != nullptr)
-		_collisionComp->setCollisionTest(bCollision);
-}
 
 void IFieldItem::setAngleSpeed(float speed)
 {
@@ -56,7 +49,7 @@ void IFieldItem::setAngleSpeed(float speed)
 }
 
 void IFieldItem::setSpeed(float speed) {
-	_rigidbodyComponent->_transform->speedSet(speed);
+	_rigidbodyComponent->speedSet(speed);
 }
 
 void IFieldItem::setMoveType(ENUM_ITEM_MOVE_TYPE moveType) {
@@ -68,21 +61,16 @@ void IFieldItem::setRandomInterval(float interval)
 	_randomInterval = interval;
 }
 
-void IFieldItem::collisionLogicUpdate()
+bool IFieldItem::moveLogicUpdate(float deltaTime, float acc)
 {
-	for (auto elem : _collisionComp->_collisionLogList)
+	_timeActiveTime += deltaTime;
+	if (_timeActiveTime > _activeTime)
 	{
-		collisionFunc(elem);
+		setCollisionTest(true);
 	}
 
-	_collisionComp->_collisionLogList.clear();
-}
-
-
-bool IFieldItem::moveLogicUpdate(float deltaTime)
-{
-	_curLIfeTime -= deltaTime;
-	if (_curLIfeTime < 0.0f)
+	_timerLIfeTime -= deltaTime;
+	if (_timerLIfeTime < 0.0f)
 	{
 		_bDeleted = true;
 		return true;
@@ -93,22 +81,24 @@ bool IFieldItem::moveLogicUpdate(float deltaTime)
 	case ENUM_ITEM_MOVE_TYPE::ENUM_ITEM_MOVE_STAY :
 		break;
 	case ENUM_ITEM_MOVE_TYPE::ENUM_ITEM_MOVE_STAY_ROT:
-		_rigidbodyComponent->_transform->accQuaternionPitch(10.0f * deltaTime);
+		_rigidbodyComponent->accQuaternionPitch(10.0f * deltaTime);
 		break;
 	case ENUM_ITEM_MOVE_TYPE::ENUM_ITEM_MOVE_RAND_LINE:
-		_curRandomInterval += deltaTime;
-		if (_curRandomInterval > _randomInterval)
+		_timerRandomInterval += deltaTime;
+		if (_timerRandomInterval > _randomInterval)
 		{
-			_rigidbodyComponent->_transform->setQuaternion(glm::vec3(glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f)));
-			_rigidbodyComponent->_transform->speedSet(glm::linearRand(0.0f, _rigidbodyComponent->_transform->getMaxSpeed()));
+			_rigidbodyComponent->setQuaternion(glm::vec3(glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f)));
+			_rigidbodyComponent->speedSet(glm::linearRand(0.0f, _maxSpeed));
+			_timerRandomInterval = 0.0f;
 		}
 		break;
 	case ENUM_ITEM_MOVE_TYPE::ENUM_ITEM_MOVE_RAND_QUAT:
-		_curRandomInterval += deltaTime;
-		if (_curRandomInterval > _randomInterval)
+		_timerRandomInterval += deltaTime;
+		if (_timerRandomInterval > _randomInterval)
 		{
 			// set target quat
-			_rigidbodyComponent->_transform->speedSet(glm::linearRand(0.0f, _rigidbodyComponent->_transform->getMaxSpeed()));
+			_rigidbodyComponent->speedSet(glm::linearRand(0.0f, _maxSpeed));
+			_timerRandomInterval = 0.0f;
 		}
 		//mix cur quat -> target quat
 		break;

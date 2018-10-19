@@ -24,6 +24,7 @@ ALListener::ALListener() {
 	alListenerfv(AL_ORIENTATION, listenerOrientationAtUp);
 }
 void ALListener::updateWithWorldMat(const glm::mat4& worldMat) {
+	// opt : update only dirty worldMat
 	modifyPos(worldMat[3][0], worldMat[3][1], worldMat[3][2]);
 	modifyOrientationWithRotationMatrix(worldMat);
 }
@@ -88,13 +89,13 @@ void ALListener::modifyOrientationUpWithRotationMatrix(const glm::mat4& rMaxtrix
 }
 
 void ALListener::modifyOrientationWithRotationMatrix(const glm::mat4& rMaxtrix) {
-	glm::vec3 atVec = glm::vec3(rMaxtrix * glm::vec4(0.0f, 0.0f, 1.0f, 0.0f));
+	//glm::vec3 atVec = glm::vec3(rMaxtrix * glm::vec4(0.0f, 0.0f, 1.0f, 0.0f));
 	for (int i = 0; i < 3; i++) {
-		listenerOrientationAt[i] = atVec[i];
+		listenerOrientationAt[i] = rMaxtrix[2][i];
 	}
-	glm::vec3 upVec = glm::vec3(rMaxtrix * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f));
+	//glm::vec3 upVec = glm::vec3(rMaxtrix * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f));
 	for (int i = 0; i < 3; i++) {
-		listenerOrientationUp[i] = upVec[i];
+		listenerOrientationUp[i] = rMaxtrix[1][i];
 	}
 	alListenerfv(AL_ORIENTATION, listenerOrientationAtUp);
 }

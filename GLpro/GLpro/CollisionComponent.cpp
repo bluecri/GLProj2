@@ -1,7 +1,36 @@
 #include "stdafx.h"
 #include "CollisionComponent.h"
+#include "DynamicCollisionSubComp.h"
+#include "RigidbodyComponent.h"
+#include "CollisionFuncStatic.h"
 
-void CollisionComponent::setDeleted(bool bDeleted) {
+CollisionComponent::CollisionComponent(RigidbodyComponent * rigidComp)
+	: VectorPElem()
+{
+	_dynamicSubComp = nullptr;
+
+	_rigidComp = rigidComp;
+	_bDeleted = false;
+	_bCollisionTest = true;
+	_bIsTrigger = false;
+
+	_collisionLogList = std::list<CollisionComponent*>();
+
+	_collisionCategoryBit = 1;
+	_collisionCategoryMaskBit = -1;
+}
+
+CollisionComponent::~CollisionComponent()
+{
+}
+
+void CollisionComponent::makeDynamicComp(DynamicCollisionSubComp * subComp)
+{
+	_dynamicSubComp = subComp;
+}
+
+void CollisionComponent::setDeleted(bool bDeleted) 
+{
 	_bDeleted = bDeleted;
 }
 
@@ -10,162 +39,110 @@ void CollisionComponent::setCollisionTest(bool bCollisionTest)
 	_bCollisionTest = bCollisionTest;
 }
 
-void CollisionComponent::setCollisionVelocityUpdate(bool bVelUpdate)
+bool CollisionComponent::isCollisionComponentDirty()
 {
-	_bCollideVelocityUpdate = bVelUpdate;
+	return _bDirty;
 }
 
-bool CollisionComponent::sIsBoxCollisionCheck(glm::mat4 & wolrd1, glm::mat4 & wolrd2, glm::vec3 & axisLen1, glm::vec3 & axisLen2)
+void CollisionComponent::resetCollisionComponentDirty()
 {
-	double c[3][3];	//ob1 3 axis vs otherOBB 3 axis consine value
-	double absC[3][3];	//abs of c[][]
-	double d[3];
-	double r, r0, r1;	//r = 한 축을 기준으로 obBox 두 중심점의 거리
-	const float cutoff = 0.9999;
-	bool existParallelPair = false;	//paralell 한가?
+	_bDirty = false;
+}
 
-	glm::vec3 axisVec[3];
-	glm::vec3 otheraxisVec[3];
+void CollisionComponent::setCollisionCategoryBit(int bit)
+{
+	_collisionCategoryBit = bit;
+}
 
-	for (int i = 0; i < 3; i++)
-	{
-		axisVec[i] = wolrd1[i];
-		otheraxisVec[i] = wolrd2[i];
-	}
-	glm::vec3 centerDiff = wolrd1[3] - wolrd2[3];
+void CollisionComponent::setCollisionCategoryMaskBit(int maskBit)
+{
+	_collisionCategoryMaskBit = maskBit;
+}
 
-	//case COLLISION_TYPE::COLLISION_AABB:
-	//case COLLISION_TYPE::COLLISION_OBB:
+int CollisionComponent::getCollisionCategoryBit() const
+{
+	return _collisionCategoryBit;
+}
 
-	//ob1 1 face vs otherOBB 3 faces
-	for (int i = 0; i < 3; i++) {
-		c[0][i] = glm::dot(axisVec[0], otheraxisVec[i]);
-		absC[0][i] = glm::abs(c[0][i]);
-		if (absC[0][i] > cutoff) {
-			existParallelPair = true;
-		}
-	}
+int CollisionComponent::getCollisionCategoryMaskBit() const
+{
+	return _collisionCategoryMaskBit;
+}
 
-	d[0] = glm::dot(centerDiff, axisVec[0]);
-	r = abs(d[0]);
-	r0 = axisLen1[0];
-	r1 = axisLen2[0] * absC[0][0] + axisLen2[1] * absC[0][1] + axisLen2[2] * absC[0][2];
-	if (r > r0 + r1) {
-		return false;
-	}
+bool CollisionComponent::testCollisionCategoryBit(const CollisionComponent * otherComp)
+{
+	bool cond1 = _collisionCategoryMaskBit & otherComp->getCollisionCategoryBit();
+	bool cond2 = _collisionCategoryBit & otherComp->getCollisionCategoryMaskBit();
 
-	for (int i = 0; i < 3; i++) {
-		c[1][i] = glm::dot(axisVec[1], otheraxisVec[i]);
-		absC[1][i] = glm::abs(c[1][i]);
-		if (absC[1][i] > cutoff) {
-			existParallelPair = true;
-		}
-	}
-	d[1] = glm::dot(centerDiff, axisVec[1]);
-	r = abs(d[1]);
-	r0 = axisLen1[1];
-	r1 = axisLen2[1] * absC[1][0] + axisLen2[1] * absC[1][1] + axisLen2[2] * absC[1][2];
-	if (r > r0 + r1) {
-		return false;
-	}
+	return (cond1 && cond2);
+}
 
-	for (int i = 0; i < 3; i++) {
-		c[2][i] = glm::dot(axisVec[2], otheraxisVec[i]);
-		absC[2][i] = glm::abs(c[2][i]);
-		if (absC[2][i] > cutoff) {
-			existParallelPair = true;
-		}
-	}
-	d[2] = glm::dot(centerDiff, axisVec[2]);
-	r = abs(d[2]);
-	r0 = axisLen1[2];
-	r1 = axisLen2[0] * absC[2][0] + axisLen2[1] * absC[2][1] + axisLen2[2] * absC[2][2];
-	if (r > r0 + r1) {
-		return false;
-	}
+int CollisionComponent::getOctreeElemIndex()
+{
+	return _octreeElemIdx;
+}
 
-	//ob1 3 face vs otherOBB 1 faces
-	r = abs(glm::dot(centerDiff, otheraxisVec[0]));
-	r0 = axisLen2[0];
-	r1 = axisLen1[0] * absC[0][0] + axisLen1[1] * absC[1][0] + axisLen1[2] * absC[2][0];
-	if (r > r0 + r1) {
-		return false;
-	}
+void CollisionComponent::setOctreeElemIdx(int idx)
+{
+	_octreeElemIdx = idx;;
+}
 
-	r = abs(glm::dot(centerDiff, otheraxisVec[1]));
-	r0 = axisLen2[1];
-	r1 = axisLen1[0] * absC[0][1] + axisLen1[1] * absC[1][1] + axisLen1[2] * absC[2][1];
-	if (r > r0 + r1) {
-		return false;
-	}
+bool CollisionComponent::isDynamicComp()
+{
+	return (_dynamicSubComp != nullptr);
+}
 
-	r = abs(glm::dot(centerDiff, otheraxisVec[2]));
-	r0 = axisLen2[2];
-	r1 = axisLen1[0] * absC[0][2] + axisLen1[1] * absC[1][2] + axisLen1[2] * absC[2][2];
-	if (r > r0 + r1) {
-		return false;
-	}
+DynamicCollisionSubComp * CollisionComponent::getDynamicSubComp()
+{
+	return _dynamicSubComp;
+}
 
-	if (existParallelPair) {
-		return true;	//pararell & r0, r1의 거리차가 존재하지 않음 => collision
-	}
+bool CollisionComponent::isTrigger()
+{
+	return _bIsTrigger;
+}
 
-	//ob1의 axis와 otherOBB의 axis에 수직인 축을 기준으로 check. (3 axis * 3 axis)
-	r = abs(d[2] * c[1][0] - d[1] * c[2][0]);
-	r0 = axisLen1[1] * absC[2][0] + axisLen1[2] * absC[1][0];
-	r1 = axisLen2[1] * absC[0][2] + axisLen1[2] * absC[0][1];
-	if (r > r0 + r1) {
-		return false;
-	}
-	r = abs(d[2] * c[1][1] - d[1] * c[2][1]);
-	r0 = axisLen1[1] * absC[2][1] + axisLen1[2] * absC[1][1];
-	r1 = axisLen2[0] * absC[0][2] + axisLen1[2] * absC[0][0];
-	if (r > r0 + r1) {
-		return false;
-	}
-	r = abs(d[2] * c[1][2] - d[1] * c[2][2]);
-	r0 = axisLen1[1] * absC[2][2] + axisLen1[2] * absC[1][2];
-	r1 = axisLen2[0] * absC[0][1] + axisLen1[2] * absC[0][0];
-	if (r > r0 + r1) {
-		return false;
-	}
+void CollisionComponent::setTrigger(bool bTrigger)
+{
+	_bIsTrigger = bTrigger;
+}
 
-	r = abs(d[0] * c[2][0] - d[2] * c[0][0]);
-	r0 = axisLen1[0] * absC[2][0] + axisLen1[2] * absC[0][0];
-	r1 = axisLen2[1] * absC[1][2] + axisLen1[2] * absC[1][1];
-	if (r > r0 + r1) {
-		return false;
-	}
-	r = abs(d[0] * c[2][1] - d[2] * c[0][1]);
-	r0 = axisLen1[0] * absC[2][1] + axisLen1[2] * absC[0][1];
-	r1 = axisLen2[0] * absC[1][2] + axisLen1[2] * absC[1][0];
-	if (r > r0 + r1) {
-		return false;
-	}
-	r = abs(d[0] * c[2][2] - d[2] * c[0][2]);
-	r0 = axisLen1[0] * absC[2][2] + axisLen1[2] * absC[0][2];
-	r1 = axisLen2[0] * absC[1][1] + axisLen1[1] * absC[1][0];
-	if (r > r0 + r1) {
-		return false;
-	}
+void CollisionComponent::getRotateQuatAfterCollisionAndSetSpeed(CollisionComponent* otherComp, const glm::vec3 & collisionCenterDiff, glm::quat & rotateQuat1, glm::quat & rotateQuat2)
+{
+	float m1 = _rigidComp->getMass();
+	float m2 = otherComp->_rigidComp->getMass();
 
-	r = abs(d[1] * c[0][0] - d[0] * c[1][0]);
-	r0 = axisLen1[0] * absC[1][0] + axisLen1[1] * absC[0][0];
-	r1 = axisLen2[1] * absC[2][2] + axisLen1[2] * absC[2][1];
-	if (r > r0 + r1) {
-		return false;
-	}
-	r = abs(d[1] * c[0][1] - d[0] * c[1][1]);
-	r0 = axisLen1[0] * absC[1][1] + axisLen1[1] * absC[0][1];
-	r1 = axisLen2[0] * absC[2][2] + axisLen1[2] * absC[2][0];
-	if (r > r0 + r1) {
-		return false;
-	}
-	r = abs(d[1] * c[0][2] - d[0] * c[1][2]);
-	r0 = axisLen1[0] * absC[1][2] + axisLen1[1] * absC[0][2];
-	r1 = axisLen2[0] * absC[2][1] + axisLen1[1] * absC[2][0];
-	if (r > r0 + r1) {
-		return false;
-	}
-	return true;
+	const glm::vec3& v1 = _rigidComp->getVelocityRef();
+	const glm::vec3& v2 = otherComp->_rigidComp->getVelocityRef();
+
+	// get rotated Velocity
+	glm::vec3 zVec1 = v1;
+	glm::vec3 zVec2 = v2;
+	glm::vec3 distBetween2Collide = glm::normalize(collisionCenterDiff);	// collide center - center
+																							//glm::vec3 distBetween2Collide = glm::normalize( getAABBConstRef().getCenterConstRef() - staticComp->getAABBConstRef().getCenterConstRef() );	// collide center - center
+
+	float zVecOrtho1 = glm::dot(zVec1, distBetween2Collide);
+	float zVecOrtho2 = glm::dot(zVec2, distBetween2Collide);
+
+	float zVecOrthoRet1 = zVecOrtho1 + m2*(zVecOrtho2 - zVecOrtho1) * 2.0f / (m1 + m2);
+	float zVecOrthoRet2 = zVecOrtho2 + m2*(zVecOrtho1 - zVecOrtho2) * 2.0f / (m1 + m2);
+
+	glm::vec3 zVecRet1 = zVec1 + (zVecOrthoRet1 - zVecOrtho1) * distBetween2Collide;
+	glm::vec3 zVecRet2 = zVec2 + (zVecOrthoRet2 - zVecOrtho2) * distBetween2Collide;
+
+	rotateQuat1 = CollisionFuncStatic::rotationBetweenVectors(zVec1, zVecRet1);
+	rotateQuat2 = CollisionFuncStatic::rotationBetweenVectors(zVec2, zVecRet2);
+
+	// get speed from rotated Velocity
+	float retSpeed1 = glm::length(zVecRet1);
+	float retSpeed2 = glm::length(zVecRet2);
+
+	// set speed
+	_rigidComp->speedSet(retSpeed1);
+	otherComp->_rigidComp->speedSet(retSpeed2);
+}
+
+void CTBB_DirtyBItInit_do::operator()(CollisionComponent * item) const
+{
+	item->resetCollisionComponentDirty();
 }

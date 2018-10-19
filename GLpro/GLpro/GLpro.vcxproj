@@ -90,13 +90,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;C:\Program Files\MySQL\MySQL Server 8.0\include;E:\gitProjects\iocp_git\3rdParty\google_protobuf\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;C:\Program Files\MySQL\MySQL Server 8.0\include;E:\gitProjects\iocp_git\3rdParty\google_protobuf\src;C:\Users\bluecri\Desktop\tbb2018_20180618oss_win\tbb2018_20180618oss\include;C:\Users\bluecri\Desktop\tbb2018_20180618oss_win\tbb2018_20180618oss\bin\intel64\vc14;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win64;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\x64;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;C:\Program Files\MySQL\MySQL Server 8.0\lib;E:\3rdParty\new-proto\protobuf-3.5.1\retBuild\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;glfw3dll.lib;opengl32.lib;openal32.lib;SOIL.lib;ws2_32.lib;winmm.lib;mswsock.lib;DbgHelp.lib;gmock.lib;gmock_main.lib;libprotobufd.lib;libprotobuf-lited.lib;libprotocd.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win64;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\x64;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;C:\Program Files\MySQL\MySQL Server 8.0\lib;E:\3rdParty\new-proto\protobuf-3.5.1\retBuild\Debug;C:\Users\bluecri\Desktop\tbb2018_20180618oss_win\tbb2018_20180618oss\lib\intel64\vc14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3dll.lib;opengl32.lib;openal32.lib;SOIL.lib;ws2_32.lib;winmm.lib;mswsock.lib;DbgHelp.lib;gmock.lib;gmock_main.lib;libprotobufd.lib;libprotobuf-lited.lib;libprotocd.lib;libmysql.lib;tbb_debug.lib;tbb_preview_debug.lib;tbbmalloc_debug.lib;tbbproxy_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -125,51 +127,127 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\include;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\include;C:\Users\bluecri\Desktop\glew-2.1.0\include;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\src;C:\Users\bluecri\Desktop\tbb2018_20180618oss_win\tbb2018_20180618oss\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win64;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\x64;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;E:\3rdParty\new-proto\protobuf-3.5.1\retBuild\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;openal32.lib;SOIL.lib;ws2_32.lib;winmm.lib;mswsock.lib;DbgHelp.lib;gmock.lib;gmock_main.lib;libprotobuf.lib;libprotoc.lib;libprotobuf-lite.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win64;C:\Users\bluecri\Desktop\glew-2.1.0\lib\Release\x64;C:\Users\bluecri\Desktop\glfw-3.2.1.bin.WIN64\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\Users\bluecri\Desktop\soil\Simple OpenGL Image Library\projects\VC9\Release;E:\3rdParty\new-proto\protobuf-3.5.1\retBuild\Release;C:\Program Files\MySQL\MySQL Server 8.0\lib;C:\Users\bluecri\Desktop\tbb2018_20180618oss_win\tbb2018_20180618oss\lib\intel64\vc14_uwp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;openal32.lib;SOIL.lib;ws2_32.lib;winmm.lib;mswsock.lib;DbgHelp.lib;gmock.lib;gmock_main.lib;libprotobuf.lib;libprotoc.lib;libprotobuf-lite.lib;libmysql.lib;tbb.lib;tbb_preview.lib;tbbmalloc.lib;tbbmalloc_proxy.lib;tbbproxy.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AABBCollisionComp.cpp" />
+    <ClCompile Include="AABBOb.cpp" />
     <ClCompile Include="AimTextUIObj.cpp" />
     <ClCompile Include="Box.cpp" />
+    <ClCompile Include="BuffManager.cpp" />
+    <ClCompile Include="BuffSum.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionComponentManager.cpp" />
+    <ClCompile Include="CollisionFuncDynamic.cpp" />
+    <ClCompile Include="CollisionFuncStatic.cpp" />
     <ClCompile Include="CollisionInfo.cpp" />
     <ClCompile Include="CommonMissileState.cpp" />
     <ClCompile Include="CommonNormalMissileInfo.cpp" />
+    <ClCompile Include="DeferredGFBO.cpp" />
+    <ClCompile Include="DeferredPointLight.cpp" />
+    <ClCompile Include="DeferredPointLightManager.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="DirectionalLightManager.cpp" />
+    <ClCompile Include="DynamicCollisionSubComp.cpp" />
+    <ClCompile Include="DynamicCollisionSubCompLine.cpp" />
+    <ClCompile Include="DynamicCollisionSubCompMat.cpp" />
+    <ClCompile Include="DynamicCollisionSubCompVec.cpp" />
     <ClCompile Include="EmptyMissileGenerator.cpp" />
+    <ClCompile Include="LineCollisionComp.cpp" />
+    <ClCompile Include="LineOb.cpp" />
+    <ClCompile Include="OBBOb.cpp" />
+    <ClCompile Include="OctreeFrustumElem.cpp" />
+    <ClCompile Include="ShaderDebugLines.cpp" />
+    <ClCompile Include="SphereCollisionComp.cpp" />
+    <ClCompile Include="VectorPElem.cpp" />
     <ClInclude Include="AABBCollisionComp.h" />
+    <ClInclude Include="AABBOb.h" />
     <ClInclude Include="AimTextUIObj.h" />
+    <ClInclude Include="BuffManager.h" />
+    <ClInclude Include="BuffSum.h" />
+    <ClInclude Include="CollisionFuncDynamic.h" />
+    <ClInclude Include="CollisionFuncStatic.h" />
+    <ClInclude Include="configs_light.h" />
+    <ClInclude Include="configs_ubo.h" />
+    <ClInclude Include="config_default_vertex.h" />
+    <ClInclude Include="DeferredGFBO.h" />
+    <ClInclude Include="DeferredPointLight.h" />
+    <ClInclude Include="DeferredPointLightManager.h" />
+    <ClInclude Include="DirectionalLightManager.h" />
+    <ClInclude Include="DynamicCollisionSubComp.h" />
+    <ClInclude Include="DynamicCollisionSubCompLine.h" />
+    <ClInclude Include="DynamicCollisionSubCompMat.h" />
+    <ClInclude Include="DynamicCollisionSubCompVec.h" />
+    <ClInclude Include="EntityBindee.h" />
+    <ClInclude Include="EntityBinder.h" />
+    <ClInclude Include="FrustumOb.h" />
+    <ClInclude Include="IFieldItemForBuff.h" />
+    <ClInclude Include="IFieldItemForStuff.h" />
+    <ClInclude Include="IBuff.h" />
+    <ClInclude Include="IGameObject.h" />
+    <ClInclude Include="ILightWithEntityManager.h" />
     <ClInclude Include="ItemAmmoRegen.h" />
     <ClInclude Include="ItemSelfArmorRegen.h" />
     <ClInclude Include="BelowMissileStorageUIObj.h" />
     <ClInclude Include="EmptyMissileGenerator.h" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EntityBindee.cpp" />
+    <ClCompile Include="EntityBinder.cpp" />
+    <ClCompile Include="FrustumOb.cpp" />
+    <ClCompile Include="IBuff.cpp" />
+    <ClCompile Include="IFieldItemForBuff.cpp" />
+    <ClCompile Include="FieldItemGenerator.cpp" />
     <ClCompile Include="Fobj.cpp" />
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="IFieldItem.cpp" />
+    <ClCompile Include="IGameObject.cpp" />
+    <ClCompile Include="LightWithEntity.cpp" />
+    <ClCompile Include="ILightWithEntityManager.cpp" />
     <ClCompile Include="ImageBox.cpp" />
     <ClCompile Include="IMissile.cpp" />
     <ClCompile Include="IMissileGenerator.cpp" />
     <ClCompile Include="IPlane.cpp" />
-    <ClCompile Include="ItemSpeedBuff.cpp" />
+    <ClCompile Include="ISpecifiedMissileInfo.cpp" />
+    <ClCompile Include="ItemSpeed.cpp" />
+    <ClCompile Include="light.cpp" />
+    <ClCompile Include="LightGameObject.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="MissileGeneratorStorage.cpp" />
+    <ClCompile Include="ModelOnlyVertex.cpp" />
     <ClCompile Include="NormalMissile.cpp" />
     <ClCompile Include="NormalMissileGenerator.cpp" />
-    <ClCompile Include="NormalMissileGenInfo.cpp" />
-    <ClCompile Include="NormalMissileState.cpp" />
+    <ClCompile Include="OctreeElem.cpp" />
+    <ClCompile Include="ParticleFObjManager.cpp" />
+    <ClCompile Include="PlaneInfo.cpp" />
+    <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="PointLightManager.cpp" />
+    <ClCompile Include="PostGraphicProcess.cpp" />
+    <ClCompile Include="ShaderBloom.cpp" />
+    <ClCompile Include="ShaderFXAA.cpp" />
+    <ClCompile Include="ShaderGBufferFinal.cpp" />
+    <ClCompile Include="ShaderGBufferGeo.cpp" />
+    <ClCompile Include="ShaderGBufferLight.cpp" />
+    <ClCompile Include="ShaderHDR.cpp" />
+    <ClCompile Include="ShaderMipmap.cpp" />
+    <ClCompile Include="ShaderPostEffect.cpp" />
+    <ClCompile Include="ShaderStructDeferredPointLight.cpp" />
+    <ClCompile Include="ShaderStructDirectionalLight.cpp" />
+    <ClCompile Include="ShaderStructPointLight.cpp" />
+    <ClCompile Include="ShaderStructSpotLight.cpp" />
+    <ClCompile Include="SpecifiedNormalMissileState.cpp" />
     <ClCompile Include="OBBCollisionComp.cpp" />
     <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="OctreeForFrustum.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="ParticleBuffer.cpp" />
     <ClCompile Include="origin\CircularBuffer.cpp" />
@@ -195,6 +273,10 @@
     <ClCompile Include="ShadowBufferTextureShader.cpp" />
     <ClCompile Include="SkyboxGObject.cpp" />
     <ClCompile Include="SpecifiedNormalMissileInfo.cpp" />
+    <ClCompile Include="SpeedBuff.cpp" />
+    <ClCompile Include="SphereOb.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="SpotLightManager.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\objectLoader.cpp" />
     <ClCompile Include="src\3rdParty\ObjectLoader\vboindexer.cpp" />
     <ClCompile Include="src\3rdParty\ShaderLoader\shader.cpp" />
@@ -218,24 +300,60 @@
     <ClCompile Include="src\Resource\ModelManager.cpp" />
     <ClCompile Include="src\Resource\Texture.cpp" />
     <ClCompile Include="src\Resource\TextureManager.cpp" />
+    <ClCompile Include="src\Shader\ShaderMain.cpp" />
     <ClCompile Include="src\Shader\ShaderManager.cpp" />
     <ClCompile Include="src\Shader\ShaderObj.cpp" />
+    <ClCompile Include="src\Shader\ShaderShadow.cpp" />
     <ClCompile Include="src\Shader\ShaderText.cpp" />
     <ClCompile Include="src\Sound\ALListener.cpp" />
     <ClCompile Include="src\Sound\ALManager.cpp" />
     <ClCompile Include="src\Sound\ALSound.cpp" />
     <ClCompile Include="src\Sound\ALSource.cpp" />
-    <ClCompile Include="src\Transform.cpp" />
-    <ClCompile Include="src\TransformBuilder.cpp" />
     <ClCompile Include="src\window.cpp" />
     <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TextBuffer.cpp" />
     <ClCompile Include="TextFObj.cpp" />
     <ClCompile Include="UIEntity.cpp" />
     <ClInclude Include="FieldItemGenerator.h" />
+    <ClInclude Include="LightGameObject.h" />
+    <ClInclude Include="LightWithEntity.h" />
+    <ClInclude Include="LineCollisionComp.h" />
+    <ClInclude Include="LineOb.h" />
+    <ClInclude Include="ModelOnlyVertex.h" />
+    <ClInclude Include="OBBOb.h" />
+    <ClInclude Include="ObjectPoolLikeVector.h" />
+    <ClInclude Include="OctreeElem.h" />
+    <ClInclude Include="OctreeFrustumElem.h" />
+    <ClInclude Include="ParticleFObjManager.h" />
+    <ClInclude Include="PlaneInfo.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="PointLightManager.h" />
+    <ClInclude Include="PostGraphicProcess.h" />
+    <ClInclude Include="ShaderBloom.h" />
+    <ClInclude Include="ShaderDebugLines.h" />
+    <ClInclude Include="ShaderFXAA.h" />
+    <ClInclude Include="ShaderGBufferFinal.h" />
+    <ClInclude Include="ShaderGBufferGeo.h" />
+    <ClInclude Include="ShaderGBufferLight.h" />
+    <ClInclude Include="ShaderHDR.h" />
+    <ClInclude Include="ShaderMipmap.h" />
+    <ClInclude Include="ShaderPostEffect.h" />
+    <ClInclude Include="ShaderStructDeferredPointLight.h" />
+    <ClInclude Include="ShaderStructDirectionalLight.h" />
+    <ClInclude Include="ShaderStructPointLight.h" />
+    <ClInclude Include="ShaderStructSpotLight.h" />
+    <ClInclude Include="ShaderTextureSimple.h" />
+    <ClInclude Include="SphereCollisionComp.h" />
+    <ClInclude Include="SphereOb.h" />
+    <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="SpotLightManager.h" />
+    <ClInclude Include="UserInfo.h" />
+    <ClInclude Include="VectorP.h" />
+    <ClInclude Include="VectorPElem.h" />
+    <ClInclude Include="VectorPPairFirst.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.h" />
@@ -245,7 +363,7 @@
     <ClInclude Include="CollisionInfo.h" />
     <ClInclude Include="EnumMissileType.h" />
     <ClInclude Include="FpsUIObj.h" />
-    <ClInclude Include="ItemSelfDmgBuff.h" />
+    <ClInclude Include="ItemSelfDmg.h" />
     <ClInclude Include="ItemSelfHPRegen.h" />
     <ClInclude Include="ICommonMissileInfo.h" />
     <ClInclude Include="CommonMissileState.h" />
@@ -268,15 +386,15 @@
     <ClInclude Include="ItemOtherSpeedSlow.h" />
     <ClInclude Include="ItemSelfInvisible.h" />
     <ClInclude Include="ItemSelfOverwhelimg.h" />
-    <ClInclude Include="ItemSelfShotDelayBuff.h" />
-    <ClInclude Include="ItemSelfShotSpeedBuff.h" />
+    <ClInclude Include="ItemSelfShotDelay.h" />
+    <ClInclude Include="ItemSelfShotSpeed.h" />
     <ClInclude Include="ItemTeamDmgBuff.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="MissileGeneratorStorage.h" />
     <ClInclude Include="NormalMissile.h" />
     <ClInclude Include="NormalMissileGenerator.h" />
-    <ClInclude Include="NormalMissileGenInfo.h" />
+    <ClInclude Include="OctreeForFrustum.h" />
     <ClInclude Include="ParticleEntity.h" />
     <ClInclude Include="playerPlaneBackup.h" />
     <ClInclude Include="PlayerStateUIObj.h" />
@@ -312,7 +430,8 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShadowBufferTextureShader.h" />
     <ClInclude Include="SkyboxGObject.h" />
-    <ClInclude Include="ItemSpeedBuff.h" />
+    <ClInclude Include="ItemSpeed.h" />
+    <ClInclude Include="SpeedBuff.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\objectLoader.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\vboindexer.h" />
     <ClInclude Include="src\3rdParty\ObjectLoader\Vertex.h" />
@@ -348,8 +467,6 @@
     <ClInclude Include="src\Sound\ALManager.h" />
     <ClInclude Include="src\Sound\ALSound.h" />
     <ClInclude Include="src\Sound\ALSource.h" />
-    <ClInclude Include="src\Transform.h" />
-    <ClInclude Include="src\TransfromBuilder.h" />
     <ClInclude Include="src\window.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TextBox.h" />
@@ -358,6 +475,25 @@
     <ClInclude Include="UIEntity.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\Shader\Bloom.fragmentshader" />
+    <None Include="data\Shader\Bloom.vertexshader" />
+    <None Include="data\Shader\DebugLines.fragmentshader" />
+    <None Include="data\Shader\DebugLines.geometryshader" />
+    <None Include="data\Shader\DebugLines.vertexshader" />
+    <None Include="data\Shader\FXAA.fragmentshader" />
+    <None Include="data\Shader\FXAA.vertexshader" />
+    <None Include="data\Shader\GbufferFinalPass.fragmentshader" />
+    <None Include="data\Shader\GbufferFinalPass.vertexshader" />
+    <None Include="data\Shader\GbufferGeoPass.fragmentshader" />
+    <None Include="data\Shader\GbufferGeoPass.vertexshader" />
+    <None Include="data\Shader\GbufferLightPass.fragmentshader" />
+    <None Include="data\Shader\GbufferLightPass.vertexshader" />
+    <None Include="data\Shader\HDR.fragmentshader" />
+    <None Include="data\Shader\HDR.vertexshader" />
+    <None Include="data\Shader\MipmapLast.fragmentshader" />
+    <None Include="data\Shader\MipmapLast.vertexshader" />
+    <None Include="data\Shader\TexturePrint.fragmentshader" />
+    <None Include="data\Shader\TexturePrint.vertexshader" />
     <None Include="data\Shader\DepthRTT.fragmentshader" />
     <None Include="data\Shader\DepthRTT.vertexshader" />
     <None Include="data\Shader\Particle.fragmentshader" />

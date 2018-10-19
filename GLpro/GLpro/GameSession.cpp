@@ -1,9 +1,11 @@
 #include "GameSession.h"
 
+#include "stdafx.h"
+
 #include "Box.h"
 #include "Canvas.h"
-#include "src/Entity.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "src/Camera/CameraManager.h"
 #include "src/Camera/Camera.h"
 #include "src/Resource/Model.h"
@@ -20,12 +22,15 @@
 #include "Fobj.h"
 
 #include "Canvas.h"
-#include "src/Transform.h"
 #include "RigidbodyComponent.h"
 #include "src/window.h"
 
 #include "NormalMissileGenerator.h"
 #include "MissileGeneratorStorage.h"
+
+#include "LightManager.h"
+#include "SpotLight.h"
+#include "LightGameObject.h"
 
 std::vector<GameSession*> GameSession::preMadeGameSession;
 
@@ -33,6 +38,7 @@ std::vector<GameSession*> GameSession::preMadeGameSession;
 GameSession::GameSession()
 {
 	_menuCanvas = Canvas::preMadeCanvasVec[PREMADE_CANVAS_INGAMEMENU];
+	_gSessionStartTimeStamp = glfwGetTime();
 	_bMouseOn = false;
 }
 
@@ -123,9 +129,17 @@ void GameSession::update(float deltaTime, float acc)
 			GWindow->mouseToCenter();
 		}
 
+		// skybox update
+		_spaceSkybox->logicUpdate(deltaTime, acc);
+
 		removeEntityProcess();
 		return;
 	}
+}
+
+float GameSession::getGSessionStartTimeStamp()
+{
+	return _gSessionStartTimeStamp;
 }
 
 void GameSession::preMade()
@@ -142,25 +156,96 @@ void GameSession::preMade()
 
 	// player & camera attach
 	Player * newPlayer = new Player(premadeSession, planeModel, planeTexture, shaderMain);
-	//newPlayer->_rigidbodyComponent->_transform->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	newPlayer->_rigidbodyComponent->_transform->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
-	newPlayer->_rigidbodyComponent->_transform->setDirty();
+	//newPlayer->_rigidbodyComponent->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	newPlayer->getRigidbodyComponent()->setScaleMatrix(glm::vec3(1.0f, 1.0f, 1.0f));
+	newPlayer->getRigidbodyComponent()->setDirty();
+	newPlayer->getRigidbodyComponent()->translateModelMatrix(glm::vec3(0.0f, 0.0f, 0.0f));
+
 	newPlayer->setBRender(true);
-	newPlayer->init();
+	newPlayer->initIPlane(new PlaneInfo(100, 0, 3.0f), new PlaneInfo(100, 100, 3.0f));
+	newPlayer->initPlayer();
 	NormalMissileGenerator * normalMissileGenerator = new NormalMissileGenerator();
-	normalMissileGenerator->init(newPlayer, newPlayer->getMissileGeneratorStorage());
+	normalMissileGenerator->initNormalMissileGenerator(newPlayer, newPlayer->getMissileGeneratorStorage());
 	newPlayer->addMissileGenerator(normalMissileGenerator);
+
+	//spot light on player
+	GLightManager->AddDirectinalLight(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	LightGameObject* tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 40.0f, 1.0f, 0.01f, 10.0f)->getLightGameObject();
+	newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
+
+	for (int i = 0; i < 1; i++)
+	{
+		//LightGameObject* tempSpotGameObj2 = GLightManager->AddPointLightManager(glm::vec3(0.0f, 0.0f, 5.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+		//tempSpotGameObj = GLightManager->AddDeferredPointLight(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+		//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj2));
+	}
+	
+	//tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 4.0f, 4.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+	//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
+	//tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 4.0f, 4.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+	//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
+	//tempSpotGameObj = GLightManager->AddSpotLightManager(glm::mat4(), glm::vec3(0.0f, 4.0f, 4.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f)->getLightGameObject();
+	//newPlayer->attachChildEntity(static_cast<Entity*>(tempSpotGameObj));
+
+	std::vector<glm::vec3> enemyVec;
+	/*
+	for (int i = -8; i < 9; i++)
+	{
+		for (int k = -9; k < 9; k++)
+		{
+			for (int q = -9; q < 9; q++)
+			{
+				if (i == 0 && k == 0 && q == 0)
+					continue;
+				enemyVec.push_back(glm::vec3(i * 10.0f + 3.0f, k * 10.0f + 3.0f, q * 10.0f + 3.0f));
+			}
+		}
+	}
+	*/
+	
+	for (int i = -2; i < 2; i++)
+	{
+		for (int k = -2; k < 2; k++)
+		{
+			for (int q = 0; q < 2; q++)
+			{
+				if (i == 0 && k == 0 && q == 0)
+					continue;
+
+				enemyVec.push_back(glm::vec3(i * 10.0f + 3.0f, k * 10.0f + 3.0f, q * 10.0f + 3.0f));
+			}
+		}
+	}
+	
+	
+	Enemy * newEnemy = nullptr;
+	for (auto elem : enemyVec)
+	{
+		// player & camera attach
+		newEnemy = new Enemy(premadeSession, planeModel, planeTexture, shaderMain);
+		//newPlayer->_rigidbodyComponent->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		newEnemy->getRigidbodyComponent()->setDirty();
+		newEnemy->getRigidbodyComponent()->translateModelMatrix(elem);
+		newEnemy->setBRender(true);
+		newEnemy->initIPlane(new PlaneInfo(100, 0, 3.0f), new PlaneInfo(100, 100, 3.0f));
+		newEnemy->initEnemy();
+		normalMissileGenerator = new NormalMissileGenerator();
+		normalMissileGenerator->initNormalMissileGenerator(newEnemy, newEnemy->getMissileGeneratorStorage());
+		newEnemy->addMissileGenerator(normalMissileGenerator);
+		
+	}
 	
 	CAMERA::Camera** mainCam = GCameraManager->GetMainCamera();
-	//(*mainCam)->_rigidbodyComponent->_transform->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	(*mainCam)->_rigidbodyComponent->_transform->accModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
-	(*mainCam)->_rigidbodyComponent->_transform->setDirty();
+	//(*mainCam)->_rigidbodyComponent->accRotationMatrix(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	(*mainCam)->getRigidbodyComponent()->accModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
+	(*mainCam)->getRigidbodyComponent()->setDirty();
 	//newPlayer->attachChildEntity(*mainCam);
 	
 	//ttest
 	//Player * testP = new Player(premadeSession, planeModel, planeTexture, shaderMain);
-	//testP->_rigidbodyComponent->_transform->accModelMatrix(glm::vec3(0.0f, 0.0f, 15.0f));
-	//testP->_rigidbodyComponent->_transform->setDirty();
+	//testP->_rigidbodyComponent->accModelMatrix(glm::vec3(0.0f, 0.0f, 15.0f));
+	//testP->_rigidbodyComponent->setDirty();
 	//testP->init();
 
 
@@ -185,6 +270,7 @@ void GameSession::preMade()
 	//SkyboxGObject * spaceSkybox = new SkyboxGObject(skyboxShader, skyboxFObj);
 	SkyboxGObject * spaceSkybox = SkyboxGObject::_preMadeSpaceSkybox[0];
 	spaceSkybox->setBRender(true);
+	newPlayer->attachChildEntity(static_cast<Entity*>(spaceSkybox));
 	premadeSession->_spaceSkybox = spaceSkybox;
 
 	preMadeGameSession.push_back(premadeSession);		// premade session

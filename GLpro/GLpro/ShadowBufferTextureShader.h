@@ -12,7 +12,7 @@ namespace RESOURCE
 	class ShadowBufferTextureShader
 	{
 	public:
-		ShadowBufferTextureShader(int fboX = 1024, int fboY = 1024);
+		ShadowBufferTextureShader();
 		virtual ~ShadowBufferTextureShader();
 		void init();
 
@@ -23,6 +23,7 @@ namespace RESOURCE
 		void unbindShader();
 
 		SHADER::ShaderShadow*	_shadowShader;
+		int _fboX, _fboY;
 	protected:
 		void createBuffer();
 
@@ -30,7 +31,6 @@ namespace RESOURCE
 		GLuint	_shadowFBO;
 		GLuint	_shadowDepthTexture;
 
-		int _fboX, _fboY;
 	};
 }
 

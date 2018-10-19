@@ -5,13 +5,12 @@
 
 namespace CAMERA { class Camera; };
 
-
 namespace CAMERA
 {
 	class CameraBuilder
 	{
 	public:
-		CameraBuilder(std::string& name, int type);
+		CameraBuilder(std::string& name);
 
 		Camera* constructPtr();
 		CameraBuilder& setFov(float fov, float horizontalFov, float verticalFov);

@@ -9,6 +9,7 @@ namespace CONTROL
 		_glfwKeyNum = glfw_key_num;
 	}
 
+	// do not use checkKeyInput return value
 	bool ControlDown::checkKeyInput(GLFWwindow* pWindow)
 	{
 		if (_bKey)
@@ -17,6 +18,7 @@ namespace CONTROL
 				setBTrigger(true);
 				return true;
 			}
+			setBTrigger(false);
 			return false;
 		}
 		
@@ -24,10 +26,11 @@ namespace CONTROL
 			setBTrigger(true);
 			return true;
 		}
+		setBTrigger(false);
 		return false;
 	}
 
-	bool ControlDown::isKeyON()
+	bool ControlDown::isKeyON(bool reset)
 	{
 		return isBTriggerOn();
 	}

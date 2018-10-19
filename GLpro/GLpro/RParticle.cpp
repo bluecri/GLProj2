@@ -10,6 +10,8 @@
 #include "ParticleStruct.h"
 #include "ParticleCreateInfo.h"
 
+#include "ParticleFObjManager.h"
+
 namespace RENDER
 {
 	
@@ -19,26 +21,20 @@ namespace RENDER
 		_targetCamera = GCameraManager->GetMainCamera();
 	}
 
-	std::shared_ptr<RParticle::DrawElement> RParticle::addToDrawList(FObjElem* particleFObj, RigidbodyComponent * rigidbodyComponent)
+	std::shared_ptr<RParticle::DrawElement> RParticle::addToDrawList(FObjElem particleFObj, RigidbodyComponent * rigidbodyComponent)
 	{
-		ParticleCreateInfo* particleCreateInfo = new ParticleCreateInfo(true);
-		particleCreateInfo->init(rigidbodyComponent->_transform);
+		auto elem = std::shared_ptr<RParticle::DrawElement>(new ParticleCreateInfo(true, particleFObj));
+		elem->init(rigidbodyComponent);
 
-		auto elem = std::shared_ptr<RParticle::DrawElement>(new RParticle::DrawElement(particleFObj, particleCreateInfo), [](auto ptr) {
-			delete ptr->first;
-			delete ptr->second;
-			delete ptr;
-		});
 		_particleDrawElemContainer.push_back(elem);
 		return elem;
 	}
 
-	void RParticle::update(CAMERA::Camera ** cam)
+	void RParticle::updateRRender()
 	{
-		_targetCamera = cam;
 	}
 
-	void RParticle::draw(float deltaTime)
+	void RParticle::drawRRender(float deltaTime)
 	{
 		beforeDraw(deltaTime);		//update particle
 		CAMERA::Camera* cam = *_targetCamera;
@@ -48,22 +44,22 @@ namespace RENDER
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		for (auto it = _particleDrawElemContainer.begin(); it != _particleDrawElemContainer.end(); )
+		std::map<std::string, std::shared_ptr<RENDER_TARGET::PARTICLE::ParticleFObj>>& fObjContainer
+			= GParticleFObjManager->getFobjContainerForDraw();
+		for (auto it = fObjContainer.begin(); it != fObjContainer.end(); )
 		{
-			RENDER_TARGET::PARTICLE::ParticleFObj* particleFObj = (*it)->first;
+			FObjElem particleFObj = (*it).second;
 			// ParticleCreateInfo* particleCreateInfo = (*it)->second;
 			// RParticle에서는 particle 생성시에만 bind된 rigidbody position을 사용한다.
 
-			if (!particleFObj->isRender())
+			if (!(particleFObj->isRender()))
 			{
 				++it;
 				continue;
 			}
 
-			particleFObj->_particleBuffer->bind();
-
 			glActiveTexture(GL_TEXTURE3);
-			particleFObj->_texture->bind();
+			particleFObj->bind();
 			_shaderObj->loadInt(_shaderObj->m_textureID, 3);
 
 			glm::mat4& cameraViewMat = cam->getRecentViewMat();
@@ -72,10 +68,9 @@ namespace RENDER
 			_shaderObj->loadVector3(_shaderObj->m_cameraUp_worldspace_ID, cameraViewMat[0][1], cameraViewMat[1][1], cameraViewMat[2][1]);
 			_shaderObj->loadMatrix4(_shaderObj->m_viewProjMatrixID, cameraVPMat);
 
-			particleFObj->_particleBuffer->render();
+			particleFObj->renderBuffer();
 
-			particleFObj->_texture->unbind();
-			particleFObj->_particleBuffer->unbind();
+			particleFObj->unBind();
 
 			it++;
 		}
@@ -84,6 +79,11 @@ namespace RENDER
 
 		glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
+	}
+
+	void RParticle::updateTargetCamera(CAMERA::Camera ** cam)
+	{
+		_targetCamera = cam;
 	}
 
 	void RParticle::chageShader(RParticle::TYPE_SHADER * other)
@@ -98,20 +98,21 @@ namespace RENDER
 
 	/*
 	*	particle Fobj에서 빈 particle을 particle info를 통해 particle generate.
-	*
 	*/
 	void RParticle::beforeDraw(float deltaTime)
 	{
-		glm::vec3 camPosVec = (*_targetCamera)->_rigidbodyComponent->_transform->getWorldPosVec();
+		glm::vec3 camPosVec = (*_targetCamera)->getRigidbodyComponent()->getWorldPosVec();
+		GParticleFObjManager->updateParticleStructsAll(deltaTime, camPosVec);
+		
 		for (auto it = _particleDrawElemContainer.begin(); it != _particleDrawElemContainer.end(); )
 		{
-			RENDER_TARGET::PARTICLE::ParticleFObj* particleFObj = (*it)->first;
-			ParticleCreateInfo* particleCreateInfo = (*it)->second;
+			auto sharedParticleCreateInfo = (*it);
+			auto sharedParticleFObj = (*it)->getSharedParticleFObj();
 
 			// check delete & remain time
-			if (particleFObj->isBDeleted())
+			if (sharedParticleCreateInfo->isDeleted())
 			{
-				float& remainDelTime = particleFObj->getDeleteRemainTimeRef();
+				float& remainDelTime = sharedParticleCreateInfo->getDeleteRemainTimeRef();
 				if (remainDelTime < 0.0f)
 				{
 					// do delete
@@ -120,7 +121,7 @@ namespace RENDER
 				}
 				remainDelTime -= deltaTime;
 			}
-			else if (!particleFObj->isRender())
+			else if (!sharedParticleFObj->isRender())
 			{
 				++it;
 				continue;
@@ -129,24 +130,13 @@ namespace RENDER
 			{
 				// not generate if deleted
 				// create new particles [ get new particle & modify info with particleCreateInfo ]
-				particleCreateInfo->genNewParticles(particleFObj);
+				sharedParticleCreateInfo->genNewParticles();
 			}
-
-			// update exist particles
-			for (auto elem : particleFObj->_particleContainer)
-			{
-				// cam distance update
-				elem->update(deltaTime, camPosVec);
-			}
-
-			// sort with distance
-			particleFObj->sortContainerByDist();
-
-			// fill ParticleBuffer (pos buffer & color buffer)
-			particleFObj->orderFillParticleBuffer();
 
 			++it;
 		}
 
+		GParticleFObjManager->doAllFobjBeforeDrawBehavior();
 	}
+	
 }

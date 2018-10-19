@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ParticleFObj.h"
 #include "src/Resource/TextureManager.h"
+#include "src/Resource/Texture.h"
 #include "ParticleBuffer.h"
 
 #include "configs.h"
@@ -8,16 +9,14 @@
 
 RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName, const char * textureType, int particleContainerSize)
 {
-	_deleteRemainTime = -1.0f;
-
 	std::vector<glm::vec3> default_particle_buffer;
 	for (int i = 0; i < 4; i++)
 	{
-		default_particle_buffer.push_back(glm::vec3(g_vertex_buffer_data[i * 3 + 0], g_vertex_buffer_data[i * 3 + 1], g_vertex_buffer_data[i * 3 + 2]));
+		default_particle_buffer.push_back(glm::vec3(g_vertex_particle_default_buffer_data[i * 3 + 0], g_vertex_particle_default_buffer_data[i * 3 + 1], g_vertex_particle_default_buffer_data[i * 3 + 2]));
 	}
 
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
-	_particleBuffer = new RESOURCE::ParticleBuffer(default_particle_buffer);
+	_particleBuffer = new RESOURCE::ParticleBuffer(default_particle_buffer, particleContainerSize);
 
 	_particleContainerSize = particleContainerSize;
 	_particleContainer = std::vector<ParticleStruct*>();
@@ -27,24 +26,27 @@ RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName
 	{
 		_particleContainer.push_back(new ParticleStruct());
 	}
+
+	_bOverUseParticle = false;
 }
 
 RENDER_TARGET::PARTICLE::ParticleFObj::ParticleFObj(const char * textureFileName, const char * textureType, std::vector<glm::vec3>& vertices, int particleContainerSize)
 	: FObj()
 {
-	_deleteRemainTime = -1.0f;
-
 	_texture = GTextureManager->getTextureWithFileName(textureFileName, textureType);
-	_particleBuffer = new RESOURCE::ParticleBuffer(vertices);
+	_particleBuffer = new RESOURCE::ParticleBuffer(vertices, particleContainerSize);
 
 	_particleContainerSize = particleContainerSize;
 	_particleContainer = std::vector<ParticleStruct*>();
 	_particleContainer.reserve(_particleContainerSize);
 
+
 	for (int i = 0; i < _particleContainerSize; i++)
 	{
 		_particleContainer.push_back(new ParticleStruct());
 	}
+
+	_bOverUseParticle = false;
 }
 
 RENDER_TARGET::PARTICLE::ParticleFObj::~ParticleFObj()
@@ -60,21 +62,31 @@ RENDER_TARGET::PARTICLE::ParticleFObj::~ParticleFObj()
 void RENDER_TARGET::PARTICLE::ParticleFObj::sortContainerByDist()
 {
 	// needCheck
+	tbb::parallel_sort(_particleContainer.begin(), _particleContainer.end(),
+		[](const ParticleStruct* lhs, const ParticleStruct* rhs) -> bool
+	{
+		return lhs->_cameradistance > rhs->_cameradistance;
+	}
+	);
+
+	/*
 	std::sort(_particleContainer.begin(), _particleContainer.end(),
 	[](const ParticleStruct* lhs, const ParticleStruct* rhs) -> bool
 	{
 		return lhs->_cameradistance > rhs->_cameradistance;
 	});
-	
+	*/
 }
 
 void RENDER_TARGET::PARTICLE::ParticleFObj::orderFillParticleBuffer()
 {
 	int& drawPCnt = _particleBuffer->_particlePrintCnt;
+	drawPCnt = 0;	// init count
+
 	// todo camera dist < 0.0, no push?
 	for (auto elem : _particleContainer)
 	{
-		if (elem->_life > 0.0f && drawPCnt < MAX_PARTICLE_INBUFFER_DEFAULT_NUM)
+		if (elem->_life > 0.0f && drawPCnt < _particleBuffer->getBufferParticleCapacity())
 		{
 			// direct access
 
@@ -96,6 +108,9 @@ void RENDER_TARGET::PARTICLE::ParticleFObj::orderFillParticleBuffer()
 
 ParticleStruct & RENDER_TARGET::PARTICLE::ParticleFObj::GetUnusedParticle()
 {
+	if (_bOverUseParticle)
+		return *_particleContainer[0];
+
 	// find unUsed Particle [lastUsedindex ~ last Index]
 	for (int i = _lastUsedParticleIndex; i<_particleContainerSize; i++) {
 		if (_particleContainer[i]->_life < 0.0f) {
@@ -106,21 +121,78 @@ ParticleStruct & RENDER_TARGET::PARTICLE::ParticleFObj::GetUnusedParticle()
 
 	// find unUsed Particle [0 ~ lastUsedindex]
 	for (int i = 0; i<_lastUsedParticleIndex; i++) {
-		if (_particleContainer[i]->_life < 0) {
+		if (_particleContainer[i]->_life < 0.0f) {
 			_lastUsedParticleIndex = i;
 			return *_particleContainer[i];
 		}
 	}
+	_bOverUseParticle = true;
 
 	return *_particleContainer[0]; // All particles are taken, override the first one
 }
 
-void RENDER_TARGET::PARTICLE::ParticleFObj::setDeleteRemainTime(float remainTime)
+void RENDER_TARGET::PARTICLE::ParticleFObj::accParticleContainderSize(int acc)
 {
-	_deleteRemainTime = remainTime;
+	// opt : vector resize does not modify capacity
+	_particleContainerSize += acc;
+	_particleBuffer->accParticleCapacity(acc);
+	if (acc < 0)
+	{
+		int lastIdx = static_cast<int>(_particleContainer.size() - 1);
+
+		for (int i = 0; i<acc; i++)
+			delete _particleContainer[lastIdx - i];
+
+		_particleContainer.resize(_particleContainerSize);
+	}
+	else if (acc > 0)
+	{
+		for (int i = 0; i<acc; i++)
+			_particleContainer.push_back(new ParticleStruct());
+	}
 }
 
-float & RENDER_TARGET::PARTICLE::ParticleFObj::getDeleteRemainTimeRef() {
-	return _deleteRemainTime;
+int RENDER_TARGET::PARTICLE::ParticleFObj::getPrevPrintedParticleNum()
+{
+	return _particleBuffer->_particlePrintCnt;
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::bind()
+{
+	_particleBuffer->bind();
+	_texture->bind();
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::unBind()
+{
+	_particleBuffer->unbind();
+	_texture->unbind();
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::renderBuffer()
+{
+	_particleBuffer->render();
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::resetOveruseParticle()
+{
+	_bOverUseParticle = false;
+}
+
+void RENDER_TARGET::PARTICLE::ParticleFObj::updateParticleStructs(float deltaTime, glm::vec3 & camPosVec)
+{
+	/*
+	for (auto elem : _particleContainer)
+	{
+		// cam distance update
+		elem->update(deltaTime, camPosVec);
+	}
+	*/
+
+	tbb::parallel_for(tbb::blocked_range<size_t>(0, _particleContainer.size()),
+		[=](const tbb::blocked_range<size_t>& r) {
+		for (size_t i = r.begin(); i != r.end(); ++i)
+			_particleContainer[i]->update(deltaTime, camPosVec);
+	});
 }
 

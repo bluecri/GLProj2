@@ -1,6 +1,7 @@
 #ifndef __R_NORMAL_H__
 #define __R_NORMAL_H__
 
+#include "../../stdafx.h"
 #include <list>
 #include <utility>
 #include <memory>
@@ -13,6 +14,7 @@ namespace RENDER_TARGET{ namespace NORMAL { class NormalFObj; } }
 namespace SHADER {
 	class ShaderMain; class ShaderShadow;
 }
+namespace RESOURCE { class Model; class Texture;}
 
 class RigidbodyComponent;
 
@@ -24,16 +26,26 @@ namespace RENDER
 		public:
 			using TYPE_SHADER = SHADER::ShaderMain;
 			using DrawElement = std::pair<RENDER_TARGET::NORMAL::NormalFObj*, RigidbodyComponent*>;
-			using DrawElemContainer = std::list<std::shared_ptr<DrawElement>>;
+			using SharedDrawElement = std::shared_ptr<DrawElement>;
+			using DrawElemContainer = std::map<RESOURCE::Texture*, std::unordered_map<RESOURCE::Model*, std::vector<SharedDrawElement>>>;
 
 			RNormal(SHADER::ShaderMain* shaderObj);
 			virtual ~RNormal() {};	// Render 삭제시 DrawElemContainer이 shared_ptr 이므로 자동 해제.
 
 			std::shared_ptr<RNormal::DrawElement> addDrawElem(RENDER_TARGET::NORMAL::NormalFObj * normalFObj, RigidbodyComponent* rigidComponent);
+			DrawElemContainer& getDrawElemList();
 
-			void update(CAMERA::Camera** cam) override;	//shader target camera update
+			void updateRRender() override;	//shader target camera update
+			void updateTargetCamera(CAMERA::Camera** cam) override;
 
-			virtual void draw(float deltaTime);
+			void shadowBufferPreDraw(float deltaTime);
+			void shadowBufferDraw(float deltaTime);
+			void shadowMappingDraw(float deltaTime);
+
+			//void deferredDraw(float deltaTime);
+
+
+			virtual void drawRRender(float deltaTime);
 
 			//	virtual void chageShader(SHADER::ShaderMain* other);	-> make fixed.
 

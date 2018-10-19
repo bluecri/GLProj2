@@ -79,9 +79,6 @@
     <Filter Include="소스 파일\src\config">
       <UniqueIdentifier>{534c46ff-7c05-45a6-86fd-e11f9a9672c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\src\Resource\ShadowOld">
-      <UniqueIdentifier>{28edb467-40ed-4808-9296-1f959aa95280}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\src\option">
       <UniqueIdentifier>{a0187a7c-252f-493a-ad08-431adad4b452}</UniqueIdentifier>
     </Filter>
@@ -103,33 +100,6 @@
     <Filter Include="소스 파일\components\collision\collisionInfo">
       <UniqueIdentifier>{49ce33ad-128b-496e-952f-b4a23d861e74}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile">
-      <UniqueIdentifier>{aa8c4c2f-eead-435e-95b3-5f45e2646c63}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\user">
-      <UniqueIdentifier>{6524fd5a-a959-4b88-a01b-28fa87ce978a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\generator">
-      <UniqueIdentifier>{04d226d9-89cc-4d77-a4ff-2e6826a2adc5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\missileObjs">
-      <UniqueIdentifier>{92ad1392-87df-4179-8526-6ebdb17ad325}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\infos">
-      <UniqueIdentifier>{9b6279b3-e237-4063-b5d6-f08a308faa1f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\infos\normal">
-      <UniqueIdentifier>{db37b262-bdfc-456a-8dd6-e6ea4b08c110}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\state">
-      <UniqueIdentifier>{a0e58c33-b6ae-44e0-948e-10fa54ba41b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\state\specifiedStates">
-      <UniqueIdentifier>{0e1eafee-3355-4397-bb0d-9ee73aa95060}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\missile\generator\gen">
-      <UniqueIdentifier>{9c879573-a8db-4e0a-89e8-29cdb7a24be6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\GameScene\GameObjects\backup">
       <UniqueIdentifier>{a6600926-39a6-48d3-9eeb-f2bb667556c2}</UniqueIdentifier>
     </Filter>
@@ -139,17 +109,131 @@
     <Filter Include="소스 파일\GameScene\UIObjects">
       <UniqueIdentifier>{5a2bf96a-8b2d-4462-9c94-32a852d2d8d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\components\frustum">
+      <UniqueIdentifier>{04448d8f-3396-43f1-892b-cfc1b2a86718}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane">
+      <UniqueIdentifier>{b8807291-eec8-4c55-909e-58532b5fe29a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\user">
+      <UniqueIdentifier>{6524fd5a-a959-4b88-a01b-28fa87ce978a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile">
+      <UniqueIdentifier>{aa8c4c2f-eead-435e-95b3-5f45e2646c63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\generator">
+      <UniqueIdentifier>{04d226d9-89cc-4d77-a4ff-2e6826a2adc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\generator\gen">
+      <UniqueIdentifier>{9c879573-a8db-4e0a-89e8-29cdb7a24be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\missileObjs">
+      <UniqueIdentifier>{92ad1392-87df-4179-8526-6ebdb17ad325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\infos">
+      <UniqueIdentifier>{9b6279b3-e237-4063-b5d6-f08a308faa1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\infos\normal">
+      <UniqueIdentifier>{db37b262-bdfc-456a-8dd6-e6ea4b08c110}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\state">
+      <UniqueIdentifier>{a0e58c33-b6ae-44e0-948e-10fa54ba41b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\plane\missile\state\specifiedStates">
+      <UniqueIdentifier>{0e1eafee-3355-4397-bb0d-9ee73aa95060}</UniqueIdentifier>
+    </Filter>
     <Filter Include="소스 파일\GameScene\GameObjects\fieldItem">
       <UniqueIdentifier>{9897ef2b-a057-4421-a059-ec5a19ef46c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\otherTarget">
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\BuffList">
+      <UniqueIdentifier>{b1f222f2-3a7c-4e99-a40d-9be3dbdee699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\ItemList">
+      <UniqueIdentifier>{258c3565-09e5-43c8-b347-85956d08cbed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\ItemList\otherTarget">
       <UniqueIdentifier>{21b3b279-3460-4371-b172-079671e83a14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\selfTarget">
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget">
       <UniqueIdentifier>{8349d3c3-8827-4985-bfbd-bd3c0fb1afe4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\teamTarget">
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\ItemList\teamTarget">
       <UniqueIdentifier>{82267b82-78d6-45ce-98fb-51c642f69352}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\BuffList\otherTarget">
+      <UniqueIdentifier>{da9f3a36-a1b6-45d6-b63f-50ff0bd400ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\BuffList\selfTarget">
+      <UniqueIdentifier>{dc024dde-ffa3-4bee-9ca4-8868d4cff96b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\fieldItem\BuffList\teamTarget">
+      <UniqueIdentifier>{a13302e2-70fc-4d40-bee7-29a31aaa941b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights\shaderBuffer">
+      <UniqueIdentifier>{1b36cbe8-b312-4bed-9dfe-bcc9cc0dbd83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights\manager">
+      <UniqueIdentifier>{ec67d4b0-1722-4e21-8683-66d5ae03c099}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights\lights">
+      <UniqueIdentifier>{a4c5452f-caf1-4a4a-b81c-291c643a9ea2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights\manager\interface">
+      <UniqueIdentifier>{3d6ff3d6-9bcc-4344-a980-1d94b5872392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights\manager\withEntity">
+      <UniqueIdentifier>{f37682fa-bd8d-422a-bc5b-4445d40c89a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\lights\manager\withNoEntity">
+      <UniqueIdentifier>{eeb4f3af-2801-4795-936f-2894e2596760}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameScene\GameObjects\GOComponent">
+      <UniqueIdentifier>{67c3c132-87ed-4226-9ba7-adcf3be6b003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\renderTarget\particle">
+      <UniqueIdentifier>{ead8e588-13ad-42e9-806e-60fc47f386d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\Resource\ShadowAndLight">
+      <UniqueIdentifier>{28edb467-40ed-4808-9296-1f959aa95280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\shaders\GBuffer">
+      <UniqueIdentifier>{fc7ca07d-2953-4216-bcee-fa6a7dfc018d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\Resource\GBuffer">
+      <UniqueIdentifier>{52ce19f5-58fe-44ff-a4a5-32524bf4d73d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\FrustumFObj">
+      <UniqueIdentifier>{86d51a40-8b22-4e37-8f6c-7c16224b5389}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\Resource\GBuffer\PostEffect">
+      <UniqueIdentifier>{e9410d65-2f09-4bad-ac6c-2124ee12c893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\shader\GBuffer">
+      <UniqueIdentifier>{da2aff5e-2ad7-47b1-b530-84128a81fc74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\shader\PostPipeline">
+      <UniqueIdentifier>{aa32f2f3-9825-49b2-9eef-b583922c29d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\shaders\postPipeline">
+      <UniqueIdentifier>{7f178407-e4d9-4222-be90-246e3a388ca9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\shaders\textureRender">
+      <UniqueIdentifier>{49e06903-db99-4174-91d7-bdcf3a7a7772}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\preComplie\vectorLikeList">
+      <UniqueIdentifier>{36255e45-3c5f-4bd1-95a3-dac0882d39d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\3rd\clientNetwork">
+      <UniqueIdentifier>{2cfe1392-de2d-471c-b638-b4f5e4a53ba0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\components\collision\Dynamic">
+      <UniqueIdentifier>{94f50f0e-f58e-4e20-8635-b3d44b8ccb62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\components\collision\Static">
+      <UniqueIdentifier>{44d5eea0-0cda-415c-a9ac-0ff78b6d2739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\shaders\debugInfo">
+      <UniqueIdentifier>{a11f5f96-334b-4a3f-8790-f5c1e5c31c74}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -157,9 +241,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Entity.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Transform.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Control\Control.cpp">
@@ -185,9 +266,6 @@
     </ClCompile>
     <ClCompile Include="src\Resource\TextureManager.cpp">
       <Filter>소스 파일\src\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TransformBuilder.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>소스 파일\src\camera</Filter>
@@ -304,7 +382,7 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ShadowBufferTextureShader.cpp">
-      <Filter>소스 파일\src\Resource\ShadowOld</Filter>
+      <Filter>소스 파일\src\Resource\ShadowAndLight</Filter>
     </ClCompile>
     <ClCompile Include="RenderManager.cpp">
       <Filter>소스 파일</Filter>
@@ -355,10 +433,10 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\user</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
-      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\user</Filter>
     </ClCompile>
     <ClCompile Include="NormalMissile.cpp">
       <Filter>소스 파일</Filter>
@@ -369,13 +447,7 @@
     <ClCompile Include="CommonNormalMissileInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="NormalMissileGenInfo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SpecifiedNormalMissileInfo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="NormalMissileState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="NormalMissileGenerator.cpp">
@@ -417,10 +489,190 @@
     <ClCompile Include="IFieldItem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ItemSpeedBuff.cpp">
+    <ClCompile Include="src\Shader\ShaderText.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\Shader\ShaderText.cpp">
+    <ClCompile Include="OctreeForFrustum.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IGameObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpecifiedNormalMissileState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ISpecifiedMissileInfo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaneInfo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldItemGenerator.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemSpeed.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IFieldItemForBuff.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IBuff.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpeedBuff.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BuffSum.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BuffManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLightManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderStructDirectionalLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderStructSpotLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderStructPointLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderStructDeferredPointLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredPointLightManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredPointLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="LightGameObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="LightWithEntity.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ILightWithEntityManager.cpp">
+      <Filter>소스 파일\src\lights\manager\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLightManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLightManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\ShaderMain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityBinder.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityBindee.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleFObjManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelOnlyVertex.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderGBufferGeo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderGBufferLight.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderGBufferFinal.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredGFBO.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\ShaderShadow.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FrustumOb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="AABBOb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereOb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PostGraphicProcess.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderHDR.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderFXAA.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderPostEffect.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderBloom.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderMipmap.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="OctreeElem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorPElem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="OctreeFrustumElem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="LineOb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="OBBOb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="LineCollisionComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollisionComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionFuncStatic.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicCollisionSubComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicCollisionSubCompVec.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionFuncDynamic.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicCollisionSubCompMat.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicCollisionSubCompLine.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderDebugLines.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -429,9 +681,6 @@
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="src\Entity.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Transform.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="src\Control\Control.h">
@@ -491,9 +740,6 @@
     <ClInclude Include="src\RenderTarget\Skybox\SkyboxFObj.h">
       <Filter>소스 파일\src\renderTarget\skybox</Filter>
     </ClInclude>
-    <ClInclude Include="src\TransfromBuilder.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="src\Camera\Camera.h">
       <Filter>소스 파일\src\camera</Filter>
     </ClInclude>
@@ -520,12 +766,6 @@
     </ClInclude>
     <ClInclude Include="src\Render\RNormal.h">
       <Filter>소스 파일\src\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="LightManager.h">
-      <Filter>소스 파일\src\lights</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectionalLight.h">
-      <Filter>소스 파일\src\lights</Filter>
     </ClInclude>
     <ClInclude Include="src\RenderTarget\Normal\NormalFObj.h">
       <Filter>소스 파일\src\renderTarget</Filter>
@@ -568,9 +808,6 @@
     </ClInclude>
     <ClInclude Include="origin\XTL.h">
       <Filter>소스 파일\origin</Filter>
-    </ClInclude>
-    <ClInclude Include="light.h">
-      <Filter>소스 파일\src\lights</Filter>
     </ClInclude>
     <ClInclude Include="ParticleBuffer.h">
       <Filter>소스 파일\src\Resource\Buffer</Filter>
@@ -624,7 +861,7 @@
       <Filter>소스 파일\src\renderer</Filter>
     </ClInclude>
     <ClInclude Include="ShadowBufferTextureShader.h">
-      <Filter>소스 파일\src\Resource\ShadowOld</Filter>
+      <Filter>소스 파일\src\Resource\ShadowAndLight</Filter>
     </ClInclude>
     <ClInclude Include="CollisionComponent.h">
       <Filter>소스 파일\components\collision</Filter>
@@ -671,59 +908,53 @@
     <ClInclude Include="CollisionInfo.h">
       <Filter>소스 파일\components\collision\collisionInfo</Filter>
     </ClInclude>
-    <ClInclude Include="IPlane.h">
-      <Filter>소스 파일\GameScene\GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\user</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
-      <Filter>소스 파일\GameScene\GameObjects\user</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\user</Filter>
     </ClInclude>
     <ClInclude Include="NormalMissile.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\missileObjs</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\missileObjs</Filter>
     </ClInclude>
     <ClInclude Include="IMissile.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\missileObjs</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\missileObjs</Filter>
     </ClInclude>
     <ClInclude Include="IMissileGenInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\infos</Filter>
     </ClInclude>
     <ClInclude Include="ISpecifiedMissileInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\infos</Filter>
     </ClInclude>
     <ClInclude Include="CommonNormalMissileInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos\normal</Filter>
-    </ClInclude>
-    <ClInclude Include="NormalMissileGenInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos\normal</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\infos\normal</Filter>
     </ClInclude>
     <ClInclude Include="SpecifiedNormalMissileInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos\normal</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\infos\normal</Filter>
     </ClInclude>
     <ClInclude Include="ICommonMissileInfo.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\infos</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\infos</Filter>
     </ClInclude>
     <ClInclude Include="CommonMissileState.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\state</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\state</Filter>
     </ClInclude>
     <ClInclude Include="IMissileGenerator.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\generator</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\generator</Filter>
     </ClInclude>
     <ClInclude Include="ISpecifiedMissileState.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\state</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\state</Filter>
     </ClInclude>
     <ClInclude Include="MissileGeneratorStorage.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\generator</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\generator</Filter>
     </ClInclude>
     <ClInclude Include="NormalMissileGenerator.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\generator\gen</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\generator\gen</Filter>
     </ClInclude>
     <ClInclude Include="EnumMissileType.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile</Filter>
     </ClInclude>
     <ClInclude Include="SpecifiedNormalMissileState.h">
-      <Filter>소스 파일\GameScene\GameObjects\missile\state\specifiedStates</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\plane\missile\state\specifiedStates</Filter>
     </ClInclude>
     <ClInclude Include="EmptyMissileGenerator.h">
       <Filter>헤더 파일</Filter>
@@ -756,49 +987,247 @@
       <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
     </ClInclude>
     <ClInclude Include="ItemOtherSpeedSlow.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\otherTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\otherTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemOtherRandomizeDirection.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\otherTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\otherTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemOtherDisableShot.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\otherTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\otherTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemSelfInvisible.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemSelfOverwhelimg.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemSelfRandomTeleport.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemAmmoRegen.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemSelfArmorRegen.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemSelfHPRegen.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
     </ClInclude>
     <ClInclude Include="ItemTeamDmgBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\teamTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemSelfDmgBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemSelfShotDelayBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemSelfShotSpeedBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemSpeedBuff.h">
-      <Filter>소스 파일\GameScene\GameObjects\fieldItem\selfTarget</Filter>
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\teamTarget</Filter>
     </ClInclude>
     <ClInclude Include="FieldItemGenerator.h">
       <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeForFrustum.h">
+      <Filter>소스 파일\components\frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameObject.h">
+      <Filter>소스 파일\GameScene\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="IPlane.h">
+      <Filter>소스 파일\GameScene\GameObjects\plane</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInfo.h">
+      <Filter>소스 파일\GameScene\GameObjects\plane\user</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaneInfo.h">
+      <Filter>소스 파일\GameScene\GameObjects\plane</Filter>
+    </ClInclude>
+    <ClInclude Include="IBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\BuffList</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfShotSpeed.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfShotDelay.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="IFieldItemForBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSelfDmg.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemSpeed.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\ItemList\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffSum.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\BuffList</Filter>
+    </ClInclude>
+    <ClInclude Include="SpeedBuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\BuffList\selfTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="IFieldItemForStuff.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffManager.h">
+      <Filter>소스 파일\GameScene\GameObjects\fieldItem\BuffList</Filter>
+    </ClInclude>
+    <ClInclude Include="configs_ubo.h">
+      <Filter>소스 파일\src\config</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStructDirectionalLight.h">
+      <Filter>소스 파일\src\lights\shaderBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="configs_light.h">
+      <Filter>소스 파일\src\config</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStructSpotLight.h">
+      <Filter>소스 파일\src\lights\shaderBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStructPointLight.h">
+      <Filter>소스 파일\src\lights\shaderBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStructDeferredPointLight.h">
+      <Filter>소스 파일\src\lights\shaderBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>소스 파일\src\lights\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredPointLight.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="LightGameObject.h">
+      <Filter>소스 파일\src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="LightWithEntity.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="ILightWithEntityManager.h">
+      <Filter>소스 파일\src\lights\manager\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLightManager.h">
+      <Filter>소스 파일\src\lights\manager\withEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLightManager.h">
+      <Filter>소스 파일\src\lights\manager\withEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredPointLightManager.h">
+      <Filter>소스 파일\src\lights\manager\withEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLightManager.h">
+      <Filter>소스 파일\src\lights\manager\withNoEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>소스 파일\src\lights\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityBinder.h">
+      <Filter>소스 파일\GameScene\GameObjects\GOComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityBindee.h">
+      <Filter>소스 파일\GameScene\GameObjects\GOComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleFObjManager.h">
+      <Filter>소스 파일\src\renderTarget\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderTextureSimple.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelOnlyVertex.h">
+      <Filter>소스 파일\src\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="config_default_vertex.h">
+      <Filter>소스 파일\src\config</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderGBufferGeo.h">
+      <Filter>소스 파일\src\shader\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderGBufferLight.h">
+      <Filter>소스 파일\src\shader\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderGBufferFinal.h">
+      <Filter>소스 파일\src\shader\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredGFBO.h">
+      <Filter>소스 파일\src\Resource\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="FrustumOb.h">
+      <Filter>소스 파일\FrustumFObj</Filter>
+    </ClInclude>
+    <ClInclude Include="AABBOb.h">
+      <Filter>소스 파일\FrustumFObj</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereOb.h">
+      <Filter>소스 파일\FrustumFObj</Filter>
+    </ClInclude>
+    <ClInclude Include="PostGraphicProcess.h">
+      <Filter>소스 파일\src\Resource\GBuffer\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderHDR.h">
+      <Filter>소스 파일\src\shader\PostPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderFXAA.h">
+      <Filter>소스 파일\src\shader\PostPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderPostEffect.h">
+      <Filter>소스 파일\src\shader\PostPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderBloom.h">
+      <Filter>소스 파일\src\shader\PostPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderMipmap.h">
+      <Filter>소스 파일\src\shader\PostPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeElem.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorPElem.h">
+      <Filter>소스 파일\preComplie\vectorLikeList</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorP.h">
+      <Filter>소스 파일\preComplie\vectorLikeList</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeFrustumElem.h">
+      <Filter>소스 파일\components\frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorPPairFirst.h">
+      <Filter>소스 파일\preComplie\vectorLikeList</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionFuncStatic.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="LineOb.h">
+      <Filter>소스 파일\FrustumFObj</Filter>
+    </ClInclude>
+    <ClInclude Include="OBBOb.h">
+      <Filter>소스 파일\FrustumFObj</Filter>
+    </ClInclude>
+    <ClInclude Include="LineCollisionComp.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicCollisionSubComp.h">
+      <Filter>소스 파일\components\collision\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicCollisionSubCompVec.h">
+      <Filter>소스 파일\components\collision\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicCollisionSubCompMat.h">
+      <Filter>소스 파일\components\collision\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicCollisionSubCompLine.h">
+      <Filter>소스 파일\components\collision\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionFuncDynamic.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollisionComp.h">
+      <Filter>소스 파일\components\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectPoolLikeVector.h">
+      <Filter>소스 파일\origin</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderDebugLines.h">
+      <Filter>소스 파일\src\shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -849,6 +1278,63 @@
     </None>
     <None Include="data\Shader\TextVertexShader.vertexshader">
       <Filter>리소스 파일\shaders</Filter>
+    </None>
+    <None Include="data\Shader\GbufferGeoPass.fragmentshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\GbufferGeoPass.vertexshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\GbufferLightPass.fragmentshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\GbufferLightPass.vertexshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\GbufferFinalPass.fragmentshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\GbufferFinalPass.vertexshader">
+      <Filter>리소스 파일\shaders\GBuffer</Filter>
+    </None>
+    <None Include="data\Shader\FXAA.fragmentshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\FXAA.vertexshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\HDR.fragmentshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\HDR.vertexshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\TexturePrint.fragmentshader">
+      <Filter>리소스 파일\shaders\textureRender</Filter>
+    </None>
+    <None Include="data\Shader\TexturePrint.vertexshader">
+      <Filter>리소스 파일\shaders\textureRender</Filter>
+    </None>
+    <None Include="data\Shader\Bloom.fragmentshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\Bloom.vertexshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\MipmapLast.fragmentshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\MipmapLast.vertexshader">
+      <Filter>리소스 파일\shaders\postPipeline</Filter>
+    </None>
+    <None Include="data\Shader\DebugLines.fragmentshader">
+      <Filter>리소스 파일\shaders\debugInfo</Filter>
+    </None>
+    <None Include="data\Shader\DebugLines.geometryshader">
+      <Filter>리소스 파일\shaders\debugInfo</Filter>
+    </None>
+    <None Include="data\Shader\DebugLines.vertexshader">
+      <Filter>리소스 파일\shaders\debugInfo</Filter>
     </None>
   </ItemGroup>
 </Project>

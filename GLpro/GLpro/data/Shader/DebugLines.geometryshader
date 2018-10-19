@@ -1,0 +1,170 @@
+#version 330 core
+layout (points) in;
+layout (line_strip, max_vertices = 63) out;
+
+uniform vec3 posVec;			// sphere, aabb, (line : startPos) ,not use in OBB
+uniform vec3 axisLenVec;		// sphere radius & box axis & (line : end pos )
+uniform int renderType;		// sphere, line, aabb, obb
+
+uniform mat4 ViewVP;	//camera vp
+uniform mat4 OBBM;		// modelMat for obb
+
+int boxIndexLoop[10] = int[]
+(
+	0, 1, 3, 2, 0, 4, 5, 7, 6, 4
+);
+
+int boxIndexExtra[6] = int[]
+(
+	1, 5, 2, 6, 3, 7
+);
+
+// gl_in[0].gl_Position = (0.0f, 0.0f, 0.0f, 1.0f)
+
+void main() 
+{
+	float pi = 3.141592;
+	
+	// sphere
+	if(renderType == 0)
+	{
+		vec3 outPoints[63];
+		float radius = axisLenVec[0];
+		for(int i=0; i<21; i++)
+		{
+			float rad = (2 * pi) / 20 * i;
+			outPoints[i] = vec3(radius * cos(rad), 0.0, radius * sin(rad)); 
+		}
+		for(int i=0; i<21; i++)
+		{
+			float rad = (2 * pi) / 20 * i;
+			outPoints[i + 21] = vec3(radius * cos(rad), radius * sin(rad), 0.0); 
+		}
+
+		for(int i=0; i<21; i++)
+		{
+			float rad = (2 * pi) / 20 * i;
+			outPoints[i + 42] = vec3(0.0, radius * cos(rad), radius * sin(rad)); 
+		}
+
+		for(int i=0; i<21; i++)
+		{
+			gl_Position = ViewVP * vec4(vec3(gl_in[0].gl_Position) + posVec + outPoints[i], 1.0);
+			EmitVertex();
+		}
+		EndPrimitive();
+
+		for(int i=21; i<42; i++)
+		{
+			gl_Position = ViewVP * vec4(vec3(gl_in[0].gl_Position) + posVec + outPoints[i], 1.0);
+			EmitVertex();
+		}
+		EndPrimitive();
+
+		for(int i=42; i<63; i++)
+		{
+			gl_Position = ViewVP * vec4(vec3(gl_in[0].gl_Position) + posVec + outPoints[i], 1.0);
+			EmitVertex();
+		}
+		EndPrimitive();
+	}
+
+	// line
+	if(renderType == 1)
+	{
+		// vp * start world pos
+		gl_Position = ViewVP * vec4(posVec, 1.0);
+		EmitVertex();
+
+		// vp * end world pos
+		gl_Position = ViewVP * vec4(axisLenVec, 1.0);
+		EmitVertex();
+
+		EndPrimitive();
+	}
+    
+	// aabb
+	if(renderType == 2)
+	{
+		vec3 outPoints[8];
+
+		for(int i=0; i<8; i++)
+		{
+			outPoints[i] = posVec;
+			//outPoints[i] = vec3(gl_in[0].gl_Position) + posVec;
+		}
+
+		int idx = 0;
+		for(int i = -1; i< 2; i+= 2)
+		{
+			for(int k = -1; k < 2; k+=2)
+			{
+				for(int p = -1; p < 2; p+=2)
+				{
+					outPoints[idx][0] += axisLenVec[0] * i;
+					outPoints[idx][1] += axisLenVec[1] * k;
+					outPoints[idx][2] += axisLenVec[2] * p;
+					idx++;
+				}
+			}
+		}
+
+		for(int i=0; i<10; i++)		// boxIndex Arr = 10
+		{
+			gl_Position = ViewVP * vec4(outPoints[boxIndexLoop[i]], 1.0);
+			EmitVertex();
+		}
+		EndPrimitive();
+
+		for(int i=0; i<6; i+=2)
+		{
+			gl_Position = ViewVP * vec4(outPoints[boxIndexExtra[i]], 1.0);
+			EmitVertex();
+			gl_Position = ViewVP * vec4(outPoints[boxIndexExtra[i+1]], 1.0);
+			EmitVertex();
+			EndPrimitive();
+		}
+	}
+
+	// obb
+	if(renderType == 3)
+	{
+		vec3 outPoints[8];
+
+		for(int i=0; i<8; i++)
+		{
+			outPoints[i] = vec3(0.0, 0.0, 0.0);
+		}
+
+		int idx = 0;
+		for(int i = -1; i< 2; i+= 2)
+		{
+			for(int k = -1; k < 2; k+=2)
+			{
+				for(int p = -1; p < 2; p+=2)
+				{
+					outPoints[idx][0] += axisLenVec[0] * i;
+					outPoints[idx][1] += axisLenVec[1] * k;
+					outPoints[idx][2] += axisLenVec[2] * p;
+					idx++;
+				}
+			}
+		}
+
+		for(int i=0; i<10; i++)		// boxIndex Arr = 10
+		{
+			gl_Position = ViewVP * OBBM * vec4(outPoints[boxIndexLoop[i]], 1.0);
+			EmitVertex();
+		}
+		EndPrimitive();
+
+		for(int i=0; i<6; i+=2)
+		{
+			gl_Position = ViewVP * OBBM * vec4(outPoints[boxIndexExtra[i]], 1.0);
+			EmitVertex();
+			gl_Position = ViewVP * OBBM * vec4(outPoints[boxIndexExtra[i+1]], 1.0);
+			EmitVertex();
+			EndPrimitive();
+		}
+	}	
+}  

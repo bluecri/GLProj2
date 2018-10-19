@@ -10,7 +10,6 @@
 #include "RenderManager.h"
 #include "CollisionComponent.h"
 #include "src/Control/InputManager.h"
-#include "src/Transform.h"
 
 #include "src/Camera/CameraManager.h"
 #include "src/Camera/Camera.h"
@@ -28,10 +27,12 @@
 
 #include "GameSession.h"
 #include "./src/window.h"
-#include "./src/Transform.h"
 
 #include "ParticleEntity.h"
 #include "AimTextUIObj.h"
+#include "BuffManager.h"
+
+#include "EntityBindee.h"
 
 Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture * texture, SHADER::ShaderMain * shadermain)
 	: IPlane(ENUM_ENTITY_TYPE::ENUM_ENTITY_PLANE_PLAYER, gSession, model, texture, shadermain)
@@ -47,11 +48,11 @@ Player::Player(GameSession* gSession, RESOURCE::Model* model, RESOURCE::Texture 
 
 	// particle
 	SHADER::ShaderParticle* shaderParticle = GShaderManager->m_addShader<SHADER::ShaderParticle>(ENUM_SHADER_TYPE::SHADER_TYPE_PARTICLE, "data/Shader/Particle.vertexshader", "data/Shader/Particle.fragmentshader");
-	_backParticle = new ParticleEntity(gSession, shaderParticle);
+	_backParticle = new ParticleEntity(gSession, "data/Texture/particle.DDS", "dds", shaderParticle);
 	_backParticle->init(glm::vec3(0.0f, 0.0f, -1.0f), glm::quat(), glm::vec3(0.0f, 0.0f, -1.0f), true, 3.0f, 60);
 	
-	_frontParticle = new ParticleEntity(gSession, shaderParticle);
-	_frontParticle->init(glm::vec3(0.0f, 0.0f, 2.0f), glm::quat(), glm::vec3(0.0f, 0.0f, 2.0f), true, 3.0f, 1000);
+	//_frontParticle = new ParticleEntity(gSession, "data/Texture/particle.DDS", "dds", shaderParticle);
+	//_frontParticle->init(glm::vec3(0.0f, 0.0f, 2.0f), glm::quat(), glm::vec3(0.0f, 0.0f, 2.0f), true, 3.0f, 60);
 
 	//	_backParticle->attachParentEntity(this);	cannot do this : before player entity is created. Do this in init().
 	//_frontParticle = new ParticleEntity(gSession, shaderParticle);
@@ -92,48 +93,52 @@ void Player::inputProgress(long long inputKey)
 
 Player::~Player()
 {
+	// sound remove
+	_explosionSound->unBind();
+	_explosionSound->setDoDelete();
+
+	delete _chaseTargetBindee;	// deleter call relaseAllBinder();
 }
 
-void Player::init()
+void Player::initPlayer()
 {
 	// basic info
-	_curHp = 100;
-	_maxHp = 100;
-	_curArmor = 0;
-	_maxArmor = 100;
-	_deltaSpeed = 0.1f;
-
-	_notDmgedTime = 3.0f;
-	_bNotDmged = false;
-	_curDmgedTime = 0.0f;
-
-	setMaxSpeed(10.0f);
-
+	
 	_missileGeneratorStorage = new MissileGeneratorStorage(PLAYER_DEFAULT_WEAPON_MAX_NUM, this);
 
-	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent->_transform);
+	_explosionSound = GALManager->getNewALSource(std::string("explosion"), _rigidbodyComponent);
 	
 	glm::mat4 collisionBoxMat = glm::mat4();
-	collisionBoxMat[3][2] += 0.2f;	//collision box pos 보정
-	glm::vec3 missileCollisionBox = glm::vec3(0.02f, 0.02f, 0.2f);
-	_collisionComp = GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, collisionBoxMat, missileCollisionBox);
+	collisionBoxMat[3][1] += 0.4f;	//collision box pos 보정
+	collisionBoxMat[3][2] += 2.0f;	//collision box pos 보정
+	glm::vec3 planeCollisionBox = glm::vec3(1.6f, 0.5f, 3.0f);
+	initCollisionComponent(GCollisionComponentManager->GetNewOBBCollisionComp(_rigidbodyComponent, collisionBoxMat, planeCollisionBox));
+
+	std::shared_ptr<RENDER::RNormal::DrawElement> rendererShredElem = getRendererSharedElem();
+	rendererShredElem.get()->first->setFrustumRadius(3.5f);
+	rendererShredElem.get()->first->setFrustumCompensationPos(glm::vec3(0.0f, 0.0f, 2.0f));
 
 	// particle entity attach parnet
 	_backParticle->attachParentEntity(this);
-	_frontParticle->attachParentEntity(this);
+	//_frontParticle->attachParentEntity(this);
 }
 
 void Player::logicUpdate(float deltaTime, float acc)
 {
 	collisionLogicUpdate();		// update collision event & clear collision info
-	GALManager->updateALListenerWithWorldMat(_rigidbodyComponent->_transform->getWorldMatRef());	 // listener pos update
+	GALManager->updateALListenerWithWorldMat(_rigidbodyComponent->getWorldMatRef());	 // listener pos update
 	
-	if(_curHp < 0)
+	if(_curPlaneInfo->_hp < 0)
 	{
 		_explosionSound->play();
-		//setBRender(false);
-		//setCollisionTest(false);
 		setBeDeleted();
+		return;
+	}
+
+	// buff check
+	if (_buffManager->isNeedToTransferBuffSum(deltaTime, acc))
+	{
+		transferBuffSum(_buffManager->getBuffSum());
 	}
 
 	// shot
@@ -143,21 +148,8 @@ void Player::logicUpdate(float deltaTime, float acc)
 		_missileGeneratorStorage->shotMissile();
 	}
 
-	// overwhelimg
-	if(_bNotDmged)
-	{
-		_curDmgedTime += deltaTime;
-		if(_curDmgedTime > _notDmgedTime)
-		{
-			_bNotDmged = false;		// end overwhelming time
-			_curDmgedTime = 0.0f;
-			// todo : make plane opacity => 1.0
-
-		}
-	}
-
 	// back particle logic
-	int particleNum = PLAYER_MAX_FRAME_PER_PARTICLE + fabsf(getSpeedPerMaxSpeedRatio()) *  (PLAYER_MIN_FRAME_PER_PARTICLE - PLAYER_MAX_FRAME_PER_PARTICLE);
+	int particleNum = static_cast<int>(PLAYER_MIN_FRAME_PER_PARTICLE + (PLAYER_MAX_FRAME_PER_PARTICLE - PLAYER_MIN_FRAME_PER_PARTICLE) * (1.0f - fabsf(getSpeedPerMaxSpeedRatio())));
 	_backParticle->setFrameVsParticle(particleNum);
 
 }
@@ -165,10 +157,9 @@ void Player::logicUpdate(float deltaTime, float acc)
 void Player::collisionFunc(CollisionComponent * collisionComp)
 {
 	// collision event 처리 memeber 함수
-	Entity* entity = collisionComp->_rigidComp->_bindedEntity;
+	Entity* entity = collisionComp->_rigidComp->getBindedEntity();
 	int entityType = entity->getType();
 
-	// missile collision logic은 모두 missile에서.
 	switch (entityType)
 	{
 	case ENUM_ENTITY_PLANE_PLAYER:
@@ -176,8 +167,10 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 	case ENUM_ENTITY_MISSILE_NORMAL:
 		break;
 	case ENUM_ENTITY_ENEMY:
-		_bNotDmged = true;
-		// todo : make plane opacity => 0.5
+		if (isCanBeDamaged())
+		{
+			planeDamaged(20, true);
+		}
 		break;
 	default:
 		// none
@@ -187,15 +180,12 @@ void Player::collisionFunc(CollisionComponent * collisionComp)
 
 void Player::doJobWithBeDeleted()
 {
-	// sound remove
-	_explosionSound->unBind();
-	_explosionSound->setDoDelete();
+	
 }
 
-bool Player::isCanGetDmg()
+EntityBindee * Player::getChaseBindee()
 {
-	return !_bNotDmged;
-
+	return _chaseTargetBindee;
 }
 
 void Player::tabKeyProgress(long long transferKeyInput)
@@ -228,20 +218,30 @@ void Player::playerMovementProgress(long long transferKeyInput)
 	
 	if (roll != 0)
 		maincam->camAccQuaternionRoll((float)roll);
+
 	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_UP))
-		_rigidbodyComponent->_transform->speedAdd(_deltaSpeed);
+	{
+		_curPlaneInfo->_maxSpeed += _curPlaneInfo->_deltaSpeed;
+		_curPlaneInfo->_maxSpeed = std::min(_curPlaneInfo->_maxSpeed, _originPlaneInfo->_maxSpeed);
+		_rigidbodyComponent->speedSet(_curPlaneInfo->_maxSpeed);
+	}
 
 	if (GInputManager->controlCheck(transferKeyInput, ENUM_BEHAVIOR::MOVE_DOWN))
-		_rigidbodyComponent->_transform->speedAdd(-_deltaSpeed);
+	{
+		_curPlaneInfo->_maxSpeed -= _curPlaneInfo->_deltaSpeed;
+		_curPlaneInfo->_maxSpeed = std::max(_curPlaneInfo->_maxSpeed, 0.0f);
+		_rigidbodyComponent->speedSet(_curPlaneInfo->_maxSpeed);
+	}
 
 	// set cam position (follow plane)
-	maincam->_rigidbodyComponent->_transform->setModelMatrix(_rigidbodyComponent->_transform->getModelVec());
-	maincam->_rigidbodyComponent->_transform->translateModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
+	maincam->getRigidbodyComponent()->setModelMatrix(_rigidbodyComponent->getModelVec());
+	maincam->getRigidbodyComponent()->translateModelMatrix(glm::vec3(0.0f, 0.0f, -14.0f));
 
 	// plane quaternion rotation to camera rotation
-	_rigidbodyComponent->_transform->accQuaternionMix(maincam->_rigidbodyComponent->_transform, _maxAngle, _angleSpeed);
+	_rigidbodyComponent->accQuaternionMix(maincam->getRigidbodyComponent(), getAngle(), getAngleSpeed());
 
 	// aim text update logic
-	_aimTextUIObj->setAimPositionWithQuat(_rigidbodyComponent->_transform->getLocalQuarternionRef(), maincam->_rigidbodyComponent->_transform->getLocalQuarternionRef());
+	_aimTextUIObj->setAimPositionWithQuat(_rigidbodyComponent->getLocalQuarternionRef(), maincam->getRigidbodyComponent()->getLocalQuarternionRef());
 
+	_chaseTargetBindee = new EntityBindee(this);
 }

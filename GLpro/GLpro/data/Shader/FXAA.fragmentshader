@@ -1,0 +1,108 @@
+#version 330 core
+
+/*
+*	reference
+*	https://github.com/McNopper/OpenGL/blob/master/Example42
+*	https://www.geeks3d.com/20110405/fxaa-fast-approximate-anti-aliasing-demo-glsl-opengl-test-radeon-geforce/3/
+*	http://developer.download.nvidia.com/assets/gamedev/files/sdk/11/FXAA_WhitePaper.pdf
+*	http://iryoku.com/aacourse/downloads/09-FXAA-3.11-in-15-Slides.pdf
+*/
+
+layout (location = 0) out vec3 outColor;   
+
+in vec2 UV;
+
+uniform sampler2D TextrueScreen;
+
+uniform float LumaThreshold;	// 0.5
+uniform float MulReduce;	// 1.0/8.0
+uniform float MinReduce;	// 1.0/128.0
+uniform float MaxSpan;	// 8.0
+uniform bool PresentRedColor;	// true / false
+uniform vec2 TexelStep;	// 1.0f / (GLfloat)SCREEN_WIDTH, 1.0f / (GLfloat)SCREEN_HEIGHT
+
+ivec2 NWOffsetVec2 = ivec2(-1, 1);
+ivec2 NEOffsetVec2 = ivec2(1, 1);
+ivec2 SWOffsetVec2 = ivec2(-1, -1);
+ivec2 SEOffsetVec2 = ivec2(1, -1);
+
+// see http://en.wikipedia.org/wiki/Grayscale
+const vec3 toLuma = vec3(0.299, 0.587, 0.114);
+
+// floor(number)/255.0
+
+void main(){
+	//vec3 roundColor = texture(TextrueScreen, UV).rgb * 255;
+
+	vec3 rgbM = texture(TextrueScreen, UV).rgb;
+
+	// Sampling neighbour texels.
+	vec3 rgbNW = textureOffset(TextrueScreen, UV, NWOffsetVec2).rgb;
+    vec3 rgbNE = textureOffset(TextrueScreen, UV, NEOffsetVec2).rgb;
+    vec3 rgbSW = textureOffset(TextrueScreen, UV, SWOffsetVec2).rgb;
+    vec3 rgbSE = textureOffset(TextrueScreen, UV, SEOffsetVec2).rgb;
+
+	// Convert from RGB to luma.
+	float lumaNW = dot(rgbNW, toLuma);
+	float lumaNE = dot(rgbNE, toLuma);
+	float lumaSW = dot(rgbSW, toLuma);
+	float lumaSE = dot(rgbSE, toLuma);
+	float lumaM = dot(rgbM, toLuma);
+
+	// Gather minimum and maximum luma.
+	float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));
+	float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));
+	
+	// Contrast is lower than a maximum threshold
+	if (lumaMax - lumaMin < lumaMax * LumaThreshold)
+	{
+		outColor = rgbM;
+		return;
+	}  
+	
+	// Sampling is done along the gradient. (get brighter pixel coord)
+	vec2 samplingDirection;	
+	samplingDirection.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));
+    samplingDirection.y =  ((lumaNW + lumaSW) - (lumaNE + lumaSE));
+    
+    // Sampling step distance depends on the luma: The brighter the sampled texels, the smaller the final sampling step direction.
+    // This results, that brighter areas are less blurred/more sharper than dark areas.  
+    float samplingDirectionReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) * 0.25 * MulReduce, MinReduce);
+
+	// Factor for norming the sampling direction plus adding the brightness influence. 
+	float minSamplingDirectionFactor = 1.0 / (min(abs(samplingDirection.x), abs(samplingDirection.y)) + samplingDirectionReduce);
+    
+    // Calculate final sampling direction vector by reducing, clamping to a range and finally adapting to the texture size. 
+    samplingDirection = clamp(samplingDirection * minSamplingDirectionFactor, vec2(-MaxSpan, -MaxSpan), vec2(MaxSpan, MaxSpan)) * TexelStep;
+	
+	// Inner samples on the tab.
+	vec3 rgbSampleNeg = texture(TextrueScreen, UV + samplingDirection * (1.0/3.0 - 0.5)).rgb;	// -0.16666
+	vec3 rgbSamplePos = texture(TextrueScreen, UV + samplingDirection * (2.0/3.0 - 0.5)).rgb;	//  0.16666
+
+	vec3 rgbTwoTab = (rgbSamplePos + rgbSampleNeg) * 0.5;  
+
+	// Outer samples on the tab.
+	vec3 rgbSampleNegOuter = texture(TextrueScreen, UV + samplingDirection * (0.0/3.0 - 0.5)).rgb;	// -0.5
+	vec3 rgbSamplePosOuter = texture(TextrueScreen, UV + samplingDirection * (3.0/3.0 - 0.5)).rgb;	//  0.5
+	
+	// sampling 4
+	vec3 rgbFourTab = (rgbSamplePosOuter + rgbSampleNegOuter) * 0.25 + rgbTwoTab * 0.5;   
+	
+	// Calculate luma for checking against the minimum and maximum value.
+	float lumaFourTab = dot(rgbFourTab, toLuma);
+	
+	// Are outer samples of the tab beyond the edge ... 
+	if (lumaFourTab < lumaMin || lumaFourTab > lumaMax)
+	{
+		// ... yes, so use only two samples.
+		outColor = rgbTwoTab; 
+	}
+	else
+	{
+		// ... no, so use four samples. 
+		outColor = rgbFourTab;
+	}
+
+	if(PresentRedColor)
+		outColor.r = 1.0;
+}

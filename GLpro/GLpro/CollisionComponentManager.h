@@ -4,7 +4,7 @@
 
 class RigidbodyComponent;
 class CollisionComponent;
-class Octree;
+class OctreeForCollision;
 
 enum COLLISION_COMP_TYPE
 {
@@ -18,23 +18,32 @@ public:
 
 	CollisionComponent* GetNewOBBCollisionComp(RigidbodyComponent* rigidComp, glm::mat4& localMat, glm::vec3& axisLen);
 	CollisionComponent* GetNewAABBCollisionComp(RigidbodyComponent* rigidComp, glm::vec3& localVec, glm::vec3& axisLen);
+	CollisionComponent* GetNewSphereCollisionComp(RigidbodyComponent* rigidComp, glm::vec3& localVec, float radius);
+	CollisionComponent* GetNewLineCollisionComp(RigidbodyComponent* rigidComp, glm::vec3& localVec, glm::vec3& unitVec, float len, bool isOneInfiniteLine);
 
 	void eraseCollisionComponent(CollisionComponent* delTargetComp);
 
 	void doCollisionTest();
-
-private:
-
-	void insertTestCompToOctaTree();
-	void insertTestCompToOctaTreeWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
-	void actualCollisionTest();
-	void collisionTestWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
 	void clearOctree();
 
+	void pushToSleepComponentContainer(CollisionComponent* sleepContainer);
+	void resetAllCollisionCompDirty();
+	void getCollisionCompAll(std::list<CollisionComponent*>** staticList, std::list<CollisionComponent*>** dynamicList);
+
+	float getOctreeLevel() const;
+	glm::vec3 getOctreeAxisLen() const;
+
 private:
-	std::list<CollisionComponent*> _collisionComponentContainerOBB;
-	std::list<CollisionComponent*> _collisionComponentContainerAABB;
-	Octree* _octree;
+	void insertSleepCompToOctTree();
+	void insertTestCompToOctaTreeWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
+	void actualCollisionTest();
+	//void collisionTestWithContainer(std::list<CollisionComponent*>& collisionComponentContainer);
+
+	void doOctreeUpdate();
+
+private:
+	std::list<CollisionComponent*> _collisionSleepComponentContainer;
+	OctreeForCollision* _octree;
 };
 
 extern CollisionComponentManager* GCollisionComponentManager;

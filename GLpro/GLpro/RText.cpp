@@ -23,12 +23,12 @@ std::shared_ptr<RENDER::RText::DrawElement> RENDER::RText::addToDrawList(RENDER_
 	return elem;
 }
 
-void RENDER::RText::update(CAMERA::Camera ** cam)
+
+void RENDER::RText::updateRRender()
 {
-	// no need
 }
 
-void RENDER::RText::draw(float deltaTime)
+void RENDER::RText::drawRRender(float deltaTime)
 {
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -73,8 +73,8 @@ void RENDER::RText::draw(float deltaTime)
 
 		_textFObj->_pos += (_textFObj->_deltaPos) * deltaTime;
 		_shaderObj->loadVector2(_shaderObj->m_movedVec2ID, _textFObj->_pos);
-		_shaderObj->loadVector3(_shaderObj->m_textColorID, _textFObj->_color);
-
+		_shaderObj->loadVector3f(_shaderObj->m_textColorID, _textFObj->_color);
+		
 		// text bind to object OR to screen
 		if (_textFObj->_bBindToScreen)
 		{
@@ -101,6 +101,11 @@ void RENDER::RText::draw(float deltaTime)
 	glEnable(GL_DEPTH_TEST);
 
 	return;
+}
+
+void RENDER::RText::updateTargetCamera(CAMERA::Camera ** cam)
+{
+	//_targetCamera = cam;
 }
 
 void RENDER::RText::chageShader(SHADER::ShaderText * other)

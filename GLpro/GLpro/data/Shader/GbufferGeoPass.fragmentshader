@@ -1,0 +1,22 @@
+#version 330 core
+
+in vec4 Position_worldspace;
+in vec3 Normal_worldspace;
+in vec2 UV;
+
+layout (location = 0) out vec3 WorldPosOut;
+layout (location = 1) out vec3 ColorOut;     
+layout (location = 2) out vec4 NormalOut;     
+
+uniform sampler2D myTextureSampler;
+uniform float bloomValue;
+
+void main(){
+	
+	//WorldPosOut = vec3(1.0, 1.0, 1.0);
+	//ColorOut =  vec3(1.0, 1.0, 1.0);
+
+	WorldPosOut = Position_worldspace.xyz;
+	ColorOut =  texture( myTextureSampler, UV ).rgb;
+	NormalOut = vec4(Normal_worldspace, bloomValue);
+}

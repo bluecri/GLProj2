@@ -5,7 +5,15 @@ SHADER::ShaderObj::ShaderObj(const char * vertexShader, const char * fragmentSha
 	: _keyStr(vertexShader)
 {
 	m_shaderID = LoadShaders(vertexShader, fragmentShader);
-	_keyStr.append(vertexShader);
+	_keyStr.append(fragmentShader);
+}
+
+SHADER::ShaderObj::ShaderObj(const char * vertexShader, const char * geometryShader, const char * fragmentShader)
+	: _keyStr(vertexShader)
+{
+	m_shaderID = LoadShaders(vertexShader, geometryShader, fragmentShader);
+	_keyStr.append(geometryShader);
+	_keyStr.append(fragmentShader);
 }
 
 SHADER::ShaderObj::~ShaderObj() { glDeleteProgram(m_shaderID); }
@@ -17,6 +25,11 @@ void SHADER::ShaderObj::unbind() { glUseProgram(0); }
 GLuint SHADER::ShaderObj::getShaderID() { return m_shaderID; }
 
 void SHADER::ShaderObj::loadInt(GLuint location, int value) { glUniform1i(location, value); }
+
+void SHADER::ShaderObj::loadBool(GLuint location, bool b)
+{
+	glUniform1i(location, (int)b);
+}
 
 void SHADER::ShaderObj::loadVector2i(GLuint location, const int& int1, const int& int2)
 {
@@ -30,12 +43,12 @@ void SHADER::ShaderObj::loadVector2(GLuint location, const glm::vec2 & vector)
 	glUniform2f(location, vector.x, vector.y);
 }
 
-void SHADER::ShaderObj::loadVector3(GLuint location, const glm::vec3 & vector)
+void SHADER::ShaderObj::loadVector3f(GLuint location, const glm::vec3 & vector)
 {
 	glUniform3f(location, vector.x, vector.y, vector.z);
 }
 
-void SHADER::ShaderObj::loadVector3i(GLuint location, const glm::vec3 & vector)
+void SHADER::ShaderObj::loadVector3(GLuint location, const glm::vec3 & vector)
 {
 	glUniform3i(location, vector.x, vector.y, vector.z);
 }
@@ -46,9 +59,14 @@ void SHADER::ShaderObj::loadVector3(GLuint location, const float& x, const float
 	glUniform3f(location, x, y, z);
 }
 
-void SHADER::ShaderObj::loadMatrix4(GLuint location, const glm::mat4 & matrix)
+void SHADER::ShaderObj::loadMatrix4(GLuint location, const glm::mat4 & matrix, int count)
 {
-	glUniformMatrix4fv(location, 1, GL_FALSE, (GLfloat*)&matrix);
+	glUniformMatrix4fv(location, count, GL_FALSE, (GLfloat*)&matrix);
+}
+
+void SHADER::ShaderObj::uniformBlockBind(GLuint location, int uniformIndex)
+{
+	glUniformBlockBinding(m_shaderID, location, uniformIndex);
 }
 
 std::string & SHADER::ShaderObj::getKeyStr()

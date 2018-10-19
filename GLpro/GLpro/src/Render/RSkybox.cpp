@@ -29,29 +29,27 @@ namespace RENDER
 		return elem;
 	}
 
-	void RSkybox::update(CAMERA::Camera** cam)
+	void RSkybox::updateRRender()
 	{
-		_targetCamera = cam;
 	}
 
-	void RSkybox::draw(float deltaTime)
+	void RSkybox::drawRRender(float deltaTime)
 	{
 		CAMERA::Camera* cam = *_targetCamera;
 
 		_shaderObj->bind();
 
 		// set camera view matrix(camera rotate mat * camera position mat)
-		Transform* cameraTransform = cam->_rigidbodyComponent->_transform;
+		RigidbodyComponent* cameraRigidbodyComponent = cam->getRigidbodyComponent();
 		glm::mat4 cameraViewMatrix = cam->getRecentViewMat();
 
-		// todo : use _div
 		_shaderObj->loadMatrix4(_shaderObj->m_cameraViewMatrixID, cameraViewMatrix);
 
-		glDepthMask(GL_FALSE);
+		//glDepthMask(GL_FALSE);
 
 		for (auto it = _skyboxDrawElemContainer.begin(); it != _skyboxDrawElemContainer.end(); ) {
 			RENDER_TARGET::SKYBOX::SkyboxFObj* skyboxRenderTarget = (*it)->first;
-			Transform* targetTransform = (*it)->second->_transform;
+			RigidbodyComponent* targetRigidbodyComponent = (*it)->second;
 
 			if (skyboxRenderTarget->isBDeleted())
 			{
@@ -65,7 +63,7 @@ namespace RENDER
 				continue;
 			}
 
-			glm::mat4 totalModelMat = targetTransform->getWorldMat();
+			glm::mat4 totalModelMat = targetRigidbodyComponent->getWorldMat();
 
 			glm::mat4 tempMVP = cam->getCamProjMatRef() * cameraViewMatrix * totalModelMat;
 			_shaderObj->loadMatrix4(_shaderObj->m_modelMatrixID, totalModelMat);
@@ -85,9 +83,14 @@ namespace RENDER
 
 			++it;
 		}
-		glDepthMask(GL_TRUE);
+		//glDepthMask(GL_TRUE);
 		_shaderObj->unbind();
 
+	}
+
+	void RSkybox::updateTargetCamera(CAMERA::Camera ** cam)
+	{
+		_targetCamera = cam;
 	}
 
 	void RSkybox::chageShader(SHADER::ShaderSkybox* other)

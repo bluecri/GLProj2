@@ -1,5 +1,6 @@
 #include "../../stdafx.h"
 #include "ALSource.h"
+#include "../../RigidbodyComponent.h"
 
 ALSource::ALSource() {
 	alGenSources(1, &m_sourceID);
@@ -18,8 +19,8 @@ ALSource::ALSource() {
 	alSourcei(m_sourceID, AL_REFERENCE_DISTANCE, 1);
 }
 
-ALSource::ALSource(Transform* transform, float pitch = 1.0f, float gain = 1.0f) 
-	: m_pitch(pitch), m_gain(gain), _transform(transform)
+ALSource::ALSource(RigidbodyComponent* rigidbodyComponent, float pitch = 1.0f, float gain = 1.0f)
+	: m_pitch(pitch), m_gain(gain), _rigidbodyComponent(rigidbodyComponent)
 {
 	alGenSources(1, &m_sourceID);
 
@@ -47,9 +48,9 @@ void ALSource::bindSourceToALSound(ALSound * alSound) {
 	alSourcei(m_sourceID, AL_BUFFER, alSound->soundBufferID);
 }
 
-void ALSource::updateTransformPtr(Transform * transform)
+void ALSource::updateRigidbodyComponentPtr(RigidbodyComponent * rigidbodyComponent)
 {
-	_transform = transform;
+	_rigidbodyComponent = rigidbodyComponent;
 }
 
 void ALSource::play()
@@ -63,9 +64,9 @@ void ALSource::stop()
 }
 
 void ALSource::updatePos() {
-	if (_transform == nullptr)
+	if (_rigidbodyComponent == nullptr)
 		return;
-	const glm::vec3& posVec = _transform->getWorldPosVec();
+	const glm::vec3& posVec = _rigidbodyComponent->getWorldPosVec();
 	m_sourcePos[0] = posVec[0];
 	m_sourcePos[1] = posVec[1];
 	m_sourcePos[2] = posVec[2];
@@ -83,7 +84,7 @@ void ALSource::sourceStop() {
 }
 
 void ALSource::unBind() {
-	_transform = nullptr;
+	_rigidbodyComponent = nullptr;
 }
 
 ALSource::~ALSource() {

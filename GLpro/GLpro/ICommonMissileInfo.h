@@ -6,8 +6,8 @@
 class ICommonMissileInfo
 {
 public:
-	virtual void init() = 0;
-	virtual void init(std::string & commonMissileInfoFile) = 0;
+	virtual void initICommonMissileInfo() = 0;
+	virtual void initICommonMissileInfo(std::string & commonMissileInfoFile) = 0;
 
 public:
 	std::string _modelFileName;

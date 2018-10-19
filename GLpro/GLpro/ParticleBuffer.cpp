@@ -1,8 +1,15 @@
 #include "stdafx.h"
 #include "ParticleBuffer.h"
 
-RESOURCE::ParticleBuffer::ParticleBuffer(std::vector<glm::vec3>& vertices)
+RESOURCE::ParticleBuffer::ParticleBuffer(std::vector<glm::vec3>& vertices, int particleBufferCapacity)
 {
+	//_particule_position_data.reserve(DEFAULT_PARTICLE_INBUFFER_DEFAULT_NUM * 4);
+	//_particule_color_data.reserve(DEFAULT_PARTICLE_INBUFFER_DEFAULT_NUM * 4);
+	_bufferParticleCapacity = particleBufferCapacity;
+	_bBufferParticleCapacityUpdated = false;
+
+	_particule_position_data = std::vector<GLfloat>(_bufferParticleCapacity * 4, 0.0f);
+	_particule_color_data	 = std::vector<GLubyte>(_bufferParticleCapacity * 4, 0);
 	_vertices = vertices;
 
 	genVao();
@@ -33,25 +40,56 @@ void RESOURCE::ParticleBuffer::unbind() const
 
 void RESOURCE::ParticleBuffer::render()
 {
-	
-	int printParticleCountOnBuffer = min(MAX_PARTICLE_INBUFFER_DEFAULT_NUM, _particlePrintCnt);
+	int printParticleCountOnBuffer = min(_bufferParticleCapacity, _particlePrintCnt);
+
+	if (_bBufferParticleCapacityUpdated)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, _particles_pos_vbo);
+		glBufferData(GL_ARRAY_BUFFER, _prevBufferParticleCapacity * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, _bufferParticleCapacity * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLfloat) * 4, &_particule_position_data);
+
+		glBindBuffer(GL_ARRAY_BUFFER, _particles_color_vbo);
+		glBufferData(GL_ARRAY_BUFFER, _prevBufferParticleCapacity * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, _bufferParticleCapacity * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLubyte) * 4, &_particule_color_data);
+
+		_bBufferParticleCapacityUpdated = false;
+
+		return;
+	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, _particles_pos_vbo);
-	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLE_INBUFFER_DEFAULT_NUM * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);  // Buffer orphaning, to improve streaming
-	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLfloat) * 4, &_particule_position_data);
+	glBufferData(GL_ARRAY_BUFFER, _bufferParticleCapacity * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);  // Buffer orphaning, to improve streaming
+	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLfloat) * 4, &_particule_position_data[0]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, _particles_color_vbo);
-	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLE_INBUFFER_DEFAULT_NUM * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, to improve streaming
-	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLubyte) * 4, &_particule_color_data);
+	glBufferData(GL_ARRAY_BUFFER, _bufferParticleCapacity * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, to improve streaming
+	glBufferSubData(GL_ARRAY_BUFFER, 0, printParticleCountOnBuffer * sizeof(GLubyte) * 4, &_particule_color_data[0]);
 
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, printParticleCountOnBuffer);
-
-	_particlePrintCnt = 0;	// init count
 }
 
 int RESOURCE::ParticleBuffer::getGLCount()
 {
-	return _vertices.size();
+	return static_cast<int>(_vertices.size());
+}
+
+int RESOURCE::ParticleBuffer::getBufferParticleCapacity()
+{
+	return _bufferParticleCapacity;
+}
+
+void RESOURCE::ParticleBuffer::accParticleCapacity(int acc)
+{
+	_prevBufferParticleCapacity = _bufferParticleCapacity;
+	_bufferParticleCapacity += acc;
+
+	// opt : vector resize does not modify capacity
+	_particule_position_data.resize(_bufferParticleCapacity * 4);
+	_particule_color_data.resize(_bufferParticleCapacity * 4);
+
+	_bBufferParticleCapacityUpdated = true;
 }
 
 void RESOURCE::ParticleBuffer::genVao()
@@ -69,12 +107,12 @@ void RESOURCE::ParticleBuffer::createBuffer()
 	// vbo with position & color
 	glGenBuffers(1, &_particles_pos_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, _particles_pos_vbo);
-	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLE_INBUFFER_DEFAULT_NUM * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, _bufferParticleCapacity * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
 
 	// vbo with the colors(rgba)
 	glGenBuffers(1, &_particles_color_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, _particles_color_vbo);
-	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLE_INBUFFER_DEFAULT_NUM * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, _bufferParticleCapacity * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);

@@ -9,7 +9,25 @@
 
 enum ENUM_SHADER_TYPE
 {
-	SHADER_TYPE_MAIN = 0, SHADER_TYPE_SHADOW = 1, SHADER_TYPE_COLISION = 2, SHADER_TYPE_SKYBOX = 3, SHADER_TYPE_PARTICLE = 4, SHADER_TYPE_TEXT = 5, SHADER_TYPE_NUM
+	SHADER_TYPE_MAIN = 0,
+	SHADER_TYPE_SHADOW = 1,
+	SHADER_TYPE_COLISION = 2,
+	SHADER_TYPE_SKYBOX = 3,
+	SHADER_TYPE_PARTICLE = 4,
+	SHADER_TYPE_TEXT = 5,
+	SHADER_TYPE_TEXTURESIMPLE = 6, 
+	SHADER_TYPE_GBUFFER_GEO,
+	SHADER_TYPE_GBUFFER_LIGHT,
+	SHADER_TYPE_GBUFFER_FINAL,
+
+	SHADER_TYPE_POST_HDR,
+	SHADER_TYPE_POST_BLOOM,
+	SHADER_TYPE_POST_FXAA,
+	SHADER_TYPE_POST_SIMPLETEXTURE,
+	SHADER_TYPE_POST_MIPMAP,
+	SHADER_TYPE_POST_EFFECT,
+	SHADER_TYPE_DEBUG_LINES,
+	SHADER_TYPE_NUM
 };
 
 using ShaderElem = std::map<std::string, SHADER::ShaderObj*>;
@@ -41,6 +59,28 @@ namespace SHADER
 				return static_cast<T*>(tempShader);
 			}
 			
+			return nullptr;
+		}
+
+		template<class T>
+		T* m_addShader(ENUM_SHADER_TYPE type, const char * vertexShader, const char * geometryShader, const char * fragmentShader)
+		{
+			std::string keyStr(vertexShader);
+			keyStr.append(geometryShader);
+			keyStr.append(fragmentShader);
+			auto elem = m_shaderStorage[type].find(keyStr);
+
+			if (m_shaderStorage[type].end() != elem)
+			{
+				return static_cast<T*>(elem->second);	// already exist
+			}
+
+			ShaderObj* tempShader = new T(vertexShader, geometryShader, fragmentShader);
+			if (tempShader->getShaderID() != -1) {
+				m_shaderStorage[type].insert(std::make_pair(keyStr, tempShader));
+				return static_cast<T*>(tempShader);
+			}
+
 			return nullptr;
 		}
 

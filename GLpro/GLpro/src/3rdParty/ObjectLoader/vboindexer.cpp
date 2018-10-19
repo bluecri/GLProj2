@@ -28,6 +28,21 @@ bool getSimilarVertexIndex_fast(
 	}
 }
 
+bool getSimilarOnlyWIthVertexIndex_fast(
+	Struct_OnlyVertex & packed,
+	std::map<Struct_OnlyVertex, unsigned short> & VertexToOutIndex,
+	unsigned short & result
+) {
+	std::map<Struct_OnlyVertex, unsigned short>::iterator it = VertexToOutIndex.find(packed);
+	if (it == VertexToOutIndex.end()) {
+		return false;
+	}
+	else {
+		result = it->second;
+		return true;
+	}
+}
+
 void createVBOWithVertex(
 	std::vector<glm::vec3> & in_vertices,
 	std::vector<glm::vec2> & in_uvs,
@@ -61,6 +76,42 @@ void createVBOWithVertex(
 			tempVertexWithTexture.normal = in_normals[i];
 
 			outVertexVithTextureVec.push_back(tempVertexWithTexture);
+			
+			unsigned short newindex = (unsigned short)outVertexVithTextureVec.size() - 1;
+			out_indices.push_back(newindex);
+			VertexToOutIndex[packed] = newindex;
+		}
+	}
+}
+
+
+void createVBOWithOnlyVertex(
+	std::vector<glm::vec3> & in_vertices,
+
+	std::vector<unsigned short> & out_indices,
+	
+	std::vector<Struct_OnlyVertex> &outVertexVithTextureVec
+) {
+	std::map<Struct_OnlyVertex, unsigned short> VertexToOutIndex;
+
+	// For each input vertex
+	for (unsigned int i = 0; i<in_vertices.size(); i++) {
+
+		Struct_OnlyVertex packed = { in_vertices[i] };
+
+
+		// Try to find a similar vertex in out_XXXX
+		unsigned short index;
+		bool found = getSimilarOnlyWIthVertexIndex_fast(packed, VertexToOutIndex, index);
+
+		if (found) { // A similar vertex is already in the VBO, use it instead !
+			out_indices.push_back(index);
+		}
+		else { // If not, it needs to be added in the output data.
+			Struct_OnlyVertex tempVertex;
+			tempVertex.vertice = in_vertices[i];
+
+			outVertexVithTextureVec.push_back(tempVertex);
 			
 			unsigned short newindex = (unsigned short)outVertexVithTextureVec.size() - 1;
 			out_indices.push_back(newindex);

@@ -1,14 +1,16 @@
-#include "stdafx.h"
 #include "ShadowBufferTextureShader.h"
 #include "src/Shader/ShaderManager.h"
 #include "src/Shader/ShaderShadow.h"
 #include "src/window.h"
 
-RESOURCE::ShadowBufferTextureShader::ShadowBufferTextureShader(int fboX, int fboY)
+#include "configs_light.h"
+
+RESOURCE::ShadowBufferTextureShader::ShadowBufferTextureShader()
 {
-	_fboX = fboX;
-	_fboY = fboY;
-	_shadowShader = GShaderManager->m_addShader<SHADER::ShaderShadow>(ENUM_SHADER_TYPE::SHADER_TYPE_SHADOW, "data/Shader/DepthRTT.vertexshader", "data/Shader/DepthRTT.fragmentshader");
+	_fboX = TEXTURE_SHADOW_WIDTH;
+	_fboY = TEXTURE_SHADOW_HEIGHT;
+	//_fboX = TEXTURE_DIRECTIONAL_LIGHT_WIDTH;
+	//_fboY = TEXTURE_DIRECTIONAL_LIGHT_WIDTH;
 }
 
 RESOURCE::ShadowBufferTextureShader::~ShadowBufferTextureShader()
@@ -19,9 +21,9 @@ RESOURCE::ShadowBufferTextureShader::~ShadowBufferTextureShader()
 void RESOURCE::ShadowBufferTextureShader::init()
 {
 	_shadowShader = GShaderManager->m_addShader<SHADER::ShaderShadow>(SHADER_TYPE_SHADOW, "data/Shader/DepthRTT.vertexshader", "data/Shader/DepthRTT.fragmentshader");
-
+	
+	// bind in createBuffer
 	createBuffer();
-	unbindFBO();
 }
 
 void RESOURCE::ShadowBufferTextureShader::bindFBO()
@@ -29,8 +31,6 @@ void RESOURCE::ShadowBufferTextureShader::bindFBO()
 	glBindFramebuffer(GL_FRAMEBUFFER, _shadowFBO);		// render to buffer -> texture
 
 	glViewport(0, 0, _fboX, _fboY); // Render on the whole framebuffer, complete from the lower left corner to the upper right
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glCullFace(GL_FRONT);
 }
 
 void RESOURCE::ShadowBufferTextureShader::unbindFBO()
@@ -58,7 +58,12 @@ void RESOURCE::ShadowBufferTextureShader::unbindShader()
 void RESOURCE::ShadowBufferTextureShader::createBuffer()
 {
 	glGenFramebuffers(1, &_shadowFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, _shadowFBO);		// render to buffer -> texture
 	glGenTextures(1, &_shadowDepthTexture);
+	glBindTexture(GL_TEXTURE_2D, _shadowDepthTexture);
+
+	//todo : change large texture size according to User GPU
+	//glGetIntegerv(GL_MAX_TEXTURE_SIZE, &testInt);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, _fboX, _fboY, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -77,6 +82,7 @@ void RESOURCE::ShadowBufferTextureShader::createBuffer()
 		printf_s("[ERR] : ShadowBufferTextureShader::createBuffer glCheckFramebufferStatus error\n");
 		return;
 	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);	// renter to screen
 }
 
 RESOURCE::ShadowBufferTextureShader* GShadowBufferTexture = nullptr;

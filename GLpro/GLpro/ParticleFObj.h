@@ -4,7 +4,7 @@
 
 #include "Fobj.h"
 
-#define PARTICLE_CONTAINER_DEFAULT_SIZE		360		//3sec * 2 particle per 1 frame
+#define DEFAULT_PARTICLE_INBUFFER_DEFAULT_NUM 1000
 
 namespace RESOURCE
 {
@@ -25,31 +25,44 @@ namespace RENDER_TARGET
 		{
 		public:
 
-			ParticleFObj(const char* textureFileName, const char* textureType, int particleContainerSize = PARTICLE_CONTAINER_DEFAULT_SIZE);
-			ParticleFObj(const char* textureFileName, const char* textureType, std::vector<glm::vec3> &vertices, int particleContainerSize = PARTICLE_CONTAINER_DEFAULT_SIZE);
+			ParticleFObj(const char* textureFileName, const char* textureType, int particleContainerSize = DEFAULT_PARTICLE_INBUFFER_DEFAULT_NUM);
+			ParticleFObj(const char* textureFileName, const char* textureType, std::vector<glm::vec3> &vertices, int particleContainerSize = DEFAULT_PARTICLE_INBUFFER_DEFAULT_NUM);
 			~ParticleFObj();
 
-			void sortContainerByDist();		// camera와 dist로 sorting
-			void orderFillParticleBuffer();	// fill live particle pos, color buffer with _particleContainer
-			ParticleStruct& GetUnusedParticle();
+			void				sortContainerByDist();			// camera와 dist로 sorting
+			void				orderFillParticleBuffer();		// fill live particle pos, color buffer with _particleContainer
+			ParticleStruct&		GetUnusedParticle();
 
-			void setDeleteRemainTime(float remainTime);
-			float& getDeleteRemainTimeRef();
-			
+			void				accParticleContainderSize(int acc);
+
+			int					getPrevPrintedParticleNum();
+
+			void				bind();
+			void				unBind();
+			void				renderBuffer();
+			void				resetOveruseParticle();
+
+			// update exist particles
+			void				updateParticleStructs(float deltaTime, glm::vec3& camPosVec);
+
 		private:
 			ParticleFObj() {};
 
-		public:
-			RESOURCE::ParticleBuffer * _particleBuffer = nullptr;
-			RESOURCE::Texture * _texture = nullptr;
+		protected:
+			RESOURCE::ParticleBuffer *		_particleBuffer = nullptr;
+			RESOURCE::Texture *				_texture = nullptr;
 
-			std::vector<ParticleStruct*> _particleContainer;
-			int _lastUsedParticleIndex;
-			int _particleContainerSize;		// 개별 particle container size
-			
+			std::vector<ParticleStruct*>	_particleContainer;
+
+			int		_lastUsedParticleIndex;
+			int		_particleContainerSize;		// 개별 particle container size
+
+			// int		_curParticleNum;			// 현재 가지고 있는 particleNum(for dynamic buffer size)
+
 		private:
-			float _deleteRemainTime;
+			bool	_bOverUseParticle;		// print particle num > _particleContainerSize
+
+			friend class ParticleFObjManager;
 		};
-		
 	}
 }
